@@ -1,0 +1,158 @@
+@charset "UTF-8";
+/* Altar and shared progression */
+.altar-layout {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+.altar-offering {
+    min-height: 310px;
+    padding: 22px;
+    border: 1px solid #373239;
+    background: radial-gradient(ellipse at 75% 15%, #342828, #19181d 47%, #121317);
+}
+.altar-offering.inventory-offering {
+    background: radial-gradient(ellipse at 75% 15%, #302c23, #19181c 47%, #121317);
+}
+.altar-class-icon {
+    width: 25px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+    color: inherit;
+    font-size: 20px;
+}
+.altar-class-icon.icon-asset {
+    width: 25px;
+    height: 25px;
+    background-color: currentColor;
+    -webkit-mask: var(--icon-asset) center / contain no-repeat;
+    mask: var(--icon-asset) center / contain no-repeat;
+}
+.altar-symbol {
+    width: 43px;
+    height: 45px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #63433c;
+    background: #2b2020;
+    color: #d18b6c;
+    font-family: var(--serif);
+    font-size: 20px;
+}
+.inventory-offering .altar-symbol {
+    color: #d1b278;
+    border-color: #62553b;
+    background: #29251d;
+}
+.altar-offering h2 {
+    margin: 0 0 8px;
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 500;
+}
+.altar-offering > p:not(.eyebrow) {
+    max-width: 450px;
+    min-height: 43px;
+    margin: 0;
+    color: #9c9697;
+    font-size: 12px;
+    line-height: 1.7;
+}
+.level-track {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0;
+    color: #a69a8b;
+    font-size: 12px;
+    letter-spacing: .1em;
+}
+.level-track i {
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, #60453d, #c49a67);
+}
+.level-track strong {
+    color: #e0c28d;
+}
+.altar-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid #373238;
+    color: #858087;
+    font-size: 12px;
+    letter-spacing: .11em;
+}
+.altar-price strong {
+    color: #d3b780;
+    font-size: 12px;
+}
+.altar-action {
+    width: 100%;
+}
+.altar-purchase-row {
+    display: grid;
+    grid-template-columns: auto 88px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+}
+.altar-purchase-row label {
+    color: #a69a8b;
+    font-size: 12px;
+}
+.altar-purchase-row input {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 0 10px;
+    border: 1px solid #49424a;
+    border-radius: 0;
+    background: #17161b;
+    color: #e9dfd4;
+    font: inherit;
+}
+.altar-purchase-row input:focus {
+    border-color: #c49a67;
+    outline: 1px solid #c49a67;
+}
+@media (max-width: 700px) {
+    .altar-purchase-row {
+        grid-template-columns: auto 76px minmax(0, 1fr);
+        gap: 7px;
+    }
+}
+.capacity-display {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 6px;
+    margin: 15px 0;
+}
+.capacity-display strong {
+    color: #e1d5c4;
+    font-family: var(--serif);
+    font-size: 25px;
+}
+.capacity-display > span {
+    color: #969097;
+    font-size: 12px;
+}
+.capacity-display .meter {
+    grid-column: 1 / -1;
+    margin-top: 3px;
+}
+.altar-note {
+    margin-top: 14px;
+    color: #89848b;
+    font-size: 12px;
+}
+.altar-note span {
+    color: #d2a668;
+    margin-right: 6px;
+}
+

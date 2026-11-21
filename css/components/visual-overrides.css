@@ -1,0 +1,497 @@
+@charset "UTF-8";
+/* Final Phase 1 overrides are kept last so every view uses the same rules. */
+body {
+    font-size: 15px;
+}
+.sidebar ~ .main-area {
+    margin-left: 248px;
+}
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 64px);
+    grid-auto-rows: 64px;
+    justify-content: start;
+    gap: 8px;
+    padding: 14px 2px 3px;
+}
+.inventory-grid > .inventory-category-empty {
+    grid-column: 1 / -1;
+}
+.inventory-capacity-purchase {
+    width: 64px;
+    height: 64px;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 2px;
+    padding: 4px;
+    border: 1px dashed #80684a;
+    background: linear-gradient(145deg, #242126, #17171b);
+    color: #d2a668;
+    cursor: pointer;
+}
+.inventory-capacity-purchase > span {
+    font: 300 27px/1 var(--sans);
+}
+.inventory-capacity-purchase > small {
+    max-width: 100%;
+    overflow: hidden;
+    color: #c4b59f;
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.inventory-capacity-purchase:hover:not(:disabled) {
+    border-style: solid;
+    background: #2a2423;
+}
+.inventory-capacity-purchase:disabled {
+    color: #716b67;
+    cursor: default;
+    opacity: .65;
+}
+.inventory-main {
+    position: relative;
+}
+.inventory-open-all-boxes {
+    position: absolute;
+    right: 15px;
+    bottom: 14px;
+    z-index: 3;
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+}
+.inventory-open-all-icon,
+.inventory-open-all-icon.icon-asset {
+    display: block;
+    width: 18px;
+    height: 18px;
+    color: #d2a668;
+}
+.inventory-open-all-boxes:disabled {
+    cursor: default;
+    opacity: .48;
+}
+.inventory-item,
+.inventory-empty {
+    width: 64px;
+    height: 64px;
+    aspect-ratio: auto;
+    padding: 4px;
+}
+.inventory-item {
+    border: 1px solid #45424a;
+    background: linear-gradient(145deg, #242329, #17181d);
+}
+.inventory-item.common {
+    border-color: #85838a;
+}
+.inventory-item.uncommon {
+    border-color: #61a77a;
+}
+.inventory-item.rare {
+    border-color: #559bd2;
+}
+.inventory-item.epic {
+    border-color: #a96bce;
+}
+.inventory-item.legendary {
+    border-color: #d79a4d;
+}
+.inventory-item.common .item-icon {
+    color: #b8b5bc;
+}
+.inventory-item.uncommon .item-icon {
+    color: #78c28d;
+}
+.inventory-item.rare .item-icon {
+    color: #78b7e7;
+}
+.inventory-item.epic .item-icon {
+    color: #c68be4;
+}
+.inventory-item.legendary .item-icon {
+    color: #e8b060;
+}
+.item-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    padding: 8px;
+    font-size: 32px;
+}
+.item-name,
+.item-type,
+.item-sell {
+    display: none !important;
+}
+.inventory-item:disabled {
+    cursor: not-allowed;
+    opacity: .42;
+}
+.forge-selection .forge-grid {
+    max-height: 490px;
+    overflow-y: auto;
+    scrollbar-color: #51464a #17171b;
+}
+.forge-grid .inventory-item.selected {
+    border-color: #75a8c5;
+    box-shadow: inset 0 0 0 1px rgba(117, 168, 197, .2);
+}
+.item-tooltip {
+    width: 280px;
+    padding: 15px;
+}
+.item-tooltip.powerup-tooltip {
+    width: 460px;
+    max-width: calc(100vw - 24px);
+}
+.powerup-tooltip .tooltip-affixes span { white-space: nowrap; }
+.tooltip-rarity,
+.tooltip-type,
+.tooltip-affixes span,
+.tooltip-special p {
+    font-size: 12px;
+}
+.tooltip-name {
+    font-size: 16px;
+}
+.tooltip-special>span {
+    font-size: 12px;
+}
+.tooltip-sale-value {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #343238;
+    color: #aaa4a0;
+    font-size: 12px;
+}
+.tooltip-sale-value strong {
+    color: #d5b97f;
+    font-size: 12px;
+}
+.altar-layout {
+    align-items: stretch;
+}
+.altar-offering {
+    min-height: 360px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.altar-offering > p:not(.eyebrow) {
+    min-height: 54px;
+    font-size: 12px;
+}
+.level-track,
+.capacity-display {
+    min-height: 58px;
+    margin: 16px 0;
+}
+.level-track {
+    font-size: 12px;
+}
+.altar-price {
+    margin-top: 0;
+    font-size: 12px;
+}
+.altar-price strong {
+    font-size: 13px;
+}
+.altar-action {
+    min-height: 44px;
+}
+.delete-save-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 30px;
+    padding: 22px;
+    border: 1px solid #593a3b;
+    background: linear-gradient(110deg, #201719, #151519 72%);
+}
+.delete-save-card .eyebrow {
+    margin-bottom: 8px;
+    color: #d18478;
+}
+.delete-save-card h3 {
+    margin: 0 0 7px;
+    font: 500 19px var(--serif);
+    color: #e8ddd2;
+}
+.delete-save-card p:last-child {
+    margin: 0;
+    color: #aaa1a3;
+    font-size: 13px;
+    line-height: 1.6;
+}
+.danger-button {
+    flex: 0 0 auto;
+    
+
+}
+.settings-page-body {
+    display: grid;
+    gap: 14px;
+}
+.settings-page-body > * {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 20px;
+}
+.settings-page-body > .gameplay-settings-grid,
+.settings-page-body > .admin-tools-layout {
+    width: 100%;
+    padding: 0;
+}
+.settings-page-body .settings-note {
+    align-items: center;
+}
+.eyebrow,
+.toolbar-title,
+.filter-label,
+.shop-note,
+.shop-type,
+.stat-label,
+.hero-kicker,
+.location-tag,
+.area-meta,
+.battle-team-health,
+.nav-item span:not(.nav-status):not(.nav-count),
+.choice-footnote,
+.class-choice-role,
+.class-choice p,
+.party-badge,
+.inventory-hint,
+.gear-hint,
+.companion-weapon-label,
+.skill-section-label,
+.skill-choice small,
+.altar-note,
+.settings-card p,
+.settings-note p,
+.save-backup-card p,
+.shop-footnote,
+.forge-warning,
+.forge-hint,
+.quest-card>p,
+.quest-objective,
+.page-footer,
+.welcome-sub,
+.hero-content p,
+.area-description,
+.shop-card p,
+.skill-choice small,
+.inventory-summary small {
+    font-size: 13px;
+    line-height: 1.65;
+}
+.toolbar-subtitle,
+.gear-copy small,
+.character-stat span,
+.character-stat strong,
+.derived-stat,
+.set-empty,
+.character-level,
+.forge-item-copy small,
+.forge-preview em,
+.capacity-display > span,
+.database-badge,
+.server-state {
+    font-size: 12px;
+}
+.primary-button,
+.explore-button,
+.continue-button,
+.text-link,
+.purchase-button,
+.altar-action,
+.forge-button,
+.save-backup-actions button,
+.import-save-button,
+.battle-stop,
+.battle-hide {
+    font-size: 12px;
+}
+.skill-choice {
+    min-height: 132px;
+    padding-bottom: 27px;
+}
+.skill-choice i {
+    right: 9px;
+    bottom: 8px;
+}
+@media (max-width: 1250px) {
+    .inventory-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+@media (max-width: 900px) {
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+    .smith-layout,
+    .character-page-layout {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .area-card {
+        display: grid;
+        grid-template-columns: 180px minmax(0, 1fr);
+    }
+    .area-art {
+        height: 100%;
+        min-height: 180px;
+    }
+}
+@media (max-width: 700px) {
+
+.sidebar ~ .main-area {
+        margin-left: 76px;
+    }
+    .inventory-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .inventory-grid {
+        grid-template-columns: repeat(auto-fill, 64px);
+    }
+    .altar-offering {
+        min-height: 340px;
+    }
+    .delete-save-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .map-intro {
+        height: auto;
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .map-illustration {
+        height: 150px;
+    }
+    .smith-layout,
+    .character-page-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .save-backup-card,
+    .save-backup-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .area-card {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .area-art {
+        height: 100px;
+        min-height: 100px;
+    }
+}
+@media (max-width: 420px) {
+    .view-heading {
+        gap: 8px;
+    }
+    .view-heading .soul-purse {
+        padding: 7px;
+    }
+    .view-heading .soul-purse strong {
+        font-size: 12px;
+    }
+}
+@media (min-width: 701px) {
+    .inventory-layout {
+        grid-template-columns: minmax(150px, 1fr) minmax(210px, 1.15fr) minmax(165px, .9fr);
+    }
+    .inventory-layout .inventory-stats {
+        grid-column: auto;
+    }
+}
+@media (max-width: 700px) {
+    .inventory-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .inventory-layout .inventory-stats {
+        grid-column: auto;
+    }
+}
+
+/* Keep the three inventory panels in one row outside the narrow mobile layout. */
+.inventory-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .72fr);
+    align-items: start;
+}
+@media (max-width: 700px) {
+    .inventory-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+.inventory-layout .inventory-stats {
+    grid-column: auto;
+}
+.inventory-layout {
+    gap: 18px;
+}
+.inventory-layout { --owner-accent: var(--ui-accent); }
+.inventory-layout[data-inventory-owner] .inventory-main,
+.inventory-layout[data-inventory-owner] .equipment-panel,
+.inventory-layout[data-inventory-owner] .character-panel {
+    border-color: var(--ui-panel-border);
+}
+
+/* Square corners for the three inventory panels; item tiles keep their own styling. */
+.inventory-main,
+.inventory-layout .equipment-panel,
+.inventory-layout .character-panel {
+    border-radius: 0;
+}
+
+/* Keep the overview and blacksmith panels square like the inventory panels. */
+.continue-button,
+.hero-card,
+.stat-card,
+.forge-selection,
+.forge-workbench {
+    border-radius: 0;
+}
+/* Restrained button styling to match the dark, quiet interface. */
+button,
+.import-save-button {
+    -webkit-tap-highlight-color: transparent;
+}
+button:focus-visible,
+a:focus-visible,
+.import-save-button:focus-within {
+    outline: 2px solid #a88969;
+    outline-offset: 2px;
+}
+.text-link,
+.quest-link {
+    text-decoration: none;
+    transition: color .18s ease;
+}
+.text-link:hover,
+.quest-link:hover {
+    color: #c99a7c;
+}
+.battle-hide,
+.battle-return,
+.battle-dock-stop,
+.import-save-button {
+    border-radius: 0;
+    transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+.battle-return:hover,
+.battle-dock-stop:hover {
+    border-color: #786349;
+    background: #2d2822;
+    color: #e0c8a5;
+}

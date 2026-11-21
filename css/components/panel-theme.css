@@ -1,0 +1,78 @@
+/* Shared page surfaces: outer panels reveal the page artwork;
+   nested cards, icons and controls retain their own backgrounds. */
+.view-heading em { color: var(--ui-accent); }
+.content-wrap :is(
+    .inventory-main, .equipment-panel, .character-panel,
+    .forge-selection, .forge-workbench,
+    .socket-selection, .socket-workbench,
+    .enchant-selection, .enchant-workbench,
+    .abilities-selection, .ability-inspector,
+    .altar-inspector, .boss-challenge-copy,
+    .skill-tree-board, .skill-tree-detail,
+    .compact-quest-group, .compact-quest-card,
+    .shop-inventory-panel, .shop-catalog-column,
+    .codex-index, .codex-section,
+    .settings-card, .save-backup-card, .delete-save-card,
+    .gameplay-option-card, .gameplay-placeholder,
+    .admin-item-builder, .admin-resource-builder, .admin-actions-panel,
+    .tower-entry-panel, .tower-meta-panel,
+    .quest-journal-intro, .quest-stage-content
+) {
+    background: transparent;
+}
+.ability-detail-symbol,
+.ability-choice-row.is-inspected,
+.altar-inspector-icon,
+.class-choice,
+.companion-card,
+.main-companion-card {
+    background: var(--ui-panel-gradient);
+}
+.altar-inspector-icon { border-color: #653833; }
+.ability-choice-row.is-inspected { border-color: var(--ui-accent); }
+.shop-catalog-column .shop-product-card { background: var(--ui-panel-gradient); }
+
+/* The altar inspector defines the shared outer border for every page panel. */
+.character-panel-surface,
+.inventory-main,
+.equipment-panel,
+.character-panel,
+.forge-selection,
+.forge-workbench,
+.socket-selection,
+.socket-workbench,
+.enchant-selection,
+.enchant-workbench,
+.abilities-selection,
+.ability-inspector,
+.altar-hero-stage,
+.altar-inspector,
+.boss-challenge-art,
+.boss-challenge-copy,
+.skill-tree-board,
+.skill-tree-detail,
+.skill-tree-detail.is-legendary,
+.compact-quest-group,
+.compact-quest-card,
+.compact-quest-card.is-ready,
+.shop-inventory-panel,
+.shop-catalog-column,
+.codex-index,
+.codex-section,
+.settings-card,
+.save-backup-card,
+.delete-save-card,
+.gameplay-option-card,
+.gameplay-placeholder,
+.admin-item-builder,
+.admin-resource-builder,
+.admin-actions-panel,
+.onboarding-card,
+.main-companion-card,
+.companion-card,
+.expedition-card,
+.atlas-map-frame,
+.tower-entry-panel,
+.tower-meta-panel {
+    border-color: var(--ui-panel-border);
+}

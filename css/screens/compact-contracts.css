@@ -1,0 +1,46 @@
+/* Use the shared page heading and normal content flow for the quest board. */
+.compact-contracts-view {
+    max-width: 1324px;
+    margin: 0 auto;
+}
+.compact-quest-group { display: flex; align-items: center; gap: 18px; min-height: 72px; margin-bottom: 16px; padding: 12px 20px; min-width: 0; border: 1px solid #554738; background: radial-gradient(ellipse at 60% 0%, #b57d4212, transparent 65%), linear-gradient(145deg, #1c1a1c, #121316); }
+.compact-group-icon { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; color: #d7b37a; }
+.compact-group-glyph.icon-asset { width: 32px; height: 32px; }
+.compact-quest-group .eyebrow { margin: 0 0 5px; font-size: 10px; letter-spacing: 1.6px; color: #c4a378; }
+.compact-quest-group h2 { margin: 0; font: 23px/1.2 var(--serif); color: #ebddc7; }
+.compact-group-progress { display: flex; align-items: center; gap: 18px; margin-left: auto; flex: 0 0 auto; color: #e3d1b3; font: 17px var(--serif); white-space: nowrap; }
+.compact-group-progress .compact-quest-meter { width: 150px; }
+.compact-quest-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: minmax(230px, auto); gap: 16px; min-height: 0; }
+.compact-quest-card { display: grid; grid-template-rows: auto minmax(48px, 1fr) auto minmax(52px, auto) var(--control-height); gap: 6px; padding: 12px; min-width: 0; border: 1px solid #554536; background: radial-gradient(ellipse at 90% 0%, #d0a25c14, transparent 65%), linear-gradient(145deg, #1a191c, #111215); }
+.compact-quest-card > header { display: flex; align-items: center; gap: 14px; }
+.compact-quest-number { display: inline-grid; place-items: center; min-width: 36px; height: 24px; border: 1px solid #715633; background: #33281d; color: #e6c68f; font: 17px var(--serif); }
+.compact-quest-status { color: #b5aa99; font-size: 10px; letter-spacing: 1px; }
+.compact-quest-objective { align-self: center; min-width: 0; }
+.compact-quest-objective h2 { margin: 0; color: #e8dcc9; font: 21px/1.2 var(--serif); overflow-wrap: anywhere; }
+.compact-quest-objective p { margin: 5px 0 0; color: #aaa091; font-size: 11px; line-height: 1.4; }
+.compact-quest-progress > span { display: block; margin-bottom: 6px; color: #cdbb9d; font-size: 11px; text-align: right; }
+.compact-quest-meter { height: 5px; background: #2b292b; border: 1px solid #64523e; border-radius: 4px; }
+.compact-quest-meter i { display: block; height: 100%; max-width: 100%; border-radius: inherit; background: linear-gradient(90deg, #b68042, #e7c17c, #c49b5e); }
+.compact-quest-reward { display: flex; align-items: center; gap: 14px; border-top: 1px solid #564536; padding-top: 10px; min-width: 0; }
+.compact-reward-icon { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; color: #d6b178; font-size: 26px; }
+.compact-reward-icon.icon-asset { width: 32px; height: 32px; }
+.compact-quest-reward strong { display: block; color: #e0cfaf; font: 17px/1.25 var(--serif); overflow-wrap: anywhere; }
+.compact-quest-reward small { display: block; margin-top: 5px; color: #ad9d87; font-size: 11px; line-height: 1.35; }
+.compact-quest-claim { width: 100%; }
+.compact-quest-card.is-claimed .compact-quest-status { color: #a5b89b; }
+.compact-quest-card.is-ready { border-color: #c29a5e; background: radial-gradient(ellipse at 90% 0%, #c9913926, transparent 75%), linear-gradient(145deg, #231e1c, #151416); box-shadow: 0 0 12px #c9953b13; }
+.compact-quest-card.is-ready .compact-quest-status { color: #ebc67f; }
+.compact-quest-reward > div:last-child { min-width: 0; }
+.quest-reward-items { display: flex; gap: 5px; flex: 0 0 auto; }
+.compact-quest-reward .quest-reward-item { flex: 0 0 auto; aspect-ratio: 1 / 1; cursor: help; }
+.quest-reward-item:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
+@media (max-width: 1100px) {
+    .compact-quest-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+    .compact-quest-grid { grid-template-columns: minmax(0, 1fr); }
+    .compact-quest-group { flex-wrap: wrap; gap: 12px; padding: 12px; }
+    .compact-quest-group > div:not(.compact-group-progress) { flex: 1 1 0; min-width: 0; }
+    .compact-group-progress { width: 100%; margin-left: 0; justify-content: space-between; }
+    .compact-group-progress .compact-quest-meter { flex: 1 1 auto; min-width: 0; }
+}

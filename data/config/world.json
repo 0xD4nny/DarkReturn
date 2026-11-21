@@ -1,0 +1,177 @@
+{
+  "areas": [
+    {
+      "id": "dornwacht",
+      "name": "Dornwacht",
+      "subtitle": "Die verlassene Grenzfeste",
+      "level": 1,
+      "reward": [
+        100,
+        150
+      ],
+      "danger": "Gering",
+      "icon": "♜",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/watchtower.svg",
+      "biome": "Grenzlande",
+      "x": 12,
+      "y": 76,
+      "description": "Zwischen den gebrochenen Wachtürmen sammeln sich die ersten Kreaturen der Dämmerung."
+    },
+    {
+      "id": "aschental",
+      "name": "Aschental",
+      "subtitle": "Land unter grauem Himmel",
+      "level": 61,
+      "reward": [
+        491,
+        578
+      ],
+      "danger": "Erheblich",
+      "icon": "♧",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/burning-forest.svg",
+      "biome": "Ascheöde",
+      "x": 31,
+      "y": 50,
+      "description": "Unter der grauen Asche regen sich Dinge, die seit Jahrhunderten begraben lagen."
+    },
+    {
+      "id": "salzmoor",
+      "name": "Salzmoor",
+      "subtitle": "Das versunkene Tiefland",
+      "level": 121,
+      "reward": [
+        856,
+        1007
+      ],
+      "danger": "Erheblich",
+      "icon": "⌁",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/swamp.svg",
+      "biome": "Nebelmoor",
+      "x": 46,
+      "y": 80,
+      "description": "Fahle Lichter locken Reisende zwischen knorrigen Bäumen und salzigen Wasserarmen in die Tiefe."
+    },
+    {
+      "id": "schwarze-kluft",
+      "name": "Schwarze Kluft",
+      "subtitle": "Abgrund der Namenlosen",
+      "level": 181,
+      "reward": [
+        1220,
+        1435
+      ],
+      "danger": "Tödlich",
+      "icon": "◈",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/cave-entrance.svg",
+      "biome": "Schattenbruch",
+      "x": 61,
+      "y": 35,
+      "description": "Kaum jemand kehrt aus der Tiefe zurück. Die wenigen Überlebenden sprechen von Stimmen."
+    },
+    {
+      "id": "glasforst",
+      "name": "Glasforst",
+      "subtitle": "Der erstarrte Hain",
+      "level": 241,
+      "reward": [
+        1584,
+        1863
+      ],
+      "danger": "Tödlich",
+      "icon": "♧",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/crystal-shrine.svg",
+      "biome": "Kristallwald",
+      "x": 77,
+      "y": 58,
+      "description": "Ein Wald aus schwarzem Glas singt im Wind. Jeder Schritt weckt scharfkantige Wächter."
+    },
+    {
+      "id": "mondbruch",
+      "name": "Mondbruch",
+      "subtitle": "Wo der Himmel fiel",
+      "level": 301,
+      "reward": [
+        1947,
+        2291
+      ],
+      "danger": "Verheerend",
+      "icon": "☾",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/meteor-impact.svg",
+      "biome": "Einschlagküste",
+      "x": 91,
+      "y": 22,
+      "description": "Am nördlichen Rand der Welt liegt ein Stück des Mondes. Seine Trümmer flüstern deinen Namen."
+    }
+  ],
+  "enemies": {
+    "dornwacht": {
+      "name": "Aschenstreuner",
+      "hp": 600,
+      "damage": 175,
+      "icon": "♜"
+    },
+    "aschental": {
+      "name": "Aschenbrut",
+      "hp": 4000,
+      "damage": 790,
+      "icon": "♧"
+    },
+    "salzmoor": {
+      "name": "Moorhüter",
+      "hp": 7200,
+      "damage": 1596,
+      "icon": "⌁"
+    },
+    "schwarze-kluft": {
+      "name": "Kluftwandler",
+      "hp": 10000,
+      "damage": 2431,
+      "icon": "◈"
+    },
+    "glasforst": {
+      "name": "Scherbenschwinge",
+      "hp": 13000,
+      "damage": 3615,
+      "icon": "♧"
+    },
+    "mondbruch": {
+      "name": "Mondgefallener",
+      "hp": 17500,
+      "damage": 4720,
+      "icon": "☾"
+    }
+  },
+  "enemySkills": {
+    "dornwacht": {
+      "attackInterval": 1,
+      "multiplier": 1.35,
+      "once": true,
+      "name": "Hinterhalt"
+    },
+    "aschental": {
+      "attackInterval": 4,
+      "multiplier": 1.5,
+      "name": "Glutstoss"
+    },
+    "salzmoor": {
+      "attackInterval": 3,
+      "multiplier": 1.4,
+      "name": "Sumpfgriff"
+    },
+    "schwarze-kluft": {
+      "attackInterval": 3,
+      "multiplier": 1.45,
+      "name": "Seelenriss"
+    },
+    "glasforst": {
+      "attackInterval": 2,
+      "multiplier": 1.5,
+      "name": "Splittersturm"
+    },
+    "mondbruch": {
+      "attackInterval": 4,
+      "multiplier": 1.65,
+      "name": "Mondschatten"
+    }
+  }
+}

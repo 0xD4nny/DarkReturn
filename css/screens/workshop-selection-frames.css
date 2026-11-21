@@ -1,0 +1,47 @@
+/* One selection layout for market, forge, sockets and enchantments. */
+.item-selection {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 14px;
+}
+.item-selection > .section-heading {
+    flex: 0 0 auto;
+    align-items: center;
+    min-height: 24px;
+    margin: 0 0 12px;
+}
+.item-selection > .section-heading h3 {
+    margin: 0;
+    font: 500 18px/24px var(--serif);
+}
+.item-selection > .item-grid-controls {
+    flex: 0 0 auto;
+    min-height: var(--control-height);
+    margin: 0;
+    padding: 0;
+}
+.item-selection > .inventory-grid {
+    margin: 0;
+    padding: 12px 0 0;
+    gap: 8px;
+    grid-template-columns: repeat(auto-fill, 64px);
+    grid-auto-rows: 64px;
+    align-content: start;
+}
+
+/* Shared panel borders; transparency is defined in panel-theme.css. */
+.smith-layout > .forge-selection,
+.socket-layout > .socket-selection,
+.enchant-layout > .enchant-selection {
+    --workshop-surface-accent: var(--ui-accent);
+    background:
+        radial-gradient(ellipse at 85% 0%, color-mix(in srgb, var(--workshop-surface-accent) 10%, transparent), transparent 58%),
+        linear-gradient(145deg, #15161a, #111216);
+    border-color: var(--ui-panel-border);
+}
+
+/* Match the adjacent item selection's muted red border exactly. */
+.smith-layout > .forge-workbench,
+.socket-layout > .socket-workbench,
+.enchant-layout > .enchant-workbench { border-color: var(--ui-panel-border); }

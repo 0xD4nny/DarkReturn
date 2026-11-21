@@ -1,0 +1,488 @@
+@charset "UTF-8";
+/* The forge becomes a full-height ritual chamber on desktop. */
+.smith-layout {
+    min-height: min(700px, max(480px, calc(100vh - 250px)));
+    align-items: stretch;
+}
+.forge-selection { min-height: 0; display: flex; flex-direction: column; }
+.glyph-fusion-slots { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; }
+.glyph-fusion-slots > .inventory-item,
+.glyph-fusion-empty { width: 64px; height: 64px; flex: 0 0 64px; aspect-ratio: 1; }
+.glyph-fusion-empty { display: grid; place-items: center; border: 1px dashed var(--panel-border, #554738); color: #aaa091; font-size: 24px; }
+.glyph-fusion-button { width: 100%; margin-top: 8px; }
+.forge-selection .forge-grid {
+    min-height: 0;
+    max-height: none;
+    flex: 1 1 0;
+    overflow-y: auto;
+    scrollbar-color: #51464a #17171b;
+}
+.forge-workbench {
+    position: relative;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 42%, rgba(115, 69, 48, .13), transparent 54%),
+        linear-gradient(155deg, #18171b, #111216 78%);
+}
+.forge-workbench > .eyebrow { position: relative; z-index: 1; }
+.forge-workbench > h3 { position: relative; z-index: 1; }
+.forge-ritual-art {
+    position: relative;
+    display: grid;
+    flex: 1 1 auto;
+    place-items: center;
+    min-height: 245px;
+    margin: 10px -2px 13px;
+    overflow: hidden;
+    border-top: 1px solid rgba(160, 119, 78, .16);
+    border-bottom: 1px solid rgba(160, 119, 78, .16);
+    background:
+        radial-gradient(ellipse at 50% 52%, rgba(170, 106, 63, .12), transparent 48%),
+        radial-gradient(ellipse at 50% 100%, rgba(31, 30, 34, .75), transparent 70%);
+    isolation: isolate;
+}
+.forge-ritual-art::before,
+.forge-ritual-art::after {
+    position: absolute;
+    content: "";
+    pointer-events: none;
+}
+.forge-ritual-art::before {
+    inset: 0;
+    z-index: -1;
+    opacity: .38;
+    background-image:
+        radial-gradient(circle, rgba(215, 171, 112, .44) 1px, transparent 1.8px),
+        linear-gradient(135deg, transparent 49.8%, rgba(172, 132, 88, .12) 50%, transparent 50.2%);
+    background-size: 47px 47px, 100% 100%;
+    mask-image: radial-gradient(ellipse at center, #000 10%, transparent 72%);
+}
+.forge-ritual-art::after {
+    left: 50%;
+    top: 50%;
+    width: min(58%, 310px);
+    aspect-ratio: 1;
+    border: 1px solid rgba(202, 151, 96, .17);
+    transform: translate(-50%, -50%) rotate(45deg) scale(.72);
+    box-shadow: 0 0 45px rgba(162, 92, 54, .08), inset 0 0 38px rgba(162, 92, 54, .06);
+}
+.ritual-orbit {
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+.ritual-orbit-outer {
+    width: min(64%, 350px);
+    border: 1px solid rgba(202, 151, 96, .38);
+    box-shadow: 0 0 24px rgba(172, 104, 60, .08), inset 0 0 24px rgba(172, 104, 60, .05);
+    animation: forge-orbit 46s linear infinite;
+}
+.ritual-orbit-outer::before,
+.ritual-orbit-outer::after,
+.ritual-orbit-inner::before {
+    position: absolute;
+    content: "";
+    inset: 10px;
+    border: 1px dashed rgba(189, 143, 91, .3);
+    border-radius: 50%;
+}
+.ritual-orbit-outer::after { inset: 22px; border-style: solid; opacity: .58; }
+.ritual-orbit-inner {
+    width: min(43%, 232px);
+    border: 1px solid rgba(218, 177, 121, .48);
+    transform: translate(-50%, -50%) rotate(18deg);
+    animation: forge-orbit-reverse 32s linear infinite;
+}
+.ritual-orbit-inner::before { inset: 15px; border-style: dotted; }
+.ritual-orbit i {
+    position: absolute;
+    left: 50%;
+    top: -5px;
+    width: 9px;
+    height: 9px;
+    border: 1px solid #c79b68;
+    background: #211a19;
+    transform: translateX(-50%) rotate(45deg);
+    box-shadow: 0 0 10px rgba(220, 163, 96, .4);
+}
+.ritual-orbit i:nth-child(2) { left: auto; top: 50%; right: -5px; transform: translateY(-50%) rotate(45deg); }
+.ritual-orbit i:nth-child(3) { top: auto; bottom: -5px; transform: translateX(-50%) rotate(45deg); }
+.ritual-orbit i:nth-child(4) { left: -5px; top: 50%; transform: translateY(-50%) rotate(45deg); }
+.ritual-orbit-inner i { width: 6px; height: 6px; border-color: #d9b277; }
+.ritual-core {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 78px;
+    aspect-ratio: 1;
+    border: 1px solid rgba(225, 178, 113, .62);
+    background: radial-gradient(circle, rgba(166, 94, 51, .28), rgba(20, 17, 18, .92) 70%);
+    color: #e2b777;
+    font-size: 27px;
+    clip-path: polygon(50% 0, 94% 24%, 94% 76%, 50% 100%, 6% 76%, 6% 24%);
+    filter: drop-shadow(0 0 18px rgba(221, 154, 86, .45));
+    animation: forge-pulse 3.8s ease-in-out infinite;
+}
+.ritual-core::before {
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(225, 178, 113, .38);
+    content: "";
+    clip-path: inherit;
+}
+.ritual-mark {
+    position: absolute;
+    z-index: 1;
+    color: rgba(217, 173, 116, .76);
+    font: 19px var(--serif);
+    text-shadow: 0 0 12px rgba(212, 142, 76, .35);
+}
+.ritual-mark-one { left: calc(50% - 5px); top: 14%; }
+.ritual-mark-two { right: 22%; top: 47%; animation: forge-mark-glow 3s ease-in-out infinite; }
+.ritual-mark-three { left: 22%; top: 47%; }
+.ritual-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    color: #89755f;
+    font: 9px var(--sans);
+    letter-spacing: .22em;
+    text-align: center;
+}
+.forge-workbench.is-ready .ritual-core {
+    border-color: #e6bd7f;
+    color: #ffe0a3;
+    box-shadow: 0 0 35px rgba(225, 161, 88, .24), inset 0 0 20px rgba(225, 161, 88, .18);
+}
+.forge-workbench.is-ready .ritual-orbit-outer { border-color: rgba(232, 181, 112, .62); }
+.forge-workbench .forge-sockets { position: relative; z-index: 1; }
+.forge-workbench .forge-placeholder,
+.forge-workbench .forge-preview,
+.forge-workbench .forge-button,
+.forge-workbench .forge-warning { position: relative; z-index: 1; }
+@keyframes forge-orbit { to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes forge-orbit-reverse { to { transform: translate(-50%, -50%) rotate(-342deg); } }
+@keyframes forge-pulse { 0%, 100% { opacity: .84; transform: scale(.96); } 50% { opacity: 1; transform: scale(1.04); } }
+@keyframes forge-mark-glow { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+    .ritual-orbit-outer,
+    .ritual-orbit-inner,
+    .ritual-core,
+    .ritual-mark-two { animation: none; }
+}
+
+/* Keep the animated forge sigil above a stable, bottom-aligned control deck. */
+.forge-ritual-art {
+    flex: 1 1 0;
+    min-height: 0;
+    margin: 9px 0 12px;
+    border-color: rgba(180, 132, 82, .26);
+    background:
+        radial-gradient(ellipse at 50% 50%, rgba(174, 93, 52, .18), transparent 46%),
+        radial-gradient(ellipse at 50% 90%, rgba(40, 31, 28, .8), transparent 68%);
+}
+.forge-ritual-art::before {
+    opacity: .62;
+    background-image:
+        radial-gradient(circle, rgba(229, 185, 119, .7) 1px, transparent 1.7px),
+        conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(180, 132, 82, .1) 42deg, transparent 46deg, transparent 180deg, rgba(180, 132, 82, .08) 222deg, transparent 226deg);
+    background-size: 38px 38px, 100% 100%;
+}
+.forge-ritual-art::after {
+    width: min(67%, 430px);
+    border-color: rgba(218, 169, 106, .31);
+    transform: translate(-50%, -50%) rotate(45deg) scale(.78);
+    box-shadow: 0 0 55px rgba(188, 103, 54, .13), inset 0 0 42px rgba(188, 103, 54, .1);
+}
+.ritual-orbit-outer {
+    width: min(72%, 450px);
+    border-color: rgba(222, 169, 102, .62);
+    box-shadow: 0 0 32px rgba(207, 132, 69, .14), inset 0 0 26px rgba(207, 132, 69, .1);
+    animation-duration: 38s;
+}
+.ritual-orbit-outer::before { inset: 11px; border-color: rgba(218, 157, 92, .56); }
+.ritual-orbit-outer::after { inset: 25px; border-color: rgba(202, 154, 102, .4); }
+.ritual-orbit-middle {
+    width: min(55%, 350px);
+    border: 1px dashed rgba(226, 175, 108, .64);
+    box-shadow: 0 0 22px rgba(218, 151, 77, .12);
+    animation: forge-orbit-reverse 27s linear infinite;
+}
+.ritual-orbit-middle::before {
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(200, 149, 94, .28);
+    border-radius: 50%;
+    content: "";
+}
+.ritual-orbit-middle i {
+    position: absolute;
+    left: 50%;
+    top: -4px;
+    width: 7px;
+    height: 7px;
+    border: 1px solid #e3b36f;
+    background: #302019;
+    transform: translateX(-50%) rotate(45deg);
+    box-shadow: 0 0 12px rgba(235, 174, 98, .56);
+}
+.ritual-orbit-middle i:nth-child(2) { left: auto; top: 25%; right: 6%; }
+.ritual-orbit-middle i:nth-child(3) { left: auto; top: 75%; right: 6%; }
+.ritual-orbit-middle i:nth-child(4) { left: 50%; top: auto; bottom: -4px; }
+.ritual-orbit-middle i:nth-child(5) { left: 6%; top: 75%; }
+.ritual-orbit-middle i:nth-child(6) { left: 6%; top: 25%; }
+.ritual-orbit-inner {
+    width: min(36%, 225px);
+    border-color: rgba(240, 195, 124, .72);
+    box-shadow: 0 0 24px rgba(227, 159, 80, .18), inset 0 0 20px rgba(227, 159, 80, .1);
+    animation-duration: 21s;
+}
+.ritual-orbit-inner::before { border-color: rgba(225, 175, 105, .44); }
+.ritual-core {
+    width: 84px;
+    color: #ffdfa4;
+    background: radial-gradient(circle, rgba(232, 142, 69, .48), rgba(50, 27, 20, .95) 72%);
+    filter: drop-shadow(0 0 25px rgba(238, 156, 77, .62));
+}
+.forge-controls {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    flex: 0 0 auto;
+    gap: 8px;
+    margin-top: auto;
+}
+.forge-workbench .forge-sockets { margin: 0; }
+.forge-workbench .forge-placeholder { min-height: 54px; }
+.forge-workbench .forge-button { margin-top: 0; }
+.forge-workbench .forge-warning { margin: 0; }
+.forge-workbench.is-ready .ritual-orbit-middle { border-color: rgba(255, 206, 128, .9); }
+.forge-workbench.is-ready .ritual-orbit-outer { animation-duration: 24s; }
+@media (prefers-reduced-motion: reduce) {
+    .ritual-orbit-middle { animation: none; }
+}
+
+/* Explicit ritual zones: title, animated seal, fixed control dock. */
+.forge-workbench {
+    display: grid;
+    grid-template-rows: auto minmax(250px, 1fr) auto;
+    align-content: stretch;
+    gap: 0;
+}
+.forge-workbench > h3 { grid-row: 1; }
+.forge-workbench > .forge-ritual-art {
+    grid-row: 2;
+    width: 100%;
+    min-height: 250px;
+    height: 100%;
+    margin: 9px 0 12px;
+}
+.forge-workbench > .forge-controls {
+    grid-row: 3;
+    align-self: end;
+    margin: 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(174, 132, 89, .24);
+    background: linear-gradient(180deg, rgba(24, 22, 24, .32), rgba(18, 18, 21, .9));
+}
+.forge-workbench .forge-sockets { margin: 0 0 9px; }
+.forge-workbench .forge-placeholder { min-height: 54px; }
+.forge-workbench .forge-button { margin-top: 0; }
+.forge-workbench .forge-warning { margin: 0; }
+.forge-ritual-art {
+    flex: initial;
+    isolation: isolate;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(212, 118, 57, .2), transparent 31%),
+        radial-gradient(ellipse at 50% 50%, rgba(41, 29, 26, .62), transparent 68%);
+}
+.ritual-orbit-outer {
+    width: min(69%, 440px);
+    border: 2px solid rgba(225, 172, 104, .78);
+    border-left-color: rgba(225, 172, 104, .18);
+    border-bottom-color: rgba(225, 172, 104, .42);
+    box-shadow: 0 0 28px rgba(220, 143, 70, .2), inset 0 0 26px rgba(220, 143, 70, .11);
+    animation-duration: 22s;
+}
+.ritual-orbit-outer::before {
+    inset: 12px;
+    border: 1px dashed rgba(229, 179, 112, .78);
+}
+.ritual-orbit-outer::after {
+    inset: 26px;
+    border: 1px solid rgba(220, 174, 113, .5);
+}
+.ritual-orbit-middle {
+    width: min(51%, 330px);
+    border: 2px dashed rgba(242, 189, 111, .86);
+    box-shadow: 0 0 25px rgba(220, 143, 70, .22);
+    animation-duration: 15s;
+}
+.ritual-orbit-middle::before { inset: 9px; border-color: rgba(230, 172, 100, .5); }
+.ritual-orbit-inner {
+    width: min(32%, 205px);
+    border: 2px solid rgba(255, 208, 132, .82);
+    border-top-color: rgba(255, 208, 132, .23);
+    box-shadow: 0 0 22px rgba(234, 164, 83, .28), inset 0 0 22px rgba(234, 164, 83, .13);
+    animation-duration: 10s;
+}
+.ritual-orbit-inner::before { inset: 13px; border: 1px dotted rgba(255, 214, 143, .7); }
+.ritual-core {
+    width: 92px;
+    border-width: 2px;
+    background: radial-gradient(circle, #b36c36 0, #4a2c20 40%, #171416 76%);
+    filter: drop-shadow(0 0 32px rgba(237, 151, 73, .78));
+    animation-duration: 2.6s;
+}
+.ritual-mark { color: #f0c487; font-size: 22px; }
+.forge-workbench.is-ready .ritual-core { box-shadow: 0 0 45px rgba(255, 188, 94, .42), inset 0 0 24px rgba(255, 188, 94, .26); }
+.ritual-item-symbol { position: relative; z-index: 1; display: grid; place-items: center; }
+.ritual-item-icon { display: block; width: 48px; height: 48px; }
+@media (prefers-reduced-motion: reduce) {
+    .ritual-orbit-outer,
+    .ritual-orbit-middle,
+    .ritual-orbit-inner,
+    .ritual-core { animation: none; }
+}
+
+/* Upgrade-stone forge controls */
+.forge-upgrade-sockets {
+    gap: 11px;
+    margin: 0 0 8px !important;
+}
+.forge-upgrade-sockets .forge-socket {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    height: 62px;
+    grid-template-columns: 25px minmax(0, 1fr);
+    justify-items: start;
+    gap: 8px;
+    padding: 7px;
+    border-style: solid;
+    text-align: left;
+}
+.forge-upgrade-sockets .forge-socket > span {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    font-size: 19px;
+}
+.forge-upgrade-sockets .forge-socket small {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.forge-socket-link {
+    color: #a8957b;
+    font: 18px var(--serif);
+}
+.forge-upgrade-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 31px;
+    padding: 6px 9px;
+    border: 1px solid #302d31;
+    color: #a49ba0;
+    font-size: 11px;
+}
+.forge-upgrade-status strong {
+    color: #d8b17a;
+    font-size: 11px;
+    white-space: nowrap;
+}
+.forge-upgrade-sockets .forge-socket.is-risky,
+.forge-upgrade-status.is-risky {
+    border-color: #754443;
+    background-color: #241b1e;
+}
+.forge-safety-note {
+    margin: 0;
+    color: #9d958f;
+    font-size: 11px;
+    line-height: 1.4;
+}
+.forge-safety-note.is-risky { color: #d18b7d; }
+.forge-action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.forge-auto-target {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 10px 0;
+    color: #a49a96;
+    font-size: 10px;
+    letter-spacing: .08em;
+}
+.forge-auto-target select { width: auto; min-width: 72px; }
+.forge-action-row .forge-button,
+.forge-action-row .forge-auto-button {
+    min-width: 0;
+    margin: 0;
+    padding-inline: 9px;
+}
+.forge-auto-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    margin-top: 10px;
+}
+.forge-auto-actions > .forge-button {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+}
+.forge-auto-actions > .forge-auto-button {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+}
+.forge-auto-actions .forge-auto-target {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    white-space: nowrap;
+}
+.forge-auto-actions .forge-auto-target select {
+    min-width: 0;
+    width: auto;
+    field-sizing: content;
+}
+
+
+/* Auto work remains available while another page is open. */
+.workshop-status-slot { display: block; flex: 0 1 auto; min-width: 130px; max-width: 220px; height: 40px; padding: 4px 9px; border: 1px solid var(--ui-accent); background: var(--ui-panel-gradient); color: #d7c4a8; font: 10px/15px var(--sans); white-space: pre-line; overflow: hidden; cursor: pointer; }
+.workshop-status-slot::first-line { color: #e5be78; font-weight: 700; }
+.workshop-status-slot[hidden] { display: none; }
+.workshop-status-slot:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 2px; }
+
+/* Disable decorative motion without changing the attempt timer. */
+.workshop-motion-disabled,
+.workshop-motion-disabled *,
+.workshop-motion-disabled::before,
+.workshop-motion-disabled::after,
+.workshop-motion-disabled *::before,
+.workshop-motion-disabled *::after {
+    animation: none !important;
+    transition: none !important;
+}

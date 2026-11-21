@@ -1,0 +1,15 @@
+{
+  "modules": [
+    "classes.json",
+    "pets.json",
+    "skill-tree.json",
+    "world.json",
+    "equipment.json",
+    "market.json",
+    "quests.json",
+    "balance/progression.json",
+    "balance/equipment.json",
+    "balance/combat.json",
+    "events.json"
+  ]
+}

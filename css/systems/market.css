@@ -1,0 +1,216 @@
+@charset "UTF-8";
+/* Schwarzmarkt catalog: equipment left, upgrade materials right. */
+.shop-catalog-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(360px, .75fr);
+    align-items: stretch;
+    gap: 14px;
+    margin: 0 0 24px;
+}
+.shop-catalog-column {
+    min-width: 0;
+    display: grid;
+    grid-template-rows: auto repeat(4, minmax(126px, auto));
+    align-content: start;
+    gap: 7px;
+    padding: 12px;
+    border: 1px solid #302f35;
+    background: rgba(18, 19, 23, .55);
+}
+.shop-material-column { grid-template-rows: auto repeat(4, minmax(126px, auto)); }
+.shop-catalog-heading {
+    min-height: 30px;
+    padding: 0 2px 3px;
+    border-bottom: 1px solid #302f35;
+}
+.shop-catalog-heading .eyebrow { margin: 0; font-size: 11px; }
+.shop-catalog-heading h3 { margin: 0; color: #e2d9cf; font: 16px var(--serif); }
+.shop-gear-panel .shop-catalog-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.shop-refresh-timer { flex-shrink: 0; color: var(--text-muted, #a49991); font-size: 11px; font-variant-numeric: tabular-nums; }
+.shop-product-card {
+    min-height: 126px;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: start;
+    gap: 8px 11px;
+    padding: 11px;
+}
+.shop-product-card .shop-card-icon { width: 40px; height: 42px; grid-row: 1; }
+.shop-product-card .shop-card-copy { min-width: 0; }
+.shop-product-card .shop-type { font-size: 9px; }
+.shop-product-card .shop-card h3 { margin: 3px 0 4px; font-size: 14px; }
+.shop-product-card .shop-card-copy > p { min-height: 30px; font-size: 11px; line-height: 1.4; }
+.shop-product-card .shop-price {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+.shop-product-card .shop-price strong { display: block; min-width: 0; overflow: hidden; color: #d6c094; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.shop-product-card .shop-price small { color: #89858b; font-size: 10px; white-space: nowrap; }
+.shop-purchase-controls { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; align-items: end; gap: 7px; }
+.shop-purchase-controls label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #958e92;
+    font-size: 9px;
+    letter-spacing: .08em;
+    white-space: nowrap;
+}
+.shop-purchase-controls input {
+    width: 58px;
+    height: 29px;
+    padding: 2px 7px;
+
+}
+.shop-product-card .purchase-button { min-width: 72px;  padding: 0 8px; }
+.shop-stock-note { display: block; margin-top: 5px; color: #817b80; font-size: 9px; }
+.shop-future-placeholder {
+    min-height: 126px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px dashed #39363c;
+    background: rgba(14, 15, 18, .4);
+    color: #766f75;
+}
+.shop-future-placeholder > span {
+    width: 40px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #39363c;
+    color: #766f75;
+    font-size: 20px;
+}
+.shop-future-placeholder div { display: grid; gap: 4px; }
+.shop-future-placeholder small { font-size: 9px; letter-spacing: .1em; }
+.shop-future-placeholder strong { font: 15px var(--serif); }
+.shop-inventory-panel { min-height: 230px; padding: 14px; border: 1px solid #302f35; background: rgba(18, 19, 23, .45); }
+.shop-inventory-panel .sell-heading { margin: 0 0 10px; }
+
+/* Keep the sell inventory beside both market offer columns. */
+.shop-catalog-layout {
+    grid-template-columns: minmax(330px, 1.05fr) repeat(2, minmax(300px, .95fr));
+    align-items: stretch;
+}
+.shop-catalog-layout.shop-equipment-offers { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--split-panel-gap); }
+.shop-equipment-offers > .shop-inventory-panel { grid-column: 1; grid-row: 1; }
+.shop-equipment-offers > .shop-boxes-panel { grid-column: 2; grid-row: 1; }
+.shop-equipment-offers > .shop-gear-panel { grid-column: 3; grid-row: 1; }
+.shop-equipment-offers > .shop-catalog-column { grid-template-rows: auto; grid-auto-rows: auto; }
+.shop-equipment-card { grid-template-columns: 64px minmax(0, 1fr); }
+.shop-equipment-card > .inventory-item { box-sizing: border-box; width: 64px; height: 64px; min-width: 64px; min-height: 64px; align-self: start; }
+.shop-equipment-card .shop-purchase-controls { grid-template-columns: minmax(0, 1fr) auto; }
+.shop-catalog-layout > .shop-inventory-panel {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.shop-catalog-layout > .shop-inventory-panel .inventory-grid {
+    min-height: 0;
+    flex: 1 1 auto;
+    align-content: start;
+    overflow-y: auto;
+    scrollbar-color: #51464a #17171b;
+}
+.shop-product-card .shop-price small { display: none; }
+.socket-lock-note { margin: 10px 0 0; }
+.item-grid-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: 8px;
+}
+.item-grid-controls .filter-label {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+}
+.item-grid-controls .inventory-category-tabs { display: none; }
+.selected-ability-card { width: 100%; }
+.selected-ability-card .companion-skill-group { margin-top: 14px; }
+.selected-ability-card .skill-choice-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.selected-ability-card .skill-group-heading { margin-bottom: 7px; }
+.forge-workbench .forge-warning {
+    font-size: 11px;
+}
+
+.forge-workbench.is-forging .ritual-core {
+    color: #fff0cd;
+    filter: drop-shadow(0 0 48px rgba(255, 188, 94, .98));
+    box-shadow: 0 0 88px rgba(255, 174, 80, .95), inset 0 0 38px rgba(255, 205, 124, .64);
+    animation: forge-charge .34s ease-in-out infinite alternate;
+}
+.forge-workbench.is-forging .forge-ritual-art::before {
+    opacity: 1;
+    filter: brightness(2.6);
+}
+.forge-workbench.is-forging .forge-ritual-art::after {
+    border-color: rgba(255, 216, 155, .72);
+    box-shadow: 0 0 82px rgba(255, 174, 80, .58), inset 0 0 60px rgba(255, 174, 80, .34);
+}
+.forge-workbench.is-forging .ritual-orbit {
+    filter: brightness(1.8) drop-shadow(0 0 13px rgba(255, 183, 95, .85));
+}
+.forge-workbench.is-forging .ritual-orbit-outer { border-color: rgba(255, 218, 158, .95); }
+.forge-workbench.is-forging .ritual-orbit-middle { border-color: rgba(255, 194, 114, .98); }
+.forge-workbench.is-forging .ritual-orbit-inner { border-color: rgba(255, 231, 182, 1); }
+.forge-workbench.is-forging .ritual-caption {
+    color: #fff0cd;
+    text-shadow: 0 0 12px rgba(255, 180, 86, .95);
+}
+.forge-workbench.forge-success .ritual-core {
+    color: #d8efc3;
+    box-shadow: 0 0 52px rgba(126, 190, 121, .55), inset 0 0 24px rgba(126, 190, 121, .28);
+}
+.forge-workbench.forge-failure .ritual-core {
+    color: #f0a39a;
+    box-shadow: 0 0 52px rgba(190, 84, 76, .58), inset 0 0 24px rgba(190, 84, 76, .3);
+}
+.forge-upgrade-status { transition: border-color .2s ease, background-color .2s ease, color .2s ease; }
+.forge-upgrade-status.is-success {
+    border-color: #668a60;
+    background: rgba(86, 125, 77, .16);
+    color: #c7dfb6;
+}
+.forge-upgrade-status.is-success strong { color: #c7dfb6; }
+.forge-upgrade-status.is-failure {
+    border-color: #89514d;
+    background: rgba(133, 59, 56, .17);
+    color: #e0aaa2;
+}
+.forge-upgrade-status.is-failure strong { color: #e0aaa2; }
+
+/* Keep every shared item-grid filter row left-aligned and compact. */
+.item-grid-controls {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.item-grid-controls .filter-label {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-self: auto;
+    grid-template-columns: none;
+    gap: 7px;
+    width: auto;
+    margin: 0;
+}
+.item-grid-controls .filter-label select {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    flex: 0 0 auto;
+    field-sizing: content;
+}
+.forge-ritual-art::after { top: calc(50% - 5px); }
+.forge-ritual-art > .ritual-core { top: -5px; }

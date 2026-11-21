@@ -1,0 +1,186 @@
+/* Shared control appearance. Page styles only own placement and sizing.
+   ui-graphic / ui-navigation keep their item, map or navigation presentation. */
+:root {
+    --control-height: 32px;
+    --control-border: #69504a;
+    --control-background: #292326;
+    --control-text: #e3d9ce;
+    --control-hover-border: #8a6658;
+    --control-hover-background: #332a2b;
+    --control-disabled-border: #39353a;
+    --control-disabled-background: #1b1b1f;
+    --control-disabled-text: #716d72;
+}
+
+.ui-control {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ui-control.ui-link {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #d1ae7d;
+    font: 11px var(--sans);
+    letter-spacing: .08em;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.ui-control.ui-link:hover {
+    color: #f0e4d7;
+    text-decoration: underline;
+}
+
+.ui-control:is(.ui-button, .ui-choice, .ui-card-choice, .ui-select, .ui-field, .ui-disclosure) {
+    min-width: 0;
+    border: 1px solid var(--control-border);
+    border-radius: 0;
+    background: var(--control-background);
+    color: var(--control-text);
+    box-shadow: none;
+    font-family: var(--sans);
+    transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+
+.ui-control:is(.ui-button, .ui-choice) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: var(--control-height);
+    height: auto;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: .08em;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.ui-control:is(.ui-select, .ui-field) {
+    min-height: var(--control-height);
+    height: auto;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: normal;
+    color-scheme: dark;
+}
+
+.ui-control.ui-select {
+    cursor: pointer;
+}
+
+.ui-control.ui-select :is(option, optgroup) {
+    background: var(--control-background);
+    color: var(--control-text);
+    font: inherit;
+}
+
+.ui-control:is(.ui-button, .ui-choice, .ui-card-choice, .ui-select, .ui-field, .ui-disclosure):hover:not(:disabled) {
+    border-color: var(--control-hover-border);
+    background: var(--control-hover-background);
+    color: #f0e4d7;
+    box-shadow: none;
+}
+
+.ui-control:is(.ui-button, .ui-choice, .ui-card-choice):active:not(:disabled) {
+    background: #252023;
+}
+
+.ui-control:is(.ui-choice, .ui-card-choice):is(.is-selected, .is-inspected, [aria-pressed="true"]),
+.ui-control.ui-button.is-armed {
+    border-color: var(--ui-accent);
+    background: color-mix(in srgb, var(--ui-accent) 18%, var(--control-background));
+    color: #f0e4d7;
+}
+
+.ui-control:is(.ui-choice, .ui-card-choice):is(.is-selected, .is-inspected, [aria-pressed="true"]):hover:not(:disabled),
+.ui-control.ui-button.is-armed:hover:not(:disabled) {
+    border-color: var(--ui-accent);
+    background: color-mix(in srgb, var(--ui-accent) 25%, var(--control-background));
+}
+
+.ui-control:is(.ui-button, .ui-choice, .ui-card-choice, .ui-select, .ui-field):disabled {
+    border-color: var(--control-disabled-border);
+    background: var(--control-disabled-background);
+    color: var(--control-disabled-text);
+    opacity: 1;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.ui-control:is(.ui-button, .ui-choice) > span {
+    color: inherit;
+}
+
+.ui-control.ui-icon-button {
+    width: var(--control-height);
+    height: var(--control-height);
+    min-height: var(--control-height);
+    flex-shrink: 0;
+    padding: 0;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: normal;
+}
+
+/* Compact sizes are shared, e.g. quantities, presets and combat actions. */
+.ui-control.ui-compact {
+    min-height: 32px;
+    height: auto;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.ui-control.ui-choice {
+    min-height: var(--control-height);
+    padding: 4px 14px;
+    letter-spacing: normal;
+}
+
+.ui-control.ui-disclosure {
+    min-height: var(--control-height);
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ui-control:is(.ui-check, .ui-range) {
+    accent-color: var(--ui-accent);
+    cursor: pointer;
+}
+
+.ui-control.ui-check {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    padding: 0;
+    border-radius: 0;
+}
+
+.ui-control:is(.ui-check, .ui-range, .ui-file):disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.ui-control:is(button, input, select, textarea, summary, a):focus-visible,
+.ui-control.ui-button:focus-within {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 3px;
+}
+
+.ui-control[hidden] {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ui-control {
+        transition: none;
+    }
+}

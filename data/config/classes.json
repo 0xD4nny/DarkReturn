@@ -1,0 +1,321 @@
+{
+  "classes": {
+    "hunter": {
+      "label": "Jäger",
+      "icon": "⌁",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "role": "Präziser Fernkampf",
+      "description": "Der Jäger setzt auf Bögen, kritische Treffer und verlässlichen Schaden gegen einzelne Ziele."
+    },
+    "warrior": {
+      "label": "Krieger",
+      "icon": "⚔",
+      "asset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "role": "Frontlinie & Wucht",
+      "description": "Der Krieger führt das Schwert und hält mit seiner Stärke den Feind in Schach."
+    },
+    "mage": {
+      "label": "Magier",
+      "icon": "ϟ",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "role": "Arkaner Flächenschaden",
+      "description": "Der Magier entfesselt mit seinem Stab zerstörerische Zauber gegen ganze Gegnergruppen."
+    },
+    "healer": {
+      "label": "Heiler",
+      "icon": "♧",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "role": "Stärkung & Heilung",
+      "description": "Der Heiler greift mit seiner Glocke an und unterstützt die Gruppe mit aktiven Heil- und Schutzfähigkeiten."
+    }
+  },
+  "classWeapons": {
+    "hunter": [
+      "bow"
+    ],
+    "warrior": [
+      "sword"
+    ],
+    "mage": [
+      "staff"
+    ],
+    "healer": [
+      "bell"
+    ]
+  },
+  "classAttributeScaling": {
+    "hunter": {
+      "damageAttribute": "Geschicklichkeit",
+      "damagePercentPerPoint": 1.5,
+      "healthPerStamina": 14,
+      "healingPercentPerFaith": 0
+    },
+    "warrior": {
+      "damageAttribute": "Stärke",
+      "damagePercentPerPoint": 0.55,
+      "healthPerStamina": 25,
+      "healingPercentPerFaith": 0
+    },
+    "mage": {
+      "damageAttribute": "Intelligenz",
+      "damagePercentPerPoint": 0.9,
+      "healthPerStamina": 12,
+      "healingPercentPerFaith": 0
+    },
+    "healer": {
+      "damageAttribute": "Glaube",
+      "damagePercentPerPoint": 0.8,
+      "healthPerStamina": 18,
+      "healingPercentPerFaith": 0.02
+    }
+  },
+  "companionSkills": {
+    "hunter": {
+      "passive": [
+        {
+          "id": "poison-arrow",
+          "name": "Giftpfeil",
+          "effect": { "type": "bow-poison", "chancePercent": 25, "durationSeconds": 3, "damagePercent": 500 },
+          "description": "Pfeiltreffer haben eine Chance von {chancePercent} %, das Ziel zu vergiften. Das Gift verursacht über {durationSeconds} Sekunden insgesamt {damagePercent} % Schaden."
+        },
+        {
+          "id": "predator-eye",
+          "name": "Raubtierauge",
+          "effect": { "type": "stat-flat", "stat": "Kritische Chance", "scope": "self", "value": 40 },
+          "description": "Erhöht die kritische Trefferchance des Jägers um {value} %."
+        },
+        {
+          "id": "soul-scent",
+          "name": "Seelenwitterung",
+          "effect": { "type": "stat-flat", "stat": "Seelenfund", "scope": "party", "value": 50 },
+          "description": "Die Gruppe findet dauerhaft {value} % mehr Seelen."
+        }
+      ],
+      "active": [
+        {
+          "id": "jagdstoss",
+          "name": "Jagdstoß",
+          "description": "Ein gezielter Angriff mit 400 % Schaden.",
+          "cooldown": 1,
+          "effect": "damage",
+          "damageMultiplier": 4
+        },
+        {
+          "id": "pfeilsalve",
+          "name": "Pfeilsalve",
+          "description": "Drei schnelle Treffer mit je 100 % Schaden.",
+          "cooldown": 1,
+          "effect": "multi-hit",
+          "hitCount": 3,
+          "hitMultiplier": 1
+        },
+        {
+          "id": "verwundender-schuss",
+          "name": "Verwundender Schuss",
+          "description": "Verursacht 1000 % Schaden und macht das Ziel 3 Sekunden verwundbar.",
+          "cooldown": 8,
+          "effect": "vulnerable-hit",
+          "damageMultiplier": 10,
+          "vulnerableDuration": 3
+        }
+      ]
+    },
+    "warrior": {
+      "passive": [
+        {
+          "id": "kampfrausch",
+          "name": "Kampfrausch",
+          "effect": { "type": "damage-percent", "scope": "party", "value": 25 },
+          "description": "Erhöht den Gruppenangriff dauerhaft um {value} %."
+        },
+        {
+          "id": "unbeugsam",
+          "name": "Unbeugsam",
+          "effect": { "type": "stat-percent", "stat": "Lebenskraft", "scope": "party", "value": 25 },
+          "description": "Erhöht die Gruppenlebenskraft dauerhaft um {value} %."
+        },
+        {
+          "id": "wachtwall",
+          "name": "Wachtwall",
+          "effect": { "type": "stat-percent", "stat": "Verteidigung", "scope": "party", "value": 50 },
+          "description": "Erhöht die Gruppenverteidigung dauerhaft um {value} %."
+        }
+      ],
+      "active": [
+        {
+          "id": "stampfen",
+          "name": "Stampfen",
+          "description": "Verursacht 1000 % Schaden und setzt den Gegner 3 Sekunden außer Kraft.",
+          "cooldown": 8,
+          "effect": "stun-hit",
+          "damageMultiplier": 10,
+          "stunDuration": 3,
+          "projectileType": "stones"
+        },
+        {
+          "id": "henkerschlag",
+          "name": "Henkerschlag",
+          "description": "Ein wuchtiger Schlag mit 300 % Schaden.",
+          "cooldown": 1,
+          "effect": "damage",
+          "damageMultiplier": 3,
+          "projectileType": "stones"
+        },
+        {
+          "id": "schildwall",
+          "name": "Schildwall",
+          "description": "Verringert erlittenen Gruppenschaden 4 Sekunden lang um 90 %.",
+          "cooldown": 8,
+          "effect": "guard",
+          "guardPercent": 90,
+          "guardDuration": 4
+        }
+      ]
+    },
+    "mage": {
+      "passive": [
+        {
+          "id": "arkanes-echo",
+          "name": "Arkanes Echo",
+          "effect": { "type": "damage-percent", "scope": "self", "value": 25 },
+          "description": "Erhöht den Schaden des Magiers dauerhaft um {value} %."
+        },
+        {
+          "id": "aetherblick",
+          "name": "Ätherblick",
+          "effect": { "type": "stat-flat", "stat": "Kritische Chance", "scope": "party", "value": 20 },
+          "description": "Erhöht die kritische Trefferchance der Gruppe um {value} %."
+        },
+        {
+          "id": "fast-caster",
+          "name": "Schnellzauberer",
+          "effect": { "type": "stat-flat", "stat": "Abklingzeitreduktion", "scope": "self", "value": 20 },
+          "description": "Erhöht die Abklingzeitreduktion dauerhaft um {value} %."
+        }
+      ],
+      "active": [
+        {
+          "id": "erfrieren",
+          "name": "Erfrieren",
+          "description": "Verursacht 300 % Einzelschaden und friert das Ziel 3 Sekunden lang ein.",
+          "cooldown": 4,
+          "effect": "freeze-hit",
+          "damageMultiplier": 3,
+          "freezeDuration": 3
+        },
+        {
+          "id": "feuerball",
+          "name": "Feuerball",
+          "description": "Verbrennt ein Ziel und verursacht über 4 Sekunden insgesamt 950 % Schaden.",
+          "cooldown": 4,
+          "effect": "burn-hit",
+          "damageMultiplier": 9.5,
+          "burnDuration": 4
+        },
+        {
+          "id": "funken",
+          "name": "Funken",
+          "description": "Ein Blitz springt durch alle Gegner und verursacht jedem 200 % Schaden.",
+          "cooldown": 1,
+          "effect": "area-damage",
+          "damageMultiplier": 2
+        }
+      ]
+    },
+    "healer": {
+      "passive": [
+        {
+          "id": "lebenssegen",
+          "name": "Lebenssegen",
+          "effect": [
+            { "type": "stat-percent", "stat": "Lebenskraft", "scope": "party", "value": 25 },
+            { "type": "rest-healing-percent", "scope": "party", "value": 5 }
+          ],
+          "description": "Erhöht die Lebenskraft der gesamten Gruppe dauerhaft um {value} %. Rastplatzheilung: +{restHealingPercent} %."
+        },
+        {
+          "id": "kampfsegen",
+          "name": "Kampfsegen",
+          "effect": { "type": "multiplicative-damage-percent", "scope": "party", "value": 25 },
+          "description": "Multipliziert den verursachten Schaden beider Gruppenmitglieder mit 1,25."
+        },
+        {
+          "id": "lichtwacht",
+          "name": "Lichtwacht",
+          "effect": { "type": "taunt", "scope": "self" },
+          "description": "Zieht alle Gegnerangriffe auf den Heiler, solange er lebt. Der andere Held wird erst nach seinem Tod zum Ziel."
+        }
+      ],
+      "active": [
+        {
+          "id": "erneuerung",
+          "name": "Erneuerung",
+          "description": "Stellt bis zu 25 % Gruppenleben wieder her.",
+          "cooldown": 4,
+          "effect": "heal",
+          "healPercent": 25
+        },
+        {
+          "id": "holy-circle",
+          "name": "Heiliger Kreis",
+          "description": "Verursacht in einem großen Radius 200 % Flächenschaden.",
+          "cooldown": 1,
+          "effect": "area-damage",
+          "damageMultiplier": 2
+        },
+        {
+          "id": "unkillable",
+          "name": "Unsterblichkeit",
+          "description": "Werde 4 Sekunden lang unverwundbar.",
+          "cooldown": 16,
+          "effect": "unkillable",
+          "durationSeconds": 4
+        }
+      ]
+    }
+  },
+  "classDamage": {
+    "hunter": 22,
+    "warrior": 25,
+    "mage": 23,
+    "healer": 20
+  },
+  "statKeys": [
+    "Lebenskraft",
+    "Angriff",
+    "Verteidigung",
+    "Stärke",
+    "Geschicklichkeit",
+    "Intelligenz",
+    "Ausdauer",
+    "Glaube",
+    "Trefferchance",
+    "Kritische Chance",
+    "Kritischer Schaden",
+    "Schaden gegen verwundbare Ziele",
+    "Schaden über Zeit",
+    "Abklingzeitreduktion",
+    "Angriffsgeschwindigkeit",
+    "Seelenfund",
+    "Buff- und Heileffektivität"
+  ],
+  "baseStats": {
+    "Lebenskraft": 1000,
+    "Angriff": 100,
+    "Verteidigung": 45,
+    "Stärke": 10,
+    "Geschicklichkeit": 10,
+    "Intelligenz": 10,
+    "Ausdauer": 10,
+    "Glaube": 10,
+    "Trefferchance": 50,
+    "Kritische Chance": 5,
+    "Kritischer Schaden": 175,
+    "Schaden gegen verwundbare Ziele": 0,
+    "Schaden \u00fcber Zeit": 0,
+    "Abklingzeitreduktion": 0,
+    "Angriffsgeschwindigkeit": 100,
+    "Seelenfund": 0,
+    "Buff- und Heileffektivität": 0
+  }
+}

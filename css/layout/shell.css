@@ -1,0 +1,377 @@
+@charset "UTF-8";
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 248px;
+    padding: 28px 16px 16px;
+    background: #101115;
+    border-right: 1px solid #222329;
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+    transition: width .25s ease,padding .25s ease;
+}
+.brand {
+    height: 34px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 8px;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: .15em;
+    font-family: var(--serif);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.nav-item svg,
+.icon-button svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.nav-item-icon.icon-asset { display: block; flex: 0 0 19px; width: 19px; height: 19px; }
+.nav-item[data-view="tower"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/stone-tower.svg"); }
+.nav-item[data-view="boss"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/crowned-skull.svg"); }
+.main-nav {
+    display: grid;
+    gap: 2px;
+}
+.nav-item {
+    border: 0;
+    background: transparent;
+    color: #99989e;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    gap: 13px;
+    width: 100%;
+    height: 43px;
+    padding: 0 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: background .2s,color .2s;
+}
+.nav-item span:not(.nav-status):not(.nav-count) {
+    font-size: 12px;
+    font-weight: 600;
+}
+.nav-item:hover {
+    background: #191a20;
+    color: #e6e2dc;
+}
+.nav-item.is-active {
+    color: #ebded2;
+    background: linear-gradient(90deg,rgba(163,57,55,.2),rgba(163,57,55,.045));
+    box-shadow: inset 2px 0 #bd554e;
+}
+.nav-item.is-active svg,
+.nav-item.is-active .nav-item-icon {
+    color: #d76a60;
+}
+.nav-status {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #85816e;
+    margin-left: auto;
+}
+.nav-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: #d78d80;
+    background: #532d30;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+    padding: 3px 6px;
+}
+.season-card {
+    margin: 0 4px 19px;
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #29272b;
+    background: linear-gradient(135deg,#1b191b,#131418);
+    border-radius: 4px;
+    white-space: nowrap;
+}
+.season-icon {
+    color: var(--gold);
+    font-size: 19px;
+}
+.season-card div {
+    display: grid;
+    gap: 4px;
+}
+.season-card small {
+    font-size: 12px;
+    letter-spacing: .13em;
+    color: #76737a;
+}
+.season-card strong {
+    font-size: 12px;
+    font-weight: 600;
+}
+.season-dot {
+    margin-left: auto;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a8524a;
+    box-shadow: 0 0 9px #bd554e;
+}
+.main-area {
+    margin-left: 248px;
+    min-height: 100vh;
+    background: #111216 url("../../Assets/Art/skill-tree-sanctuary-v1.png") center / cover no-repeat;
+    transition: margin-left .25s ease;
+}
+.topbar {
+    background: var(--panel);
+    height: var(--topbar-height);
+    padding: 0 48px;
+    border-bottom: 1px solid rgba(54,54,59,.48);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-size: 12px;
+    letter-spacing: .16em;
+    color: #65646b;
+}
+.breadcrumb i {
+    font-style: normal;
+    color: #4c4b50;
+}
+.breadcrumb strong {
+    color: #c3c0ba;
+    font-weight: 600;
+}
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+.server-state {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .13em;
+    color: #85848a;
+}
+.server-state span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #74a080;
+    margin-right: 7px;
+    box-shadow: 0 0 8px #74a080;
+}
+.server-state b {
+    color: #4a494e;
+    margin: 0 3px;
+}
+.icon-button {
+    position: relative;
+    display: grid;
+    place-items: center;
+
+    padding: 5px;
+}
+.icon-button svg {
+    width: 17px;
+    height: 17px;
+}
+/* Header shortcuts and the sidebar toggle keep their own quiet icon style. */
+.shell-icon-button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #302d33;
+    border-radius: 0;
+    background: #15161a;
+    color: #a6a1a3;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color .18s ease, border-color .18s ease, background .18s ease;
+}
+.shell-icon-button:hover {
+    border-color: #5c4945;
+    background: #1e1c20;
+    color: #d6c2aa;
+}
+.sidebar-header .shell-icon-button {
+    border: 0;
+    background: transparent;
+}
+.sidebar-header .shell-icon-button:hover {
+    background: transparent;
+    color: #e3d8cd;
+}
+.shell-icon-button:focus-visible {
+    outline: 2px solid var(--ui-accent);
+    outline-offset: 3px;
+}
+.shell-icon-button[hidden] {
+    display: none;
+}
+.notification-wrap {
+    position: relative;
+}
+.mailbox-wrap {
+    position: relative;
+}
+.mailbox-panel {
+    position: absolute;
+    z-index: 60;
+    top: calc(100% + 17px);
+    right: -8px;
+    width: min(390px, calc(100vw - 28px));
+    max-height: min(470px, calc(100vh - 100px));
+    overflow: hidden;
+    border: 1px solid #484047;
+    background: #19181d;
+    box-shadow: 0 18px 55px #000b;
+}
+.mailbox-panel[hidden] { display: none; }
+.mailbox-panel > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 16px 12px;
+    border-bottom: 1px solid #363239;
+}
+.mailbox-panel .eyebrow { margin: 0 0 4px; color: #a68a6c; font-size: 10px; letter-spacing: .12em; }
+.mailbox-panel h2 { margin: 0; color: #e7ddd2; font: 500 17px var(--serif); }
+.mailbox-panel h2 small { margin-left: 7px; color: #8f878b; font: 10px var(--sans); letter-spacing: .08em; }
+.mailbox-panel > header button { border: 0; background: transparent; color: #aaa1a4; font-size: 22px; cursor: pointer; }
+.mailbox-list { max-height: 390px; overflow-y: auto; }
+.mailbox-entry { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #302d33; }
+.mailbox-item-icon-wrap { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid #514139; background: #211e20; color: #cbb58f; }
+.mailbox-item-icon-wrap.uncommon { border-color: #587043; color: #9ac57e; }
+.mailbox-item-icon-wrap.rare { border-color: #456887; color: #78b7e7; }
+.mailbox-item-icon-wrap.epic { border-color: #71528a; color: #bd8bdf; }
+.mailbox-item-icon-wrap.legendary { border-color: #8a623d; color: #e4ad64; }
+.mailbox-item-icon-wrap.mythic { border-color: #a44867; color: #f08aaa; }
+.mailbox-item-icon.icon-asset { display: block; width: 22px; height: 22px; }
+.mailbox-entry-copy { display: grid; min-width: 0; gap: 3px; }
+.mailbox-entry-copy small { color: #9a8e83; font-size: 9px; letter-spacing: .08em; }
+.mailbox-entry-copy strong { overflow: hidden; color: #e2d8ce; font: 500 13px var(--serif); text-overflow: ellipsis; white-space: nowrap; }
+.mailbox-entry-copy > span { color: #999198; font-size: 10px; }
+.mailbox-claim-button { min-width: 72px; padding: 7px 8px; }
+.mailbox-empty { margin: 0; padding: 22px 17px; color: #9b949a; font-size: 12px; line-height: 1.7; }
+.notification-button i {
+    position: absolute;
+    min-width: 15px;
+    
+    display: grid;
+    place-items: center;
+    padding: 0 3px;
+    border-radius: 10px;
+    background: #c15b53;
+    color: #fff2e9;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    right: -4px;
+    top: -4px;
+}
+.notification-button i[hidden] {
+    display: none;
+}
+.activity-panel {
+    position: absolute;
+    z-index: 60;
+    top: calc(100% + 17px);
+    right: -8px;
+    width: min(350px, calc(100vw - 28px));
+    max-height: min(470px, calc(100vh - 100px));
+    overflow: hidden;
+    border: 1px solid #484047;
+    background: #19181d;
+    box-shadow: 0 18px 55px #000b;
+}
+.activity-panel[hidden] {
+    display: none;
+}
+.activity-panel > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 16px 12px;
+    border-bottom: 1px solid #363239;
+}
+.activity-panel .eyebrow {
+    margin: 0 0 4px;
+    color: #a68a6c;
+    font-size: 12px;
+}
+.activity-panel h2 {
+    margin: 0;
+    color: #e7ddd2;
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 500;
+}
+.activity-panel > header button {
+    border: 0;
+    background: transparent;
+    color: #aaa1a4;
+    font-size: 22px;
+    cursor: pointer;
+}
+.activity-list {
+    max-height: 380px;
+    overflow-y: auto;
+}
+.activity-entry {
+    display: flex;
+    gap: 11px;
+    padding: 12px 15px;
+    border-bottom: 1px solid #302d33;
+}
+.activity-entry-icon {
+    flex: 0 0 25px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #514437;
+    color: #d5ac78;
+    font-size: 12px;
+}
+.activity-entry > div {
+    min-width: 0;
+}
+.activity-entry strong {
+    color: #e0d7cc;
+    font-size: 12px;
+}
+.activity-entry p {
+    margin: 4px 0;
+    color: #aaa2a7;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.activity-entry time {
+    color: #716d74;
+    font-size: 12px;
+}
+.activity-empty {
+    margin: 0;
+    padding: 22px 17px;
+    color: #9b949a;
+    font-size: 12px;
+    line-height: 1.7;
+}

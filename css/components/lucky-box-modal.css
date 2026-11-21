@@ -1,0 +1,158 @@
+.lucky-jackpot-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(4 5 8 / 82%);
+  backdrop-filter: blur(7px);
+  animation: lucky-backdrop-in 180ms ease-out both;
+}
+
+.lucky-jackpot-dialog {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: min(460px, 100%);
+  min-height: 390px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 38px 42px;
+  border: 1px solid #b98b55;
+  background: radial-gradient(ellipse at 50% 30%, rgb(143 91 52 / 24%), transparent 56%), #141316;
+  box-shadow: 0 0 0 1px rgb(233 186 119 / 12%), 0 28px 100px #000, 0 0 55px rgb(191 132 72 / 16%);
+  text-align: center;
+  animation: lucky-dialog-in 360ms cubic-bezier(.16, 1, .3, 1) both;
+}
+
+.lucky-jackpot-dialog::before,
+.lucky-jackpot-dialog::after {
+  position: absolute;
+  z-index: -1;
+  width: 280px;
+  height: 280px;
+  border: 1px solid rgb(221 177 116 / 20%);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.lucky-jackpot-dialog::after {
+  width: 220px;
+  height: 220px;
+  border-color: rgb(221 177 116 / 12%);
+  transform: rotate(22.5deg);
+}
+
+.lucky-jackpot-rays {
+  position: absolute;
+  z-index: -1;
+  top: 30px;
+  left: 50%;
+  width: 260px;
+  aspect-ratio: 1;
+  border: 1px solid rgb(220 168 99 / 28%);
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, transparent 0deg 11deg, rgb(206 153 85 / 7%) 11deg 12deg);
+  mask-image: radial-gradient(circle, transparent 0 31%, #000 32% 72%, transparent 73%);
+  transform: translateX(-50%);
+  animation: lucky-rays-turn 36s linear infinite;
+}
+
+.lucky-jackpot-kicker {
+  color: #d7a865;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .2em;
+}
+
+.lucky-jackpot-reward-icon {
+  display: grid;
+  width: 82px;
+  height: 82px;
+  place-items: center;
+  margin: 24px 0 12px;
+  border: 1px solid currentColor;
+  background: rgb(12 12 14 / 74%);
+  color: #e8bc7b;
+  box-shadow: 0 0 30px rgb(216 165 98 / 25%), inset 0 0 22px rgb(216 165 98 / 10%);
+  animation: lucky-icon-pulse 1.8s ease-in-out infinite;
+}
+
+.lucky-jackpot-icon,
+.lucky-jackpot-reward-icon .icon-asset {
+  width: 42px;
+  height: 42px;
+  font-size: 34px;
+}
+
+.lucky-jackpot-reward-icon.mythic { color: #d18aff; }
+.lucky-jackpot-reward-icon.legendary { color: #e8bc7b; }
+.lucky-jackpot-reward-icon.epic { color: #bd83e8; }
+
+.lucky-jackpot-dialog h2 {
+  margin: 8px 0 6px;
+  color: #f4e7d0;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(32px, 6vw, 42px);
+  font-weight: 500;
+}
+
+.lucky-jackpot-dialog p {
+  max-width: 330px;
+  margin: 0;
+  color: #aaa2a0;
+  line-height: 1.6;
+}
+
+.lucky-jackpot-reward-name {
+  margin-top: 18px;
+  color: #edc17d;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 20px;
+}
+
+.lucky-jackpot-dialog > small,
+.lucky-jackpot-rewards small {
+  margin-top: 8px;
+  color: #9d9692;
+}
+
+.lucky-jackpot-rewards {
+  width: 100%;
+  max-height: 30vh;
+  overflow-y: auto;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lucky-jackpot-rewards li {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px;
+  border-bottom: 1px solid rgb(221 177 116 / 20%);
+  overflow-wrap: anywhere;
+}
+
+.lucky-jackpot-rewards .lucky-jackpot-reward-name {
+  margin-top: 0;
+}
+
+.lucky-jackpot-close {
+  min-width: 180px;
+  margin-top: 24px;
+}
+
+@keyframes lucky-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lucky-dialog-in { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes lucky-rays-turn { to { transform: translateX(-50%) rotate(1turn); } }
+@keyframes lucky-icon-pulse { 50% { box-shadow: 0 0 48px rgb(216 165 98 / 40%), inset 0 0 28px rgb(216 165 98 / 17%); } }
+@media (prefers-reduced-motion: reduce) {
+  .lucky-jackpot-backdrop,
+  .lucky-jackpot-dialog,
+  .lucky-jackpot-rays,
+  .lucky-jackpot-reward-icon { animation-duration: .01ms; animation-iteration-count: 1; }
+}

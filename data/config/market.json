@@ -1,0 +1,151 @@
+{
+  "equipmentShop": {
+    "offerCount": 4,
+    "refreshIntervalSeconds": 1800,
+    "prices": {
+      "legendaryGreater": 1000000,
+      "legendary": 500000,
+      "epic": 250000,
+      "rare": 50000,
+      "uncommon": 25000,
+      "common": 5000
+    }
+  },
+  "shopCosts": {
+    "glyphBox": 100000,
+    "vipBox": 100000
+  },
+  "shopOffers": [
+    {
+      "group": "glyphBox",
+      "category": "GLYPHEN-LUCKYBOX",
+      "title": "Glyphen-Luckybox",
+      "subtitle": "0,5% Chance auf jeden Glyphtyp; sonst Nietenpool.",
+      "icon": "▣",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+    },
+    {
+      "group": "vipBox",
+      "category": "VIP-LUCKYBOX",
+      "title": "VIP-Luckybox",
+      "subtitle": "0,5% Chance auf ein VIP-Ticket für 7 Tage; sonst Nietenpool.",
+      "icon": "▣",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+    }
+  ],
+  "boxRules": {
+    "consolationPool": [
+      {
+        "type": "powerup"
+      },
+      {
+        "type": "souls",
+        "amount": 1000
+      },
+      {
+        "type": "material",
+        "slot": "upgradeStone",
+        "quantity": 10
+      },
+      {
+        "type": "material",
+        "slot": "socketStone",
+        "quantity": 10
+      }
+    ],
+    "glyphBox": {
+      "chancePerGlyph": 0.5
+    },
+    "vipBox": {
+      "ticketChance": 0.5
+    },
+    "farmBox": {
+      "dropChance": 0.01,
+      "rewards": [
+        {
+          "type": "souls",
+          "label": "Seelen",
+          "chance": 30,
+          "minimum": 250,
+          "maximum": 1000
+        },
+        {
+          "type": "material",
+          "slot": "upgradeStone",
+          "label": "Aufwertungsstein",
+          "chance": 20,
+          "quantity": 1
+        },
+        {
+          "type": "material",
+          "slot": "socketStone",
+          "label": "Sockelstein",
+          "chance": 20,
+          "quantity": 1
+        },
+        {
+          "type": "material",
+          "slot": "affixStone",
+          "label": "Umprägungsstein",
+          "chance": 10,
+          "quantity": 1
+        },
+        {
+          "type": "powerup",
+          "label": "Zufälliges Powerup",
+          "chance": 10,
+          "quantity": 1
+        },
+        {
+          "type": "material",
+          "slot": "rarityStone",
+          "label": "Seltenheitsstein",
+          "chance": 1,
+          "quantity": 1
+        },
+        {
+          "type": "material",
+          "slot": "bossReset",
+          "label": "Boss-Zeitstein",
+          "chance": 1,
+          "quantity": 1
+        },
+        {
+          "type": "box",
+          "group": "glyphBox",
+          "label": "Glyphen-Luckybox",
+          "chance": 1,
+          "quantity": 1
+        },
+        {
+          "type": "box",
+          "group": "vipBox",
+          "label": "VIP-Luckybox",
+          "chance": 1,
+          "quantity": 1
+        },
+        {
+          "type": "consumable",
+          "slot": "towerLootBoost",
+          "label": "Turm-Beutesegen",
+          "chance": 5,
+          "quantity": 1
+        },
+        {
+          "type": "material",
+          "slot": "towerReset",
+          "chance": 1,
+          "quantity": 1,
+          "label": "Turm-Zeitstein"
+        }
+      ]
+    }
+  },
+  "vip": {
+    "durationDays": 7,
+    "workshopSpeedMultiplier": 2,
+    "dropRatePercent": 50,
+    "soulBonusPercent": 50,
+    "upgradeChancePercent": 20
+  }
+}

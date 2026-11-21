@@ -1,0 +1,66 @@
+{
+  "worldEvents": [
+    {
+      "id": "epic",
+      "rarity": "Episch",
+      "effects": [
+        {
+          "stat": "attackPercent",
+          "label": "Angriff",
+          "value": 10
+        },
+        {
+          "stat": "healthPercent",
+          "label": "Lebenskraft",
+          "value": 10
+        },
+        {
+          "stat": "soulBonusPercent",
+          "label": "Seelen",
+          "value": 25
+        },
+        {
+          "stat": "dropRatePercent",
+          "label": "Droprate",
+          "value": 10
+        },
+        {
+          "stat": "upgradeChancePercent",
+          "label": "Upgradechance",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "id": "legendary",
+      "rarity": "Legendär",
+      "effects": [
+        {
+          "stat": "attackPercent",
+          "label": "Angriff",
+          "value": 20
+        },
+        {
+          "stat": "healthPercent",
+          "label": "Lebenskraft",
+          "value": 20
+        },
+        {
+          "stat": "soulBonusPercent",
+          "label": "Seelen",
+          "value": 50
+        },
+        {
+          "stat": "dropRatePercent",
+          "label": "Droprate",
+          "value": 20
+        },
+        {
+          "stat": "upgradeChancePercent",
+          "label": "Upgradechance",
+          "value": 20
+        }
+      ]
+    }
+  ]
+}

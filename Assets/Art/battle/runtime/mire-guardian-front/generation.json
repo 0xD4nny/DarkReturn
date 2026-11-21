@@ -1,0 +1,82 @@
+{
+  "mode": "built-in image_gen",
+  "region": "salzmoor",
+  "actor": "mire-guardian",
+  "width": 1254,
+  "height": 1254,
+  "alpha": true,
+  "arena": {
+    "path": "Assets/Art/battle/regions/salzmoor-arena-artwork.png",
+    "width": 1966,
+    "height": 800
+  },
+  "layout": "Eleven individual transparent pose images matching ashen-stray-front and ashen-brood-front; CSS supplies movement. The legacy bite filename contains the Moorhueter root-claw lunge.",
+  "frames": [
+    "idle",
+    "bite",
+    "hit",
+    "defeated",
+    "frozen",
+    "burning-idle",
+    "burning-bite",
+    "burning-hit",
+    "poison-idle",
+    "poison-bite",
+    "poison-hit"
+  ],
+  "prompts": [
+    {
+      "asset": "Assets/Art/battle/regions/salzmoor-arena-artwork.png",
+      "prompt": "Create a NEW SALZMOOR / Salt Marsh battle arena background for dark fantasy RPG DarkReturn. Attached image is STYLE AND CAMERA reference only: match polished painterly semi-realistic game art, very wide panoramic framing approximately 2.5:1 (1967x800), horizon around 45 percent height, lower 55 percent mostly empty flat playable arena. NEW ENVIRONMENT: ancient sunken lowland swamp under pale gray-green mist, gnarled drowned trees framing both edges, shallow salty water channels and white salt crusts along edges, distant broken tree silhouettes receding in layered fog, very sparse pale cyan will-o-wisps over distant water, mossy roots and reeds at foreground corners. The center and lower middle must be a broad CLEAR firm wet silt clearing for three enemies, not covered with deep water or clutter. Cool desaturated green-gray palette, damp atmosphere, readable lighting and muted water reflections. No volcanic mountains, lava, fire, ruins or castles. No characters, monsters, text, UI or border. Fill whole panorama."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-idle.png",
+      "prompt": "Create a NEW monster species MOORHÜTER / MIRE GUARDIAN for dark fantasy RPG DarkReturn. Attached monster is ONLY a rendering quality and full-body FRONT CAMERA reference, NOT the design to copy. New creature: ancient hulking swamp guardian made of gnarled waterlogged wood and twisted roots, squat hunched humanoid with TWO legs and TWO massive long arms ending in broad three-fingered root claws. Trunk-like torso, wooden face with hollow PALE CYAN eyes and broad jagged bark mouth, short forked root antlers instead of stone horns, thick moss hanging from shoulders, sparse reeds growing on back, white salt encrustations along forearms and shoulders, tiny pale cyan bioluminescent seams in chest. Damp dark brown wood and muted olive moss, weathered gray-green, clear organic silhouette. Not a wolf, not a rock golem, no stone armor, orange lava or fur. IDLE pose: front-facing, hunched over slightly, feet planted wide, long arms hanging down ready to strike, entire body visible. Same detailed polished semi-realistic game sprite rendering and soft neutral lighting as reference. Square 1254x1254 canvas, root tips at 7 percent from top, feet at 94 percent, generous side margins. No scenery, floor, text, particles or UI. Genuine transparent alpha background."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-bite.png",
+      "prompt": "Edit attached MOORHÜTER / MIRE GUARDIAN idle sprite into ATTACK frame. Preserve EXACT same root-and-bogwood monster identity, forked antlers, hanging olive moss, reeds, white salt crusts and pale cyan eyes and chest seams, polished semi-realistic art, square canvas and front camera. Pose: aggressive forward lunge at viewer, bark mouth roars wide, both huge root-clawed arms reach forward, fingers splayed, shoulders lowered and legs braced. Distinct attack silhouette, but same scale and complete whole body including antlers and claws inside generous margins; maintain lower baseline around 94 percent height. No extra limbs, stone armor or flames. No floor, background, text, detached particles, blood or UI. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-bite.png",
+      "refinement": true,
+      "prompt": "Refine attached MIRE GUARDIAN attack sprite ONLY for safe game sprite framing. Preserve exactly this lunging pose, outstretched root claws, open bark jaw, forked antlers, moss, salt crusts, cyan eyes, anatomy and rendering. Fit ENTIRE creature into central 84 percent of the SAME square canvas, with at least 7 percent completely transparent margin on left and right and 7 percent above antlers, baseline 94 percent. Leftmost and rightmost fingertip must be wholly visible with empty space outside; do not crop any root, claw, reed or antler. Extend/restore any root fingertip that touched the image edge. Keep apparent proportions and camera unchanged, no background, floor, text or new effects. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-hit.png",
+      "prompt": "Edit attached MOORHÜTER / MIRE GUARDIAN idle sprite into HIT REACTION frame. Preserve identical gnarled wooden humanoid with two arms/two legs, forked root antlers, hanging olive moss, reeds, white salt deposits, pale cyan eyes and chest seams. Same rendering, front camera, square canvas, scale and lower baseline. Recoil pose: torso leans backward and slightly to its left, head tilts to side with pained bark-mouth grimace, one root claw raised defensively across chest, other arm still low, feet planted. Clearly reacting to a hit, no lunge. Entire antlers, limbs and fingers inside generous transparent margins. No blood, weapons, impact flash, detached particles, background, floor, text, flames or extra anatomy. True transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-defeated.png",
+      "prompt": "Edit attached MOORHÜTER / MIRE GUARDIAN idle sprite into DEFEATED corpse frame. Preserve same gnarled bogwood creature identity, forked root antlers, moss, reeds, white salt crusts and detailed polished rendering. Same square transparent canvas and front camera orientation. Creature collapsed onto belly and partly its side, wooden face resting low toward viewer, arms bent and root claws splayed limply beside head, legs folded, whole body visibly lifeless. Eyes dark with NO cyan glow, chest seams unlit, moss drooping. Wide LOW silhouette occupying LOWER HALF of image, ample transparent space above, lowest body point at same 94 percent baseline. Keep recognizable complete body, not a random pile of branches. All limbs and antlers within margins. No floor, scenery, detached debris, blood, text or new effects. Genuine transparent alpha background."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-frozen.png",
+      "prompt": "Edit attached MOORHÜTER / MIRE GUARDIAN idle sprite into FROZEN status frame. Preserve EXACT wooden creature anatomy, idle pose, forked antlers, moss/reeds, scale, front camera, square canvas and baseline. Coat the same dark bogwood with blue-white hoarfrost, thin translucent blue ice along root ridges, small icicles under antlers, chin, shoulders and arms. Hanging moss partly frozen. Pale cyan eyes become cold ice blue, chest seams blue-white, white salt deposits still recognizable. Must remain a recognizable wooden swamp guardian under frost, not a rock monster and not encased in an opaque ice cube. Whole body within margins. No background, floor, text, snowstorm or detached effects. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-burning-idle.png",
+      "prompt": "Edit attached MOORHÜTER / MIRE GUARDIAN idle sprite into BURNING IDLE status variant. Preserve EXACT creature geometry, idle pose, square canvas, scale, front camera, salt crusts, root antlers and baseline. Same dark bogwood creature with scorched edges, distinct orange-yellow flames licking along moss on shoulders, upper back, antler bases and forearms. Flames are restrained and contained inside image margins, face and hands unobscured. Wood must remain WOOD with same grain and roots, not lava or stone. Pale cyan eyes and small cyan chest seams remain visible contrasted with warm flames; moss partly darkened. No ground fire, floor, backdrop, smoke wall, floating sparks, text or new anatomy. Full-body true transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-burning-bite.png",
+      "prompt": "Edit FIRST reference MIRE GUARDIAN ATTACK frame into BURNING ATTACK variant. SECOND reference supplies the fire material appearance only. Preserve FIRST exact forward lunge, outstretched root claws, wide bark jaw, forked antlers, body geometry, scale, full-body front camera, square canvas, margins and baseline. Add matching orange-yellow flames along moss on shoulder ridges, back, antler bases and forearms, scorched wood edges, white salt crusts still visible. Keep gray-brown WOOD grain and olive moss recognizable, cyan eyes/chest seams visible as in second reference. Do NOT switch to idle pose or add lava cracks. No floor, background, smoke wall, detached effects, text or extra limbs. All fingers and flames stay inside image. True transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-burning-hit.png",
+      "prompt": "Edit FIRST reference MIRE GUARDIAN HIT REACTION frame into BURNING HIT variant. SECOND reference supplies flame/material appearance only. Preserve FIRST exact backward recoil, tilted head, raised defensive root claw, body geometry, scale, full-body front camera, square canvas, margins and baseline. Add matching restrained orange-yellow flames along moss and wood ridges on shoulders, back, antler bases and forearms with scorched wood edges. Keep wood grain, olive moss, white salt deposits and cyan eyes/chest seams recognizable. Do NOT switch to idle or attack, no lava/stone transformation. Entire creature and flames within frame. No floor, backdrop, smoke curtain, detached particles, text, blood or extra anatomy. True transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-poison-idle.png",
+      "prompt": "Edit attached MOORHÜTER / MIRE GUARDIAN idle sprite into POISONED IDLE status variant. Preserve exact wooden creature identity, idle pose, gnarled roots, forked antlers, moss, reeds, white salt crusts, front camera, scale, square canvas, margins and baseline. Eyes and small chest seams now glow sickly lime/emerald green rather than cyan, thin green venom seeps down wood joints, a few faint translucent green vapor wisps hug shoulders and forearms. Brown bogwood and muted olive moss remain original colors and texture; poison must be visibly distinct from moss and normal cyan eyes. No flames or orange light, no full-body green recolor, no background cloud or smoke wall. Whole creature within margins, no floor, text, blood or new anatomy. True transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-poison-bite.png",
+      "prompt": "Edit FIRST reference MIRE GUARDIAN ATTACK frame into POISONED ATTACK variant. SECOND reference supplies poisonous material appearance only. Preserve FIRST exact forward lunge, outstretched root claws, wide bark jaw, forked antlers, anatomy, scale, full-body front camera, square canvas, margins and baseline. Eyes/chest seams now glow lime/emerald green, subtle green venom seeps from wood joints, few thin translucent green wisps hug shoulders and forearms as second reference. Gray-brown wood grain, olive moss, white salt deposits stay recognizable and natural colors. No fire, orange light or whole-body green wash. Do NOT change pose to idle. Entire claws and antlers inside frame. No floor, background cloud, smoke wall, text, blood or new anatomy. True transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/mire-guardian-front/mire-guardian-front-poison-hit.png",
+      "prompt": "Edit FIRST reference MIRE GUARDIAN HIT REACTION sprite into POISONED HIT variant. SECOND reference supplies poison appearance only. Preserve FIRST exact backward recoil, tilted head, defensive root claw across chest, two arms/two legs, forked antlers, scale, full-body front camera, square canvas and baseline. Eyes/chest seams glow sickly lime/emerald green instead of cyan, subtle luminous green venom seeps down wood joints, few thin translucent vapor wisps hug shoulders and forearms. Natural gray-brown wood grain, olive moss and white salt deposits remain visible with original colors. No fire, orange glow, full-body green wash or idle/attack pose change. Whole body including root tips stays inside margins. No floor, backdrop, cloud, text, blood or extra anatomy. True transparent alpha."
+    }
+  ]
+}

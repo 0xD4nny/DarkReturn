@@ -1,0 +1,225 @@
+@charset "UTF-8";
+@media(max-width: 1250px) {
+    .inventory-layout {
+        grid-template-columns: minmax(210px, .75fr) minmax(280px, 1.25fr);
+    }
+    .inventory-layout .inventory-stats {
+        grid-column: 1 / -1;
+        order: 3;
+    }
+    .inventory-layout .inventory-main {
+        order: 1;
+    }
+    .inventory-layout .equipment-main {
+        order: 2;
+    }
+}
+@media(max-width: 1050px) {
+    .companion-layout {
+        grid-template-columns: 1fr;
+    }
+    .companion-items {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+    .companion-cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .class-choice-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media(max-width: 700px) {
+    .sidebar .nav-group-label {
+        display: none;
+    }
+    .inventory-layout {
+        grid-template-columns: 1fr;
+    }
+    .inventory-layout .inventory-stats {
+        grid-column: auto;
+        order: 3;
+    }
+    .inventory-layout .inventory-main {
+        order: 2;
+    }
+    .inventory-layout .equipment-main {
+        order: 1;
+    }
+    .companion-cards {
+        grid-template-columns: 1fr;
+    }
+    .companion-items {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .altar-layout {
+        grid-template-columns: 1fr;
+    }
+    .tower-card {
+        grid-template-columns: 67px minmax(0, 1fr);
+        gap: 11px;
+    }
+    .tower-art {
+        height: 76px;
+    }
+    .tower-start {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+    .battle-window {
+        padding: 13px;
+    }
+    .battle-arena {
+        min-height: 245px;
+        grid-template-columns: 1fr .8fr;
+        gap: 8px;
+        padding: 12px 5px;
+    }
+    .battle-party {
+        gap: 7px;
+    }
+    .battle-hero {
+        min-height: 80px;
+        padding: 7px 4px;
+    }
+    .battle-enemy {
+        width: 90px;
+        height: 105px;
+        font-size: 57px;
+    }
+    .battle-stop {
+        padding: 8px;
+
+    }
+    .database-badge {
+        white-space: normal;
+        line-height: 1.5;
+    }
+    .onboarding-screen {
+        margin-top: 8px;
+    }
+}
+
+@media(max-width:420px) {
+    .view-heading {
+        gap: 8px;
+    }
+    .view-heading .soul-purse {
+        padding: 7px;
+    }
+    .view-heading .soul-purse strong {
+        font-size: 12px;
+    }
+    .inventory-grid {
+        grid-template-columns: repeat(4,minmax(0,1fr));
+    }
+    .gear-grid {
+        gap: 5px;
+    }
+    .gear-slot {
+        gap: 5px;
+        padding: 5px;
+    }
+    .gear-icon {
+        flex-basis: 23px;
+        height: 28px;
+    }
+    .gear-copy strong {
+        font-size: 12px;
+    }
+    .area-card {
+        grid-template-columns: 1fr;
+    }
+    .area-art {
+        min-height: 100px;
+    }
+    .area-description {
+        min-height: 0;
+    }
+    .shop-card {
+        grid-template-columns: 34px minmax(0,1fr);
+    }
+    .shop-card .purchase-button {
+        grid-column: 1/-1;
+        width: 100%;
+    }
+    .soul-balance {
+        display: none;
+    }
+    .map-marker small {
+        font-size: 12px;
+    }
+    .map-legend .eyebrow {
+        font-size: 12px;
+    }
+}
+
+.player-name-field {
+    display: grid;
+    gap: 7px;
+    width: min(350px, 100%);
+    margin: 22px 0 0;
+}
+.player-name-field > span {
+    color: #a39083;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .14em;
+}
+.player-name-field input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+
+}
+.inventory-layout {
+    grid-template-columns: minmax(300px, 1.3fr) minmax(260px, 1fr) minmax(190px, .72fr);
+}
+.inventory-layout .inventory-main {
+    order: 1;
+}
+.inventory-layout .equipment-main {
+    order: 2;
+}
+.inventory-layout .inventory-stats {
+    grid-column: auto;
+    order: 3;
+}
+@media(max-width: 1250px) {
+    .inventory-layout {
+        grid-template-columns: minmax(270px, 1.15fr) minmax(260px, 1fr);
+    }
+    .inventory-layout .inventory-main {
+        order: 1;
+    }
+    .inventory-layout .equipment-main {
+        order: 2;
+    }
+    .inventory-layout .inventory-stats {
+        grid-column: 1 / -1;
+        order: 3;
+    }
+}
+@media(max-width: 700px) {
+    .inventory-layout {
+        grid-template-columns: 1fr;
+    }
+    .inventory-layout .inventory-main {
+        order: 1;
+    }
+    .inventory-layout .equipment-main {
+        order: 2;
+    }
+    .inventory-layout .inventory-stats {
+        grid-column: auto;
+        order: 3;
+    }
+    .save-backup-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+    .save-backup-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+

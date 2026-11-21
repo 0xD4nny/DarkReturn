@@ -1,0 +1,77 @@
+{
+  "mode": "built-in image_gen",
+  "region": "schwarze-kluft",
+  "actor": "rift-stalker",
+  "width": 1254,
+  "height": 1254,
+  "alpha": true,
+  "arena": {
+    "path": "Assets/Art/battle/regions/schwarze-kluft-arena-artwork.png",
+    "width": 1967,
+    "height": 800
+  },
+  "layout": "Eleven individual transparent pose images matching ashen-stray-front, ashen-brood-front and mire-guardian-front; CSS supplies movement. The bite filename contains the lunging claw/bite attack.",
+  "frames": [
+    "idle",
+    "bite",
+    "hit",
+    "defeated",
+    "frozen",
+    "burning-idle",
+    "burning-bite",
+    "burning-hit",
+    "poison-idle",
+    "poison-bite",
+    "poison-hit"
+  ],
+  "prompts": [
+    {
+      "asset": "Assets/Art/battle/regions/schwarze-kluft-arena-artwork.png",
+      "prompt": "Create a NEW SCHWARZE KLUFT / BLACK RIFT battle arena background for dark fantasy RPG DarkReturn. Attached arena is STYLE, CAMERA PERSPECTIVE and framing reference only. Match polished painterly semi-realistic game art and very wide panoramic approximately 2.46:1 (1967x800). New setting: enormous subterranean black basalt canyon, towering jagged cavern walls and broken stone pillars framing both sides, immense misty abyss in middle distance, distant natural rock bridge and receding silhouettes deep below. A cold narrow shaft of pale light filters through a high fissure; subtle violet spectral glows in distant cracks and a few amethyst seams in edge rocks. Foreground/lower 55 percent MUST be a broad EMPTY FLAT solid dark-gray rock platform for three enemies, continuous walkable arena from bottom edge to middle distance, no central hole. Cliff drop-offs only beyond sides and behind arena. Detailed rock foreground corners frame the center, horizon/ledge line near 45 percent height. Dark eerie atmosphere but enough soft cool gray illumination to read floor and monster silhouettes. No orange lava/fire, trees, marsh, buildings, people, monsters, text, UI or border. Fill whole panorama."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-idle.png",
+      "prompt": "Create a NEW monster species KLUFTWANDLER / RIFT STALKER for dark fantasy RPG DarkReturn. Attached creature is ONLY a reference for detailed polished semi-realistic rendering, FRONT CAMERA and full-body sprite presentation, NOT creature design. New silhouette: lean hunched BIPEDAL abyss predator with TWO digitigrade legs and TWO elongated arms, narrow ribbed torso, sleek angular obsidian-black organic CHITIN rather than stone armor, blade-edged forearms ending in long three-fingered hooked claws. Narrow alien skull with three small backward swept crown spines (not ram horns), FOUR small violet glowing eyes arranged two pairs, serrated fanged mouth, three backward pointed spines on each shoulder, thin violet luminous seams between rib plates. Ash-gray edges and soft cool rimlight keep dark creature highly readable. No wood, moss, fur, lava or orange light, no humanoid clothes or weapons. IDLE stance front-facing square to viewer, slightly crouched and ready to spring, feet planted wide, long arms held low and outward, mouth partly open. Same neutral soft lighting and craftsmanship as reference. Square 1254x1254 canvas, entire creature inside central 84 percent width, crown near 7 percent height, lowest feet/claws near 94 percent, nothing cropped. No scenery, floor, text, detached effects, ground shadow or UI. Genuine transparent alpha background."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-bite.png",
+      "prompt": "Edit attached KLUFTWANDLER / RIFT STALKER idle sprite into ATTACK animation frame. Preserve EXACT same lean bipedal obsidian-chitin alien, four violet eyes, crown/shoulder spines, ribbed narrow torso and violet seams. Same detailed rendering, square canvas and FRONT camera. Attack pose: predator lunges low toward viewer, fanged jaw wide open, BOTH blade-edged arms reach forward with hooked claws spread, legs crouched and braced. Keep complete claws, shoulder spines, head and feet inside image with at least 6 percent transparent side margins. Do not enlarge body to crop fingers. Body scale broadly matches idle, feet near 94 percent baseline. Two arms and two legs only, no new anatomy. No weapons, blood, particles, floor, shadow plane, background, text or UI. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-hit.png",
+      "prompt": "Edit attached KLUFTWANDLER / RIFT STALKER idle sprite into HIT REACTION frame. Preserve exact lean bipedal obsidian chitin creature, four violet eyes, crown and shoulder spines, narrow ribbed torso, violet seams, two arms and two legs. Same polished rendering, full-body front camera, square canvas, size and baseline around 94 percent. Recoil pose: upper torso leans backward and slightly sideways, head tilts with pained snarling jaw, one long hooked claw raised defensively near chest and other arm low, feet stay planted. Clear recoil, NOT attacking. All spines, claws and feet within generous transparent margins, no clipping. No blood, impact flash, weapons, floor, shadow plane, background, detached effects or text. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-defeated.png",
+      "prompt": "Edit attached KLUFTWANDLER / RIFT STALKER idle sprite into DEFEATED corpse frame. Preserve same lean obsidian-black chitin predator, narrow ribbed torso, three crown spines, shoulder spines, two arms and two legs, polished semi-realistic rendering. Same square transparent canvas and front camera orientation. Creature collapsed onto belly and partly its side, skull resting low facing approximately viewer, long bladed forearms and hooked claws lying limp beside face, legs folded. Eyes CLOSED/DARK and violet seams extinguished; no glowing open eyes. Complete recognizable dead body, not rubble or a standing crouch. Wide LOW silhouette occupying LOWER HALF of image, ample transparent space above, lowest feet/body near same 94 percent baseline. All spines and claws within margins. No gore, blood, dismemberment, floor, scenery, detached debris, text or particles. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-frozen.png",
+      "prompt": "Edit attached KLUFTWANDLER / RIFT STALKER idle sprite into FROZEN status frame. Preserve EXACT lean chitin creature, four eyes, idle pose, blade arms, crown/shoulder spines, two arms/two legs, scale, front camera, square canvas and baseline. Coat obsidian chitin with blue-white hoarfrost and thin translucent ice along sharp ridges, small icicles under jaw, arms and spines. Violet eyes and seams now cold icy blue. Keep original dark chitin recognizable under frost and retain fine ridge detail, not an opaque block of ice or generic stone golem. Entire creature and icicles within margins; no floor, backdrop, snowstorm, detached particles, text or new anatomy. Polished semi-realistic RPG sprite, true transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-burning-idle.png",
+      "prompt": "Edit attached KLUFTWANDLER / RIFT STALKER idle sprite into BURNING IDLE status variant. Preserve EXACT creature geometry, idle pose, four violet eyes, obsidian-black chitin, crown/shoulder spines, ribbed torso, violet seams, square canvas, front camera, scale and baseline. Add clearly visible but restrained orange-yellow flames licking along shoulders, upper back and blade forearms, subtle warm edge light. Keep original dark chitin texture recognizable, not molten stone or lava; violet eyes/seams remain violet contrasting flames. Do not obscure face, hands or feet. Whole creature and flames inside transparent margins. No ground fire, floor, backdrop, smoke wall, detached particles, text or extra anatomy. Polished semi-realistic RPG sprite, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-burning-bite.png",
+      "prompt": "Edit FIRST reference KLUFTWANDLER / RIFT STALKER ATTACK frame into BURNING ATTACK variant. SECOND reference supplies flame/material appearance ONLY. Preserve FIRST exact low forward lunge, outstretched hooked claws, open fanged jaw, four violet eyes, chitin anatomy, crown and shoulder spines, scale, full-body front camera, square canvas, margins and baseline. Add matching orange-yellow flames along shoulder/back spines and blade forearms with warm rimlight. Keep obsidian chitin dark and violet eyes/seams violet; no lava transformation. Do NOT change pose to idle or grow/crop limbs. Face and claws visible, whole creature and flames inside image margins. No floor, ground fire, background, smoke wall, detached effects, text or extra anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-burning-hit.png",
+      "prompt": "Edit FIRST reference KLUFTWANDLER / RIFT STALKER HIT REACTION frame into BURNING HIT variant. SECOND reference supplies fire material appearance ONLY. Preserve FIRST exact backward/sideways recoil, tilted head, defensive hooked claw near chest, obsidian chitin anatomy, four violet eyes, crown/shoulder spines, scale, full-body front camera, square canvas, margins and baseline. Add matching restrained orange-yellow flames along shoulders, upper back and blade forearms, warm edge light. Keep dark chitin and violet eyes/seams recognizable; no lava cracks or stone transformation. Do NOT switch to idle or attack. Entire body/flames inside frame, face visible. No floor, ground fire, background, smoke curtain, detached effects, text, blood or extra anatomy. True transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-poison-idle.png",
+      "prompt": "Edit attached KLUFTWANDLER / RIFT STALKER idle sprite into POISONED IDLE status variant. Preserve EXACT lean obsidian chitin creature identity, four eyes, crown/shoulder spines, idle pose, scale, square canvas, front camera, margins and baseline. Replace violet eye and seam light with sickly bright lime/emerald GREEN. Subtle green venom seeps at chitin joints; a few thin translucent green vapor wisps hug shoulders and forearms. Dark gray-black chitin stays original color with sharp readable gray edges, no full-body green recolor. Poison must look distinct from both default violet and fire. No flames, orange light, opaque smoke backdrop, floor, text, detached particles or new anatomy. Complete creature inside margins, polished semi-realistic RPG rendering, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-poison-bite.png",
+      "prompt": "Edit FIRST reference KLUFTWANDLER / RIFT STALKER ATTACK sprite into POISONED ATTACK variant. SECOND reference supplies poisonous material appearance ONLY. Preserve FIRST exact low lunge, outstretched hooked claws, wide open fanged jaw, four eyes, crown/shoulder spines, chitin anatomy, scale, full-body front camera, square canvas, margins and baseline. Replace violet eye/seam glow with bright sickly lime/emerald green; subtle seeping venom at chitin joints and a few thin translucent green wisps hugging shoulders and forearms like second reference. Keep gray-black chitin original color and clear edge highlights. No flames, orange light, whole-body green wash or idle pose change. All claws/spines within frame. No floor, background, opaque cloud, text, blood or extra anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/rift-stalker-front/rift-stalker-front-poison-hit.png",
+      "prompt": "Edit FIRST reference KLUFTWANDLER / RIFT STALKER HIT REACTION sprite into POISONED HIT variant. SECOND reference supplies poisonous material appearance ONLY. Preserve FIRST exact backward/sideways recoil, tilted snarling head, defensive hooked claw near chest, obsidian chitin anatomy, four eyes, crown/shoulder spines, scale, full-body front camera, square canvas and baseline. Replace violet eye/seam glow with bright sickly lime/emerald green; subtle seeping venom at chitin joints and a few thin translucent green wisps hugging shoulders and forearms like second reference. Keep gray-black chitin original color and crisp highlights. No fire, orange glow, whole-body green wash, idle or attack pose change. Entire spines/claws within margins. No floor, backdrop, opaque cloud, text, blood or extra anatomy. Genuine transparent alpha."
+    }
+  ]
+}

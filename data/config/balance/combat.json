@@ -1,0 +1,226 @@
+{
+  "balance": {
+    "loot": {
+      "firstClearSoulsPerArea": 1000,
+      "firstClearFarmBoxes": 10,
+      "eliteEveryEncounters": 5,
+      "eliteHealthMultiplier": 1.8,
+      "eliteDamageMultiplier": 1.35,
+      "eliteSoulsMinimumBase": 180,
+      "eliteSoulsMinimumPerLevel": 2,
+      "eliteSoulsMaximumBase": 260,
+      "eliteSoulsMaximumPerLevel": 3,
+      "areaEquipmentDropChance": 0.05,
+      "eliteEquipmentDropChance": 0.1,
+      "areaSetDropChance": 0.25,
+      "greaterAffixMinimumDeepTier": 3,
+      "greaterAffixChance": 0.1,
+      "greaterAffixMaxMultiplier": 1.5,
+      "towerLootChoices": [
+        {
+          "id": "upgradeStone",
+          "label": "Aufwertungssteine",
+          "chance": 50
+        },
+        {
+          "id": "socketStone",
+          "label": "Sockelsteine",
+          "chance": 50
+        },
+        {
+          "id": "affixStone",
+          "label": "Umprägungssteine",
+          "chance": 50
+        },
+        {
+          "id": "gems",
+          "label": "Edelsteine",
+          "chance": 50
+        },
+        {
+          "id": "powerup",
+          "label": "Powerups",
+          "chance": 50
+        }
+      ],
+      "mythicWeapons": {
+        "minimumDeepTier": 4,
+        "dropChanceByArea": [
+          0.002,
+          0.004,
+          0.006,
+          0.008,
+          0.01,
+          0.012
+        ]
+      }
+    },
+    "bossChallenge": {
+      "durationSeconds": 30,
+      "soulsPerRank": 1000,
+      "luckyBoxesPerRank": [
+        1,
+        3
+      ],
+      "luckyBoxGroups": [
+        "glyphBox",
+        "vipBox"
+      ],
+      "rankThresholds": [
+        {
+          "name": "Bronze I",
+          "tier": "Bronze",
+          "minimumDamage": 3000
+        },
+        {
+          "name": "Bronze II",
+          "tier": "Bronze",
+          "minimumDamage": 30000
+        },
+        {
+          "name": "Bronze III",
+          "tier": "Bronze",
+          "minimumDamage": 300000
+        },
+        {
+          "name": "Silber I",
+          "tier": "Silber",
+          "minimumDamage": 1000000
+        },
+        {
+          "name": "Silber II",
+          "tier": "Silber",
+          "minimumDamage": 5000000
+        },
+        {
+          "name": "Silber III",
+          "tier": "Silber",
+          "minimumDamage": 10000000
+        },
+        {
+          "name": "Gold I",
+          "tier": "Gold",
+          "minimumDamage": 30000000
+        },
+        {
+          "name": "Gold II",
+          "tier": "Gold",
+          "minimumDamage": 100000000
+        },
+        {
+          "name": "Gold III",
+          "tier": "Gold",
+          "minimumDamage": 300000000
+        },
+        {
+          "name": "Platin I",
+          "tier": "Platin",
+          "minimumDamage": 1000000000
+        },
+        {
+          "name": "Platin II",
+          "tier": "Platin",
+          "minimumDamage": 10000000000
+        },
+        {
+          "name": "Platin III",
+          "tier": "Platin",
+          "minimumDamage": 100000000000
+        },
+        {
+          "name": "Diamant I",
+          "tier": "Diamant",
+          "minimumDamage": 300000000000
+        },
+        {
+          "name": "Diamant II",
+          "tier": "Diamant",
+          "minimumDamage": 1000000000000
+        },
+        {
+          "name": "Diamant III",
+          "tier": "Diamant",
+          "minimumDamage": 3000000000000
+        },
+        {
+          "name": "Mythisch I",
+          "tier": "Mythisch",
+          "minimumDamage": 5000000000000
+        },
+        {
+          "name": "Mythisch II",
+          "tier": "Mythisch",
+          "minimumDamage": 10000000000000
+        },
+        {
+          "name": "Mythisch III",
+          "tier": "Mythisch",
+          "minimumDamage": 20000000000000
+        },
+        {
+          "name": "Mythisch IV",
+          "tier": "Mythisch",
+          "minimumDamage": 50000000000000
+        },
+        {
+          "name": "Mythisch V",
+          "tier": "Mythisch",
+          "minimumDamage": 100000000000000
+        }
+      ]
+    },
+    "combat": {
+      "tickMilliseconds": 300,
+      "attackSpeedCapPercent": 200,
+      "attackSpeedTiers": [
+        {
+          "minimumPercent": 200,
+          "intervalTicks": 1
+        },
+        {
+          "minimumPercent": 166,
+          "intervalTicks": 2
+        },
+        {
+          "minimumPercent": 133,
+          "intervalTicks": 3
+        },
+        {
+          "minimumPercent": 0,
+          "intervalTicks": 4
+        }
+      ],
+      "enemyAttackIntervalTicks": 4,
+      "betweenEncounterDelay": 450,
+      "defeatRecoveryMilliseconds": 5000,
+      "partyPowerBase": 80,
+      "partyPowerPerLevel": 6.2,
+      "vulnerabilityBaseDamagePercent": 100,
+      "cooldownReductionCapPercent": 75,
+      "damageReductionCapPercent": 75,
+      "defenseForDamageReductionCap": 200000,
+      "towerHealthMultiplier": 50,
+      "towerDamageBase": 150,
+      "towerDamagePerLevel": 25,
+      "towerEarlyScaling": {
+        "fullScalingLevel": 100,
+        "startHealth": 800,
+        "startDamage": 10
+      },
+      "towerSkillAttackInterval": 3,
+      "towerSkillMultiplier": 1.5,
+      "enemyHealthPerLevelAboveRecommended": 5,
+      "towerSoulsMinimumBase": 100,
+      "towerSoulsMinimumPerLevel": 5,
+      "towerSoulsMaximumBase": 150,
+      "towerSoulsMaximumPerLevel": 7,
+      "enemyMinimumHitDamage": 1
+    },
+    "dailyAttempts": {
+      "boss": 3,
+      "tower": 3,
+      "vipBonus": 1,
+      "timeZone": "Europe/Berlin"
+    }
+  }
+}

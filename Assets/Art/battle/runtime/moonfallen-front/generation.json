@@ -1,0 +1,88 @@
+{
+  "mode": "built-in image_gen",
+  "region": "mondbruch",
+  "actor": "moonfallen",
+  "enemyName": "Mondgefallener",
+  "width": 1254,
+  "height": 1254,
+  "alpha": true,
+  "arena": {
+    "path": "Assets/Art/battle/regions/mondbruch-arena-artwork.png",
+    "width": 1967,
+    "height": 800
+  },
+  "layout": "Eleven transparent front-view pose images. Four-armed moonstone titan with three-part crescent crown and eclipse core; the legacy bite filename contains a gravitational crush. Existing combat state selection controls every pose and status. CSS supplies enlarged perspective scales (.82/.98/.86), slow levitation, attack emphasis, corpse settling and decorative gravity orbits that pause when frozen and disappear when defeated. Reduced-motion preference disables additional CSS animation. No combat balance changes.",
+  "frames": [
+    "idle",
+    "bite",
+    "hit",
+    "defeated",
+    "frozen",
+    "burning-idle",
+    "burning-bite",
+    "burning-hit",
+    "poison-idle",
+    "poison-bite",
+    "poison-hit"
+  ],
+  "prompts": [
+    {
+      "asset": "Assets/Art/battle/regions/mondbruch-arena-artwork.png",
+      "prompt": "Create NEW MONDBRUCH / MOONFALL COAST final-region battle arena for dark fantasy RPG DarkReturn. Attached panorama is ONLY style, front battle camera perspective and framing reference. Match polished painterly semi-realistic game art, very wide 2.46:1, 1967x800. Epic endgame setting: a devastated coastal impact crater at night where a gigantic fragment of the MOON has crashed into the far ocean. Enormous pale cratered lunar sphere split into several separated curved slabs looms across the upper background, suspended boulders and broken orbital arcs defying gravity around it. Deep indigo starry sky and thin silver clouds, cold silver-blue moonlight reflecting over a distant dark sea. Jagged moonstone impact ridges frame both sides, a few hovering rocks near outer cliffs. Composition ESSENTIAL: lower 55 percent is a broad EMPTY FLAT continuous gray impact-rock clearing for three massive enemies, foreground starts at bottom edge, coast and sea beyond horizon near 45 percent height. No giant central pit, no obstacles or floating rocks blocking combat ground. Detailed lunar fragments at foreground corners, sparse thin silver-blue cracks along EDGES only. Sense of huge cosmic power and melancholy beauty, restrained luminous accents, readable dark mid-gray floor. No trees, lava, buildings, characters, monsters, text, UI or borders. Fill entire panorama."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-idle.png",
+      "prompt": "Create NEW MONDGEFALLENER / MOONFALLEN, an immensely powerful celestial colossus for the FINAL region of dark fantasy RPG DarkReturn. Attached creature is ONLY quality/rendering and front-camera reference, NOT design. New creature: massive broad-shouldered ancient moonstone TITAN, body formed of cracked IVORY/PEARL-GRAY cratered lunar plates surrounding a pitch-black star-speckled void. EXACTLY FOUR ARMS: two enormous outer arms with heavy segmented forearms and broad FIVE-fingered stone hands held low/outward; two smaller inner arms emerging below chest with open palms half raised. TWO short heavy stone legs hovering slightly, blunt segmented feet, no wings. Small impassive angular face mask with TWO narrow white-blue eyes, no mouth or teeth. At chest center a black spherical ECLIPSE CORE edged with thin bright silver-blue light. A broken CRESCENT CROWN of THREE large floating curved moonstone slabs arcs behind/above head, integrated into sprite with CLEAR transparent gaps between slabs, NOT a glowing background. Some limb plates hover a short distance apart at joints, held by thin silver-blue energy seams; no disconnected random rubble. Ceremonial, ancient, terrifying majesty, no clothes or weapon, not a snarling animal. IDLE pose facing viewer squarely, imposing symmetry, slight levitation, huge silhouette, full body. Detailed polished semi-realistic RPG rendering, pitted stone texture and exquisite material highlights matching reference quality. Square 1254x1254, ENTIRE titan and crescent crown inside x7%-93%, crown near y6%, feet near y88%, clear empty space below. No floor, cast shadow plane, starfield outside body, background, halo glow, smoke, text or UI. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-bite.png",
+      "prompt": "Edit attached MONDGEFALLENER / MOONFALLEN idle sprite into ATTACK frame: an overwhelming GRAVITATIONAL CRUSH toward viewer. Preserve EXACT same celestial titan identity, cracked ivory cratered moonstone plates, black star-filled interior, impassive mask with two silver-blue eyes, THREE-part broken crescent crown, FOUR ARMS and TWO heavy legs. Pose: two LARGE outer stone hands reach forward toward camera with fingers curling inward as if compressing gravity, two SMALL inner hands held around the chest eclipse core to channel power. Slight forward lean, legs hovering/braced, crown slabs spread a little wider but same three pieces. Chest core edge and joint seams flare silver-white, no orange flames. Keep all four hands, fingers, feet and crown inside generous margins; same square canvas, front camera and approximate body scale. No fanged animal jaw or weapons, no full-screen light explosion, no exterior opaque aura, floor, backdrop, text, blood or detached particle field. Genuine transparent alpha and polished semi-realistic game art."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-bite.png",
+      "refinement": true,
+      "prompt": "Refine attached MOONFALLEN ATTACK game sprite for a CLEAN TRANSPARENT CUTOUT. REMOVE ENTIRE pale gray/white glow cloud/halo outside creature, including between crown pieces, arms and legs. All exterior gaps must be TRANSPARENT alpha, no fog, aura, glow field, shadow or background. Preserve exact four-arm attack pose, moonstone detail, black star-filled torso and inner arm material, bright light ONLY as narrow seams ON actual stone and core rim. Zoom out slightly so ENTIRE titan including outer forearms, fingers, crown and feet has at least 5 percent clear margin from every canvas edge. Same square canvas, center, proportions, anatomy and style. No new elements. Crisp anti-aliased cutout edges only. No text, floor, checkerboard or exterior particles."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-hit.png",
+      "prompt": "Edit attached MONDGEFALLENER / MOONFALLEN idle sprite into HIT REACTION frame. Preserve EXACT same four-armed celestial titan, TWO large outer arms plus TWO smaller inner arms, two heavy legs, cracked cratered ivory moonstone plates, black star-filled body, eclipse core, impassive mask with silver-blue eyes, THREE-part broken crescent crown. Pose: massive torso recoils backward and slightly sideways, head tilts, one large hand rises defensively, other large hand stays low, inner hands flinch near core. Crown slabs tilt slightly with recoil, still same three pieces. Maintain full-body FRONT camera, scale and square canvas, all four hands/feet/crown inside generous margins. Clean precise CUTOUT: no pale halo, glow cloud, smoke, aura, floor or backdrop OUTSIDE actual body. Narrow light seams only ON stone and core rim, star field only INSIDE body. No blood, text, weapons, particle field or extra anatomy. Genuine transparent alpha, detailed polished semi-realistic RPG art."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-defeated.png",
+      "prompt": "Edit attached MONDGEFALLENER / MOONFALLEN idle sprite into DEFEATED corpse frame. Preserve exact celestial moonstone titan identity with FOUR ARMS (two huge outer, two small inner), two legs, ivory cratered armor, THREE broken crescent crown pieces and black eclipse chest core. Body has collapsed fully onto belly/partly its side, face mask resting low toward viewer, four hands lying limp around torso, legs folded. Crown slabs have fallen to rest immediately behind head/shoulders, no longer floating. Eyes completely dark; core becomes inert dark stone, all starfield and light seams extinguished. LOW broad silhouette in LOWER HALF of same square canvas, lowest body at y94%, ample empty transparent space above, entire corpse/crown inside margins. Recognizable complete titan, not random rubble. Clean CUTOUT with no floor, cast shadow plane, background, glow cloud, aura, blood, detached debris or text. Same polished semi-realistic rendering, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-frozen.png",
+      "prompt": "Edit attached MONDGEFALLENER / MOONFALLEN idle sprite into FROZEN frame. Preserve EXACT four-armed titan anatomy (two huge outer arms, two small inner), TWO legs, same idle geometry, hands, three-piece crescent crown, mask, chest core, scale, FRONT camera, square canvas and clear margins. Immobilized with pale blue translucent ice coating cratered ivory moonstone, strong blue-white hoarfrost on plate ridges, small icicles hanging from crown, fingers and shoulder edges. Core rim and eyes colder bright ICE BLUE, black star-filled interior remains visible. Make frost visibly different from default pale moonstone using textured rime/icicles, not just a color tint. CLEAN CUTOUT ONLY: transparency immediately outside actual stone/ice/attached icicles, clear gaps between crown pieces/arms/legs. NO halo, aura, cloud, fog or glow outside body. No floor, background, snowstorm, text or extra anatomy. Detailed semi-realistic RPG art, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-burning-idle.png",
+      "prompt": "Edit attached MONDGEFALLENER / MOONFALLEN idle sprite into BURNING IDLE status variant. Preserve EXACT four-arm/two-leg anatomy, huge outer palms and small inner hands, impassive mask, three-piece crescent crown, cracked cratered IVORY moonstone armor, black star-filled interior and eclipse core, idle pose, camera, square canvas and full-body margins. Add distinct orange-yellow flames along shoulder ridges, outer forearm edges and crown rims; warm scorched reflections on ivory plates. Original white-blue eyes/core rim and star-filled body remain visible, don't turn entire titan into lava or orange stone. Flames restrained enough to read mask and all four hands, all inside frame. CLEAN CUTOUT: no glow cloud, halo, fog, smoke wall, backdrop, floor, detached particles, text or extra anatomy. Outside actual stone/flames and between arms/crown/legs must be transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-burning-idle.png",
+      "refinement": true,
+      "prompt": "Refine attached BURNING MOONFALLEN sprite ONLY to fix top-edge cropping of flames. Preserve EXACT creature geometry, scale, body/head/hands/feet/crown positions, color and burning status. Make the flames ABOVE the TOP CENTRAL CRESCENT MUCH SHORTER so there is at least a clearly transparent 20-pixel gap from top canvas edge. All flame tips must be fully visible, none touch any image edge. Do NOT shrink or move the titan or crescent pieces. Keep shoulder and arm flames as they are, shorten only any flame that approaches frame border. Clean cutout, no halo, glow cloud, backdrop, floor, text or extra anatomy. Same square canvas, true transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-burning-bite.png",
+      "prompt": "Edit FIRST reference MOONFALLEN ATTACK frame into BURNING ATTACK variant. SECOND reference supplies restrained fire material appearance ONLY. Preserve FIRST exact forward gravitational crush pose, TWO enormous outer hands curling forward and TWO smaller inner hands channeling eclipse core, two legs, three-part crescent crown, impassive mask, moonstone geometry, scale, front camera and square canvas. Add matching orange-yellow flames along shoulder ridges, forearm edges and crown rims with warm scorched highlights; original ivory stone, black star-filled interior, silver-blue eyes/core rim remain visible. Keep all four hands and complete flames/crown inside CLEAR margins; shorten flames near border rather than crop them. CLEAN CUTOUT: no aura, halo, glow cloud, smoke wall, backdrop, floor, detached sparks, text or extra anatomy. True transparent gaps between arms/crown/legs, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-burning-hit.png",
+      "prompt": "Edit FIRST reference MOONFALLEN HIT REACTION frame into BURNING HIT variant. SECOND reference supplies restrained fire appearance ONLY. Preserve FIRST exact backward/sideways recoil, tilted mask/crown, one giant defensive hand raised and other low, two small inner hands flinching, TWO legs, four-arm anatomy, ivory cratered plates, black star-filled interior, scale, full-body front camera and square canvas. Add matching orange-yellow flames along shoulders, forearms and three crescent crown rims, warm scorched reflections while original stone remains ivory and eyes/core rim silver-blue. Keep all fingers/crown/flame tips inside generous margins, shorten flames at frame edges. Do NOT change pose to idle or attack. CLEAN CUTOUT, no halo, aura, cloud, fog, smoke wall, floor, backdrop, text, blood or extra anatomy. Genuine transparent alpha including gaps between crown pieces and limbs."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-poison-idle.png",
+      "prompt": "Edit attached MONDGEFALLENER / MOONFALLEN idle sprite into POISONED IDLE status. Preserve EXACT four-armed titan anatomy, two huge outer arms/two small inner, two legs, same idle pose/positions, three-piece crescent crown, mask, ivory cratered moonstone, black star-filled interior, scale, full-body front camera, square canvas and margins. Eyes, eclipse core RIM and selected narrow seams now glow vivid sickly LIME/EMERALD GREEN rather than silver-blue; small green venom beads seep from a few armor joints and crown cracks. Keep ivory armor ivory, starry interior black, core center dark; no whole-body green wash. Poison accents ON actual stone/core only. CLEAN CUTOUT with no vapor, aura, halo, glow cloud, smoke, backdrop or floor. Clear transparent gaps between arms, legs, crown pieces and outside silhouette. No flames, orange light, detached particles, text, blood or extra anatomy. Detailed semi-realistic RPG art, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-poison-bite.png",
+      "prompt": "Edit FIRST reference MOONFALLEN ATTACK frame into POISONED ATTACK variant. SECOND reference supplies poison material appearance ONLY. Preserve FIRST EXACT gravitational crush pose: two giant outer hands curled toward viewer and two small inner hands framing eclipse core, two legs, three-piece crescent crown, impassive mask, ivory cratered stone, black star-filled body, scale, front camera and square canvas. Eyes/core RIM and narrow energy seams lime/emerald green, small green venom beads in selected armor/crown cracks matching second reference. Armor stays ivory, core center dark, starfield inside body only. Do NOT switch pose to idle. All four hands, crown and feet inside margins. CLEAN CUTOUT: no smoke, vapor, halo, aura, glow cloud, backdrop, floor, flame, orange light, text, blood or extra anatomy. Transparent alpha outside silhouette and between arms/legs/crown pieces."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/moonfallen-front/moonfallen-front-poison-hit.png",
+      "prompt": "Edit FIRST reference MOONFALLEN HIT REACTION frame into POISONED HIT variant. SECOND reference supplies poison material appearance ONLY. Preserve FIRST EXACT backward/sideways recoil, tilted mask and three-piece crescent crown, one huge defensive hand raised and other low, two smaller inner hands flinching near core, two legs, same moonstone anatomy, scale, front camera, square canvas and margins. Eyes, core RIM and narrow energy seams lime/emerald green, small green venom beads at armor/crown cracks matching second reference. Ivory stone stays ivory, star-filled interior black, core center dark. Do NOT change pose to idle or attack. Whole body/fingers/crown inside frame. CLEAN CUTOUT with no vapor, smoke, aura, halo, glow cloud, floor, backdrop, flame, orange light, text, blood or extra anatomy. Clear transparent gaps between limbs and crown; genuine transparent alpha."
+    }
+  ]
+}

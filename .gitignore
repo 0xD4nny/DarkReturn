@@ -1,0 +1,16 @@
+# Persönlicher Spielstand im Projektstamm
+/dark-return-danny.json
+
+# Betriebssystem-Dateien
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Lokale Browser- und Smoke-Test-Daten
+.edge-smoke/
+playwright-report/
+test-results/
+
+# Lokale Abhängigkeiten und Protokolle
+node_modules/
+*.log

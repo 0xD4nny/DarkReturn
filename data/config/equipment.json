@@ -1,0 +1,1084 @@
+{
+  "equipmentPools": {
+    "weapon": [
+      "bow",
+      "sword",
+      "staff",
+      "shield",
+      "bell"
+    ],
+    "armor": [
+      "helmet",
+      "chest",
+      "gloves",
+      "boots"
+    ],
+    "jewelry": [
+      "ring",
+      "amulet",
+      "earring"
+    ]
+  },
+  "slots": {
+    "pet": {
+      "label": "Begleittier",
+      "icon": "✦"
+    },
+    "bow": {
+      "label": "Bogen",
+      "icon": "⌁",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/bow-arrow.svg"
+    },
+    "sword": {
+      "label": "Schwert",
+      "icon": "⚔",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg"
+    },
+    "staff": {
+      "label": "Stab",
+      "icon": "ϟ",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/wizard-staff.svg"
+    },
+    "shield": {
+      "label": "Schild",
+      "icon": "⬡",
+      "asset": "Assets/Icons/000000/transparent/1x1/sbed/shield.svg"
+    },
+    "bell": {
+      "label": "Glocke",
+      "icon": "♧",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg"
+    },
+    "helmet": {
+      "label": "Helm",
+      "icon": "♜",
+      "asset": "Assets/Icons/000000/transparent/1x1/caro-asercion/warlord-helmet.svg"
+    },
+    "chest": {
+      "label": "Brust",
+      "icon": "♢",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/breastplate.svg"
+    },
+    "gloves": {
+      "label": "Handschuhe",
+      "icon": "♧",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/gloves.svg"
+    },
+    "boots": {
+      "label": "Schuhe",
+      "icon": "⌑",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/steeltoe-boots.svg"
+    },
+    "ring": {
+      "label": "Ring",
+      "icon": "◉",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/diamond-ring.svg"
+    },
+    "amulet": {
+      "label": "Amulett",
+      "icon": "◇",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/gem-pendant.svg"
+    },
+    "earring": {
+      "label": "Ohrring",
+      "icon": "◈",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/drop-earrings.svg"
+    },
+    "upgradeStone": {
+      "label": "Aufwertungsstein",
+      "icon": "✦",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg",
+      "description": "Wird für einen Aufwertungsversuch am gewählten Ausrüstungsplatz verbraucht."
+    },
+    "socketStone": {
+      "label": "Sockelstein",
+      "icon": "◇",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-cluster.svg",
+      "description": "Wird für einen Sockelöffnungsversuch am gewählten Ausrüstungsplatz verbraucht. Alle Ausrüstungsplätze einschließlich Schmuck und Glyphen sind sockelbar."
+    },
+    "rarityStone": {
+      "label": "Seltenheitsstein",
+      "icon": "✧",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg",
+      "description": "Erhöht die Seltenheit eines Ausrüstungsgegenstands beim Verzauberer."
+    },
+    "affixStone": {
+      "label": "Umprägungsstein",
+      "icon": "✥",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-cluster.svg",
+      "description": "Prägt einen zufälligen Affix beim Verzauberer um."
+    },
+    "bossReset": {
+      "label": "Boss-Zeitstein",
+      "icon": "◷",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg"
+    },
+    "glyphBox": {
+      "label": "Glyphen-Luckybox",
+      "icon": "▣",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+    },
+    "vipBox": {
+      "label": "VIP-Luckybox",
+      "icon": "▣",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+    },
+    "vipTicket": {
+      "label": "VIP-Ticket",
+      "icon": "♛",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg"
+    },
+    "weaponGem": {
+      "label": "Edelstein",
+      "icon": "◇",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg"
+    },
+    "armorGem": {
+      "label": "Edelstein",
+      "icon": "◇",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg"
+    },
+    "glyph": {
+      "label": "Glyphe",
+      "icon": "✧",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/rune-stone.svg"
+    },
+    "farmBox": {
+      "label": "Farm-Luckybox",
+      "icon": "▣",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+    },
+    "towerLootBoost": {
+      "label": "Turm-Beutesegen",
+      "icon": "✦",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/clover.svg"
+    },
+    "mythicUpgradeStone": {
+      "label": "Mystischer Aufwertungsstein",
+      "icon": "✦",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg",
+      "description": "Wird für einen mystischen Aufwertungsversuch an einer mystischen Waffe verbraucht. Verkauf mystischer Waffen: 10 Stück je Waffe."
+    },
+    "towerReset": {
+      "label": "Turm-Zeitstein",
+      "icon": "◷",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg"
+    }
+  },
+  "inventoryCategories": {
+    "weapons": {
+      "label": "Waffen",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m4 20 6-6m-2-2 8-8 3 3-8 8m-5-1 4 4M13 5l6 6\"/></svg>",
+      "slots": [
+        "bow",
+        "sword",
+        "staff",
+        "bell"
+      ]
+    },
+    "armor": {
+      "label": "Rüstung",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3 20 6v5c0 5-3.4 8.3-8 10-4.6-1.7-8-5-8-10V6l8-3Z\"/><path d=\"M8 9h8m-4-3v10\"/></svg>",
+      "slots": [
+        "helmet",
+        "chest",
+        "gloves",
+        "boots",
+        "shield"
+      ]
+    },
+    "jewelry": {
+      "label": "Schmuck",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"8\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"m12 2 2 2-2 2-2-2 2-2Z\"/></svg>",
+      "slots": [
+        "ring",
+        "amulet",
+        "earring"
+      ]
+    },
+    "materials": {
+      "label": "Materialien",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m12 2 8 5v10l-8 5-8-5V7l8-5Z\"/><path d=\"m12 2v20M4 7l16 10M20 7 4 17\"/></svg>",
+      "slots": [
+        "upgradeStone",
+        "socketStone",
+        "rarityStone",
+        "affixStone",
+        "mythicUpgradeStone"
+      ]
+    },
+    "gems": {
+      "label": "Edelsteine",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m12 2 8 7-8 13L4 9l8-7Z\"/><path d=\"m4 9 16 0M8 9l4 13 4-13M8 5h8\"/></svg>",
+      "slots": [
+        "weaponGem",
+        "armorGem"
+      ]
+    },
+    "glyphs": {
+      "label": "Glyphen",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m12 2-8 6 8 14 8-14-8-6Z\"/><path d=\"M4 8h16M12 2v20\"/></svg>",
+      "slots": [
+        "glyph"
+      ]
+    },
+    "consumables": {
+      "label": "Verbrauchsgüter",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 2v20M2 12h20M5 5l14 14M19 5 5 19\"/></svg>",
+      "slots": [
+        "powerup",
+        "bossReset",
+        "vipTicket",
+        "towerLootBoost",
+        "towerReset"
+      ]
+    },
+    "luckyBoxes": {
+      "label": "Luckyboxen",
+      "icon": "<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3 10h18v11H3zM2 6h20v4H2zM12 6v15M12 6H7.5a2.5 2.5 0 1 1 2.5-2.5C10 5 12 6 12 6Zm0 0h4.5A2.5 2.5 0 1 0 14 3.5C14 5 12 6 12 6Z\"/></svg>",
+      "slots": [
+        "glyphBox",
+        "vipBox",
+        "farmBox"
+      ]
+    }
+  },
+  "rarityOrder": [
+    "Gewöhnlich",
+    "Ungewöhnlich",
+    "Selten",
+    "Episch",
+    "Legendär",
+    "Mystisch"
+  ],
+  "rarities": [
+    {
+      "name": "Gewöhnlich",
+      "color": "common",
+      "weight": 100
+    },
+    {
+      "name": "Ungewöhnlich",
+      "color": "uncommon",
+      "weight": 0
+    },
+    {
+      "name": "Selten",
+      "color": "rare",
+      "weight": 0
+    },
+    {
+      "name": "Episch",
+      "color": "epic",
+      "weight": 0
+    },
+    {
+      "name": "Legendär",
+      "color": "legendary",
+      "weight": 0
+    },
+    {
+      "name": "Mystisch",
+      "color": "mythic",
+      "weight": 0
+    }
+  ],
+  "affixPools": {
+    "bow": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "sword": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "staff": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "bell": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "shield": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "helmet": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "chest": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "gloves": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "boots": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "ring": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "amulet": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ],
+    "earring": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit"
+    ]
+  },
+  "affixRanges": {
+    "Lebenskraft": [
+      5,
+      15
+    ],
+    "Angriff": [
+      5,
+      15
+    ],
+    "Verteidigung": [
+      5,
+      15
+    ],
+    "Stärke": [
+      50,
+      100
+    ],
+    "Geschicklichkeit": [
+      50,
+      100
+    ],
+    "Intelligenz": [
+      50,
+      100
+    ],
+    "Ausdauer": [
+      50,
+      100
+    ],
+    "Glaube": [
+      50,
+      100
+    ],
+    "Kritische Chance": [
+      5,
+      10
+    ],
+    "Kritischer Schaden": [
+      10,
+      20
+    ],
+    "Schaden gegen verwundbare Ziele": [
+      15,
+      25
+    ],
+    "Schaden über Zeit": [
+      20,
+      30
+    ],
+    "Abklingzeitreduktion": [
+      5,
+      10
+    ],
+    "Angriffsgeschwindigkeit": [
+      5,
+      10
+    ],
+    "Seelenfund": [
+      5,
+      25
+    ]
+  },
+  "itemNames": {
+    "bow": [
+      "Aschenbogen",
+      "Wachtläufer",
+      "Dornensänger"
+    ],
+    "sword": [
+      "Dämmerstahl",
+      "Grenzklinge",
+      "Eidbrecher"
+    ],
+    "staff": [
+      "Stab der Dämmerung",
+      "Sternenrufer",
+      "Aschenweber"
+    ],
+    "bell": [
+      "Glocke der Dämmerung",
+      "Klagenglocke",
+      "Glocke der letzten Wacht"
+    ],
+    "shield": [
+      "Dornwacht",
+      "Letzter Wall",
+      "Aschenschild"
+    ],
+    "helmet": [
+      "Helm der Wacht",
+      "Aschenkrone",
+      "Dornhaube"
+    ],
+    "chest": [
+      "Wallrüstung",
+      "Nachtpanzer",
+      "Aschenharnisch"
+    ],
+    "gloves": [
+      "Griff der Wacht",
+      "Dornfäuste",
+      "Rabenhandschuhe"
+    ],
+    "boots": [
+      "Pfadfinder",
+      "Aschenschritt",
+      "Nachtläufer"
+    ],
+    "ring": [
+      "Siegelring",
+      "Rabenband",
+      "Dornreif"
+    ],
+    "amulet": [
+      "Flüsteramulett",
+      "Sternensplitter",
+      "Aschenherz"
+    ],
+    "earring": [
+      "Aschenohrring",
+      "Splitter der Dämmerung",
+      "Nachtglas-Ohrstecker"
+    ]
+  },
+  "armorSets": {
+    "Arkanweber": {
+      "class": "mage",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "cooldownReduction": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "intelligenceFlat": 150
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaFlat": 150,
+            "multiplicativeDamagePercent": 20
+          }
+        }
+      ]
+    },
+    "Eisenwille": {
+      "class": "warrior",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "healthPercent": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "staminaFlat": 150
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "strengthFlat": 150,
+            "multiplicativeDamagePercent": 20
+          }
+        }
+      ]
+    },
+    "Falkenwacht": {
+      "class": "hunter",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "criticalChance": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "dexterityFlat": 150
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaFlat": 150,
+            "multiplicativeDamagePercent": 20
+          }
+        }
+      ]
+    },
+    "Lichtträger": {
+      "class": "healer",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "healingPercent": 20,
+            "restHealingPercent": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "faithFlat": 150
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaFlat": 150,
+            "partyDamagePercent": 10
+          }
+        }
+      ]
+    },
+    "Seelenrichter": {
+      "class": null,
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "soulFind": 50
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "strengthFlat": 150,
+            "dexterityFlat": 150,
+            "intelligenceFlat": 150,
+            "faithFlat": 150
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "vulnerableEverySeconds": 3,
+            "vulnerableDurationSeconds": 2
+          }
+        }
+      ]
+    },
+    "Schleierbund": {
+      "class": null,
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "healthPercent": 15
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "staminaFlat": 150
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "dodgeChance": 20
+          }
+        }
+      ]
+    },
+    "Zwillingszorn": {
+      "class": null,
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "attackPercent": 15
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "strengthFlat": 100,
+            "dexterityFlat": 100,
+            "intelligenceFlat": 100,
+            "faithFlat": 100
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "extraAttackChance": 20
+          }
+        }
+      ]
+    }
+  },
+  "jewelrySets": {
+    "Arkaner Zirkel": {
+      "class": "mage",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "cooldownReduction": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "intelligencePercent": 20
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaPercent": 20
+          }
+        },
+        {
+          "pieces": 5,
+          "effects": {
+            "multiplicativeDamagePercent": 20
+          }
+        }
+      ]
+    },
+    "Schwur des Stahls": {
+      "class": "warrior",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "healthPercent": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "strengthPercent": 20
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaPercent": 20
+          }
+        },
+        {
+          "pieces": 5,
+          "effects": {
+            "multiplicativeDamagePercent": 20
+          }
+        }
+      ]
+    },
+    "Auge des Falken": {
+      "class": "hunter",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "criticalChance": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "dexterityPercent": 20
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaPercent": 20
+          }
+        },
+        {
+          "pieces": 5,
+          "effects": {
+            "multiplicativeDamagePercent": 20
+          }
+        }
+      ]
+    },
+    "Bund des Lichts": {
+      "class": "healer",
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "healingPercent": 20,
+            "restHealingPercent": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "faithPercent": 20
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaPercent": 20
+          }
+        },
+        {
+          "pieces": 5,
+          "effects": {
+            "partyHealthPercent": 20
+          }
+        }
+      ]
+    },
+    "Seelenecho": {
+      "class": null,
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "soulFind": 50
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "multiplicativeDamagePercent": 20
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaFlat": 200
+          }
+        },
+        {
+          "pieces": 5,
+          "effects": {
+            "damageLifeStealPercent": 5
+          }
+        }
+      ]
+    },
+    "Zeitweber": {
+      "class": null,
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "cooldownReduction": 15
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "hitChance": 10
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "staminaFlat": 150
+          }
+        },
+        {
+          "pieces": 5,
+          "effects": {
+            "activeSkillDamagePercent": 25
+          }
+        }
+      ]
+    },
+    "Dämmerherz": {
+      "class": null,
+      "bonuses": [
+        {
+          "pieces": 2,
+          "effects": {
+            "healthPercent": 20
+          }
+        },
+        {
+          "pieces": 3,
+          "effects": {
+            "staminaFlat": 150
+          }
+        },
+        {
+          "pieces": 4,
+          "effects": {
+            "defensePercent": 20
+          }
+        },
+        {
+          "pieces": 5,
+          "effects": {
+            "criticalHealPercent": 2
+          }
+        }
+      ]
+    }
+  },
+  "gemProfiles": [
+    {
+      "slot": "weaponGem",
+      "profile": "Präzisionsstein",
+      "attribute": "Geschicklichkeit"
+    },
+    {
+      "slot": "weaponGem",
+      "profile": "Machtstein",
+      "attribute": "Stärke"
+    },
+    {
+      "slot": "weaponGem",
+      "profile": "Vitalstein",
+      "attribute": "Ausdauer"
+    },
+    {
+      "slot": "weaponGem",
+      "profile": "Arkanstein",
+      "attribute": "Intelligenz"
+    },
+    {
+      "slot": "weaponGem",
+      "profile": "Glaubensstein",
+      "attribute": "Glaube"
+    }
+  ],
+  "glyphDefinitions": [
+    {
+      "id": "strength",
+      "name": "Str-Glyphe",
+      "stat": "Stärke",
+      "bonusStat": "Angriff"
+    },
+    {
+      "id": "dexterity",
+      "name": "Dex-Glyphe",
+      "stat": "Geschicklichkeit",
+      "bonusStat": "Angriff"
+    },
+    {
+      "id": "intelligence",
+      "name": "Int-Glyphe",
+      "stat": "Intelligenz",
+      "bonusStat": "Angriff"
+    },
+    {
+      "id": "faith",
+      "name": "Glaubens-Glyphe",
+      "stat": "Glaube",
+      "bonusStat": "Angriff"
+    },
+    {
+      "id": "stamina",
+      "name": "Sta-Glyphe",
+      "stat": "Ausdauer",
+      "bonusStat": "Lebenskraft"
+    }
+  ],
+  "mythicItems": {
+    "weaponSlots": [
+      "bow",
+      "sword",
+      "staff",
+      "bell"
+    ],
+    "weaponBaseDamageRange": [
+      1000,
+      2000
+    ],
+    "damagePercent": 500,
+    "maxUpgradeLevel": 10,
+    "saleStones": 10
+  },
+  "weaponProgression": {
+    "weaponSlots": [
+      "bow",
+      "sword",
+      "staff",
+      "bell"
+    ],
+    "maxLevel": 100,
+    "damagePercentPerLevel": 5,
+    "completionDamagePercent": 100,
+    "experiencePerKill": 1,
+    "experienceStep": 10
+  }
+}

@@ -1,0 +1,315 @@
+{
+  "contractMilestoneRewards": [
+    {
+      "kind": "helmet",
+      "name": "D\u00e4mmerhelm",
+      "icon": "\u265c",
+      "description": "Einsteigerr\u00fcstung der Grenzwacht ohne Setbindung."
+    },
+    {
+      "kind": "chest",
+      "name": "D\u00e4mmerharnisch",
+      "icon": "\u2662",
+      "description": "Einsteigerr\u00fcstung der Grenzwacht ohne Setbindung."
+    },
+    {
+      "kind": "gloves",
+      "name": "D\u00e4mmerhandschuhe",
+      "icon": "\u2667",
+      "description": "Einsteigerr\u00fcstung der Grenzwacht ohne Setbindung."
+    },
+    {
+      "kind": "boots",
+      "name": "D\u00e4mmerschuhe",
+      "icon": "\u2311",
+      "description": "Einsteigerr\u00fcstung der Grenzwacht ohne Setbindung."
+    }
+  ],
+  "contracts": {
+    "hunt": {
+      "title": "Kopfgeld der Grenzwacht",
+      "category": "JAGDAUFTRAG",
+      "description": "Besiege Gegner in einem beliebigen Grenzgebiet.",
+      "icon": "\u2694",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "reward": 260
+    },
+    "survey": {
+      "title": "Kartograf der Narben",
+      "category": "ERKUNDUNG",
+      "description": "Erkunde verschiedene Gebiete durch erfolgreiche Feldz\u00fcge.",
+      "icon": "\u2316",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/atlas.svg",
+      "reward": 340
+    },
+    "tower": {
+      "title": "Pr\u00fcfung der Namenlosen",
+      "category": "TURMPR\u00dcFUNG",
+      "description": "Bezwinge Durchg\u00e4nge im Turm der Namenlosen.",
+      "icon": "\u221e",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/evil-tower.svg",
+      "reward": 480
+    }
+  },
+  "questStages": [
+    {
+      "title": "Erste Schritte",
+      "subtitle": "Richte dein erstes Loadout ein.",
+      "reward": 1000,
+      "quests": [
+        {
+          "id": "equip-ring",
+          "title": "Ein Zeichen der Macht",
+          "description": "R\u00fcste einen Ring an.",
+          "type": "ring",
+          "target": 1
+        },
+        {
+          "id": "armor-set-first",
+          "title": "Ein Teil des D\u00e4mmerbunds",
+          "description": "R\u00fcste ein R\u00fcstungsteil des D\u00e4mmerbunds an.",
+          "type": "armorSet",
+          "target": 1
+        },
+        {
+          "id": "set-two",
+          "title": "Verbundenes Schicksal",
+          "description": "R\u00fcste 2 Teile desselben R\u00fcstungssets an.",
+          "type": "armorSet",
+          "target": 2
+        },
+        {
+          "id": "level-five",
+          "title": "Wachstum durch Seelen",
+          "description": "Erreiche Gruppenstufe 5.",
+          "type": "level",
+          "target": 5
+        },
+        {
+          "id": "first-region",
+          "title": "Jenseits der Mauern",
+          "description": "Schlie\u00dfe dein erstes Gebiet erfolgreich ab.",
+          "type": "regions",
+          "target": 1
+        }
+      ]
+    },
+    {
+      "title": "Beute und Handwerk",
+      "subtitle": "Lerne, Ausr\u00fcstung zu beschaffen und zu verbessern.",
+      "reward": 1600,
+      "quests": [
+        {
+          "id": "buy-gear",
+          "title": "Ein Handel im Schatten",
+          "description": "Kaufe einen Gegenstand auf dem Schwarzmarkt.",
+          "type": "purchases",
+          "target": 1
+        },
+        {
+          "id": "forge-once",
+          "title": "Die Esse erwacht",
+          "description": "Verbessere einen Gegenstand in der Schmiede.",
+          "type": "forges",
+          "target": 1
+        },
+        {
+          "id": "full-loadout",
+          "title": "Ein vollst\u00e4ndiges Loadout",
+          "description": "Belege mindestens f\u00fcnf Ausr\u00fcstungsslots mit Gegenst\u00e4nden.",
+          "type": "equippedSlots",
+          "target": 5
+        },
+        {
+          "id": "armor-set-one",
+          "title": "Ein Bund aus Stahl",
+          "description": "R\u00fcste ein R\u00fcstungsteil eines Sets an.",
+          "type": "armorSet",
+          "target": 1
+        },
+        {
+          "id": "ten-victories",
+          "title": "Grenzwacht in Bewegung",
+          "description": "Gewinne insgesamt 10 K\u00e4mpfe in Gebieten.",
+          "type": "areaWins",
+          "target": 10
+        }
+      ]
+    },
+    {
+      "title": "Die Grenzwacht",
+      "subtitle": "Beweise dich gegen Champions und st\u00e4rkere Beute.",
+      "reward": 2400,
+      "quests": [
+        {
+          "id": "reach-aschental",
+          "title": "Unter grauem Himmel",
+          "description": "Erreiche Gruppenstufe 61 und schalte Aschental frei.",
+          "type": "level",
+          "target": 61
+        },
+        {
+          "id": "champion-one",
+          "title": "Ein w\u00fcrdiger Gegner",
+          "description": "Besiege einen Champion.",
+          "type": "champions",
+          "target": 1
+        },
+        {
+          "id": "legendary-one",
+          "title": "Legenden werden geschmiedet",
+          "description": "Trage einen legend\u00e4ren oder besseren Gegenstand.",
+          "type": "rarity",
+          "rarity": "legendary",
+          "target": 1
+        },
+        {
+          "id": "set-three",
+          "title": "Dreifacher Bund",
+          "description": "R\u00fcste drei R\u00fcstungsteile desselben Sets an.",
+          "type": "armorSet",
+          "target": 3
+        },
+        {
+          "id": "explore-two",
+          "title": "Karten voller Narben",
+          "description": "Schlie\u00dfe zwei verschiedene Gebiete ab.",
+          "type": "regions",
+          "target": 2
+        }
+      ]
+    },
+    {
+      "title": "Tiefere Schatten",
+      "subtitle": "Baue dein Set aus und wage dich in den Turm.",
+      "reward": 3400,
+      "quests": [
+        {
+          "id": "reach-saltmoor",
+          "title": "Tief ins Salzmoor",
+          "description": "Erreiche Gruppenstufe 121.",
+          "type": "level",
+          "target": 121
+        },
+        {
+          "id": "legendary-three",
+          "title": "Ein legend\u00e4res Arsenal",
+          "description": "Trage drei legend\u00e4re oder bessere Gegenst\u00e4nde.",
+          "type": "rarity",
+          "rarity": "legendary",
+          "target": 3
+        },
+        {
+          "id": "set-four",
+          "title": "Vollst\u00e4ndiger Setbonus",
+          "description": "R\u00fcste 4 Teile desselben R\u00fcstungssets an.",
+          "type": "armorSet",
+          "target": 4
+        },
+        {
+          "id": "tower-ten",
+          "title": "Der Turm pr\u00fcft dich",
+          "description": "Erreiche Etage 10 im Turm der Namenlosen.",
+          "type": "tower",
+          "target": 10
+        },
+        {
+          "id": "forge-three",
+          "title": "Meister an der Esse",
+          "description": "Verbessere insgesamt drei Gegenst\u00e4nde.",
+          "type": "forges",
+          "target": 3
+        }
+      ]
+    },
+    {
+      "title": "Die legendäre Schwelle",
+      "subtitle": "Stelle dich den höchsten Prüfungen und sammle legendäre Ausrüstung.",
+      "reward": 5200,
+      "quests": [
+        {
+          "id": "reach-glass",
+          "title": "Zum Glasforst",
+          "description": "Erreiche Gruppenstufe 241.",
+          "type": "level",
+          "target": 241
+        },
+        {
+          "id": "legendary-one",
+          "title": "Jenseits der Legende",
+          "description": "Trage einen legendären Gegenstand.",
+          "type": "rarity",
+          "rarity": "legendary",
+          "target": 1
+        },
+        {
+          "id": "legendary-two",
+          "title": "Kraft aus dem Abgrund",
+          "description": "Trage zwei legendäre Gegenst\u00e4nde.",
+          "type": "rarity",
+          "rarity": "legendary",
+          "target": 2
+        },
+        {
+          "id": "legendary-set",
+          "title": "Legendäre Sammlung",
+          "description": "Trage vier legendäre Ausr\u00fcstungsgegenst\u00e4nde.",
+          "type": "rarity",
+          "rarity": "legendary",
+          "target": 4
+        },
+        {
+          "id": "champions-five",
+          "title": "F\u00fcnf Namen im Staub",
+          "description": "Besiege f\u00fcnf Champions.",
+          "type": "champions",
+          "target": 5
+        }
+      ]
+    },
+    {
+      "title": "Jenseits des Mondbruchs",
+      "subtitle": "Die letzte Prüfung verlangt ein vollständiges legendäres Loadout.",
+      "reward": 8000,
+      "quests": [
+        {
+          "id": "reach-moonbreak",
+          "title": "Wo der Himmel fiel",
+          "description": "Erreiche Gruppenstufe 301 und schlie\u00dfe Mondbruch erfolgreich ab.",
+          "type": "moonbreak",
+          "target": 1
+        },
+        {
+          "id": "legendary-six",
+          "title": "Eine legendäre Sammlung",
+          "description": "Trage sechs legendäre Gegenst\u00e4nde.",
+          "type": "rarity",
+          "rarity": "legendary",
+          "target": 6
+        },
+        {
+          "id": "tower-fifty",
+          "title": "Der endlose Aufstieg",
+          "description": "Erreiche Etage 50 im Turm.",
+          "type": "tower",
+          "target": 50
+        },
+        {
+          "id": "legendary-companions",
+          "title": "Ausrüstung für den Gefährten",
+          "description": "Rüste deinen Gefährten mit drei legendären Gegenständen aus.",
+          "type": "companionRarity",
+          "target": 3,
+          "rarity": "legendary"
+        },
+        {
+          "id": "all-legendary",
+          "title": "Ein legendäres Loadout",
+          "description": "R\u00fcste jeden f\u00fcr deine Hauptklasse verf\u00fcgbaren Ausr\u00fcstungsslot mit einem legendären Gegenstand aus.",
+          "type": "allLegendary",
+          "target": 1
+        }
+      ]
+    }
+  ]
+}

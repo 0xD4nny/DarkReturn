@@ -1,0 +1,395 @@
+{
+  "balance": {
+    "items": {
+      "socketCounts": {
+        "equipment": 10
+      },
+      "socketSuccessChanceByTarget": {
+        "equipment": [
+          55,
+          40,
+          30,
+          20,
+          10,
+          5,
+          1,
+          0.5,
+          0.25,
+          0.1
+        ]
+      },
+      "gemUpgradeRatio": 10,
+      "gemValues": {
+        "common": {
+          "attribute": 5,
+          "bonuses": {
+            "Lebenskraft": 1,
+            "Angriff": 1,
+            "Verteidigung": 1
+          }
+        },
+        "uncommon": {
+          "attribute": 10,
+          "bonuses": {
+            "Lebenskraft": 2,
+            "Angriff": 2,
+            "Verteidigung": 2
+          }
+        },
+        "rare": {
+          "attribute": 20,
+          "bonuses": {
+            "Lebenskraft": 3,
+            "Angriff": 3,
+            "Verteidigung": 3
+          }
+        },
+        "epic": {
+          "attribute": 30,
+          "bonuses": {
+            "Lebenskraft": 4,
+            "Angriff": 4,
+            "Verteidigung": 4
+          }
+        },
+        "legendary": {
+          "attribute": 50,
+          "bonuses": {
+            "Lebenskraft": 5,
+            "Angriff": 5,
+            "Verteidigung": 5
+          }
+        }
+      },
+      "upgradeBaseStatMultiplier": 1.1,
+      "upgradeAffixPercentPerLevel": 10,
+      "weaponBaseDamage": {
+        "bow": 100,
+        "sword": 100,
+        "staff": 100,
+        "bell": 100
+      },
+      "armorBaseDefense": {
+        "shield": 50,
+        "helmet": 30,
+        "chest": 80,
+        "gloves": 20,
+        "boots": 20
+      },
+      "weaponBaseDamageRangesByRarity": {
+        "common": {
+          "bow": [
+            50,
+            100
+          ],
+          "sword": [
+            50,
+            100
+          ],
+          "staff": [
+            50,
+            100
+          ],
+          "bell": [
+            50,
+            100
+          ]
+        },
+        "uncommon": {
+          "bow": [
+            100,
+            200
+          ],
+          "sword": [
+            100,
+            200
+          ],
+          "staff": [
+            100,
+            200
+          ],
+          "bell": [
+            100,
+            200
+          ]
+        },
+        "rare": {
+          "bow": [
+            200,
+            400
+          ],
+          "sword": [
+            200,
+            400
+          ],
+          "staff": [
+            200,
+            400
+          ],
+          "bell": [
+            200,
+            400
+          ]
+        },
+        "epic": {
+          "bow": [
+            400,
+            600
+          ],
+          "sword": [
+            400,
+            600
+          ],
+          "staff": [
+            400,
+            600
+          ],
+          "bell": [
+            400,
+            600
+          ]
+        },
+        "legendary": {
+          "bow": [
+            800,
+            1000
+          ],
+          "sword": [
+            800,
+            1000
+          ],
+          "staff": [
+            800,
+            1000
+          ],
+          "bell": [
+            800,
+            1000
+          ]
+        }
+      },
+      "armorBaseDefenseRangesByRarity": {
+        "rare": {
+          "helmet": [
+            48,
+            60
+          ],
+          "chest": [
+            128,
+            160
+          ],
+          "gloves": [
+            32,
+            40
+          ],
+          "boots": [
+            32,
+            40
+          ],
+          "shield": [
+            80,
+            100
+          ]
+        },
+        "legendary": {
+          "helmet": [
+            800,
+            1000
+          ],
+          "chest": [
+            800,
+            1000
+          ],
+          "gloves": [
+            800,
+            1000
+          ],
+          "boots": [
+            800,
+            1000
+          ],
+          "shield": [
+            800,
+            1000
+          ]
+        }
+      },
+      "affixCountByRarity": {
+        "common": 0,
+        "uncommon": 1,
+        "rare": 2,
+        "epic": 3,
+        "legendary": 4,
+        "mythic": 4
+      },
+      "rarityWeightsByArea": [
+        {
+          "common": 80,
+          "uncommon": 15,
+          "rare": 5
+        },
+        {
+          "common": 60,
+          "uncommon": 30,
+          "rare": 10
+        },
+        {
+          "common": 40,
+          "uncommon": 30,
+          "rare": 30
+        },
+        {
+          "common": 30,
+          "uncommon": 30,
+          "rare": 40
+        },
+        {
+          "common": 10,
+          "uncommon": 30,
+          "rare": 60
+        },
+        {
+          "common": 5,
+          "uncommon": 15,
+          "rare": 80
+        }
+      ],
+      "maxUpgradeLevel": 20,
+      "upgradeSuccessChanceByLevel": [
+        100,
+        100,
+        80,
+        70,
+        60,
+        50,
+        35,
+        20,
+        5,
+        1,
+        0.9,
+        0.8,
+        0.7,
+        0.6,
+        0.5,
+        0.4,
+        0.3,
+        0.2,
+        0.1,
+        0.05
+      ],
+      "armorUpgradeMilestones": [
+        {
+          "level": 3,
+          "text": "+10 % Lebenskraft, +10 % Trefferchance, +4 % auf alle Attribute, +5 % Angriff, +10 % Angriffsgeschwindigkeit, +10 % kritische Chance, +10 % Abklingzeitreduktion",
+          "effects": {
+            "healthPercent": 10,
+            "hitChance": 10,
+            "allAttributesPercent": 4,
+            "attackPercent": 5,
+            "attackSpeedPercent": 5,
+            "criticalChance": 5,
+            "cooldownReduction": 5
+          }
+        },
+        {
+          "level": 6,
+          "text": "+20 % Lebenskraft, +20 % Trefferchance, +5 % auf alle Attribute, +10 % Angriff, +10 % Angriffsgeschwindigkeit, +10 % kritische Chance, +10 % Abklingzeitreduktion",
+          "effects": {
+            "healthPercent": 20,
+            "hitChance": 20,
+            "allAttributesPercent": 5,
+            "attackPercent": 10,
+            "attackSpeedPercent": 10,
+            "criticalChance": 10,
+            "cooldownReduction": 10
+          }
+        },
+        {
+          "level": 8,
+          "text": "+30 % Lebenskraft, +30 % Trefferchance, +8 % auf alle Attribute, +15 % Angriff, +15 % Angriffsgeschwindigkeit, +15 % kritische Chance, +15 % Abklingzeitreduktion",
+          "effects": {
+            "healthPercent": 30,
+            "hitChance": 30,
+            "allAttributesPercent": 8,
+            "attackPercent": 15,
+            "attackSpeedPercent": 15,
+            "criticalChance": 15,
+            "cooldownReduction": 15
+          }
+        },
+        {
+          "level": 10,
+          "text": "+40 % Lebenskraft, +40 % Trefferchance, +10 % auf alle Attribute, +20 % Angriff, +20 % Angriffsgeschwindigkeit, +20 % kritische Chance, +20 % Abklingzeitreduktion",
+          "effects": {
+            "healthPercent": 40,
+            "hitChance": 40,
+            "allAttributesPercent": 10,
+            "attackPercent": 20,
+            "attackSpeedPercent": 20,
+            "criticalChance": 20,
+            "cooldownReduction": 20
+          }
+        },
+        {
+          "level": 13,
+          "text": "+50 % Lebenskraft, +50 % Trefferchance, +25 % auf alle Attribute, +40 % Angriff, +40 % Angriffsgeschwindigkeit, +40 % kritische Chance, +40 % Abklingzeitreduktion",
+          "effects": {
+            "healthPercent": 50,
+            "hitChance": 50,
+            "allAttributesPercent": 50,
+            "attackPercent": 40,
+            "attackSpeedPercent": 40,
+            "criticalChance": 40,
+            "cooldownReduction": 40
+          }
+        },
+        {
+          "level": 16,
+          "text": "+60 % Lebenskraft, +60 % Trefferchance, +50 % auf alle Attribute, +60 % Angriff, +60 % Angriffsgeschwindigkeit, +60 % kritische Chance, +60 % Abklingzeitreduktion",
+          "effects": {
+            "healthPercent": 60,
+            "hitChance": 60,
+            "allAttributesPercent": 50,
+            "attackPercent": 60,
+            "attackSpeedPercent": 60,
+            "criticalChance": 60,
+            "cooldownReduction": 60
+          }
+        },
+        {
+          "level": 18,
+          "text": "+80 % Lebenskraft, +80 % Trefferchance, +75 % auf alle Attribute, +80 % Angriff, +80 % Angriffsgeschwindigkeit, +80 % kritische Chance, +80 % Abklingzeitreduktion",
+          "effects": {
+            "healthPercent": 80,
+            "hitChance": 80,
+            "allAttributesPercent": 75,
+            "attackPercent": 80,
+            "attackSpeedPercent": 80,
+            "criticalChance": 80,
+            "cooldownReduction": 80
+          }
+        },
+        {
+          "level": 20,
+          "text": "+100 % Lebenskraft, +100 % Trefferchance, +100 % auf alle Attribute, +100 % Angriff, +100 % Angriffsgeschwindigkeit, +100 % kritische Chance, +100 % Abklingzeitreduktion",
+          "effects": {
+            "healthPercent": 100,
+            "hitChance": 100,
+            "allAttributesPercent": 100,
+            "attackPercent": 100,
+            "attackSpeedPercent": 100,
+            "criticalChance": 100,
+            "cooldownReduction": 100
+          }
+        }
+      ],
+      "gemRarityWeights": {
+        "common": 55,
+        "uncommon": 30,
+        "rare": 13,
+        "epic": 1.9,
+        "legendary": 0.1
+      }
+    }
+  }
+}

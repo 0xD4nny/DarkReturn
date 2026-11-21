@@ -1,0 +1,78 @@
+{
+  "mode": "built-in image_gen",
+  "actor": "chain-archon",
+  "enemyName": "Archont der Ketten",
+  "replaces": "Wächter des Namenlosen / nameless-guardian",
+  "width": 1254,
+  "height": 1254,
+  "alpha": true,
+  "arena": {
+    "path": "Assets/Art/battle/regions/tower-chain-cathedral-arena.png",
+    "width": 1967,
+    "height": 800
+  },
+  "layout": "Eleven individual transparent pose images replacing the old four-variant 2x2 guardian atlas in active tower boss encounters. The legacy bite filename contains the judgment hammer strike. Tower boss remains on floors divisible by ten and retains existing numeric encounter rules; attack display name is Kettenurteil. Dedicated has-tower-archon layout centers one enlarged boss with separate name and HP labels. CSS provides grounded breathing, hammer impact at 250 ms and corpse settling. Legacy guardian files remain available but are not selected by current tower encounters.",
+  "frames": [
+    "idle",
+    "bite",
+    "hit",
+    "defeated",
+    "frozen",
+    "burning-idle",
+    "burning-bite",
+    "burning-hit",
+    "poison-idle",
+    "poison-bite",
+    "poison-hit"
+  ],
+  "prompts": [
+    {
+      "asset": "Assets/Art/battle/regions/tower-chain-cathedral-arena.png",
+      "prompt": "Create a COMPLETELY NEW TOWER OF THE NAMELESS battle arena for dark fantasy RPG DarkReturn, called THE CHAIN CATHEDRAL. Attached old tower image is ONLY a rendering-quality and front combat camera reference, not layout/design to copy. Wide cinematic panoramic 2.46:1, 1967x800, polished painterly semi-realistic game environment. Inside an immense ancient tower: colossal black stone gothic buttresses, soaring vertical walls with distant ascending balconies, gigantic iron chains suspended from high vaults framing both sides, an enormous SEALED BRASS GATE in the far back with abstract circular locking mechanism and an empty judgment throne on a distant low dais. Dark crimson glass windows and narrow warm antique-gold light shafts, black iron and aged brass details, muted crimson seal-light at far edges. Give a sense of an endless prison sanctuary and a sovereign boss chamber, majestic and oppressive. COMPOSITION ESSENTIAL: lower 55 percent is a large EMPTY FLAT continuous dark stone combat floor for enemies; horizon/distant dais near 45 percent height. Main floor stays clear with subtle worn radial gold inlay around OUTER edges, chains/stone debris only at foreground corners. No huge symbols or stairs in fighting center. Clear readable mid-gray ground, dramatic dark/gold/crimson architecture above. No people, creatures, boss, UI, text or borders. Fill whole panorama."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-idle.png",
+      "prompt": "Create completely NEW tower boss ARCHONT DER KETTEN / CHAIN ARCHON for dark fantasy RPG DarkReturn. Attached titan is ONLY polished semi-realistic rendering quality and FRONT CAMERA reference, absolutely NOT anatomy/design. New boss: immense grounded TWO-ARMED, TWO-LEGGED gothic armored jailer sovereign, broad BLACK IRON plate armor with aged ANTIQUE GOLD edging and fine abstract engraved reliefs, squared cathedral-buttress pauldrons, a tall sealed crown-like greathelm with FOUR narrow vertical spires and TWO small CRIMSON eye slits, no visible human face. Chest contains a barred iron RELIQUARY CAGE with dim red light inside. Heavy chains cross diagonally around torso and forearms, a few oversized keys at belt. Tattered deep burgundy mantle falls behind legs. His RIGHT HAND holds a massive upright JUDGMENT WARHAMMER beside body, ornate rectangular black-iron/brass head shaped like a miniature sealed gothic gate; shaft gripped near waist, weapon fully visible. LEFT gauntleted hand clenched at other side with a short attached chain loop hanging near thigh, no long chain outside frame. Two heavy planted armored boots, no floating. IDLE pose facing viewer squarely, threatening monumental silhouette, immense shoulder mass, sovereign executioner rather than animal. NO extra arms, moonstone, crescent halo, wings, claws, fur or starfield. Same exquisite detailed game rendering as reference, metallic material definition, muted warm gold/red with cool gray edge highlights for readability. Square 1254x1254; whole crown, hammer, cape, hands, boots and chains fit within central 84 percent width and y7%-94%, generous clear margins, nothing cropped. CLEAN CUTOUT ONLY: no floor, shadow plane, aura, background, smoke, detached particles, text or UI. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-bite.png",
+      "prompt": "Edit attached ARCHONT DER KETTEN / CHAIN ARCHON idle sprite into ATTACK frame: a massive downward JUDGMENT HAMMER strike toward viewer. Preserve EXACT same TWO-ARMED armored jailer boss, sealed four-spired crown helmet, two crimson eyes, black iron/aged gold cathedral armor, chest reliquary with dim red light, crossed chains, keys, burgundy mantle, TWO grounded boots and same ornate gothic gate-headed warhammer. Pose: torso leans forward, weapon arm drives hammer diagonally down and FORWARD so broad hammer face is presented toward viewer at lower-left side, free gauntleted fist pulled back for balance. Legs braced wide, mantle swept slightly back, attached chains taut. Hammer remains recognizable same design, shaft hand grip physically correct, no extra weapon or hand. Keep COMPLETE hammer head, shaft, crown, cape and feet INSIDE generous transparent frame margins, same square canvas, full-body front camera and approximate scale. Clean cutout, no impact dust cloud, ground, shadow plane, backdrop, halo, smoke, detached particles, blood or text. Genuine transparent alpha and detailed polished semi-realistic RPG rendering."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-hit.png",
+      "prompt": "Edit attached ARCHONT DER KETTEN / CHAIN ARCHON idle sprite into HIT REACTION frame. Preserve EXACT same two-arm/two-leg black-iron and antique-gold gothic jailer, four-spired sealed helmet, crimson eye slits, barred red chest reliquary, crossed chains, keys, burgundy mantle, heavy boots and SAME gate-headed judgment warhammer. Recoil pose: upper torso leans back and slightly sideways, helmet tilts, free gauntlet raised defensively across chest, weapon hand keeps firm grip while hammer angled outward to side, feet remain planted. Distinct hit response, not attacking. Full body FRONT camera, same square canvas and approximate scale, entire crown/hammer/cape/boots/chains INSIDE generous margins, nothing cropped. CLEAN CUTOUT ONLY: no impact flash, floor, shadow plane, aura, halo, background, smoke, particles, blood, text or extra anatomy. Genuine transparent alpha, detailed polished semi-realistic RPG sprite."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-defeated.png",
+      "prompt": "Edit attached ARCHONT DER KETTEN / CHAIN ARCHON idle sprite into DEFEATED corpse frame. Preserve exact black iron/antique gold gothic two-arm/two-leg jailer sovereign, four-spired helmet, crossed chains, chest reliquary cage, keys, burgundy mantle and SAME gate-headed judgment warhammer. Body collapsed fully onto side/belly, helmet rests low toward viewer, gauntlets limp near body, boots folded behind, cape crumpled beneath armor. Warhammer lies beside corpse with FULL head AND shaft visible, not standing upright. Chains slack. Eyes DARK and chest cage red light EXTINGUISHED, empty inactive armor presence. Whole recognizable fallen boss with no gore. LOW broad silhouette only in LOWER HALF of SAME square transparent canvas, bottom baseline at y94%, ample empty alpha space above. All crown spikes, cape, hands and whole weapon inside generous margins. No floor drawn, ground shadow plane, blood, detached rubble, smoke, aura, backdrop, text or extra anatomy. Same detailed polished semi-realistic RPG rendering, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-frozen.png",
+      "prompt": "Edit attached ARCHONT DER KETTEN / CHAIN ARCHON idle sprite into FROZEN status frame. Preserve EXACT two-arm/two-leg anatomy, four-spired sealed helmet, upright gate-headed judgment hammer, crossed heavy chains, keys, barred chest cage, black iron/antique gold armor, burgundy mantle, same idle pose/positions, square canvas, full-body front camera and scale. Heavy blue-white hoarfrost along armor ridges and chains, thin pale blue ice on hammer head and crown, small attached icicles under pauldrons, hammer edges, hands and chains. Eyes and chest cage light now icy BLUE rather than red. Original iron/gold/cloth remain recognizable, not an opaque ice block. All crown/weapon/icicle tips inside CLEAR margins, leave room above crown. CLEAN CUTOUT: transparent space outside actual armor/cloth/weapon/attached ice, clear gaps around hammer/legs. NO halo, aura, snow cloud, mist, background, floor, shadow plane, text or extra anatomy. Genuine transparent alpha, detailed polished semi-realistic RPG sprite."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-burning-idle.png",
+      "prompt": "Edit attached ARCHONT DER KETTEN / CHAIN ARCHON idle sprite into BURNING IDLE status. Preserve EXACT same two-arm/two-leg gothic iron/gold jailer, upright gate-headed judgment hammer, four-spired helmet, red eyes and barred red chest, crossed chains, keys, burgundy mantle, pose/positions, square canvas, front camera, scale and margins. Add clearly visible ORANGE-YELLOW flames along shoulder edges, forearms, lateral hammer-head edges and lower mantle hem, warm scorched reflections on black iron and gold. IMPORTANT keep crown and highest hammer spikes clear: NO flame above the tallest helmet/weapon points, all flames fully INSIDE image with transparent margins. Original crimson eyes/chest stay recognizable, don't turn entire armor into lava. Clean cutout with no halo, aura, glow cloud, smoke wall, floor, shadow plane, backdrop, sparks, text or extra anatomy. Genuine transparent alpha, fine semi-realistic game detail."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-burning-bite.png",
+      "prompt": "Edit FIRST reference CHAIN ARCHON HAMMER ATTACK frame into BURNING ATTACK variant. SECOND reference supplies fire material appearance ONLY. Preserve FIRST EXACT forward hammer-strike pose, gate-shaped hammer face and shaft, hand grip, free fist, crown helmet, iron/gold armor, crossed chains, keys, chest cage, burgundy mantle, two arms/two legs, front camera, square canvas and scale. Matching orange-yellow flames along shoulders, forearm edges, lateral hammer-head edges and mantle hem, warm metal highlights; crimson eyes/chest still visible. NO flames above tallest helmet/hammer points; all flame tips and complete weapon INSIDE generous transparent margins. Do NOT switch to idle pose. Clean cutout with NO aura, halo, smoke cloud, impact dust, backdrop, floor, shadow plane, blood, text, sparks or extra anatomy. Genuine transparent alpha, detailed semi-realistic RPG art."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-burning-hit.png",
+      "prompt": "Edit FIRST reference CHAIN ARCHON HIT REACTION frame into BURNING HIT variant. SECOND reference supplies fire appearance ONLY. Preserve FIRST EXACT backward recoil, tilted four-spired helmet, free gauntlet raised defensively, hand firmly holding same angled gate-headed hammer, iron/gold armor, red eyes/chest cage, crossed chains/keys, burgundy mantle, grounded boots, full-body front camera, square canvas and scale. Matching restrained orange-yellow flames along shoulders, forearm edges, lateral hammer-head edges and mantle hem, warm scorched metal highlights. Keep flame tips BELOW tallest helmet/weapon points with all crown, full hammer, boots, cape and fire safely within margins. Do NOT switch to idle or attack. Clean cutout, NO aura, halo, smoke cloud, backdrop, floor, shadow plane, impact particles, blood, text or extra anatomy. Genuine transparent alpha, polished detailed semi-realistic RPG art."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-poison-idle.png",
+      "prompt": "Edit attached ARCHONT DER KETTEN / CHAIN ARCHON idle game sprite into POISONED IDLE status. Preserve EXACT two-arm/two-leg anatomy, four-spired sealed helmet, upright gate-headed judgment hammer and hand grip, heavy iron/gold armor, crossed chains, keys, burgundy mantle, boots, pose/positions, square canvas, full-body FRONT camera and scale. Eyes and barred chest reliquary now glow vivid LIME/EMERALD GREEN instead of crimson; subtle green venom beads at chain links, armor joints and hammer gate details, selected narrow seams green. Keep black iron, aged gold and burgundy cloth original colors, no full-body green wash. Entire crown, hammer, cape, feet and attached chain loop inside generous margins. CLEAN CUTOUT: no vapor, aura, halo, glow cloud, smoke, floor, backdrop, shadow plane, detached particles, text or extra anatomy. Green accents ON actual creature and weapon only. Genuine transparent alpha, detailed polished semi-realistic RPG art."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-poison-bite.png",
+      "prompt": "Edit FIRST reference CHAIN ARCHON HAMMER ATTACK sprite into POISONED ATTACK variant. SECOND reference supplies poison material appearance ONLY. Preserve FIRST EXACT forward hammer strike, same gate-headed hammer face/shaft and physically correct hand grip, free gauntleted fist, four-spired helmet, two-arm/two-leg iron/gold anatomy, barred chest cage, crossed chains, keys, burgundy mantle, boots, scale, full-body FRONT camera and square canvas. Eyes and chest cage glow vivid lime/emerald GREEN; subtle green venom beads and selected green seams on chain links, armor and hammer gate, matching second reference. Black iron/gold and burgundy remain original colors, no green wash. All crown/weapon/cape/feet inside clear margins. Do NOT switch to idle. CLEAN CUTOUT: no aura, halo, smoke cloud, vapor, floor, backdrop, impact dust, flame, orange light, blood, text or extra anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/chain-archon-front/chain-archon-front-poison-hit.png",
+      "prompt": "Edit FIRST reference CHAIN ARCHON HIT REACTION sprite into POISONED HIT variant. SECOND reference supplies poison material appearance ONLY. Preserve FIRST EXACT backward recoil, tilted crown helmet, free gauntlet protecting chest, other hand gripping same angled gate-headed hammer, two-arm/two-leg anatomy, iron/gold armor, chains, keys, burgundy mantle, boots, full-body FRONT camera, square canvas, scale and margins. Eyes and barred chest cage vivid lime/emerald GREEN, subtle green venom beads on chains/armor/hammer seams matching second reference. Black iron/aged gold and burgundy stay original colors, no full-body green wash. Do NOT change hit pose to idle or attack. Complete hammer/crown/cape/feet inside frame. Clean cutout: NO vapor, smoke, aura, halo, glow cloud, floor, backdrop, shadow plane, flame, orange light, text, blood or extra anatomy. Genuine transparent alpha, polished detailed semi-realistic RPG art."
+    }
+  ]
+}

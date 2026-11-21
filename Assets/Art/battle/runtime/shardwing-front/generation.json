@@ -1,0 +1,109 @@
+{
+  "mode": "built-in image_gen",
+  "region": "glasforst",
+  "actor": "shardwing",
+  "enemyName": "Scherbenschwinge",
+  "previousEnemyName": "Splitterwolf",
+  "width": 1254,
+  "height": 1254,
+  "alpha": true,
+  "arena": {
+    "path": "Assets/Art/battle/regions/glasforst-arena-artwork.png",
+    "width": 1967,
+    "height": 800
+  },
+  "layout": "Fourteen individual transparent pose images. Eleven standard front-enemy states plus flap, burning-flap and poison-flap. Idle/run alternate raised/lowered wings at 280 ms with pose-token cleanup and reduced-motion support. CSS adds hover and corpse fall; the legacy bite filename contains the diving talon attack.",
+  "frames": [
+    "idle",
+    "flap",
+    "bite",
+    "hit",
+    "defeated",
+    "frozen",
+    "burning-idle",
+    "burning-flap",
+    "burning-bite",
+    "burning-hit",
+    "poison-idle",
+    "poison-flap",
+    "poison-bite",
+    "poison-hit"
+  ],
+  "prompts": [
+    {
+      "asset": "Assets/Art/battle/regions/glasforst-arena-artwork.png",
+      "prompt": "Create NEW GLASFORST / GLASS FOREST battle arena for dark fantasy RPG DarkReturn. Attached panorama is ONLY rendering style, front battle camera perspective and framing reference. Match polished detailed painterly semi-realistic game art, very wide panoramic approximately 2.46:1, 1967x800. Environment: ancient petrified grove of BLACK GLASS trees with angular trunks and crystalline branches, deep layered forest receding into cool teal mist, sharp translucent pale aqua crystal growths catching light on tree edges. Quiet mysterious turquoise light between trunks, subtle prismatic reflections, small shattered glass chips at edges. Large gnarled glass trees frame BOTH SIDES, detailed foreground corners. Crucial composition: lower 55 percent mostly EMPTY FLAT continuous dark glass-and-earth clearing, readable open combat ground for three flying monsters; horizon near 45 percent height. No dense crystals or obstacles in central arena, no lava, swamp or snow, no floating islands. Black glass with cool gray, teal and pale green highlights; dark fantasy but readable atmosphere and ground. No characters, monsters, text, UI or border. Fill entire panorama."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-idle.png",
+      "prompt": "Create NEW creature SCHERBENSCHWINGE / SHARDWING for dark fantasy RPG DarkReturn. Attached creature is ONLY a polished semi-realistic rendering-quality and FRONT CAMERA reference, NOT anatomy or design. A flying crystalline BIRD OF PREY made of BLACK GLASS: compact angular owl-like head with TWO luminous teal eyes and a sharp hooked glass BEAK (no mammal jaw), charcoal prismatic chest with small teal core, TWO broad bird wings composed of layered razor-sharp translucent aqua/black glass shard FEATHERS, TWO small taloned bird feet tucked beneath body in flight, short fanned tail of crystal blades. No fur, wolf face, humanoid arms, bat membranes, clothing or weapons. Fierce guardian of a black glass forest, elegant threatening silhouette; crisp reflective facets and slightly translucent pale teal crystal edges, fine detail matching reference quality. Full FRONT view, symmetrical hovering pose, wings lifted outward/upward in a shallow V. COMPOSITION FOR ANIMATION: square 1254x1254 canvas, beak/head centered near x50 y38 percent, chest center x50 y53, tucked talons around y73, tail around y80. Wing tips occupy central 88 percent width, top around y8, generous empty transparent space below creature to show flight. Entire bird, wings, tail and claws visible with clear margins. No floor, ground shadow, scenery, disconnected shards, text or UI. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-idle.png",
+      "refinement": true,
+      "prompt": "Edit attached SHARDWING game sprite to FIX CROPPED WING TIPS. Keep EXACT same crystalline owl/raptor, materials, face, teal eyes/core, raised-wing pose and detail. Camera must ZOOM OUT so the whole bird is about 80 PERCENT of current width. Render on SAME square transparent canvas with very obvious empty transparent padding left and right: at least 100 pixels on a 1254-pixel image. Restore complete pointed feathers at both outer edges, no feather may touch canvas border. Do not enlarge it to fill canvas. Preserve centered body and empty space below tail; keep whole creature roughly within x10%-90%, y8%-80%. This is a production sprite, safe transparent margins are essential. No background, floor, text or new effects. Preserve true alpha transparency."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-flap.png",
+      "prompt": "Edit attached SCHERBENSCHWINGE / SHARDWING raised-wing idle sprite into second FLAPPING frame: WINGS DOWN. Preserve EXACT same bird identity, crystal feather design, teal eyes/core, beak, head, torso, tucked talons and short tail, camera, scale and SQUARE canvas. Essential animation registration: HEAD, CHEST CORE and TAIL must stay at EXACT SAME POSITIONS and sizes as reference. Move ONLY the TWO WINGS: sweep both wings downward and slightly outward, tips near lower left/right at y70-80 percent instead of raised, feather fans visibly angle down in a strong downstroke. Keep wing roots attached at same shoulders, don't move body to fill image. All wing tips within x8%-92%, ample clear transparent padding. Entire bird still flying; no feet on ground. Same black glass with translucent aqua edges and detailed semi-realistic rendering. No floor, shadow plane, background, motion blur, text or detached shards. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-bite.png",
+      "prompt": "Edit attached SCHERBENSCHWINGE / SHARDWING idle sprite into ATTACK frame: bird lunging forward in a short DIVE directly toward viewer, both sharp bird talons thrust forward open, hooked BEAK slightly open in screech, wings angled backward/up as sweeping blades. Preserve EXACT same crystalline owl/raptor identity, two teal eyes, chest core, black glass with translucent aqua shard feathers, short fan tail, two wings and two bird feet. Full FRONT view, same semi-realistic detail, square canvas and approximately same head/body scale. Keep full wings, talons, beak and tail inside central 84 percent width with ample transparent margins; body remains flying in central canvas, lower empty space visible. No wolf mouth, arms, extra limbs, floor, background, motion blur, blood, text or detached shards. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-hit.png",
+      "prompt": "Edit attached SCHERBENSCHWINGE / SHARDWING idle sprite into HIT REACTION frame. Preserve same crystalline owl/raptor, two teal eyes, chest core, black glass and aqua shard feathers, hooked beak, two tucked bird feet, short fan tail, front camera, square canvas and roughly same body scale. Creature recoils while airborne: body leans slightly backward and sideways, head tilts with startled screech, one wing lifts sharply while other folds partly inward, feathers held tense. Remains flying in middle of canvas, no ground contact. Distinct moderate recoil silhouette, not idle or forward attack. All wing tips, talons and tail inside generous transparent margins. No missing wings, extra limbs, fur, mammal jaw, impact flash, blood, floor, scenery, text or detached shards. Detailed semi-realistic RPG sprite, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-defeated.png",
+      "prompt": "Edit attached SCHERBENSCHWINGE / SHARDWING flying idle sprite into DEFEATED corpse frame after falling. Preserve same black glass crystalline bird of prey, hooked beak, owl-like head, shard feathers, two wings, two bird feet and short crystal fan tail. Bird is NOW LYING LIFELESS ON ITS SIDE with head resting low facing roughly viewer, wings folded/collapsed asymmetrically against body, talons limp, eyes CLOSED and dark, chest core extinguished. Crystal edges subdued gray-aqua with no magical glow. Whole recognizable bird, no random pile of glass. Composition: same square transparent canvas, LOW horizontal silhouette only in LOWER THIRD, bottom baseline at 94 percent height, large empty transparent space above. No hovering, spread flight wings or standing stance. All feathers and tail inside generous margins. No floor drawn, scenery, shadow plane, blood, detached shards, text or UI. Same polished semi-realistic rendering, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-frozen.png",
+      "prompt": "Edit attached SCHERBENSCHWINGE / SHARDWING raised-wing idle sprite into FROZEN status frame. Preserve EXACT same crystalline bird, head/core/talon/tail positions, body scale, raised-wing pose, two teal eyes, square canvas, front camera and generous transparent padding. Immobilized mid-flight with both wings held fixed. Blue-white hoarfrost and a thin translucent layer of pale BLUE ice along black glass feathers, small icicles under wing edges, beak and talons. Eyes/core become icy blue rather than teal. Keep black glass facets visible beneath frost, distinct from default aqua crystal feathers, no opaque ice block. Whole wings and tail inside margins. No floor, backdrop, snowstorm, disconnected shards, text or extra anatomy. Detailed semi-realistic RPG sprite, genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-frozen.png",
+      "refinement": true,
+      "prompt": "Edit attached FROZEN SHARDWING sprite: REMOVE THE ENTIRE LARGE PALE HALO / CLOUD / GLOW BEHIND AND AROUND THE BIRD. Every pixel outside actual feathers, beak, body, talons and small attached icicles must be clear TRANSPARENT alpha. Do NOT replace halo with any color, fog, aura, glow or checkerboard. Preserve EXACT bird identity, pose, positions, scale, square canvas, icy frost-coated glass feathers, small attached icicles, blue eyes/core. No changes to bird geometry. Crisp clean cutout edges with ordinary anti-aliasing only. Transparent space must remain visible through gaps BETWEEN feathers as well. No backdrop, drop shadow, text or extra effects."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-burning-idle.png",
+      "prompt": "Edit attached SCHERBENSCHWINGE / SHARDWING raised-wing idle sprite into BURNING IDLE status. Preserve EXACT bird identity, raised-wing geometry, head/core/talon/tail positions, scale, camera, square canvas and generous padding. Same black glass crystalline owl/raptor with TWO teal eyes and teal chest core. Add distinct restrained orange-yellow flames following upper wing ridges and outer shard-feather edges, small flames at shoulders and chest edges; warm orange highlights but keep original aqua crystal edges and charcoal glass recognizable. Face and entire wings clearly visible. No large glowing aura, halo, opaque smoke or background outside actual flames. All wing tips/flames inside margins, no floor, text, detached sparks or new anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-burning-flap.png",
+      "prompt": "Edit FIRST reference SHARDWING WINGS-DOWN FLAP frame into BURNING FLAP variant. SECOND reference supplies fire appearance ONLY. Preserve FIRST EXACT wings-down pose, feather angles, head/chest core/talon/tail positions, scale, full-body front camera, square canvas and generous transparent margins. Add restrained orange-yellow flames along wing ridges and outer shard feather edges and small shoulder/chest flames matching second reference, with warm highlights. Eyes/core stay teal, dark glass/aqua feathers recognizable. Do NOT raise wings or alter body registration. All flames and tips inside image, face visible. NO large aura, halo, smoke curtain, background, floor, text, detached sparks or new anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-burning-bite.png",
+      "prompt": "Edit FIRST reference SHARDWING DIVE ATTACK frame into BURNING ATTACK variant. SECOND reference supplies flame/material appearance ONLY. Preserve FIRST EXACT forward diving pose, extended talons, open hooked beak, wing angles, head/body scale, teal eyes/core, black glass anatomy, square canvas and margins. Add matching restrained orange-yellow flames on wing ridges, feather edges and shoulders, warm highlights; original aqua edges remain recognizable. All feathers/flames within frame and face visible. Do NOT switch to idle or downstroke. No large glow aura, halo, smoke backdrop, floor, text, blood, detached particles or extra anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-burning-hit.png",
+      "prompt": "Edit FIRST reference SHARDWING airborne HIT REACTION frame into BURNING HIT variant. SECOND reference supplies flame/material appearance ONLY. Preserve FIRST EXACT backward recoil, tilted bird head, one wing raised/other folded, tucked talons, fan tail, body scale, teal eyes/core, front camera, square canvas and generous margins. Add matching restrained orange-yellow flames along shard-feather edges, wing ridges and shoulders with warm highlights; dark glass/aqua feathers remain recognizable. Do NOT change recoil into idle or attack. Keep all flames and wing tips within frame and face clear. No large halo, aura, smoke wall, floor, background, text, blood, detached sparks or extra anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-poison-idle.png",
+      "prompt": "Edit attached SCHERBENSCHWINGE / SHARDWING raised-wing idle sprite into POISONED IDLE status. Preserve EXACT creature identity, raised-wing geometry, head/core/talon/tail positions, scale, front camera, square canvas and generous transparent margins. Eyes/core become vivid sickly LIME/EMERALD GREEN instead of teal; some feather seams and tips also glow green to clearly distinguish poison from normal turquoise. Subtle luminous green venom beads along shard-feather joints; a few THIN green vapor wisps hug wing edges and shoulders. Black glass and translucent aqua feathers otherwise retain natural color/texture. No flames, orange light or full-body green wash. Absolutely NO broad aura, halo, smoke cloud or opaque background behind wings. Whole bird visible, no floor, text, detached particles or new anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-poison-idle.png",
+      "refinement": true,
+      "prompt": "Edit attached POISONED SHARDWING sprite: REMOVE ALL LARGE GREEN/GREY HALO, FOG AND GLOW OUTSIDE THE BIRD. Preserve EXACT bird geometry, pose, registration, black glass/aqua feather colors, lime-green eyes/core, green seams and venom beads. Clean cutout only. Every pixel outside actual feathers, beak, body, talons and tail must be genuinely TRANSPARENT alpha, including all spaces BETWEEN feathers. Keep green accents ON feathers only. NO vapor wisps, glow, aura, drop shadow, cloud, backdrop, floor or checkerboard anywhere. Ordinary clean anti-aliased edges only. Same square canvas and dimensions, no resizing or pose change."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-poison-flap.png",
+      "prompt": "Edit FIRST reference SHARDWING WINGS-DOWN FLAP frame into POISONED FLAP variant. SECOND reference supplies poison material appearance ONLY. Preserve FIRST EXACT downward-wing angles, feather geometry, head/core/talon/tail registration, scale, front camera, square canvas and margins. Eyes/core and selected feather seams/tips lime/emerald green, tiny green venom beads at feather joints matching second reference; black glass/aqua feathers otherwise unchanged. Do NOT raise wings or move body. Clean cutout, NO vapor wisps, aura, halo, smoke, glow outside creature, backdrop or floor. Green accents ON feathers only. Clear transparent gaps between feathers. Entire wings/tail inside frame, no flames, orange light, text, detached particles or extra anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-poison-bite.png",
+      "prompt": "Edit FIRST reference SHARDWING DIVE ATTACK frame into POISONED ATTACK variant. SECOND reference supplies poison material appearance ONLY. Preserve FIRST EXACT diving pose, extended sharp talons, open hooked bird beak, wings angled back/up, head/body scale, two eyes, core, tail, square canvas and margins. Eyes/core and some feather seams/tips vivid lime/emerald green instead of teal, tiny green venom beads at joints matching second reference. Dark glass and aqua feathers otherwise unchanged. Do NOT change pose to idle. Clean cutout: NO smoke, vapor, aura, halo or glow outside feathers; green accents ON actual creature only. All wings/talons inside frame. No flames, orange light, floor, backdrop, blood, text, particles or extra anatomy. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/shardwing-front/shardwing-front-poison-hit.png",
+      "prompt": "Edit FIRST reference SHARDWING airborne HIT REACTION frame into POISONED HIT variant. SECOND reference supplies poison material appearance ONLY. Preserve FIRST EXACT backward recoil, tilted owl-like bird head, one wing raised/other folded, tucked talons, fan tail, body scale, two eyes, core, square canvas, front camera and margins. Eyes/core and selected feather seams/tips vivid lime/emerald green, tiny green venom beads at joints as second reference. Dark glass and aqua feathers otherwise retain color/texture. Do NOT change pose to idle or attack. Clean cutout: NO smoke, vapor, halo, aura or glow outside creature, green accents ON actual feathers only. All wings/tail inside frame. No flames, orange light, floor, backdrop, blood, text, particles or extra anatomy. Genuine transparent alpha."
+    }
+  ]
+}

@@ -1,0 +1,1218 @@
+{
+  "balance": {
+    "startingSouls": 10000,
+    "startingInventoryCapacity": 25,
+    "deepOfDark": {
+      "maxTier": 4,
+      "enemyHealthAtFinalArea": 1000000000000,
+      "enemyDamageAtFinalArea": 1000000,
+      "rarityWeightsByTier": [
+        null,
+        {
+          "epic": 100
+        },
+        {
+          "legendary": 100
+        },
+        {
+          "legendary": 100
+        },
+        {
+          "legendary": 100
+        }
+      ],
+      "enemyHealthAtTierEnd": [
+        null,
+        100000,
+        1000000,
+        1000000000,
+        1000000000000
+      ],
+      "enemyHealthAtTierStart": {
+        "4": 10000000000
+      },
+      "enemyDamageScalingTier": 3
+    },
+    "groupLevel": {
+      "costBase": 250,
+      "costPerLevel": 165,
+      "costQuadratic": 4.5,
+      "healthPerLevel": 45,
+      "attackPerLevel": 5,
+      "defensePerLevel": 5
+    },
+    "skillTree": {
+      "pointsEveryLevels": 1,
+      "respecCost": 1000000,
+      "schemaVersion": 3
+    },
+    "inventory": {
+      "maxCapacity": 200,
+      "expansionCostBase": 400,
+      "expansionCostPerSlot": 25,
+      "expansionCostQuadratic": 2
+    },
+    "questBook": {
+      "individualRewardPerStage": 150
+    },
+    "questBoard": {
+      "schemaVersion": 2,
+      "batchSize": 6,
+      "fixedGroups": [
+        {
+          "title": "Die ersten Schritte",
+          "tasks": [
+            {
+              "type": "monsters",
+              "target": 3,
+              "title": "3 Gegner besiegen",
+              "description": "Besiege {target} Gegner in Grenzgebieten.",
+              "minimumDeepTier": 0,
+              "id": "fixed-1-1"
+            },
+            {
+              "type": "mainLevel",
+              "target": 5,
+              "title": "Main auf Stufe 5 bringen",
+              "description": "Kaufe am Altar Stufen für deinen Main bis mindestens Stufe {target}.",
+              "id": "fixed-1-2"
+            },
+            {
+              "type": "companionLevel",
+              "target": 5,
+              "title": "Gefährten auf Stufe 5 bringen",
+              "description": "Wähle am Altar deinen Gefährten und erreiche Stufe {target}.",
+              "id": "fixed-1-3"
+            },
+            {
+              "type": "mainSkillPoints",
+              "target": 3,
+              "title": "Die ersten Skillpunkte ausgeben",
+              "description": "Investiere mindestens {target} Punkte im Skilltree deines Mains. Die Attributpfade beginnen mit Stärke, Intelligenz, Geschicklichkeit oder Glaube.",
+              "id": "fixed-1-4"
+            },
+            {
+              "type": "upgradeStoneDrops",
+              "target": 1,
+              "title": "Aufwertungsstein im Turm farmen",
+              "description": "Wähle im Turm Aufwertungssteine als Beute und finde {target} Stein.",
+              "id": "fixed-1-5"
+            },
+            {
+              "type": "forges",
+              "target": 1,
+              "title": "Die erste Aufwertung",
+              "description": "Lege ein Ausrüstungsteil an und werte es in der Schmiede einmal erfolgreich auf. Aufwertungssteine werden automatisch verbraucht.",
+              "id": "fixed-1-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "classWeapon",
+              "owner": "companion",
+              "rarity": "common",
+              "greaterAffixes": 0
+            },
+            {
+              "type": "souls",
+              "min": 1500,
+              "max": 1500
+            },
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 3
+            },
+            {
+              "type": "classWeapon",
+              "owner": "main",
+              "rarity": "uncommon",
+              "greaterAffixes": 0
+            },
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 3
+            },
+            {
+              "type": "souls",
+              "min": 2500,
+              "max": 2500
+            }
+          ]
+        },
+        {
+          "title": "Sockel und Edelsteine",
+          "tasks": [
+            {
+              "type": "towerRounds",
+              "target": 5,
+              "title": "Fünf Turmrunden gewinnen",
+              "description": "Gewinne {target} Turmrunden seit Gruppenbeginn. Mehrere Durchläufe zählen zusammen.",
+              "id": "fixed-2-1"
+            },
+            {
+              "type": "socketStoneDrops",
+              "target": 1,
+              "title": "Sockelstein im Turm farmen",
+              "description": "Wähle im Turm Sockelsteine als Beute und finde {target} Stein.",
+              "id": "fixed-2-2"
+            },
+            {
+              "type": "socketsOpened",
+              "target": 1,
+              "title": "Den ersten Sockel öffnen",
+              "description": "Öffne in der Sockelkammer einen Sockel an einem angelegten Ausrüstungsplatz. Versuche verbrauchen Sockelsteine; nur Erfolge zählen.",
+              "id": "fixed-2-3"
+            },
+            {
+              "type": "gemDrops",
+              "target": 1,
+              "title": "Edelstein im Turm farmen",
+              "description": "Wähle im Turm Edelsteine als Beute und finde {target} Stein. Die Beutechance beträgt 50 % je Sieg.",
+              "id": "fixed-2-4"
+            },
+            {
+              "type": "gemsSocketed",
+              "target": 1,
+              "title": "Einen Edelstein einsetzen",
+              "description": "Wechsle in der Sockelkammer zu Edelsteine verwalten und setze einen Stein in einen offenen Sockel ein.",
+              "id": "fixed-2-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 1,
+              "title": "Bronze I erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-2-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "material",
+              "slot": "socketStone",
+              "quantity": 3
+            },
+            {
+              "type": "material",
+              "slot": "socketStone",
+              "quantity": 3
+            },
+            {
+              "type": "gem",
+              "quantity": 1
+            },
+            {
+              "type": "souls",
+              "min": 2000,
+              "max": 2000
+            },
+            {
+              "type": "souls",
+              "min": 3000,
+              "max": 3000
+            },
+            {
+              "type": "luckyBox",
+              "group": "glyphBox",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "title": "Begleittiere und Umprägen",
+          "tasks": [
+            {
+              "type": "mainPetLevel",
+              "target": 5,
+              "title": "Das Tier des Mains leveln",
+              "description": "Wähle am Altar das Begleittier deines Mains und erreiche mindestens Stufe {target}. Seine Boni gelten nur für seinen Besitzer.",
+              "id": "fixed-3-1"
+            },
+            {
+              "type": "companionPetLevel",
+              "target": 5,
+              "title": "Das Tier des Gefährten leveln",
+              "description": "Erreiche mit dem Tier deines aktiven Gefährten mindestens Stufe {target}. Beide Tiere haben eigene Stufen und Affixe.",
+              "id": "fixed-3-2"
+            },
+            {
+              "type": "affixStoneDrops",
+              "target": 1,
+              "title": "Umprägungsstein im Turm farmen",
+              "description": "Wähle im Turm Umprägungssteine als Beute und finde {target} Stein.",
+              "id": "fixed-3-3"
+            },
+            {
+              "type": "petAffixesRerolled",
+              "target": 1,
+              "title": "Einen Tieraffix umprägen",
+              "description": "Wähle beim Verzauberer Begleittier und präge einen Affix um. Bei Tieren bleiben alle Affixplätze umprägbar.",
+              "id": "fixed-3-4"
+            },
+            {
+              "type": "partySkillPoints",
+              "target": 5,
+              "title": "Je 5 Skillpunkte verteilen",
+              "description": "Investiere beim Main und aktiven Gefährten jeweils mindestens {target} Punkte im Skilltree. Bereits verteilte Punkte zählen.",
+              "id": "fixed-3-5"
+            },
+            {
+              "type": "areaReached",
+              "target": 1,
+              "title": "Im Aschental siegen",
+              "description": "Gewinne einen Kampf im Aschental.",
+              "areaId": "aschental",
+              "id": "fixed-3-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "souls",
+              "min": 3000,
+              "max": 3000
+            },
+            {
+              "type": "souls",
+              "min": 3000,
+              "max": 3000
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 3
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 2
+            },
+            {
+              "type": "classWeapon",
+              "owner": "main",
+              "rarity": "rare",
+              "greaterAffixes": 0
+            },
+            {
+              "type": "classWeapon",
+              "owner": "companion",
+              "rarity": "rare",
+              "greaterAffixes": 0
+            }
+          ]
+        },
+        {
+          "title": "Die Werkstätten beherrschen",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 25,
+              "title": "Beide Helden auf Stufe 25",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-4-1"
+            },
+            {
+              "type": "equipmentAffixesRerolled",
+              "target": 1,
+              "title": "Einen Ausrüstungsaffix umprägen",
+              "description": "Präge beim Verzauberer einen Affix auf angelegter Ausrüstung um. Danach bleibt bei diesem Gegenstand nur dieser Affixplatz umprägbar.",
+              "id": "fixed-4-2"
+            },
+            {
+              "type": "upgradeStoneDrops",
+              "target": 5,
+              "title": "Aufwertungsmaterial sammeln",
+              "description": "Finde {target} Aufwertungssteine mit der passenden Beuteauswahl im Turm.",
+              "id": "fixed-4-3"
+            },
+            {
+              "type": "forges",
+              "target": 5,
+              "title": "Fünf Aufwertungen schaffen",
+              "description": "Erreiche {target} erfolgreiche Schmiedeaufwertungen seit Gruppenbeginn. Du kannst Auto-Upgrade mit einer Zielstufe nutzen; es läuft beim Seitenwechsel weiter.",
+              "id": "fixed-4-4"
+            },
+            {
+              "type": "partyPetLevel",
+              "target": 10,
+              "title": "Beide Tiere auf Stufe 10",
+              "description": "Erreiche mit den Begleittieren von Main und aktivem Gefährten jeweils Stufe {target}. Tierstufen werden separat am Altar gekauft.",
+              "id": "fixed-4-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 3,
+              "title": "Bronze III erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-4-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "setBundle",
+              "kind": "armor",
+              "owner": "main",
+              "rarity": "rare",
+              "classBound": false,
+              "greaterAffixes": 0
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 3
+            },
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 10
+            },
+            {
+              "type": "material",
+              "slot": "socketStone",
+              "quantity": 5
+            },
+            {
+              "type": "souls",
+              "min": 10000,
+              "max": 10000
+            },
+            {
+              "type": "luckyBox",
+              "group": "glyphBox",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "title": "Der erste Abstieg",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 50,
+              "title": "Beide Helden auf Stufe 50",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-5-1"
+            },
+            {
+              "type": "partySkillPoints",
+              "target": 20,
+              "title": "Je 20 Skillpunkte verteilen",
+              "description": "Investiere beim Main und aktiven Gefährten jeweils mindestens {target} Punkte im Skilltree. Bereits verteilte Punkte zählen.",
+              "id": "fixed-5-2"
+            },
+            {
+              "type": "tower",
+              "target": 20,
+              "title": "20 Runden am Stück gewinnen",
+              "description": "Gewinne mindestens {target} Turmrunden in einem Durchlauf. Dein bisheriger Rekord zählt.",
+              "id": "fixed-5-3"
+            },
+            {
+              "type": "weaponSockets",
+              "target": 2,
+              "title": "Zwei Waffen-Sockel belegen",
+              "description": "Trage eine passende Klassenwaffe mit mindestens {target} eingesetzten Edelsteinen.",
+              "filled": true,
+              "id": "fixed-5-4"
+            },
+            {
+              "type": "deepTier",
+              "target": 1,
+              "title": "Deep of Dark 1 freischalten",
+              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte Deep of Dark {target} frei.",
+              "id": "fixed-5-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 4,
+              "title": "Silber I erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-5-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "setBundle",
+              "kind": "armor",
+              "owner": "main",
+              "rarity": "rare",
+              "classBound": true,
+              "greaterAffixes": 0
+            },
+            {
+              "type": "setBundle",
+              "kind": "jewelry",
+              "owner": "main",
+              "rarity": "rare",
+              "classBound": true,
+              "greaterAffixes": 0
+            },
+            {
+              "type": "material",
+              "slot": "socketStone",
+              "quantity": 10
+            },
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 15
+            },
+            {
+              "type": "classWeapon",
+              "owner": "main",
+              "rarity": "epic",
+              "greaterAffixes": 0
+            },
+            {
+              "type": "souls",
+              "min": 30000,
+              "max": 30000
+            }
+          ]
+        },
+        {
+          "title": "Epische Ausrüstung entwickeln",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 100,
+              "title": "Beide Helden auf Stufe 100",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-6-1"
+            },
+            {
+              "type": "monsters",
+              "target": 250,
+              "title": "250 Gegner besiegen",
+              "description": "Besiege {target} Gegner auf Deep of Dark 1.",
+              "minimumDeepTier": 1,
+              "id": "fixed-6-2"
+            },
+            {
+              "type": "partyPetLevel",
+              "target": 25,
+              "title": "Beide Tiere auf Stufe 25",
+              "description": "Erreiche mit den Begleittieren von Main und aktivem Gefährten jeweils Stufe {target}. Tierstufen werden separat am Altar gekauft.",
+              "id": "fixed-6-3"
+            },
+            {
+              "type": "raritiesUpgraded",
+              "target": 1,
+              "title": "Eine Seltenheit erhöhen",
+              "description": "Erhöhe beim Verzauberer die Seltenheit eines angelegten Gegenstands. Ein Seltenheitsstein wird verbraucht; der Wechsel gelingt garantiert.",
+              "id": "fixed-6-4"
+            },
+            {
+              "type": "armorUpgrade",
+              "target": 3,
+              "title": "Rüstung auf +3 bringen",
+              "description": "Trage alle vier Rüstungsteile bei einem Helden mit mindestens +{target}. Gleiche Setnamen sind nicht erforderlich.",
+              "scope": "any",
+              "id": "fixed-6-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 7,
+              "title": "Gold I erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-6-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "setBundle",
+              "kind": "armor",
+              "owner": "companion",
+              "rarity": "rare",
+              "classBound": true,
+              "greaterAffixes": 0
+            },
+            {
+              "type": "material",
+              "slot": "rarityStone",
+              "quantity": 1
+            },
+            {
+              "type": "souls",
+              "min": 25000,
+              "max": 25000
+            },
+            {
+              "type": "classWeapon",
+              "owner": "companion",
+              "rarity": "epic",
+              "greaterAffixes": 0
+            },
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 25
+            },
+            {
+              "type": "luckyBundle",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "title": "Die zweite Tiefe",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 150,
+              "title": "Beide Helden auf Stufe 150",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-7-1"
+            },
+            {
+              "type": "deepTier",
+              "target": 2,
+              "title": "Deep of Dark 2 freischalten",
+              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte Deep of Dark {target} frei.",
+              "id": "fixed-7-2"
+            },
+            {
+              "type": "monsters",
+              "target": 400,
+              "title": "400 Gegner besiegen",
+              "description": "Besiege {target} Gegner auf Deep of Dark 2.",
+              "minimumDeepTier": 2,
+              "id": "fixed-7-3"
+            },
+            {
+              "type": "partySkillPoints",
+              "target": 60,
+              "title": "Je 60 Skillpunkte verteilen",
+              "description": "Investiere beim Main und aktiven Gefährten jeweils mindestens {target} Punkte im Skilltree. Bereits verteilte Punkte zählen.",
+              "id": "fixed-7-4"
+            },
+            {
+              "type": "partyPetLevel",
+              "target": 50,
+              "title": "Beide Tiere auf Stufe 50",
+              "description": "Erreiche mit den Begleittieren von Main und aktivem Gefährten jeweils Stufe {target}. Tierstufen werden separat am Altar gekauft.",
+              "id": "fixed-7-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 8,
+              "title": "Gold II erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-7-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "setBundle",
+              "kind": "armor",
+              "owner": "main",
+              "rarity": "epic",
+              "classBound": true,
+              "greaterAffixes": 0
+            },
+            {
+              "type": "setBundle",
+              "kind": "jewelry",
+              "owner": "main",
+              "rarity": "epic",
+              "classBound": true,
+              "greaterAffixes": 0
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 10
+            },
+            {
+              "type": "material",
+              "slot": "socketStone",
+              "quantity": 20
+            },
+            {
+              "type": "souls",
+              "min": 125000,
+              "max": 125000
+            },
+            {
+              "type": "luckyBundle",
+              "quantity": 2
+            }
+          ]
+        },
+        {
+          "title": "Die dritte Tiefe",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 200,
+              "title": "Beide Helden auf Stufe 200",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-8-1"
+            },
+            {
+              "type": "deepTier",
+              "target": 3,
+              "title": "Deep of Dark 3 freischalten",
+              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte Deep of Dark {target} frei.",
+              "id": "fixed-8-2"
+            },
+            {
+              "type": "greaterDrops",
+              "target": 1,
+              "title": "Den ersten Greater-Fund bergen",
+              "description": "Finde einen Ausrüstungsgegenstand mit mindestens einem Greater Affix in einem Gebiet auf Deep of Dark 3. Shop- und Auftragsgegenstände zählen nicht.",
+              "id": "fixed-8-3"
+            },
+            {
+              "type": "armorUpgrade",
+              "target": 5,
+              "title": "Rüstung auf +5 bringen",
+              "description": "Trage alle vier Rüstungsteile bei beiden Helden mit mindestens +{target}. Gleiche Setnamen sind nicht erforderlich.",
+              "scope": "both",
+              "id": "fixed-8-4"
+            },
+            {
+              "type": "partyPetLevel",
+              "target": 75,
+              "title": "Beide Tiere auf Stufe 75",
+              "description": "Erreiche mit den Begleittieren von Main und aktivem Gefährten jeweils Stufe {target}. Tierstufen werden separat am Altar gekauft.",
+              "id": "fixed-8-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 10,
+              "title": "Platin I erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-8-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "setBundle",
+              "kind": "armor",
+              "owner": "companion",
+              "rarity": "epic",
+              "classBound": true,
+              "greaterAffixes": 0
+            },
+            {
+              "type": "setBundle",
+              "kind": "jewelry",
+              "owner": "companion",
+              "rarity": "epic",
+              "classBound": true,
+              "greaterAffixes": 0
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 15
+            },
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 40
+            },
+            {
+              "type": "souls",
+              "min": 300000,
+              "max": 300000
+            },
+            {
+              "type": "luckyBundle",
+              "quantity": 3
+            }
+          ]
+        },
+        {
+          "title": "Helden und Tiere abstimmen",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 300,
+              "title": "Beide Helden auf Stufe 300",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-9-1"
+            },
+            {
+              "type": "partyPetLevel",
+              "target": 100,
+              "title": "Beide Tiere auf Stufe 100",
+              "description": "Erreiche mit den Begleittieren von Main und aktivem Gefährten jeweils Stufe {target}. Tierstufen werden separat am Altar gekauft.",
+              "id": "fixed-9-2"
+            },
+            {
+              "type": "partySkillPoints",
+              "target": 150,
+              "title": "Je 150 Skillpunkte verteilen",
+              "description": "Investiere beim Main und aktiven Gefährten jeweils mindestens {target} Punkte im Skilltree. Bereits verteilte Punkte zählen.",
+              "id": "fixed-9-3"
+            },
+            {
+              "type": "monsters",
+              "target": 1000,
+              "title": "1000 Gegner besiegen",
+              "description": "Besiege {target} Gegner auf Deep of Dark 3.",
+              "minimumDeepTier": 3,
+              "id": "fixed-9-4"
+            },
+            {
+              "type": "armorUpgrade",
+              "target": 7,
+              "title": "Rüstung auf +7 bringen",
+              "description": "Trage alle vier Rüstungsteile bei einem Helden mit mindestens +{target}. Gleiche Setnamen sind nicht erforderlich.",
+              "scope": "any",
+              "id": "fixed-9-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 13,
+              "title": "Diamant I erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-9-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 60
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 20
+            },
+            {
+              "type": "material",
+              "slot": "socketStone",
+              "quantity": 30
+            },
+            {
+              "type": "gemBundle",
+              "quantity": 1
+            },
+            {
+              "type": "souls",
+              "min": 1500000,
+              "max": 1500000
+            },
+            {
+              "type": "luckyBundle",
+              "quantity": 5
+            }
+          ]
+        },
+        {
+          "title": "Den Build verfeinern",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 350,
+              "title": "Beide Helden auf Stufe 350",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-10-1"
+            },
+            {
+              "type": "partyPetLevel",
+              "target": 150,
+              "title": "Beide Tiere auf Stufe 150",
+              "description": "Erreiche mit den Begleittieren von Main und aktivem Gefährten jeweils Stufe {target}. Tierstufen werden separat am Altar gekauft.",
+              "id": "fixed-10-2"
+            },
+            {
+              "type": "towerBosses",
+              "target": 25,
+              "title": "25 Turmbosse besiegen",
+              "description": "Besiege {target} Archonten im Turm seit Gruppenbeginn. Jeder zehnte gewonnene Durchgang enthält einen Boss.",
+              "id": "fixed-10-3"
+            },
+            {
+              "type": "weaponsUpgrade",
+              "target": 10,
+              "title": "Beide Waffen auf +10 bringen",
+              "description": "Trage beim Main und aktiven Gefährten jeweils eine passende Klassenwaffe mit mindestens +{target}.",
+              "id": "fixed-10-4"
+            },
+            {
+              "type": "greaterDrops",
+              "target": 5,
+              "title": "Fünf Greater-Gegenstände finden",
+              "description": "Finde {target} Ausrüstungsgegenstände mit mindestens einem Greater Affix in Gebieten auf Deep of Dark 3 seit Gruppenbeginn.",
+              "id": "fixed-10-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 14,
+              "title": "Diamant II erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-10-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 100
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 25
+            },
+            {
+              "type": "material",
+              "slot": "socketStone",
+              "quantity": 50
+            },
+            {
+              "type": "material",
+              "slot": "rarityStone",
+              "quantity": 5
+            },
+            {
+              "type": "souls",
+              "min": 3000000,
+              "max": 3000000
+            },
+            {
+              "type": "luckyBundle",
+              "quantity": 8
+            }
+          ]
+        },
+        {
+          "title": "Gemeinsam zur Meisterschaft",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 425,
+              "title": "Beide Helden auf Stufe 425",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-11-1"
+            },
+            {
+              "type": "partyPetLevel",
+              "target": 200,
+              "title": "Beide Tiere auf Stufe 200",
+              "description": "Erreiche mit den Begleittieren von Main und aktivem Gefährten jeweils Stufe {target}. Tierstufen werden separat am Altar gekauft.",
+              "id": "fixed-11-2"
+            },
+            {
+              "type": "partySkillPoints",
+              "target": 250,
+              "title": "Je 250 Skillpunkte verteilen",
+              "description": "Investiere beim Main und aktiven Gefährten jeweils mindestens {target} Punkte im Skilltree. Bereits verteilte Punkte zählen.",
+              "id": "fixed-11-3"
+            },
+            {
+              "type": "armorUpgrade",
+              "target": 10,
+              "title": "Rüstung auf +10 bringen",
+              "description": "Trage alle vier Rüstungsteile bei beiden Helden mit mindestens +{target}. Gleiche Setnamen sind nicht erforderlich.",
+              "scope": "both",
+              "id": "fixed-11-4"
+            },
+            {
+              "type": "monsters",
+              "target": 2000,
+              "title": "2000 Gegner besiegen",
+              "description": "Besiege {target} Gegner auf Deep of Dark 3.",
+              "minimumDeepTier": 3,
+              "id": "fixed-11-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 15,
+              "title": "Diamant III erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-11-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "material",
+              "slot": "upgradeStone",
+              "quantity": 150
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 35
+            },
+            {
+              "type": "material",
+              "slot": "socketStone",
+              "quantity": 75
+            },
+            {
+              "type": "gemBundle",
+              "quantity": 2
+            },
+            {
+              "type": "souls",
+              "min": 6000000,
+              "max": 6000000
+            },
+            {
+              "type": "luckyBundle",
+              "quantity": 10
+            }
+          ]
+        },
+        {
+          "title": "Meister der Grenzlande",
+          "tasks": [
+            {
+              "type": "partyLevel",
+              "target": 500,
+              "title": "Beide Helden auf Stufe 500",
+              "description": "Erreiche mit Main und aktivem Gefährten jeweils Stufe {target}. Kaufe die Stufen am Altar.",
+              "id": "fixed-12-1"
+            },
+            {
+              "type": "partyPetLevel",
+              "target": 300,
+              "title": "Beide Tiere auf Stufe 300",
+              "description": "Erreiche mit den Begleittieren von Main und aktivem Gefährten jeweils Stufe {target}. Tierstufen werden separat am Altar gekauft.",
+              "id": "fixed-12-2"
+            },
+            {
+              "type": "partySkillPoints",
+              "target": 300,
+              "title": "Je 300 Skillpunkte verteilen",
+              "description": "Investiere beim Main und aktiven Gefährten jeweils mindestens {target} Punkte im Skilltree. Bereits verteilte Punkte zählen.",
+              "id": "fixed-12-3"
+            },
+            {
+              "type": "armorUpgrade",
+              "target": 12,
+              "title": "Rüstung auf +12 bringen",
+              "description": "Trage alle vier Rüstungsteile bei beiden Helden mit mindestens +{target}. Gleiche Setnamen sind nicht erforderlich.",
+              "scope": "both",
+              "id": "fixed-12-4"
+            },
+            {
+              "type": "monsters",
+              "target": 3000,
+              "title": "3000 Gegner besiegen",
+              "description": "Besiege {target} Gegner auf Deep of Dark 3.",
+              "minimumDeepTier": 3,
+              "id": "fixed-12-5"
+            },
+            {
+              "type": "bossRank",
+              "target": 16,
+              "title": "Mythisch I erreichen",
+              "description": "Erreiche mindestens {rank} in der Bossprüfung.",
+              "id": "fixed-12-6"
+            }
+          ],
+          "rewards": [
+            {
+              "type": "itemBundle",
+              "label": "200 Aufwertungssteine und 100 Sockelsteine",
+              "items": [
+                {
+                  "type": "material",
+                  "slot": "upgradeStone",
+                  "quantity": 200
+                },
+                {
+                  "type": "material",
+                  "slot": "socketStone",
+                  "quantity": 100
+                }
+              ]
+            },
+            {
+              "type": "material",
+              "slot": "affixStone",
+              "quantity": 50
+            },
+            {
+              "type": "gemBundle",
+              "quantity": 3
+            },
+            {
+              "type": "material",
+              "slot": "rarityStone",
+              "quantity": 10
+            },
+            {
+              "type": "souls",
+              "min": 12000000,
+              "max": 12000000
+            },
+            {
+              "type": "luckyBundle",
+              "quantity": 15
+            }
+          ]
+        }
+      ],
+      "repeatTasks": [
+        {
+          "id": "repeat-monsters",
+          "title": "Besiege weitere Gegner auf Deep of Dark 3.",
+          "description": "Besiege {target} Gegner auf Deep of Dark 3.",
+          "type": "monsters",
+          "targets": [
+            3000,
+            4000,
+            5000
+          ],
+          "minimumDeepTier": 3
+        },
+        {
+          "id": "repeat-champions",
+          "title": "Besiege weitere Champions auf Deep of Dark 3.",
+          "description": "Besiege {target} Champions auf Deep of Dark 3.",
+          "type": "champions",
+          "targets": [
+            100,
+            150,
+            200
+          ],
+          "minimumDeepTier": 3
+        },
+        {
+          "id": "repeat-nonQuestSoulsEarned",
+          "title": "Verdiene weitere Seelen ohne Auftragsbelohnungen.",
+          "description": "Verdiene {target} Seelen ohne Auftragsbelohnungen.",
+          "type": "nonQuestSoulsEarned",
+          "targets": [
+            15000000,
+            25000000,
+            40000000
+          ]
+        },
+        {
+          "id": "repeat-partyLevelGain",
+          "title": "Steigere Main und aktiven Begleiter jeweils um weitere Stufen.",
+          "description": "Steigere Main und aktiven Begleiter jeweils um {target} Stufen.",
+          "type": "partyLevelGain",
+          "targets": [
+            10,
+            15,
+            20
+          ]
+        },
+        {
+          "id": "repeat-towerRounds",
+          "title": "Gewinne weitere Turmrunden ab Beginn der Auftragsgruppe.",
+          "description": "Gewinne {target} Turmrunden ab Beginn der Auftragsgruppe.",
+          "type": "towerRounds",
+          "targets": [
+            500,
+            750,
+            1000
+          ]
+        },
+        {
+          "id": "repeat-towerBosses",
+          "title": "Besiege weitere Turmbosse.",
+          "description": "Besiege {target} Turmbosse.",
+          "type": "towerBosses",
+          "targets": [
+            40,
+            60,
+            80
+          ]
+        },
+        {
+          "id": "repeat-greaterDrops",
+          "title": "Finde weitere Gegenstände mit mindestens einem Greater Affix.",
+          "description": "Finde {target} Gegenstände mit mindestens einem Greater Affix.",
+          "type": "greaterDrops",
+          "targets": [
+            12,
+            18,
+            24
+          ]
+        }
+      ],
+      "rewardPool": [
+        {
+          "type": "material",
+          "slot": "upgradeStone",
+          "quantity": 120
+        },
+        {
+          "type": "material",
+          "slot": "socketStone",
+          "quantity": 80
+        },
+        {
+          "type": "material",
+          "slot": "affixStone",
+          "quantity": 25
+        },
+        {
+          "type": "material",
+          "slot": "rarityStone",
+          "quantity": 5
+        },
+        {
+          "type": "luckyBundle",
+          "quantity": 4
+        },
+        {
+          "type": "gemBundle",
+          "quantity": 2
+        },
+        {
+          "type": "souls",
+          "min": 2000000,
+          "max": 2000000
+        }
+      ],
+      "contentVersion": 5
+    },
+    "contracts": {
+      "rewardTarget": 5,
+      "rewardBase": 450,
+      "rewardPerLevel": 5,
+      "rewardPerRank": 25,
+      "huntTargetBase": 4,
+      "huntRankStep": 2,
+      "surveyTargetBase": 2,
+      "surveyRankStep": 3,
+      "surveyTargetMax": 6,
+      "towerTargetBase": 1,
+      "towerRankStep": 2
+    },
+    "areaSouls": {
+      "firstAreaMinimum": 100,
+      "firstAreaMaximum": 150,
+      "finalAreaMaximum": 20000,
+      "minimumRollRatio": 0.85,
+      "curveAnchors": [
+        {
+          "deepTier": 3,
+          "maximum": 10000
+        },
+        {
+          "deepTier": 4,
+          "maximum": 20000
+        }
+      ]
+    },
+    "huntingEvent": {
+      "targetKills": 300,
+      "rewards": {
+        "glyphBox": 5,
+        "vipBox": 5,
+        "farmBox": 25
+      },
+      "intervalSeconds": 1800
+    },
+    "offlineProgress": {
+      "efficiency": 0.5,
+      "maximumHours": 12,
+      "sampleLimit": 20,
+      "minimumSamples": 5,
+      "checkpointSeconds": 15
+    }
+  }
+}

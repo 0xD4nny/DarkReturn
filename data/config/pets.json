@@ -1,0 +1,55 @@
+{
+  "pets": {
+    "attributePerLevel": 5,
+    "affixPercentPerLevel": 1,
+    "affixEveryLevels": 100,
+    "affixPool": [
+      "Lebenskraft",
+      "Angriff",
+      "Verteidigung",
+      "Stärke",
+      "Geschicklichkeit",
+      "Intelligenz",
+      "Ausdauer",
+      "Glaube",
+      "Kritische Chance",
+      "Kritischer Schaden",
+      "Schaden gegen verwundbare Ziele",
+      "Schaden über Zeit",
+      "Abklingzeitreduktion",
+      "Angriffsgeschwindigkeit",
+      "Seelenfund"
+    ],
+    "byClass": {
+      "hunter": {
+        "name": "Adler",
+        "stat": "Geschicklichkeit",
+        "asset": "Assets/Icons/000000/transparent/1x1/delapouite/eagle-head.svg",
+        "portrait": "Assets/Art/pets/hunter-eagle-v1.png",
+        "portraitFrame": { "width": 1199, "height": 1312, "bounds": [28, 10, 1154, 1297] }
+      },
+      "warrior": {
+        "name": "Löwe",
+        "stat": "Stärke",
+        "asset": "Assets/Icons/000000/transparent/1x1/lorc/lion.svg",
+        "portrait": "Assets/Art/pets/warrior-lion-v1.png",
+        "portraitFrame": { "width": 1293, "height": 1217, "bounds": [46, 9, 1104, 1153] }
+      },
+      "mage": {
+        "name": "Fuchs",
+        "stat": "Intelligenz",
+        "asset": "Assets/Icons/000000/transparent/1x1/caro-asercion/fox.svg",
+        "portrait": "Assets/Art/pets/mage-fox-v1.png",
+        "portraitFrame": { "width": 1536, "height": 1024, "bounds": [182, 6, 1097, 1012] }
+      },
+      "healer": {
+        "name": "Katze",
+        "stat": "Glaube",
+        "asset": "Assets/Icons/000000/transparent/1x1/lorc/cat.svg",
+        "portrait": "Assets/Art/pets/healer-cat-v1.png",
+        "portraitFrame": { "width": 1293, "height": 1217, "bounds": [181, 7, 897, 1170] }
+      }
+    }
+  }
+}
+

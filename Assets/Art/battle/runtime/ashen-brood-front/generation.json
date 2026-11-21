@@ -1,0 +1,73 @@
+{
+  "mode": "built-in image_gen",
+  "region": "aschental",
+  "actor": "ashen-brood",
+  "width": 1254,
+  "height": 1254,
+  "alpha": true,
+  "arena": { "path": "Assets/Art/battle/regions/aschental-arena-artwork.png", "width": 1967, "height": 800 },
+  "layout": "Individual transparent pose images, matching ashen-stray-front; CSS supplies movement.",
+  "frames": [
+    "idle",
+    "bite",
+    "hit",
+    "defeated",
+    "frozen",
+    "burning-idle",
+    "burning-bite",
+    "burning-hit",
+    "poison-idle",
+    "poison-bite",
+    "poison-hit"
+  ],
+  "prompts": [
+    {
+      "asset": "Assets/Art/battle/regions/aschental-arena-artwork.png",
+      "prompt": "Create a NEW Aschental (Ash Valley) battle arena background for a dark fantasy RPG, using the attached Dornwacht image ONLY as reference for polished painterly semi-realistic game rendering, panoramic framing and camera perspective. Wide panoramic image approximately 2.5:1, 2048x832. New environment: vast ash-covered gray valley under a dense gray smoky sky, distant jagged basalt ridges, burned skeletal trees on the sides, weathered obsidian stones, subtle orange embers and small molten cracks near the outer edges. Desolate ancient place buried beneath centuries of ash. Composition crucial: horizon at 45 percent from top; lower 55 percent is mostly EMPTY FLAT walkable gray ash arena, clear space for three large enemies. Detailed foreground corners framing empty center. Center must remain quiet and readable, not a lava lake. Soft overcast cool light contrasted with sparse warm embers. No castle or watchtower, no characters, no creatures, no text, no UI, no borders. Fill entire image."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-idle.png",
+      "prompt": "Create one transparent full-body front-view monster sprite for dark fantasy RPG DarkReturn. Reference is ONLY the established detailed semi-realistic game art style and front-facing full-body framing. NEW species ASCHENBRUT / ASHEN BROOD, NOT a wolf: a hulking low-slung quadrupedal volcanic fiend sculpted from overlapping charcoal basalt plates, very large forearms and broad three-clawed forefeet, smaller hind legs visible between forearms, broad reptilian furnace jaw with stone fangs, TWO short swept-back black horns, NO fur and NO wolf ears. Dim molten orange fissures between armored plates, orange eyes, ash-gray deposits. Distinct readable silhouette with jagged shoulder ridges. Idle pose: facing viewer squarely, grounded and threatening, mouth slightly open. Match reference camera, neutral soft directional lighting, high detail. Canvas 1024x1024 square, entire creature inside central 86 percent, feet on baseline at 92 percent height, horns at 8 percent, no clipping, no detached particles, no floor or scenery, no text or shadow plane. Genuine transparent alpha background."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-bite.png",
+      "prompt": "Edit the attached ASCHENBRUT idle monster into its ATTACK / BITE animation frame. Preserve EXACT same basalt armored horned creature identity, orange fissures, front camera, semi-realistic rendering, canvas dimensions and transparent alpha. Pose change only: low forward lunge directly toward viewer, head thrust forward with furnace jaw open wide in a roar/bite, forearms slightly reaching forward and claws splayed, aggressive arched shoulders. Keep whole body including horns and all claws inside frame, clear margins, feet near same bottom baseline. No duplicate creature, no background, no text, no particles obscuring silhouette, no floor. One single full-body front-view transparent sprite."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-hit.png",
+      "prompt": "Edit the attached ASCHENBRUT idle sprite into its HIT REACTION frame. Same exact horned basalt quadrupedal monster, same stone plates, orange cracks, lighting, front camera and square transparent canvas. Creature recoils from a blow: shoulders lean backward, head tilts slightly to its right, jaw grimaces open, one foreclaw draws inward while other stays planted. Full body and horns remain visible with margins; bottom baseline same as reference. Moderate recoil only, no dramatic size change, no new limbs, no weapons, no blood, no impact flash baked in, no floor or background. Preserve true transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-defeated.png",
+      "prompt": "Edit attached ASCHENBRUT monster into DEFEATED corpse animation frame. Preserve identical horned basalt plated quadruped identity, stone detail and semi-realistic rendering. Same square transparent canvas and camera orientation. Creature has collapsed fully onto belly and partly its side, head resting low on ground facing roughly toward viewer, eyes CLOSED and unlit, mouth slack, front limbs bent and splayed beside head, horns and shoulder plates visible. Wide low silhouette occupying LOWER HALF of canvas, baseline same 92 percent as reference, ample empty transparent space above. Orange cracks almost extinguished, only faint dark ember traces. It must look dead, not standing or attacking. Entire body within canvas margins; no blood, no rubble pile replacing body, no floor, no scenery, no text. True transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-frozen.png",
+      "prompt": "Edit attached ASCHENBRUT idle sprite into FROZEN status frame. Preserve EXACT creature geometry, pose, framing, size, feet baseline, camera and details. The same basalt horned monster is immobilized by icy blue translucent frost coating its armor, sharp small icicles hanging under chin, horns and forearms, blue-white rime on plate edges. Orange fissures subdued under cold cyan glow; eyes icy blue. Creature must remain clearly recognizable, not a generic ice golem and not inside an opaque ice block. No floor, no background, no text, no detached snowstorm. Keep full silhouette and original transparent alpha background and same canvas dimensions."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-burning-idle.png",
+      "prompt": "Edit attached ASCHENBRUT idle sprite into BURNING IDLE status variant. Preserve exact creature, pose, front camera, silhouette, scale, square canvas, foot baseline and transparent background. Add distinct bright orange-yellow flames licking upward from shoulder ridges, back and forearm plates, brighter hot orange fissures and glowing eyes. Flames should be clearly visible but restrained around upper body, never obscure face or feet, stay inside image margins. Keep original ash-gray stone armor recognizable underneath, semi-realistic polished RPG style. No floor, no scenery, no text, no smoke filling canvas, no camera change. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-burning-bite.png",
+      "prompt": "Edit FIRST reference (ASCHENBRUT attack/bite frame) to its BURNING ATTACK variant. SECOND reference shows exactly the desired fire status material and flame style. Preserve FIRST reference exact lunging pose, wide open jaw, reaching claws, body geometry, front camera, size, full-body framing, baseline, square canvas. Add matching orange-yellow flames at shoulder/back ridges and forearms, glowing hot orange fissures, hot orange eyes. Keep face and claws readable. Flames stay within margins. Do not change pose to idle; no new anatomy, floor, scenery, text or smoke backdrop. Keep genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-burning-hit.png",
+      "prompt": "Edit FIRST reference ASCHENBRUT hit reaction into BURNING HIT variant. SECOND reference supplies flame appearance only. Preserve FIRST exact recoiling pose, tilted head, raised foreclaw, body anatomy, front camera, scale, square canvas and foot baseline. Same monster with bright orange-yellow flames licking shoulder/back ridges and forearms and brighter molten fissures and eyes, matching second reference. Face remains visible, flames inside image, transparent clear space outside creature. Do NOT switch to idle or attack. No floor, background, smoke curtain, text or extra limbs. Preserve genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-poison-idle.png",
+      "prompt": "Edit attached ASCHENBRUT idle sprite into POISONED IDLE status variant. Preserve EXACT pose, anatomy, creature identity, front camera, square canvas, scale, margins and feet baseline. Original charcoal-gray basalt armor remains visible but orange fissures and eyes now glow sickly lime/emerald green, translucent green venom seeps subtly from armor joints, a few thin green vapor wisps hug shoulders and forearms. Clearly poisonous, not fire: NO flames or yellow/orange light. Avoid opaque green recolor of entire body; preserve gray stone texture. Same polished detailed RPG rendering. Full body transparent alpha, no floor, backdrop, text or detached huge particles."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-poison-bite.png",
+      "prompt": "Edit FIRST reference ASCHENBRUT attack/bite sprite into POISONED ATTACK variant. SECOND reference supplies exact poisonous material appearance. Preserve FIRST exact lunging pose, wide open furnace jaw, reaching claws, anatomy, front camera, scale, square canvas, margins and baseline. Gray basalt armor with lime/emerald green fissures and eyes instead of orange, subtle seeping green venom and a few wisps hugging shoulders and forearms like second reference. Jaw interior green. No fire, no orange light, no full-body green wash. Keep face readable. No change to idle pose, no floor, backdrop, text, added limbs or detached cloud. Genuine transparent alpha."
+    },
+    {
+      "asset": "Assets/Art/battle/runtime/ashen-brood-front/ashen-brood-front-poison-hit.png",
+      "prompt": "Edit FIRST reference ASCHENBRUT hit reaction sprite into POISONED HIT variant. SECOND reference supplies poisonous material appearance only. Preserve FIRST exact recoiling pose, tilted head, raised foreclaw, gray stone armor, anatomy, camera, scale, square canvas and baseline. Replace orange cracks and eyes with sickly lime/emerald green; subtle green venom seeping from plate joints, small green vapor wisps hugging shoulders and forearms matching second reference. Gray stone stays gray. No fire, no orange light, no full green wash. Do NOT change recoil pose to idle. Full silhouette within margins, no floor, background, text or new anatomy. Genuine transparent alpha."
+    }
+  ]
+}

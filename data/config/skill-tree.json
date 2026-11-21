@@ -1,0 +1,646 @@
+{
+  "skillTreeBranches": [
+    {
+      "id": "warrior",
+      "label": "Krieger"
+    },
+    {
+      "id": "mage",
+      "label": "Magier"
+    },
+    {
+      "id": "hunter",
+      "label": "Jäger"
+    },
+    {
+      "id": "healer",
+      "label": "Heiler"
+    },
+    {
+      "id": "attack",
+      "label": "Angriff"
+    },
+    {
+      "id": "health",
+      "label": "Leben"
+    }
+  ],
+  "skillTreeNodes": [
+    {
+      "id": "origin",
+      "name": "Ursprung",
+      "rarity": "origin",
+      "maxPoints": 0,
+      "parent": null,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "description": "Wähle deine Schwerpunkte. Jeder Charakter besitzt einen eigenen Vorrat von bis zu 300 Punkten."
+    },
+    {
+      "id": "warrior_1",
+      "name": "Stärke",
+      "rarity": "common",
+      "maxPoints": 200,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "warrior",
+      "tier": 1,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 5,
+        "stat": "Stärke"
+      }
+    },
+    {
+      "id": "warrior_2",
+      "name": "Standfestigkeit",
+      "rarity": "common",
+      "maxPoints": 30,
+      "parent": "warrior_1",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 3,
+        "stat": "Ausdauer"
+      }
+    },
+    {
+      "id": "warrior_4",
+      "name": "Klassenmeisterschaft",
+      "rarity": "rare",
+      "maxPoints": 30,
+      "parent": "warrior_2",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 3,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 1,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "warrior_skill_damage",
+      "name": "Henkerschlag meistern",
+      "rarity": "rare",
+      "maxPoints": 20,
+      "parent": "warrior_4",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 4,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "effect": {
+        "type": "skill-damage-flat-percent",
+        "perPoint": 5,
+        "skillId": "henkerschlag"
+      },
+      "class": "warrior"
+    },
+    {
+      "id": "warrior_legend",
+      "name": "Erderschütterung",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "warrior_skill_damage",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "effect": {
+        "type": "warrior-stomp-area",
+        "perPoint": 1
+      },
+      "class": "warrior"
+    },
+    {
+      "id": "warrior_legend_alt",
+      "name": "Wucht",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "warrior_skill_damage",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "effect": {
+        "type": "warrior-execution-area-penalty",
+        "perPoint": 50
+      },
+      "class": "warrior"
+    },
+    {
+      "id": "mage_1",
+      "name": "Intelligenz",
+      "rarity": "common",
+      "maxPoints": 200,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "mage",
+      "tier": 1,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 5,
+        "stat": "Intelligenz"
+      }
+    },
+    {
+      "id": "mage_2",
+      "name": "Standfestigkeit",
+      "rarity": "common",
+      "maxPoints": 30,
+      "parent": "mage_1",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 3,
+        "stat": "Ausdauer"
+      }
+    },
+    {
+      "id": "mage_4",
+      "name": "Klassenmeisterschaft",
+      "rarity": "rare",
+      "maxPoints": 30,
+      "parent": "mage_2",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 3,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1,
+        "stat": "Schaden über Zeit"
+      }
+    },
+    {
+      "id": "mage_skill_damage",
+      "name": "Funken meistern",
+      "rarity": "rare",
+      "maxPoints": 20,
+      "parent": "mage_4",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 4,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "effect": {
+        "type": "skill-damage-flat-percent",
+        "perPoint": 5,
+        "skillId": "funken"
+      },
+      "class": "mage"
+    },
+    {
+      "id": "mage_legend",
+      "name": "Arkane Wiederholung",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "mage_skill_damage",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "effect": {
+        "type": "mage-skill-repeat-chance",
+        "perPoint": 20
+      },
+      "class": "mage"
+    },
+    {
+      "id": "mage_legend_alt",
+      "name": "Brandmeister",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "mage_skill_damage",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "effect": {
+        "type": "mage-instant-fireball",
+        "perPoint": 1
+      },
+      "class": "mage"
+    },
+    {
+      "id": "hunter_1",
+      "name": "Geschicklichkeit",
+      "rarity": "common",
+      "maxPoints": 200,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "hunter",
+      "tier": 1,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 5,
+        "stat": "Geschicklichkeit"
+      }
+    },
+    {
+      "id": "hunter_2",
+      "name": "Standfestigkeit",
+      "rarity": "common",
+      "maxPoints": 30,
+      "parent": "hunter_1",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 3,
+        "stat": "Ausdauer"
+      }
+    },
+    {
+      "id": "hunter_4",
+      "name": "Klassenmeisterschaft",
+      "rarity": "rare",
+      "maxPoints": 30,
+      "parent": "hunter_2",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 3,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1,
+        "stat": "Schaden über Zeit"
+      }
+    },
+    {
+      "id": "hunter_skill_damage",
+      "name": "Jagdstoß meistern",
+      "rarity": "rare",
+      "maxPoints": 20,
+      "parent": "hunter_4",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 4,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "effect": {
+        "type": "skill-damage-flat-percent",
+        "perPoint": 5,
+        "skillId": "jagdstoss"
+      },
+      "class": "hunter"
+    },
+    {
+      "id": "hunter_legend",
+      "name": "Tödliche Präzision",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "hunter_skill_damage",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "effect": {
+        "type": "hunter-critical-overflow",
+        "perPoint": 1
+      },
+      "class": "hunter"
+    },
+    {
+      "id": "hunter_legend_alt",
+      "name": "Giftmeister",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "hunter_skill_damage",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "effect": {
+        "type": "hunter-poison-chance",
+        "perPoint": 40
+      },
+      "class": "hunter"
+    },
+    {
+      "id": "healer_1",
+      "name": "Glaube",
+      "rarity": "common",
+      "maxPoints": 200,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "healer",
+      "tier": 1,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 5,
+        "stat": "Glaube"
+      }
+    },
+    {
+      "id": "healer_2",
+      "name": "Standfestigkeit",
+      "rarity": "common",
+      "maxPoints": 30,
+      "parent": "healer_1",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 3,
+        "stat": "Ausdauer"
+      }
+    },
+    {
+      "id": "healer_4",
+      "name": "Klassenmeisterschaft",
+      "rarity": "rare",
+      "maxPoints": 30,
+      "parent": "healer_2",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 3,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1,
+        "stat": "Buff- und Heileffektivität"
+      }
+    },
+    {
+      "id": "healer_skill_damage",
+      "name": "Heiliger Kreis meistern",
+      "rarity": "rare",
+      "maxPoints": 20,
+      "parent": "healer_4",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 4,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "effect": {
+        "type": "skill-damage-flat-percent",
+        "perPoint": 5,
+        "skillId": "holy-circle"
+      },
+      "class": "healer"
+    },
+    {
+      "id": "healer_legend",
+      "name": "Zorn des Lichts",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "healer_skill_damage",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "effect": {
+        "type": "healer-final-damage-percent",
+        "perPoint": 50
+      },
+      "class": "healer"
+    },
+    {
+      "id": "healer_legend_alt",
+      "name": "Lichtschutz",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "healer_skill_damage",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "effect": {
+        "type": "healer-damage-reduction-cap",
+        "perPoint": 95
+      },
+      "class": "healer"
+    },
+    {
+      "id": "attack_1",
+      "name": "Waffentraining",
+      "rarity": "common",
+      "maxPoints": 200,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "attack",
+      "tier": 1,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 5,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "attack_2",
+      "name": "Kampfkraft",
+      "rarity": "common",
+      "maxPoints": 30,
+      "parent": "attack_1",
+      "requiredParentPoints": 10,
+      "branch": "attack",
+      "tier": 2,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/sbed/shield.svg",
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.5,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "attack_3",
+      "name": "Kritische Chance",
+      "rarity": "rare",
+      "maxPoints": 20,
+      "parent": "attack_2",
+      "requiredParentPoints": 10,
+      "branch": "attack",
+      "tier": 3,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1,
+        "stat": "Kritische Chance"
+      }
+    },
+    {
+      "id": "attack_4",
+      "name": "Angriffstempo",
+      "rarity": "rare",
+      "maxPoints": 20,
+      "parent": "attack_3",
+      "requiredParentPoints": 10,
+      "branch": "attack",
+      "tier": 4,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1,
+        "stat": "Angriffsgeschwindigkeit"
+      }
+    },
+    {
+      "id": "attack_5",
+      "name": "Kritische Wucht",
+      "rarity": "rare",
+      "maxPoints": 30,
+      "parent": "attack_4",
+      "requiredParentPoints": 10,
+      "branch": "attack",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/zeromancer/heart-plus.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1,
+        "stat": "Kritischer Schaden"
+      }
+    },
+    {
+      "id": "attack_legend",
+      "name": "Vernichtung",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "attack_5",
+      "requiredParentPoints": 10,
+      "branch": "attack",
+      "tier": 6,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "effect": {
+        "type": "final-damage-percent",
+        "perPoint": 25
+      }
+    },
+    {
+      "id": "attack_legend_alt",
+      "name": "Doppelschlag",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "attack_5",
+      "requiredParentPoints": 10,
+      "branch": "attack",
+      "tier": 6,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "effect": {
+        "type": "extra-attack-chance",
+        "perPoint": 20
+      }
+    },
+    {
+      "id": "health_1",
+      "name": "Vitalität",
+      "rarity": "common",
+      "maxPoints": 200,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "health",
+      "tier": 1,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 25,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "health_2",
+      "name": "Zähigkeit",
+      "rarity": "common",
+      "maxPoints": 30,
+      "parent": "health_1",
+      "requiredParentPoints": 10,
+      "branch": "health",
+      "tier": 2,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/sbed/shield.svg",
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 5,
+        "stat": "Ausdauer"
+      }
+    },
+    {
+      "id": "health_3",
+      "name": "Abklingzeit",
+      "rarity": "rare",
+      "maxPoints": 20,
+      "parent": "health_2",
+      "requiredParentPoints": 10,
+      "branch": "health",
+      "tier": 3,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1,
+        "stat": "Abklingzeitreduktion"
+      }
+    },
+    {
+      "id": "health_4",
+      "name": "Lebensreserve",
+      "rarity": "rare",
+      "maxPoints": 30,
+      "parent": "health_3",
+      "requiredParentPoints": 10,
+      "branch": "health",
+      "tier": 4,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 1,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "health_5",
+      "name": "Lebensraub",
+      "rarity": "rare",
+      "maxPoints": 30,
+      "parent": "health_4",
+      "requiredParentPoints": 10,
+      "branch": "health",
+      "tier": 5,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/zeromancer/heart-plus.svg",
+      "effect": {
+        "type": "self-life-steal-percent",
+        "perPoint": 0.1
+      }
+    },
+    {
+      "id": "health_legend",
+      "name": "Ungebrochen",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "health_5",
+      "requiredParentPoints": 10,
+      "branch": "health",
+      "tier": 6,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "effect": {
+        "type": "additional-passive-slot",
+        "perPoint": 1
+      }
+    },
+    {
+      "id": "health_legend_alt",
+      "name": "Schemen",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "health_5",
+      "requiredParentPoints": 10,
+      "branch": "health",
+      "tier": 6,
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "effect": {
+        "type": "dodge-chance",
+        "perPoint": 25
+      }
+    }
+  ]
+}

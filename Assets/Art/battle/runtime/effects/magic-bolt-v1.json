@@ -1,0 +1,83 @@
+{
+  "image": "magic-bolt-v1.png",
+  "width": 1536,
+  "height": 1024,
+  "cellWidth": 512,
+  "cellHeight": 512,
+  "columns": 3,
+  "rows": 2,
+  "frames": [
+    {
+      "index": 0,
+      "name": "flight",
+      "column": 0,
+      "row": 0,
+      "anchor": [
+        0.68,
+        0.5
+      ]
+    },
+    {
+      "index": 1,
+      "name": "impact-small",
+      "column": 1,
+      "row": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "index": 2,
+      "name": "impact-medium",
+      "column": 2,
+      "row": 0,
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "index": 3,
+      "name": "impact-large",
+      "column": 0,
+      "row": 1,
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "index": 4,
+      "name": "impact-dissipating",
+      "column": 1,
+      "row": 1,
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    }
+  ],
+  "unusedCell": 5,
+  "colors": {
+    "mage": "#b894ff",
+    "healer": "#ffdc83",
+    "ice": "#8edfff",
+    "fire": "#ff732f"
+  },
+  "generation": {
+    "mode": "built-in image_gen",
+    "transparentBackground": true,
+    "prompt": "Use case: stylized-concept.\nAsset type: production-ready 2D dark-fantasy magic projectile VFX sprite sheet for a browser RPG, shared by a mage and a healer using runtime color tinting.\nCreate ONE genuinely transparent RGBA PNG sprite sheet with EXACTLY FIVE sequential animation frames arranged in a STRICT 3-column by 2-row grid of EQUAL SQUARE CELLS. Preferred full canvas 1536 x 1024 pixels, each cell 512 x 512. Read left-to-right, top-to-bottom. Cells 1-5 contain the five frames, cell 6 MUST be completely empty transparent space. No cell borders or labels.\nFrame 1, top left: a concentrated glowing magical bolt in flight, side view, moving horizontally toward the RIGHT. Bright white pointed spherical energy core at the center of the cell, elegant short wispy tapered tail extending LEFT, several fine sparks. Compact and readable at 48 pixels.\nFrame 2, top center: small initial contact burst centered precisely at the cell center, brilliant core, a few short curved energy filaments and shards.\nFrame 3, top right: medium expanding magical explosion at exactly the same center, radial arcane energy wisps and delicate particles, roughly 45 percent cell diameter.\nFrame 4, bottom left: larger expanding magical impact, roughly 62 percent cell diameter, radiant core, soft curling wisps and outward sparks, continuous visual progression from frame 3.\nFrame 5, bottom center: largest impact bloom, roughly 78 percent cell diameter, thinner dissolving radial energy waves with a less dense core, outward sparks, natural transition toward dissipation.\nStyle: polished hand-painted game VFX, crisp luminous cores, soft translucent glows, flowing magical plasma, tasteful dark-fantasy aesthetic. Energy only: no physical stone, ground, smoke clouds, weapon or characters. Neutral arcane energy that looks equally appropriate recolored violet for a mage or warm gold for a healer.\nColor palette: STRICTLY ACHROMATIC white, silver and neutral grayscale only, all glows and soft edges represented by actual alpha transparency. No blue, purple, yellow or other hue in this source asset.\nConstraints: no background, no black backdrop, no checkerboard drawn into the art, no floor or shadows, no text, no numbers, no watermark, no decorative panels. Every frame entirely contained within its own cell with a generous transparent margin. Adjacent cells must never overlap. All impact cores must share the identical center anchor inside their cells. Consistent fixed camera, scale and rendering style across the five frames."
+  },
+  "renderSizes": {
+    "basic": {
+      "projectile": 96,
+      "impact": 128
+    },
+    "elementalSkill": {
+      "projectile": 160,
+      "impact": 208
+    }
+  }
+}
