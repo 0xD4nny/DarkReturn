@@ -501,7 +501,8 @@ function syncMobileWorkshop(root = viewContainer) {
     tabs.innerHTML = '<button class="ui-control ui-choice" type="button" data-mobile-workshop-pane="selection">AUSWAHL</button><button class="ui-control ui-choice" type="button" data-mobile-workshop-pane="workbench">BEARBEITEN</button>';
     layout.before(tabs);
   }
-  root.querySelectorAll('[data-mobile-workshop-pane]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mobileWorkshopPane === layout.dataset.mobileWorkshopPane)));
+  layout.removeAttribute('aria-pressed');
+  root.querySelectorAll('button[data-mobile-workshop-pane]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mobileWorkshopPane === layout.dataset.mobileWorkshopPane)));
   if (mobileWorkshopReturn && !root.querySelector('[data-mobile-workshop-back]')) {
     const back = document.createElement('button');
     back.type = 'button'; back.className = 'mobile-workshop-back ui-control ui-button';
@@ -680,7 +681,7 @@ document.addEventListener('click', event => {
     if (inspectAbility(abilityChoice.dataset.abilityCategory, Number(abilityChoice.dataset.inspectAbility))) renderView();
     return;
   }
-  const workshopPane = event.target.closest('[data-mobile-workshop-pane]');
+  const workshopPane = event.target.closest('button[data-mobile-workshop-pane]');
   if (workshopPane) { stop(); mobileWorkshopPanes[currentView] = workshopPane.dataset.mobileWorkshopPane; syncMobileWorkshop(); return; }
   if (event.target.closest('[data-mobile-workshop-back]') && mobileWorkshopReturn) {
     stop(); const origin = mobileWorkshopReturn; mobileWorkshopReturn = null;
