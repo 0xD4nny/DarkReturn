@@ -390,17 +390,18 @@
     white-space: nowrap;
     pointer-events: none;
     text-shadow: 0 2px 7px #000, 0 0 12px #ed765b99;
-    animation: enemy-float-up 1.7s cubic-bezier(.18, .72, .28, 1) forwards;
+    animation: enemy-float-up 2.3s cubic-bezier(.18, .72, .28, 1) forwards;
 }
 .enemy-float-number.is-critical {
     z-index: 5;
     color: #ffd27a;
     font-size: 25px;
     text-shadow: 0 2px 4px #170e08, 0 0 8px #ff9e35, 0 0 18px #ff552dcc;
-    animation-duration: 2s;
+    animation-duration: 2.6s;
 }
 .enemy-float-number.is-vulnerable-hit { color: #ff9a83; text-shadow: 0 2px 4px #170e08, 0 0 10px #fa3d51, 0 0 20px #fa3d5177; }
 .enemy-float-number.is-critical.is-vulnerable-hit { color: #fff0a8; text-shadow: 0 2px 4px #170e08, 0 0 9px #ffb03b, 0 0 22px #f53c67; }
+.enemy-float-number .damage-hit-count { display: inline-block; margin-left: 6px; color: #e9c88e; font: 700 .7em var(--sans); vertical-align: middle; }
 .enemy-float-number.miss {
     left: 50%;
     color: #d9c6a7;
@@ -409,6 +410,7 @@
     font-weight: 700;
     letter-spacing: .12em;
     animation-name: enemy-float-up;
+    animation-duration: .9s;
 }
 .battle-enemy.is-vulnerable::before {
     content: "VERWUNDBAR";

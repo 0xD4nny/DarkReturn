@@ -26,6 +26,8 @@ const AFFIX_PERCENT_STATS = new Set(['Lebenskraft', 'Angriff', 'Verteidigung', '
 const STAT_PERCENT_STATS = new Set(['Trefferchance', 'Kritische Chance', 'Kritischer Schaden', 'Schaden gegen verwundbare Ziele', 'Schaden \u00fcber Zeit', 'Angriffsgeschwindigkeit', 'Seelenfund', BUFF_EFFECT_STAT]);
 AFFIX_PERCENT_STATS.add('Abklingzeitreduktion');
 STAT_PERCENT_STATS.add('Abklingzeitreduktion');
+AFFIX_PERCENT_STATS.add('Doppeltrefferchance');
+STAT_PERCENT_STATS.add('Doppeltrefferchance');
 const ITEM_NAMES = GAME_CONFIG.itemNames;
 const ARMOR_SETS = GAME_CONFIG.armorSets;
 const JEWELRY_SETS = GAME_CONFIG.jewelrySets || {};
@@ -205,7 +207,7 @@ function skillDescription(skill, className = null) {
       unkillable: `Der Anwender wird ${seconds(skill.durationSeconds)} unverwundbar.`,
     };
     const description = descriptions[skill.effect] || skill.description;
-    return description + (className === 'mage' && skillTreeSpecialValue('mage-skill-repeat-chance', className) > 0 ? ' 20 % Chance auf eine kostenlose Wiederholung durch Arkane Wiederholung.' : '');
+    return description;
   }
   const effects = Array.isArray(skill.effect) ? skill.effect : [skill.effect || {}];
   const descriptions = effects.map((effect) => {
@@ -256,7 +258,6 @@ function skillTreeDescription(node, className = null) {
   if (type === 'mage-instant-fireball') return 'Nur Magier: Feuerball hat die halbe Grundabklingzeit und verursacht seinen gesamten Schaden sofort statt über Zeit. Keine Brandticks und kein zusätzlicher Schadensbonus. Abklingzeitreduktion wirkt anschließend; Boni auf Schaden über Zeit gelten nicht mehr für Feuerball.';
   if (type === 'hunter-poison-chance') return 'Nur Jäger: Giftpfeile haben 40 % statt 25 % Giftchance. Die passive Fähigkeit muss ausgerüstet sein.';
   if (type === 'healer-damage-reduction-cap') return 'Nur Heiler: Erhöht die Obergrenze der gesamten eigenen Schadensminderung auf 95 %. Gewährt nicht automatisch 95 % Schadensminderung; Verteidigung, Schutzfähigkeiten und Setboni müssen sie weiterhin aufbauen. Die Verteidigungskurve bleibt unverändert. Benötigt keine bestimmte passive Fähigkeit und erhöht nicht das Cap anderer Gruppenmitglieder.';
-  if (type === 'mage-skill-repeat-chance') return 'Nur Magier: 20 % Chance, die aktive Fähigkeit einmal kostenlos erneut auszulösen. Funken springt auch bei der Wiederholung durch alle noch lebenden Gegner. Keine zusätzliche Abklingzeit und keine weitere Bonusauslösung.';
   if (type === 'healer-final-damage-percent') return `Nur Heiler: +${value} % multiplikativer eigener Schaden (×${formatRuleNumber(1 + perPoint / 100)}) auf normale Angriffe, Schadensfähigkeiten und Schaden über Zeit. Wirkt als eigener Multiplikator, nicht auf andere Gruppenmitglieder oder Heilungen.`;
   if (type === 'hunter-critical-overflow') return 'Nur Jäger: Kritische Chance über 100 % gewährt im Verhältnis 1:1 zusätzlichen kritischen Schaden. Beispiel: 120 % Kritische Chance geben +20 % Kritischer Schaden. Funktioniert mit jeder passiven Fähigkeit.';
   if (type === 'warrior-stomp-area') return 'Nur Krieger: Stampfen trifft und betäubt alle lebenden Gegner statt eines einzelnen Ziels.';
@@ -308,10 +309,10 @@ function allowsRepeatedAffixes(slot) {
   return slot !== 'glyph' && Array.isArray(AFFIX_POOLS[slot]);
 }
 function enchantmentRulesText(mode, target = null) {
-  if (mode === 'affix' && isMythicWeapon(target)) return 'Bei mystischen Waffen kannst du alle vier Affixplätze beliebig oft umprägen. Ohne zusätzliche Ausschlüsse kostet jeder Versuch einen Umprägungsstein und würfelt einen anderen Typ sowie einen neuen Wert. Ein vorhandener Greater-Status bleibt erhalten: 150 % eines normalen Zufallswurfs statt eines garantierten Maximalwurfs. Gleiche Affixtypen auf mehreren Plätzen bleiben erlaubt. Der Mythische Effekt wird nicht verändert.';
+  if (mode === 'affix' && isMythicWeapon(target)) return 'Bei mystischen Waffen kannst du alle vier Affixplätze beliebig oft umprägen. Ohne zusätzliche Ausschlüsse kostet jeder Versuch einen Umprägungsstein und würfelt einen anderen Typ sowie einen neuen Wert. Alle vier Affixe sind immer Greater Affixe, auch nach dem Umprägen: 150 % eines normalen Zufallswurfs statt eines garantierten Maximalwurfs. Gleiche Affixtypen auf mehreren Plätzen bleiben erlaubt. Der Mythische Effekt wird nicht verändert.';
   if (mode === 'affix') return (Number.isInteger(target?.enchantAffixIndex)
     ? 'Dieser Gegenstand ist bereits auf einen Affixplatz festgelegt. Ohne zusätzliche Ausschlüsse verbraucht jeder weitere Versuch einen Umprägungsstein und ersetzt dort den Affixtyp samt Wurf. Andere Plätze sind dauerhaft gesperrt.'
-    : 'Der erste Versuch legt dauerhaft fest, welchen Affixplatz du umprägen kannst. Ohne zusätzliche Ausschlüsse wird ein Umprägungsstein verbraucht; der bisherige Typ wird durch einen anderen Typ samt neuem Wurf ersetzt. Ein bereits auf einem anderen Platz vorhandener Affixtyp kann erneut entstehen.') + ' Wird ein Greater Affix umgeprägt, geht sein Greater-Status dauerhaft verloren. Bei gewöhnlicher bis legendärer Ausrüstung ist der Ersatz immer ein normaler Affix; andere Greater Affixe bleiben erhalten. Begleittiere haben eigene Regeln: Alle Plätze bleiben umprägbar; ihre normalen Affixwürfe werden durch die Tierstufe verstärkt. Tieraffixe können keine Greater Affixe sein. Mystische Waffen bilden eine Ausnahme: Alle vier Plätze bleiben beliebig oft umprägbar. Ihr Greater-Status bleibt erhalten; Typ und Wert werden neu gewürfelt, bei Greater Affixen mit 150 % eines normalen Zufallswurfs.';
+    : 'Der erste Versuch legt dauerhaft fest, welchen Affixplatz du umprägen kannst. Ohne zusätzliche Ausschlüsse wird ein Umprägungsstein verbraucht; der bisherige Typ wird durch einen anderen Typ samt neuem Wurf ersetzt. Ein bereits auf einem anderen Platz vorhandener Affixtyp kann erneut entstehen.') + ' Wird ein Greater Affix umgeprägt, geht sein Greater-Status dauerhaft verloren. Bei gewöhnlicher bis legendärer Ausrüstung ist der Ersatz immer ein normaler Affix; andere Greater Affixe bleiben erhalten. Begleittiere haben eigene Regeln: Alle Plätze bleiben umprägbar; ihre normalen Affixwürfe werden durch die Tierstufe verstärkt. Tieraffixe können keine Greater Affixe sein. Mystische Waffen bilden eine Ausnahme: Alle vier Plätze bleiben beliebig oft umprägbar. Alle vier Affixe sind immer Greater Affixe; Typ und Wert werden neu gewürfelt, mit 150 % eines normalen Zufallswurfs.';
   return 'Ein Seltenheitsstein wird verbraucht und erhöht die Seltenheit um eine Stufe. Vorhandene Affixtypen bleiben erhalten; ihre Würfe werden innerhalb der gemeinsamen Affixbereiche übernommen und gerundet. Zusätzliche Affixe werden neu gewürfelt. Grundschaden und Grundverteidigung werden in den höheren Seltenheitsbereich übertragen; bei einem festen bisherigen Grundwert wird neu gewürfelt. Die Grundwertspannen steigen mit jeder Seltenheit ohne Überschneidung. Vorhandene Greater Affixe behalten ihren Greater-Status und den maximalen Greater-Grundwert; zusätzlich entstehende Affixe sind normal. Bei legendärer Ausrüstung ohne Greater Affix kann stattdessen einmalig ein Seltenheitsstein verwendet werden: Ein zufälliger vorhandener normaler Affix erhält garantiert den Greater-Grundwert. Der Affixtyp bleibt erhalten. Die einmalige Nutzung bleibt am Gegenstand gespeichert, auch wenn der Greater Affix später umgeprägt wird. Glyphen und Begleittiere sind hiervon ausgeschlossen.';
 }
 

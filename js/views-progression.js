@@ -132,7 +132,6 @@ function skillTreeEffectLabel(node, rank, className) {
   if (effect.type === 'mage-instant-fireball') return 'Feuerball: halbe Abklingzeit, voller Sofortschaden';
   if (effect.type === 'hunter-poison-chance') return 'Giftpfeile: 40 % Giftchance';
   if (effect.type === 'healer-damage-reduction-cap') return 'Eigenes Schadensminderungs-Cap: 95 %';
-  if (effect.type === 'mage-skill-repeat-chance') return '20 % Chance auf zweite Fähigkeit';
   if (effect.type === 'healer-final-damage-percent') return `×${formatRuleNumber(1 + value / 100)} eigener Schaden`;
   if (effect.type === 'hunter-critical-overflow') return 'Überschüssige Kritchance → Kritischer Schaden (1:1)';
   if (effect.type === 'warrior-stomp-area') return 'Stampfen: Flächenschaden und Betäubung';

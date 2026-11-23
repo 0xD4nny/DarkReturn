@@ -100,9 +100,101 @@ function renderGlyphFusion() {
   return `${renderBlacksmithHeading()}<div class="smith-layout"><section class="forge-selection item-selection"><div class="section-heading"><div><h3>Glyphen wählen</h3></div><span class="selection-count">${selected.length} / 3 gewählt</span></div>${grid}</section><section class="forge-workbench glyph-fusion-workbench ${workshopMotionClass('blacksmith')} ${ready ? 'is-ready' : ''}"><div class="socket-workbench-heading"><h3>Glyphen kombinieren</h3></div><div class="forge-ritual-art" aria-hidden="true"><div class="ritual-orbit ritual-orbit-outer"><i></i><i></i><i></i><i></i></div><div class="ritual-orbit ritual-orbit-middle"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ritual-orbit ritual-orbit-inner"><i></i><i></i><i></i></div>${workshopRitualCore(result, '&#x2727;')}<span class="ritual-caption">${result ? escapeHtml(result.name) : 'DREI GLYPHEN · EINE NEUE'}</span></div><div class="forge-controls"><div class="glyph-fusion-slots" aria-label="Ausgewählte Glyphen">${slots}</div><div class="forge-upgrade-status"><span>${busy ? 'Glyphen werden kombiniert' : `${selected.length} / 3 Glyphen gewählt`}</span><strong>${result ? 'LETZTES ERGEBNIS' : 'ZUFÄLLIGE GLYPHE'}</strong></div><button class="primary-button ui-control ui-button glyph-fusion-button" type="button" data-fuse-glyphs ${ready ? '' : 'disabled'}>GLYPHEN KOMBINIEREN</button></div></section></div>`;
 }
 
+function openAutoEnchant() {
+  if (forgeAnimationInProgress || document.querySelector('#auto-enchant-dialog')) return;
+  const itemId = selectedEnchantTargetId;
+  const index = selectedEnchantAffixIndex;
+  const target = findInventoryOrEquippedItem(state, itemId) || partyPets().find(item => item.id === itemId);
+  if (!target?.affixes?.[index]) return;
+  const generation = stateGeneration;
+  const dialog = document.createElement('dialog');
+  dialog.id = 'auto-enchant-dialog';
+  dialog.className = 'enchant-exclusions-dialog auto-enchant-dialog';
+  dialog.setAttribute('aria-labelledby', 'auto-enchant-title');
+  dialog.innerHTML = `<h2 id="auto-enchant-title">Automatisch umprägen</h2>
+    <p>${escapeHtml(target.name)} · Platz ${index + 1}</p>
+    <label class="enchant-affix-picker"><span>Gewünschtes Affix</span><select class="ui-control ui-select" data-auto-enchant-stat>${enchantAffixPool(target).map(stat => `<option value="${escapeHtml(stat)}" ${stat === target.affixes[index].stat ? 'selected' : ''}>${escapeHtml(stat)}</option>`).join('')}</select></label>
+    <label class="enchant-affix-picker"><span>Mindestwert</span><input class="ui-control" data-auto-enchant-min type="number" min="0" step="any" inputmode="decimal" required></label>
+    <p data-auto-enchant-range></p>
+    <p>Der Mindestwert gilt für den angezeigten Wert einschließlich Aufwertung. Deine Affix-Ausschlüsse und deren Kosten gelten weiterhin. Stoppt beim Treffer oder bei Materialmangel. Läuft, solange das Spiel geöffnet ist.</p>
+    <p data-auto-enchant-status role="status" aria-live="polite"></p>
+    <div class="enchant-attempt-actions"><button class="primary-button ui-control ui-button" type="button" data-auto-enchant-start>STARTEN</button><button class="secondary-button ui-control ui-button" type="button" data-auto-enchant-close>SCHLIESSEN</button></div>`;
+  const statInput = dialog.querySelector('[data-auto-enchant-stat]');
+  const minimumInput = dialog.querySelector('[data-auto-enchant-min]');
+  const start = dialog.querySelector('[data-auto-enchant-start]');
+  const close = dialog.querySelector('[data-auto-enchant-close]');
+  const status = dialog.querySelector('[data-auto-enchant-status]');
+  let running = false;
+  let stopped = false;
+  const updateRange = () => {
+    const [min, max] = affixRangeFor(target, statInput.value, { greater: isMythicWeapon(target) });
+    minimumInput.max = max;
+    minimumInput.value = min;
+    const unit = AFFIX_PERCENT_STATS.has(statInput.value) ? ' %' : '';
+    dialog.querySelector('[data-auto-enchant-range]').textContent = `Möglicher neuer Wert: ${formatRuleNumber(min)}–${formatRuleNumber(max)}${unit}.`;
+  };
+  statInput.addEventListener('change', updateRange);
+  minimumInput.addEventListener('input', () => {
+    const value = minimumInput.valueAsNumber;
+    if (!Number.isFinite(value)) return;
+    const limited = Math.max(Number(minimumInput.min), Math.min(Number(minimumInput.max), value));
+    if (limited !== value) minimumInput.value = limited;
+  });
+  close.addEventListener('click', () => {
+    if (running) { stopped = true; close.disabled = true; close.textContent = 'WIRD GESTOPPT'; }
+    else dialog.close();
+  });
+  dialog.addEventListener('cancel', event => {
+    if (running) { event.preventDefault(); stopped = true; }
+  });
+  dialog.addEventListener('close', () => { stopped = true; dialog.remove(); });
+  start.addEventListener('click', async () => {
+    if (running || !minimumInput.reportValidity()) return;
+    const goal = { stat: statInput.value, minimum: Number(minimumInput.value) };
+    if (!Number.isFinite(goal.minimum)) return;
+    running = true;
+    stopped = false;
+    let attempts = 0;
+    let cost = 0;
+    let reason = '';
+    start.disabled = true;
+    statInput.disabled = true;
+    minimumInput.disabled = true;
+    close.textContent = 'STOPPEN';
+    status.textContent = 'Umprägen läuft …';
+    try {
+      while (!stopped && generation === stateGeneration && dialog.open) {
+        const result = await performAction({ action: 'enchant-affix', itemId, affixIndex: index, autoGoal: goal, silent: true }, null, null, { background: true });
+        if (!result) {
+          reason = 'Gestoppt. Bitte prüfe die Fehlermeldung.';
+          status.textContent = `${number(attempts)} Versuche · ${number(cost)} Steine verbraucht · ${reason}`;
+          break;
+        }
+        attempts += result.attempts;
+        cost += result.cost;
+        reason = result.stopReason || '';
+        status.textContent = `${number(attempts)} Versuche · ${number(cost)} Steine verbraucht · ${result.affix.stat}: ${formatRuleNumber(result.affix.value)}${AFFIX_PERCENT_STATS.has(result.affix.stat) ? ' %' : ''}${reason ? ` · ${reason}` : ''}`;
+        if (reason) break;
+        await new Promise(resolve => setTimeout(resolve, 0));
+      }
+      if (!reason) status.textContent += ' · Manuell gestoppt.';
+    } finally {
+      running = false;
+      start.disabled = false;
+      statInput.disabled = false;
+      minimumInput.disabled = false;
+      close.disabled = false;
+      close.textContent = 'SCHLIESSEN';
+    }
+  });
+  document.body.append(dialog);
+  updateRange();
+  dialog.showModal();
+}
+
 // A native dialog keeps keyboard focus and Escape handling inside the picker.
 function openEnchantExclusions() {
-  if (forgeAnimationInProgress || activeWorkshopJob) return;
+  if (forgeAnimationInProgress) return;
   const target = findInventoryOrEquippedItem(state, selectedEnchantTargetId);
   const index = selectedEnchantAffixIndex;
   if (!target?.affixes?.[index]) return;

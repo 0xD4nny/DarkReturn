@@ -873,7 +873,7 @@ function makeItem(slot, rarityName) {
     item.baseArmorDefense = armorBaseDefense;
     item.armorDefense = armorBaseDefense;
   }
-  return item;
+  return isMythicWeapon(item) ? normalizeAffixUpgrades(item) : item;
 }
 
 function dropPartyClasses(save = state) {
@@ -960,6 +960,7 @@ function canUpgradeLegendaryAffix(item) {
     && (item.affixes || []).some(affix => !affix.fixed && AFFIX_RANGES[affix.stat]));
 }
 function rollGreaterAffixes(item, save = state, { includeFixed = false, ignoreDeepRequirement = false } = {}) {
+  if (isMythicWeapon(item)) return normalizeAffixUpgrades(item);
   if (!ignoreDeepRequirement && (Number(save?.deepOfDark?.tier) || 0) < BALANCE.loot.greaterAffixMinimumDeepTier) return item;
   (item.affixes || []).forEach((affix) => {
     if (affix.greater || (affix.fixed && !includeFixed) || Math.random() >= BALANCE.loot.greaterAffixChance) return;
@@ -989,8 +990,12 @@ function normalizeAffixUpgrades(item) {
   const legacyMultiplier = Math.pow(BALANCE.items.upgradeBaseStatMultiplier, item.upgradeLevel || 0);
   item.affixes = (item.affixes || []).map(affix => {
     const inferred = Number(affix.value) / (isMythicWeapon(item) ? affixUpgradeMultiplier(item.upgradeLevel) : legacyMultiplier);
-    const baseValue = affix.baseValue ?? (affix.greater && !affix.fixed && !isMythicWeapon(item) ? greaterAffixBaseValue(affix.stat)
+    let baseValue = affix.baseValue ?? (affix.greater && !affix.fixed && !isMythicWeapon(item) ? greaterAffixBaseValue(affix.stat)
       : affix.greater ? Math.round(inferred * 100) / 100 : Math.round(inferred));
+    if (isMythicWeapon(item) && !affix.greater) {
+      baseValue *= BALANCE.loot.greaterAffixMaxMultiplier;
+      affix = { ...affix, greater: true };
+    }
     return { ...affix, baseValue, value: affixValueAtUpgrade({ ...affix, baseValue }, item.upgradeLevel) };
   });
   return item;
@@ -1137,7 +1142,8 @@ function makeShopItem(group, save = state) {
   throw new Error(`Market offer ${group} is unavailable.`);
 }
 const GLYPH_DEFINITIONS = GAME_CONFIG.glyphDefinitions;
-const POWERUP_STATS = [...STAT_KEYS, 'Chance auf zweiten Treffer', 'Droprate', 'Upgradechance'];
+const POWERUP_STATS = [...STAT_KEYS.filter(stat => stat !== 'Doppeltrefferchance'), 'Chance auf zweiten Treffer', 'Droprate', 'Upgradechance'];
+const POWERUP_DURATION_MS = 15 * 60 * 1000;
 function makeGlyph(definition) {
   return { id: createItemId(), slot: 'glyph', glyphId: definition.id, name: definition.name, quantity: 1, upgradeLevel: 0, rarity: 'Legendär', rarityColor: 'legendary', icon: SLOT_DATA.glyph.icon, affixVersion: 5, affixes: [{ stat: definition.bonusStat || 'Angriff', value: 25, baseValue: 25, fixed: true }, { stat: definition.stat, value: 100, baseValue: 100, fixed: true }] };
 }
@@ -1175,18 +1181,18 @@ function migrateRetiredTowerLootBoost(save) {
 }
 function towerLootBaseChance(choice, sourceState = state) {
   const kills = Math.max(0, Math.floor(Number(sourceState?.statistics?.towerBossesKilled) || 0));
-  return Math.min(100, Math.round((choice.chance + kills * BALANCE.loot.towerLootChancePerBoss) * 10) / 10);
+  return Math.round((choice.chance + kills * BALANCE.loot.towerLootChancePerBoss) * 10) / 10;
 }
 function towerLootChance(choice, sourceState = state) {
-  return applyLootDropBonus(towerLootBaseChance(choice, sourceState) / 100, sourceState) * 100;
+  return applyLootDropBonus(towerLootBaseChance(choice, sourceState) / 100, sourceState, { cap: Infinity }) * 100;
 }
 function towerLootProgressLabel(sourceState = state) {
   return `${number(sourceState.statistics.towerBossesKilled || 0)} Turmbosse · +${formatRuleNumber(BALANCE.loot.towerLootChancePerBoss)} Prozentpunkte je Sieg`;
 }
-function applyLootDropBonus(baseChance, sourceState = state) {
+function applyLootDropBonus(baseChance, sourceState = state, { cap = 1 } = {}) {
   const bonus = powerupBonusForStat('Droprate', sourceState) + (getWorldEvent(sourceState).dropRatePercent || 0)
     + (vipIsActive(sourceState) ? VIP_RULES.dropRatePercent : 0);
-  return Math.min(1, Math.max(0, baseChance * (1 + bonus / 100)));
+  return Math.min(cap, Math.max(0, baseChance * (1 + bonus / 100)));
 }
 function workshopSuccessChance(baseChance, sourceState = state) {
   const bonus = powerupBonusForStat('Upgradechance', sourceState) + (getWorldEvent(sourceState).upgradeChancePercent || 0)

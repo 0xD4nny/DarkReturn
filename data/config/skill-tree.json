@@ -199,7 +199,7 @@
     },
     {
       "id": "mage_legend",
-      "name": "Arkane Wiederholung",
+      "name": "Arkaner Doppelschlag",
       "rarity": "legendary",
       "maxPoints": 1,
       "parent": "mage_skill_damage",
@@ -208,7 +208,7 @@
       "tier": 5,
       "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
       "effect": {
-        "type": "mage-skill-repeat-chance",
+        "type": "extra-attack-chance",
         "perPoint": 20
       },
       "class": "mage"
@@ -322,7 +322,7 @@
       "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
       "effect": {
         "type": "hunter-poison-chance",
-        "perPoint": 40
+        "perPoint": 50
       },
       "class": "hunter"
     },
@@ -515,7 +515,7 @@
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
       "effect": {
         "type": "final-damage-percent",
-        "perPoint": 25
+        "perPoint": 50
       }
     },
     {
@@ -530,7 +530,7 @@
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
       "effect": {
         "type": "extra-attack-chance",
-        "perPoint": 20
+        "perPoint": 50
       }
     },
     {
@@ -639,7 +639,7 @@
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
       "effect": {
         "type": "dodge-chance",
-        "perPoint": 25
+        "perPoint": 40
       }
     }
   ]

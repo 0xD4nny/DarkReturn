@@ -1,3 +1,35 @@
+function applyEnchantAffixAttempt(save, body) {
+  const target = requireWorkshopItem(save, body.itemId, { allowPet: true });
+  const isPet = target?.slot === 'pet';
+  const mythic = isMythicWeapon(target);
+  if (!target || (!isPet && !AFFIX_POOLS[target.slot])) throw new Error('Wähle ein Ausrüstungsteil oder dein Begleittier.');
+  const affixIndex = Number(body.affixIndex);
+  if (!Number.isInteger(affixIndex) || affixIndex < 0 || affixIndex >= (target.affixes || []).length) throw new Error('Wähle ein vorhandenes Affix.');
+  if (!isPet && !mythic && Number.isInteger(target.enchantAffixIndex) && target.enchantAffixIndex !== affixIndex) throw new Error('Bei diesem Gegenstand kann nur das bereits gewählte Affix umgeprägt werden.');
+  const stone = requireInventoryItem(save, body.stoneId).item;
+  if (stone.slot !== 'affixStone') throw new Error('Dafür wird ein Umprägungsstein benötigt.');
+  const quote = enchantAffixQuote(save, target, affixIndex);
+  if (!quote.candidates.length) throw new Error('Mindestens ein neuer Affixtyp muss m\u00f6glich bleiben.');
+  if (quote.available < quote.cost) throw new Error(`Du ben\u00f6tigst ${quote.cost} Umpr\u00e4gungssteine.`);
+  const currentStat = target.affixes[affixIndex].stat;
+  const usedStats = target.affixes.filter((_, index) => index !== affixIndex).map((affix) => affix.stat);
+  const replacement = isPet ? rollPetAffix(currentStat, target.level, quote.excluded) : rollAffix(target.slot, [...quote.excluded, ...(allowsRepeatedAffixes(target.slot) ? [currentStat] : [...usedStats, currentStat])]);
+  if (mythic) {
+    replacement.greater = true;
+    replacement.baseValue *= BALANCE.loot.greaterAffixMaxMultiplier;
+    replacement.value = replacement.baseValue;
+  }
+  if (!isPet) replacement.value = affixValueAtUpgrade(replacement, target.upgradeLevel);
+  consumeAffixStones(save, quote.cost);
+  target.affixes[affixIndex] = replacement;
+  if (!isPet && !mythic) target.enchantAffixIndex = affixIndex;
+  if (mythic) delete target.enchantAffixIndex;
+  save.statistics.affixesRerolled += 1;
+  save.questBook.counters.affixesRerolled += 1;
+  save.questBook.counters[isPet ? 'petAffixesRerolled' : 'equipmentAffixesRerolled'] += 1;
+  return { kind: 'enchant-affix', cost: quote.cost, excluded: quote.excluded, item: target, previousStat: currentStat, affix: replacement, state: save, outcomes: [{ success: true }], message: 'Affix umgeprägt.' };
+}
+
 // Shared reward path for live victories and offline area farming.
 function resolveBattleRewards(save, body) {
   const combatStats = body.statistics || {};
@@ -87,20 +119,22 @@ function resolveBattleRewards(save, body) {
   if (body.mode === 'tower') {
     const choice = BALANCE.loot.towerLootChoices.find(entry => entry.id === save.settings.towerLoot);
     const candidateDrops = [];
-    if (choice && Math.random() * 100 < towerLootChance(choice, save)) {
+    if (choice) {
+      const chance = towerLootChance(choice, save);
+      const count = Math.floor(chance / 100) + (Math.random() * 100 < chance % 100 ? 1 : 0);
       const factories = {
         upgradeStone: makeUpgradeStone,
-    mythicUpgradeStone: makeMythicUpgradeStone,
+        mythicUpgradeStone: makeMythicUpgradeStone,
         socketStone: makeSocketStone,
         affixStone: () => makeEnchantmentStone('affixStone'),
         gems: () => makeRandomGem(save),
         powerup: () => makePowerup(choose(POWERUP_STATS)),
       };
-      candidateDrops.push(factories[choice.id]());
-      if (choice.id === 'upgradeStone') save.questBook.counters.upgradeStoneDrops += 1;
-      if (choice.id === 'socketStone') save.questBook.counters.socketStoneDrops += 1;
-      if (choice.id === 'affixStone') save.questBook.counters.affixStoneDrops += 1;
-      if (choice.id === 'gems') save.questBook.counters.gemDrops += 1;
+      for (let index = 0; index < count; index++) candidateDrops.push(factories[choice.id]());
+      if (choice.id === 'upgradeStone') save.questBook.counters.upgradeStoneDrops += count;
+      if (choice.id === 'socketStone') save.questBook.counters.socketStoneDrops += count;
+      if (choice.id === 'affixStone') save.questBook.counters.affixStoneDrops += count;
+      if (choice.id === 'gems') save.questBook.counters.gemDrops += count;
     }
     try {
       towerMaterialDrops.push(...storeRewardItems(save, candidateDrops, 'Turm'));
@@ -297,7 +331,8 @@ async function localAction(body) {
     const owner = action === 'equip-main' || (action === 'unequip' && (!body.owner || body.owner === 'main')) ? 'main' : body.class;
     if (locked && locked.owner === owner && locked.slot === body.slot) throw new Error('Stoppe zuerst den Werkstattauftrag für diesen Ausrüstungsplatz.');
   }
-  if (save.workshopJob && ['upgrade', 'socket-slot', 'fuse-glyphs', 'enchant-rarity', 'enchant-affix', 'upgrade-gems'].includes(action)) throw new Error('Beende zuerst den laufenden Werkstattauftrag.');
+  if (save.workshopJob && ['upgrade', 'socket-slot', 'fuse-glyphs', 'enchant-rarity', 'upgrade-gems'].includes(action)) throw new Error('Beende zuerst den laufenden Werkstattauftrag.');
+  if (action === 'enchant-affix') await settleWorkshopThrough(save, Date.now());
   if (action === 'workshop-start') {
     await settleWorkshopJob(save);
     createWorkshopJob(save, body);
@@ -567,12 +602,12 @@ async function localAction(body) {
     save.activePowerups = save.activePowerups.filter((entry) => entry.expiresAt > activatedAt);
     const active = save.activePowerups.find((entry) => entry.stat === stat && entry.expiresAt > activatedAt);
     if (active) {
-      active.expiresAt += 60 * 60 * 1000;
+      active.expiresAt += POWERUP_DURATION_MS;
     } else {
-      save.activePowerups.push({ id: createItemId(), stat, value: 10, activatedAt, expiresAt: activatedAt + 60 * 60 * 1000 });
+      save.activePowerups.push({ id: createItemId(), stat, value: 10, activatedAt, expiresAt: activatedAt + POWERUP_DURATION_MS });
     }
     const updated = active || save.activePowerups.at(-1);
-    response = { item: consumed, active: updated, extended: Boolean(active), state: save, message: `${consumed.name} für eine weitere Stunde aktiviert.` };
+    response = { item: consumed, active: updated, extended: Boolean(active), state: save, message: `${consumed.name} für weitere 15 Minuten aktiviert.` };
   } else if (action === 'activate-all-powerups') {
     const now = Date.now();
     save.activePowerups = save.activePowerups.filter((entry) => entry.expiresAt > now);
@@ -589,8 +624,8 @@ async function localAction(body) {
     available.forEach((item) => {
       consumeInventoryItem(save, item.id, item.slot);
       const active = save.activePowerups.find((entry) => entry.stat === item.stat);
-      if (active) active.expiresAt += 60 * 60 * 1000;
-      else save.activePowerups.push({ id: createItemId(), stat: item.stat, value: 10, activatedAt: now, expiresAt: now + 60 * 60 * 1000 });
+      if (active) active.expiresAt += POWERUP_DURATION_MS;
+      else save.activePowerups.push({ id: createItemId(), stat: item.stat, value: 10, activatedAt: now, expiresAt: now + POWERUP_DURATION_MS });
       activatedByStat.set(item.stat, { stat: item.stat, expiresAt: (active || save.activePowerups.at(-1)).expiresAt, quantity: 1 });
     });
     const activated = [...activatedByStat.values()];
@@ -749,35 +784,35 @@ async function localAction(body) {
     save.settings.enchantExcludedAffixes[quote.group] = [...new Set(body.excluded)];
     response = { state: save, message: 'Affix-Ausschlüsse gespeichert.' };
   } else if (action === 'enchant-affix') {
-    const target = requireWorkshopItem(save, body.itemId, { allowPet: true });
-    const isPet = target?.slot === 'pet';
-    const mythic = isMythicWeapon(target);
-    if (!target || (!isPet && !AFFIX_POOLS[target.slot])) throw new Error('Wähle ein Ausrüstungsteil oder dein Begleittier.');
-    const affixIndex = Number(body.affixIndex);
-    if (!Number.isInteger(affixIndex) || affixIndex < 0 || affixIndex >= (target.affixes || []).length) throw new Error('Wähle ein vorhandenes Affix.');
-    if (!isPet && !mythic && Number.isInteger(target.enchantAffixIndex) && target.enchantAffixIndex !== affixIndex) throw new Error('Bei diesem Gegenstand kann nur das bereits gewählte Affix umgeprägt werden.');
-    const stone = requireInventoryItem(save, body.stoneId).item;
-    if (stone.slot !== 'affixStone') throw new Error('Dafür wird ein Umprägungsstein benötigt.');
-    const quote = enchantAffixQuote(save, target, affixIndex);
-    if (!quote.candidates.length) throw new Error('Mindestens ein neuer Affixtyp muss m\u00f6glich bleiben.');
-    if (quote.available < quote.cost) throw new Error(`Du ben\u00f6tigst ${quote.cost} Umpr\u00e4gungssteine.`);
-    const currentStat = target.affixes[affixIndex].stat;
-    const usedStats = target.affixes.filter((_, index) => index !== affixIndex).map((affix) => affix.stat);
-    const replacement = isPet ? rollPetAffix(currentStat, target.level, quote.excluded) : rollAffix(target.slot, [...quote.excluded, ...(allowsRepeatedAffixes(target.slot) ? [currentStat] : [...usedStats, currentStat])]);
-    if (mythic && target.affixes[affixIndex].greater) {
-      replacement.greater = true;
-      replacement.baseValue *= BALANCE.loot.greaterAffixMaxMultiplier;
-      replacement.value = replacement.baseValue;
+    const goal = body.autoGoal;
+    if (!goal) response = applyEnchantAffixAttempt(save, body);
+    else {
+      const target = requireWorkshopItem(save, body.itemId, { allowPet: true });
+      const index = Number(body.affixIndex);
+      if (!Number.isInteger(index) || !target.affixes?.[index]) throw new Error('Wähle ein vorhandenes Affix.');
+      if (target.slot !== 'pet' && !isMythicWeapon(target) && Number.isInteger(target.enchantAffixIndex) && target.enchantAffixIndex !== index) throw new Error('Dieser Affixplatz ist nicht umprägbar.');
+      if (!enchantAffixPool(target).includes(goal.stat) || !Number.isFinite(goal.minimum) || goal.minimum < 0) throw new Error('Ungültiges Affixziel.');
+      const maximum = affixRangeFor(target, goal.stat, { greater: isMythicWeapon(target) })[1];
+      if (goal.minimum > maximum) throw new Error(`Der Mindestwert darf höchstens ${formatRuleNumber(maximum)} betragen.`);
+      const matched = () => target.affixes[index].stat === goal.stat && target.affixes[index].value >= goal.minimum;
+      const initial = enchantAffixQuote(save, target, index);
+      const excluded = save.settings.enchantExcludedAffixes?.[initial.group] || [];
+      const occupied = target.slot !== 'pet' && !allowsRepeatedAffixes(target.slot) && target.affixes.some((affix, position) => position !== index && affix.stat === goal.stat);
+      if (!matched() && (excluded.includes(goal.stat) || occupied)) throw new Error('Der gewünschte Affixtyp ist ausgeschlossen oder auf einem anderen Platz belegt.');
+      let attempts = 0;
+      let cost = 0;
+      while (attempts < 50 && !matched()) {
+        const quote = enchantAffixQuote(save, target, index);
+        if (!quote.candidates.length || quote.available < quote.cost) break;
+        const stone = save.inventory.find(item => item.slot === 'affixStone');
+        const result = applyEnchantAffixAttempt(save, { ...body, stoneId: stone.id });
+        attempts++;
+        cost += result.cost;
+      }
+      const next = enchantAffixQuote(save, target, index);
+      const stopReason = matched() ? 'Ziel erreicht.' : next.available < next.cost ? 'Nicht genug Umprägungssteine für den nächsten Versuch.' : !next.candidates.length ? 'Keine möglichen Affixtypen.' : null;
+      response = { kind: 'enchant-affix', state: save, item: target, affix: target.affixes[index], attempts, cost, matched: matched(), stopReason };
     }
-    if (!isPet) replacement.value = affixValueAtUpgrade(replacement, target.upgradeLevel);
-    consumeAffixStones(save, quote.cost);
-    target.affixes[affixIndex] = replacement;
-    if (!isPet && !mythic) target.enchantAffixIndex = affixIndex;
-    if (mythic) delete target.enchantAffixIndex;
-    save.statistics.affixesRerolled += 1;
-    save.questBook.counters.affixesRerolled += 1;
-    save.questBook.counters[isPet ? 'petAffixesRerolled' : 'equipmentAffixesRerolled'] += 1;
-    response = { kind: 'enchant-affix', cost: quote.cost, excluded: quote.excluded, item: target, previousStat: currentStat, affix: replacement, state: save, outcomes: [{ success: true }], message: 'Affix umgeprägt.' };
   } else if (action === 'upgrade-gems') {
     const quote = gemUpgradeQuote(save, body.itemId);
     if (!quote || !quote.profile) throw new Error('Wähle einen Edelstein aus deinem Inventar.');
@@ -988,11 +1023,12 @@ async function localAction(body) {
       } else if (body.maxAffixRolls === true && !isGlyph) {
         item.affixes = (item.affixes || []).map((affix) => {
           const [, max] = AFFIX_RANGES?.[affix.stat] || [1, 1];
-          return { ...affix, baseValue: max, value: max };
+          return { ...affix, ...(isMythicWeapon(item) ? { greater: false } : {}), baseValue: max, value: max };
         });
       }
       if (isGear && body.greaterAffixes === true) {
         item.affixes = (item.affixes || []).map((affix) => {
+          if (affix.greater) return affix;
           if (affix.fixed && !isGlyph) return affix;
           const baseValue = affix.fixed || isMythicWeapon(item) ? (affix.baseValue ?? affix.value) * BALANCE.loot.greaterAffixMaxMultiplier : greaterAffixBaseValue(affix.stat);
           return { ...affix, greater: true, baseValue, value: baseValue };
@@ -1021,6 +1057,7 @@ async function localAction(body) {
           value: affixValueAtUpgrade({ ...affix, baseValue: affix.baseValue ?? Math.round((Number(affix.value) || 0) / oldAffixMultiplier) }, requestedUpgrade),
         }));
       }
+      if (isMythicWeapon(item)) normalizeAffixUpgrades(item);
       items.push(item);
     }
     addItemsToInventory(save, items);

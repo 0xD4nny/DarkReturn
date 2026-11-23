@@ -79,7 +79,8 @@ function syncWorkshopAnimation() {
 }
 async function playForgeAnimation(result) {
   if (forgeAnimationInProgress || saveMaintenance || saveBlocked) return;
-  if (result.kind === 'enchant-affix' && isMobileLayout()) return;
+  if (result.kind === 'enchant-affix') return;
+  if (result.kind === 'glyph-fusion' && isMobileLayout()) return;
   const generation = stateGeneration;
   const socketMode = result.kind === 'socket';
   const enchantMode = result.kind === 'enchant-rarity' || result.kind === 'enchant-affix';

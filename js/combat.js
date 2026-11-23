@@ -637,21 +637,19 @@ function updateSkillControls(overlay) {
     }
   });
 }
-function activateCompanionSkill(className, automatic = false, repeated = false, repeatedSkill = null) {
+function activateCompanionSkill(className, automatic = false) {
   if (!battle || battle.pending || battle.finishing || battle.between || !isBattleClassAlive(className)) return false;
   const companion = state.companions[className];
-  const skill = repeatedSkill || empoweredClassSkill(COMPANION_SKILLS[className]?.active?.[companion?.activeSkillIndex], className, battleStatsState());
+  const skill = empoweredClassSkill(COMPANION_SKILLS[className]?.active?.[companion?.activeSkillIndex], className, battleStatsState());
   if (!companion || !skill) return false;
   const needsHealing = Object.values(battle.partyHealth || {}).some((hero) => hero.hp > 0 && hero.hp < hero.max);
   if (skill.effect === 'heal' && !needsHealing) return false;
   const now = performance.now();
-  if (!repeated && (battle.skillReadyAt[skill.id] || 0) > now) return false;
+  if ((battle.skillReadyAt[skill.id] || 0) > now) return false;
   const cooldownReduction = Math.min(75, Math.max(0, getStats(className, battleStatsState())['Abklingzeitreduktion'] || 0));
-  if (!repeated) {
-    battle.skillReadyAt[skill.id] = now + skill.cooldown * (1 - cooldownReduction / 100) * 1000;
-    battle.basicAttackBlockedUntil ||= {};
-    battle.basicAttackBlockedUntil[className] = now + BALANCE.combat.tickMilliseconds;
-  }
+  battle.skillReadyAt[skill.id] = now + skill.cooldown * (1 - cooldownReduction / 100) * 1000;
+  battle.basicAttackBlockedUntil ||= {};
+  battle.basicAttackBlockedUntil[className] = now + BALANCE.combat.tickMilliseconds;
   if (skill.effect === 'heal') {
     setHeroBattlePose(className, 'heal', 760);
     const faithBonus = healerFaithScaling(getStats(className, battleStatsState()));
@@ -704,9 +702,9 @@ function activateCompanionSkill(className, automatic = false, repeated = false, 
       const targets = chooseBattleEnemyIndexes(className, Boolean(skill.areaEffect));
       const until = battle.cycle + Math.ceil(skill.stunDuration * 1000 / BALANCE.combat.tickMilliseconds);
       battle.enemyStunnedUntilCycles ||= [];
-      for (const targetIndex of targets) {
-        const hit = applyHeroHit(className, skill.damageMultiplier, skill.name, Boolean(skill.areaEffect), targetIndex, true, false, skill.projectileType || 'basic');
-        if (hit) battle.enemyStunnedUntilCycles[targetIndex] = Math.max(battle.enemyStunnedUntilCycles[targetIndex] || 0, until);
+      const hit = targets.length && applyHeroHit(className, skill.damageMultiplier, skill.name, Boolean(skill.areaEffect), skill.areaEffect ? null : targets[0], true, false, skill.projectileType || 'basic');
+      if (hit) for (const targetIndex of targets) {
+        battle.enemyStunnedUntilCycles[targetIndex] = Math.max(battle.enemyStunnedUntilCycles[targetIndex] || 0, until);
       }
     } else if (skill.effect === 'multi-hit') {
       const [targetIndex] = chooseBattleEnemyIndexes(className);
@@ -721,19 +719,6 @@ function activateCompanionSkill(className, automatic = false, repeated = false, 
     }
     if (skill.effect === 'vulnerable-hit' && battle.enemyHp > 0) {
       makeEnemyVulnerable(skill.vulnerableDuration, skill.name);
-    }
-  }
-  if (!repeated && className === 'mage' && Math.random() * 100 < skillTreeSpecialValue('mage-skill-repeat-chance', className, battleStatsState())) {
-    if (skill.effect === 'area-damage') {
-      const current = battle;
-      const wave = current.wave;
-      // Let the first lightning chain land, then chain through the surviving enemies again.
-      window.setTimeout(() => {
-        if (battle !== current || current.wave !== wave || current.bossFinished || current.enemyHp <= 0) return;
-        activateCompanionSkill(className, false, true, skill);
-      }, battleAttackImpactDelay(className, true) + 100);
-    } else {
-      activateCompanionSkill(className, true, true, skill);
     }
   }
   if (!automatic) {
@@ -817,7 +802,11 @@ function queueBattleHitImpact(amount, indexes, delay, hitFlags) {
       syncBattleEnemyTotals();
     }
     try {
-      indexes.forEach((index) => enemyDamageNumber(amount, document.querySelector(`#battle-overlay .battle-enemy[data-enemy="${index}"]`), hitFlags));
+      indexes.forEach((index) => {
+        const target = document.querySelector(`#battle-overlay .battle-enemy[data-enemy="${index}"]`);
+        if (hitFlags.hitCount === 0) enemyMissNumber(target, hitFlags);
+        else enemyDamageNumber(amount, target, hitFlags);
+      });
       updateBattleUI();
     } catch (error) {
       console.error('Kampftreffer konnte nicht angezeigt werden:', error);
@@ -825,6 +814,28 @@ function queueBattleHitImpact(amount, indexes, delay, hitFlags) {
   };
   if (delay > 0) window.setTimeout(resolveImpact, delay);
   else resolveImpact();
+}
+const battleDamageNumberPositions = new WeakMap();
+function positionBattleDamageNumber(float, enemy) {
+  // The animation already centers each number; a second CSS translate shifts it twice.
+  float.style.translate = 'none';
+  const width = Math.min(36, Math.max(12, enemy.getBoundingClientRect().width * 0.22));
+  const previous = battleDamageNumberPositions.get(enemy);
+  let x;
+  let y;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    x = (Math.random() * 2 - 1) * width;
+    y = (Math.random() * 2 - 1) * 14;
+    if (!previous || Math.hypot(x - previous.x, y - previous.y) >= 24) break;
+  }
+  if (previous && Math.hypot(x - previous.x, y - previous.y) < 24) {
+    x = previous.x > 0 ? -width : width;
+    y = previous.y > 0 ? -14 : 14;
+  }
+  battleDamageNumberPositions.set(enemy, { x, y });
+  float.style.marginLeft = `${x}px`;
+  float.style.marginTop = `${y}px`;
+  float.setAttribute('aria-hidden', 'true');
 }
 function enemyDamageNumber(amount, target = closestBattleEnemy(document.querySelector('#battle-overlay [data-hero]')), hitFlags = {}) {
   if (!battle) return;
@@ -835,17 +846,28 @@ function enemyDamageNumber(amount, target = closestBattleEnemy(document.querySel
     setBattleSpritePose(sprite, spriteActor, 'hit', 390);
     const float = document.createElement('span');
     float.className = `enemy-float-number damage${hitFlags.critical ? ' is-critical' : ''}${hitFlags.vulnerable ? ' is-vulnerable-hit' : ''}`;
-    float.textContent = `${hitFlags.critical ? 'KRIT! ' : ''}-${damageDisplayNumber(amount)}`;
+    const allCritical = hitFlags.critical && (hitFlags.criticalCount == null || hitFlags.criticalCount === hitFlags.hitCount);
+    float.textContent = `${allCritical ? 'KRIT! ' : ''}-${damageDisplayNumber(amount)}`;
+    if (hitFlags.hitCount > 1) {
+      const count = document.createElement('small');
+      count.className = 'damage-hit-count';
+      count.textContent = `×${hitFlags.hitCount}`;
+      float.append(count);
+    }
+    float.title = `${hitFlags.hitCount || 1} Treffer · ${hitFlags.criticalCount || 0} kritisch${hitFlags.missCount ? ` · ${hitFlags.missCount} verfehlt` : ''} · Gesamtschaden ${number(amount)}`;
+    positionBattleDamageNumber(float, enemy);
     enemy.append(float);
-    window.setTimeout(() => float.remove(), hitFlags.critical ? 2200 : 1900);
+    window.setTimeout(() => float.remove(), hitFlags.critical ? 2800 : 2500);
   }
 }
-function enemyMissNumber(target = closestBattleEnemy(document.querySelector('#battle-overlay [data-hero]'))) {
+function enemyMissNumber(target = closestBattleEnemy(document.querySelector('#battle-overlay [data-hero]')), hitFlags = {}) {
   const enemy = target || document.querySelector('.battle-enemy-wrap');
   if (!enemy) return;
   const float = document.createElement('span');
   float.className = 'enemy-float-number miss';
   float.textContent = 'MISS';
+  if (hitFlags.missCount > 1) float.textContent += ` ×${hitFlags.missCount}`;
+  positionBattleDamageNumber(float, enemy);
   enemy.append(float);
   window.setTimeout(() => float.remove(), 950);
 }
@@ -869,11 +891,44 @@ function battleDamageReduction(defense, guards = [], setReduction = 0, now = per
   return uncapped ? reduction : Math.min(cap, reduction);
 }
 function applyHeroHit(className, skillMultiplier = 1, skillName = '', areaEffect = false, targetOverride = null, showAttackAnimation = true, damageOverTime = false, projectileType = 'basic') {
+  if (!battle || battle.pending || battle.finishing || battle.enemyHp <= 0 || !isBattleClassAlive(className)) return false;
+  if (!skillName && !damageOverTime && performance.now() < (battle.basicAttackBlockedUntil?.[className] || 0)) return false;
+  const targets = targetOverride == null ? chooseBattleEnemyIndexes(className, areaEffect)
+    : (livingBattleEnemyIndexes().includes(targetOverride) ? [targetOverride] : []);
+  if (!targets.length) return false;
+  const chance = extraAttackChanceFor(className, battleStatsState());
+  const remainder = chance % 100;
+  const count = 1 + Math.floor(chance / 100) + (remainder > 0 && Math.random() * 100 < remainder ? 1 : 0);
+  const display = new Map();
+  let landed = false;
+  for (let strike = 0; strike < count; strike++) {
+    const hit = applyHeroSingleHit(className, skillMultiplier, skillName, areaEffect, targets, showAttackAnimation, damageOverTime, projectileType, !landed, display);
+    landed = Boolean(hit) || landed;
+    if (!battle || battle.enemyHp <= 0 || battle.pending || battle.finishing) break;
+  }
+  for (const [index, summary] of display) {
+    queueBattleHitImpact(summary.damage, [index], summary.delay, summary);
+  }
+  return landed;
+}
+function recordBattleHitDisplay(display, indexes, damage, delay, critical = false, vulnerable = false, missed = false) {
+  for (const index of indexes) {
+    const summary = display.get(index) || { damage: 0, delay: 0, hitCount: 0, missCount: 0, criticalCount: 0, critical: false, vulnerable: false };
+    summary.damage += damage;
+    summary.delay = Math.max(summary.delay, delay);
+    summary.hitCount += missed ? 0 : 1;
+    summary.missCount += missed ? 1 : 0;
+    summary.criticalCount += critical ? 1 : 0;
+    summary.critical ||= critical;
+    summary.vulnerable ||= vulnerable;
+    display.set(index, summary);
+  }
+}
+function applyHeroSingleHit(className, skillMultiplier, skillName, areaEffect, targets, showAttackAnimation, damageOverTime, projectileType, animateAttack, display) {
   if (!battle || battle.pending || battle.finishing || battle.enemyHp <= 0 || !isBattleClassAlive(className)) return;
   if (!skillName && !damageOverTime && performance.now() < (battle.basicAttackBlockedUntil?.[className] || 0)) return false;
-  const targetIndexes = targetOverride == null
-    ? chooseBattleEnemyIndexes(className, areaEffect)
-    : (livingBattleEnemyIndexes().includes(targetOverride) ? [targetOverride] : []);
+  const living = livingBattleEnemyIndexes();
+  const targetIndexes = targets.filter(index => living.includes(index));
   if (!targetIndexes.length) return;
   const fightState = battleStatsState();
   const weapon = equipmentForClass(className, fightState).mainHand;
@@ -882,7 +937,7 @@ function applyHeroHit(className, skillMultiplier = 1, skillName = '', areaEffect
   const hitChance = Math.max(0, Math.min(100, stats['Trefferchance'] || 0));
   const guaranteedHit = Boolean(skillName) || damageOverTime;
   if (!guaranteedHit && Math.random() * 100 >= hitChance) {
-    targetIndexes.forEach((index) => enemyMissNumber(document.querySelector(`#battle-overlay .battle-enemy[data-enemy="${index}"]`)));
+    recordBattleHitDisplay(display, targetIndexes, 0, 0, false, false, true);
     return false;
   }
   const attack = getAttackModifiers(className, fightState);
@@ -907,8 +962,7 @@ function applyHeroHit(className, skillMultiplier = 1, skillName = '', areaEffect
   multiplier *= characterDamageMultiplier(className, fightState, setEffects);
   const isActiveSkill = Boolean(skillName) && COMPANION_SKILLS[className]?.active?.some(skill => skill.name === skillName);
   if ((isActiveSkill || damageOverTime) && setEffects.activeSkillDamagePercent) multiplier *= 1 + setEffects.activeSkillDamagePercent / 100;
-  const extraStrike = Math.random() < extraAttackChanceFor(className, fightState) / 100;
-  const damage = Math.max(1, Math.round(base * multiplier * (extraStrike ? 2 : 1)));
+  const damage = Math.max(1, Math.round(base * multiplier));
   battle.highestHit = Math.max(battle.highestHit || 0, damage);
   const hunterPoison = passiveEffectsFor('hunter', fightState).find(effect => effect.type === 'bow-poison');
   const hunterPoisonTarget = !damageOverTime && className === 'hunter' && weapon?.slot === 'bow' && hunterPoison?.type === 'bow-poison'
@@ -934,8 +988,8 @@ function applyHeroHit(className, skillMultiplier = 1, skillName = '', areaEffect
   }
   const attackProjectile = hunterUsesPoisonArrow ? 'poison-arrow' : projectileType;
   const impactDelay = showAttackAnimation ? battleAttackImpactDelay(className, areaEffect, damageOverTime, attackProjectile) : 0;
-  queueBattleHitImpact(damage, targetIndexes, impactDelay, { critical, vulnerable });
-  if (showAttackAnimation) {
+  recordBattleHitDisplay(display, targetIndexes, damage, impactDelay, critical, vulnerable);
+  if (showAttackAnimation && animateAttack) {
     try {
       playBattleAttack(className, damage, targetIndexes, areaEffect, damageOverTime, attackProjectile, critical, vulnerable);
     } catch (error) {

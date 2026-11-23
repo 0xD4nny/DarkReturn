@@ -294,6 +294,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -311,6 +312,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -328,6 +330,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -345,6 +348,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -362,6 +366,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -379,6 +384,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -396,6 +402,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -413,6 +420,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -430,6 +438,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -447,6 +456,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -464,6 +474,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -481,6 +492,7 @@
       "Ausdauer",
       "Glaube",
       "Kritische Chance",
+      "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
@@ -490,6 +502,10 @@
     ]
   },
   "affixRanges": {
+    "Doppeltrefferchance": [
+      5,
+      10
+    ],
     "Lebenskraft": [
       5,
       15
@@ -620,20 +636,20 @@
         {
           "pieces": 2,
           "effects": {
-            "cooldownReduction": 20
+            "cooldownReduction": 25
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "intelligenceFlat": 150
+            "intelligenceFlat": 250
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "staminaFlat": 150,
-            "multiplicativeDamagePercent": 20
+            "staminaFlat": 250,
+            "multiplicativeDamagePercent": 50
           }
         }
       ]
@@ -644,20 +660,20 @@
         {
           "pieces": 2,
           "effects": {
-            "healthPercent": 20
+            "healthPercent": 40
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "staminaFlat": 150
+            "staminaFlat": 250
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "strengthFlat": 150,
-            "multiplicativeDamagePercent": 20
+            "strengthFlat": 250,
+            "multiplicativeDamagePercent": 50
           }
         }
       ]
@@ -668,20 +684,20 @@
         {
           "pieces": 2,
           "effects": {
-            "criticalChance": 20
+            "criticalChance": 25
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "dexterityFlat": 150
+            "dexterityFlat": 250
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "staminaFlat": 150,
-            "multiplicativeDamagePercent": 20
+            "staminaFlat": 250,
+            "multiplicativeDamagePercent": 50
           }
         }
       ]
@@ -692,21 +708,21 @@
         {
           "pieces": 2,
           "effects": {
-            "healingPercent": 20,
-            "restHealingPercent": 20
+            "healingPercent": 25,
+            "restHealingPercent": 25
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "faithFlat": 150
+            "faithFlat": 250
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "staminaFlat": 150,
-            "partyDamagePercent": 10
+            "staminaFlat": 250,
+            "partyDamagePercent": 30
           }
         }
       ]
@@ -717,23 +733,23 @@
         {
           "pieces": 2,
           "effects": {
-            "soulFind": 50
+            "soulFind": 25
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "strengthFlat": 150,
-            "dexterityFlat": 150,
-            "intelligenceFlat": 150,
-            "faithFlat": 150
+            "strengthFlat": 250,
+            "dexterityFlat": 250,
+            "intelligenceFlat": 250,
+            "faithFlat": 250
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "vulnerableEverySeconds": 3,
-            "vulnerableDurationSeconds": 2
+            "vulnerableEverySeconds": 1,
+            "vulnerableDurationSeconds": 1
           }
         }
       ]
@@ -744,19 +760,19 @@
         {
           "pieces": 2,
           "effects": {
-            "healthPercent": 15
+            "healthPercent": 25
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "staminaFlat": 150
+            "staminaFlat": 250
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "dodgeChance": 20
+            "dodgeChance": 40
           }
         }
       ]
@@ -767,22 +783,22 @@
         {
           "pieces": 2,
           "effects": {
-            "attackPercent": 15
+            "attackPercent": 25
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "strengthFlat": 100,
-            "dexterityFlat": 100,
-            "intelligenceFlat": 100,
-            "faithFlat": 100
+            "strengthFlat": 250,
+            "dexterityFlat": 250,
+            "intelligenceFlat": 250,
+            "faithFlat": 250
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "extraAttackChance": 20
+            "extraAttackChance": 40
           }
         }
       ]
@@ -795,7 +811,7 @@
         {
           "pieces": 2,
           "effects": {
-            "cooldownReduction": 20
+            "cooldownReduction": 25
           }
         },
         {
@@ -813,7 +829,7 @@
         {
           "pieces": 5,
           "effects": {
-            "multiplicativeDamagePercent": 20
+            "multiplicativeDamagePercent": 50
           }
         }
       ]
@@ -824,7 +840,7 @@
         {
           "pieces": 2,
           "effects": {
-            "healthPercent": 20
+            "healthPercent": 25
           }
         },
         {
@@ -842,7 +858,7 @@
         {
           "pieces": 5,
           "effects": {
-            "multiplicativeDamagePercent": 20
+            "multiplicativeDamagePercent": 50
           }
         }
       ]
@@ -853,7 +869,7 @@
         {
           "pieces": 2,
           "effects": {
-            "criticalChance": 20
+            "criticalChance": 25
           }
         },
         {
@@ -871,7 +887,7 @@
         {
           "pieces": 5,
           "effects": {
-            "multiplicativeDamagePercent": 20
+            "multiplicativeDamagePercent": 50
           }
         }
       ]
@@ -882,8 +898,8 @@
         {
           "pieces": 2,
           "effects": {
-            "healingPercent": 20,
-            "restHealingPercent": 20
+            "healingPercent": 25,
+            "restHealingPercent": 25
           }
         },
         {
@@ -901,7 +917,7 @@
         {
           "pieces": 5,
           "effects": {
-            "partyHealthPercent": 20
+            "partyHealthPercent": 50
           }
         }
       ]
@@ -912,25 +928,25 @@
         {
           "pieces": 2,
           "effects": {
-            "soulFind": 50
+            "soulFind": 25
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "multiplicativeDamagePercent": 20
+            "multiplicativeDamagePercent": 50
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "staminaFlat": 200
+            "staminaFlat": 250
           }
         },
         {
           "pieces": 5,
           "effects": {
-            "damageLifeStealPercent": 5
+            "damageLifeStealPercent": 10
           }
         }
       ]
@@ -941,7 +957,7 @@
         {
           "pieces": 2,
           "effects": {
-            "cooldownReduction": 15
+            "cooldownReduction": 25
           }
         },
         {
@@ -953,13 +969,13 @@
         {
           "pieces": 4,
           "effects": {
-            "staminaFlat": 150
+            "staminaFlat": 250
           }
         },
         {
           "pieces": 5,
           "effects": {
-            "activeSkillDamagePercent": 25
+            "activeSkillDamagePercent": 50
           }
         }
       ]
@@ -970,25 +986,25 @@
         {
           "pieces": 2,
           "effects": {
-            "healthPercent": 20
+            "healthPercent": 25
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "staminaFlat": 150
+            "staminaFlat": 250
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "defensePercent": 20
+            "defensePercent": 25
           }
         },
         {
           "pieces": 5,
           "effects": {
-            "criticalHealPercent": 2
+            "criticalHealPercent": 10
           }
         }
       ]

@@ -384,3 +384,10 @@
 .enchant-exclusion-options label { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; padding: 4px 8px; border-bottom: 1px solid #403331; font: 12px/1.5 var(--sans); }
 .enchant-exclusion-options input { flex: 0 0 auto; }
 .enchant-exclusions-dialog .enchant-exclusion-price { padding: 12px 0; border-top: 1px solid #493331; border-bottom: 1px solid #493331; color: #dfb17b; }
+.auto-enchant-dialog { width: min(520px, calc(100vw - 32px)); border-radius: 0; }
+.auto-enchant-dialog .enchant-affix-picker { grid-template-columns: minmax(0, 1fr); margin: 16px 0; }
+.auto-enchant-dialog .enchant-affix-picker :is(input, select) { width: 100%; min-width: 0; box-sizing: border-box; padding: 10px 12px; }
+.auto-enchant-dialog [data-auto-enchant-status] { color: #dfb17b; }
+@media (max-width: 900px), (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+  .auto-enchant-dialog { border-radius: 16px; }
+}

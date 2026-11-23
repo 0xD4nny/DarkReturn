@@ -11,7 +11,7 @@ function offlineFingerprint(value) {
   for (let index = 0; index < text.length; index++) hash = Math.imul(hash ^ text.charCodeAt(index), 16777619);
   return (hash >>> 0).toString(16);
 }
-const OFFLINE_CONFIG_SIGNATURE = offlineFingerprint(GAME_CONFIG);
+const OFFLINE_CONFIG_SIGNATURE = offlineFingerprint({ config: GAME_CONFIG, damageModel: 2 });
 
 function rewardTime(sourceState) {
   return sourceState?.offlineContext?.now ?? Date.now();
@@ -67,7 +67,7 @@ function offlineDamageRate(save) {
     const criticalFactor = 1 + critical * Math.max(0, stats['Kritischer Schaden'] / 100 - 1);
     const cadence = Math.max(stats['Angriffsgeschwindigkeit'] / 100, 1 / (1 - stats['Abklingzeitreduktion'] / 100));
     return sum + Math.max(1, stats.Angriff) * criticalFactor * cadence * characterDamageMultiplier(owner, save)
-      * (1 + Math.min(100, extraAttackChanceFor(owner, save)) / 100);
+      * (1 + extraAttackChanceFor(owner, save) / 100);
   }, 0)));
 }
 function checkpointOnlineFarm(save) {

@@ -398,8 +398,9 @@ document.addEventListener('click', (event) => {
     return;
   }
   if (event.target.closest('[data-enchant-exclusions]')) { openEnchantExclusions(); return; }
+  if (event.target.closest('[data-enchant-auto]')) { openAutoEnchant(); return; }
   if (event.target.closest('[data-enchant-attempt]')) {
-    if (activeWorkshopJob || forgeAnimationInProgress) return;
+    if (forgeAnimationInProgress || (activeWorkshopJob && selectedEnchantMode === 'rarity')) return;
     const target = findInventoryOrEquippedItem(state, selectedEnchantTargetId);
     if (!target) return;
     const mode = selectedEnchantMode;
@@ -866,7 +867,7 @@ function renderItemTooltipContent(item, { card = null, gear = null, questPreview
     `Weitere Tickets verlängern laufendes VIP um ${VIP_RULES.durationDays} Tage.`,
     'Die Laufzeit zählt auch bei geschlossenem Spiel.',
   ].map(line => `<p>${escapeHtml(line)}</p>`).join('')}</div>` : '';
-  const powerupInfo = item.slot === 'powerup' ? `<div class="tooltip-special"><span>1 STUNDE</span><p>Gew&auml;hrt +10 % ${escapeHtml(item.powerupStat)}. Doppelklick im Inventar aktiviert das Power-up. Weitere Exemplare verl&auml;ngern die Laufzeit um je eine Stunde; der Bonuswert bleibt gleich.</p>${item.powerupStat === 'Upgradechance' ? '<p>Erhöht die Erfolgschance für normale und mystische Aufwertung sowie Sockelöffnen relativ: 1 % wird zu 1,1 %. Addiert sich mit Upgradechance aus Welt-Events und VIP; maximal 100 % Erfolgschance.</p>' : ''}${item.powerupStat === 'Droprate' ? '<p>Erhöht die Chancen auf Gebietsausrüstung, gewählte Turmbeute und Farm-Luckybox-Drops relativ: 50 % werden zu 55 %. Addiert sich mit Dropraten-Events. Boxinhalte und Affixwürfe bleiben unverändert.</p>' : ''}</div>` : '';
+  const powerupInfo = item.slot === 'powerup' ? `<div class="tooltip-special"><span>15 MINUTEN</span><p>Gew&auml;hrt +10 % ${escapeHtml(item.powerupStat)}. Doppelklick im Inventar aktiviert das Power-up. Weitere Exemplare verl&auml;ngern die Laufzeit um je 15 Minuten; der Bonuswert bleibt gleich.</p>${item.powerupStat === 'Upgradechance' ? '<p>Erhöht die Erfolgschance für normale und mystische Aufwertung sowie Sockelöffnen relativ: 1 % wird zu 1,1 %. Addiert sich mit Upgradechance aus Welt-Events und VIP; maximal 100 % Erfolgschance.</p>' : ''}${item.powerupStat === 'Droprate' ? '<p>Erhöht die Chancen auf Gebietsausrüstung, gewählte Turmbeute und Farm-Luckybox-Drops relativ: 50 % werden zu 55 %. Addiert sich mit Dropraten-Events. Boxinhalte und Affixwürfe bleiben unverändert.</p>' : ''}</div>` : '';
   const bossResetInfo = ['bossReset', 'towerReset'].includes(item.slot) ? `<div class="tooltip-special"><span>EIN ZUSÄTZLICHER VERSUCH</span><p>Doppelklick im Inventar gewährt genau einen Versuch ${item.slot === 'bossReset' ? 'in der Bossprüfung' : 'im Turm'}.</p><p>Nur verwendbar, wenn kein Versuch mehr vorhanden ist und kein entsprechender Lauf aktiv ist. Ein ungenutzter Steinversuch bleibt beim Tageswechsel erhalten.</p></div>` : '';
   const farmBoxInfo = item.slot === 'farmBox' ? `<div class="tooltip-special"><span>FARMBEUTE</span><p>${formatRuleNumber(BOX_RULES.farmBox.dropChance * 100)} % Basis-Dropchance pro gewonnenem Gebiets- oder Turmkampf; Dropratenboni erhöhen sie relativ. Enthält genau einen Gewinn: Seelen, Materialien, ein Powerup, einen Boss-Zeitstein, Turm-Zeitstein oder eine Glyphen-/VIP-Luckybox. Alle Chancen stehen im Kodex unter Schwarzmarkt und Luckyboxen.</p></div>` : '';
   const luckyBoxInfo = BOX_GROUPS.includes(item.slot) ? (questPreview ? '<div class="tooltip-special"><span>VERSIEGELT</span><p>Nach dem Abholen im Inventar öffnen.</p></div>' : `<div class="tooltip-special"><span>VERSIEGELT</span><p>Einfach anklicken, um die Box zu öffnen. Der Inhalt wird im Aktivitätslog festgehalten.</p></div>`) : '';

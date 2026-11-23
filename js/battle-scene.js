@@ -380,7 +380,7 @@ function launchMagicProjectile(scene, className, origin, aim, impactDelay, varia
   };
 }
 
-function launchBattleProjectile(className, actor, target, impactDelay, projectileType = 'basic') {
+function launchBattleProjectile(className, actor, target, impactDelay, projectileType = 'basic', strikeIndex = 0) {
   const scene = battleSceneElement();
   if (!scene || (!actor && projectileType !== 'stones') || !target) return;
   const sceneBounds = scene.getBoundingClientRect();
@@ -388,6 +388,10 @@ function launchBattleProjectile(className, actor, target, impactDelay, projectil
     ? { x: sceneBounds.width * 0.5, y: sceneBounds.height * 0.94 }
     : battleSceneOrigin(className, sceneBounds, actor);
   const aim = battleEnemyAimPoint(target, sceneBounds, 0.5, 0.54);
+  if (strikeIndex > 0) {
+    aim.x += (strikeIndex % 2 ? 1 : -1) * (10 + strikeIndex % 3 * 5);
+    aim.y -= 4 + strikeIndex % 3 * 4;
+  }
   if (projectileType === 'basic' && ['mage', 'healer'].includes(className)) {
     launchMagicProjectile(scene, className, origin, aim, impactDelay);
     return;
@@ -702,7 +706,7 @@ function advanceEnemiesForRangedParty() {
   });
 }
 
-function playBattleAttack(className, damage, targetIndexes = null, areaEffect = false, damageOverTime = false, projectileType = 'basic', critical = false, vulnerable = false) {
+function playBattleAttack(className, damage, targetIndexes = null, areaEffect = false, damageOverTime = false, projectileType = 'basic', critical = false, vulnerable = false, strikeIndex = 0) {
   const current = battle;
   if (!current) return;
   const wave = current.wave;
@@ -715,7 +719,7 @@ function playBattleAttack(className, damage, targetIndexes = null, areaEffect = 
   const mageFireball = damageOverTime && className === 'mage';
   const dedicatedSkillEffect = healerShockwave || mageLightning || mageFireball || projectileType === 'stones';
   const impactDelay = battleAttackImpactDelay(className, areaEffect, damageOverTime, projectileType);
-  if (projectileType === 'stones' && target) launchBattleProjectile(className, actor, target, impactDelay, projectileType);
+  if (projectileType === 'stones' && target) launchBattleProjectile(className, actor, target, impactDelay, projectileType, strikeIndex);
   if (actor && isBattleClassAlive(className)) {
     const lethalHit = current.mode !== 'boss' && indexes.some((index) => (current.enemyHealths?.[index]?.hp ?? 1) <= 0);
     const frontFacingScene = Boolean(battleSceneElement()?.matches('.has-front-enemies, .has-front-boss'));
@@ -740,11 +744,15 @@ function playBattleAttack(className, damage, targetIndexes = null, areaEffect = 
         // The ground burst replaces the ordinary melee slash for these skills.
       } else if (ranged) {
         // Skills with a dedicated effect must not also launch the basic projectile.
-        if (!dedicatedSkillEffect) launchBattleProjectile(className, actor, target, impactDelay, projectileType);
+        if (!dedicatedSkillEffect) launchBattleProjectile(className, actor, target, impactDelay, projectileType, strikeIndex);
       } else {
         if (target) {
           const slash = document.createElement('span');
           slash.className = 'battle-melee-slash';
+          if (strikeIndex > 0) {
+            slash.style.rotate = `${strikeIndex % 2 ? -65 : 45}deg`;
+            slash.style.marginLeft = `${strikeIndex % 2 ? 10 : -10}px`;
+          }
           slash.setAttribute('aria-hidden', 'true');
           target.append(slash);
           window.setTimeout(() => slash.remove(), 420);

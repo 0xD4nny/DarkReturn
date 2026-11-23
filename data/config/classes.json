@@ -75,19 +75,19 @@
         {
           "id": "poison-arrow",
           "name": "Giftpfeil",
-          "effect": { "type": "bow-poison", "chancePercent": 25, "durationSeconds": 3, "damagePercent": 500 },
+          "effect": { "type": "bow-poison", "chancePercent": 50, "durationSeconds": 3, "damagePercent": 500 },
           "description": "Pfeiltreffer haben eine Chance von {chancePercent} %, das Ziel zu vergiften. Das Gift verursacht über {durationSeconds} Sekunden insgesamt {damagePercent} % Schaden."
         },
         {
           "id": "predator-eye",
           "name": "Raubtierauge",
-          "effect": { "type": "stat-flat", "stat": "Kritische Chance", "scope": "self", "value": 40 },
+          "effect": { "type": "stat-flat", "stat": "Kritische Chance", "scope": "self", "value": 100 },
           "description": "Erhöht die kritische Trefferchance des Jägers um {value} %."
         },
         {
           "id": "soul-scent",
           "name": "Seelenwitterung",
-          "effect": { "type": "stat-flat", "stat": "Seelenfund", "scope": "party", "value": 50 },
+          "effect": { "type": "stat-flat", "stat": "Seelenfund", "scope": "party", "value": 100 },
           "description": "Die Gruppe findet dauerhaft {value} % mehr Seelen."
         }
       ],
@@ -125,19 +125,19 @@
         {
           "id": "kampfrausch",
           "name": "Kampfrausch",
-          "effect": { "type": "damage-percent", "scope": "party", "value": 25 },
+          "effect": { "type": "damage-percent", "scope": "party", "value": 50 },
           "description": "Erhöht den Gruppenangriff dauerhaft um {value} %."
         },
         {
           "id": "unbeugsam",
           "name": "Unbeugsam",
-          "effect": { "type": "stat-percent", "stat": "Lebenskraft", "scope": "party", "value": 25 },
+          "effect": { "type": "stat-percent", "stat": "Lebenskraft", "scope": "party", "value": 50 },
           "description": "Erhöht die Gruppenlebenskraft dauerhaft um {value} %."
         },
         {
           "id": "wachtwall",
           "name": "Wachtwall",
-          "effect": { "type": "stat-percent", "stat": "Verteidigung", "scope": "party", "value": 50 },
+          "effect": { "type": "stat-percent", "stat": "Verteidigung", "scope": "party", "value": 100 },
           "description": "Erhöht die Gruppenverteidigung dauerhaft um {value} %."
         }
       ],
@@ -164,10 +164,10 @@
         {
           "id": "schildwall",
           "name": "Schildwall",
-          "description": "Verringert erlittenen Gruppenschaden 4 Sekunden lang um 90 %.",
+          "description": "Verringert erlittenen Gruppenschaden 4 Sekunden lang um 95 %.",
           "cooldown": 8,
           "effect": "guard",
-          "guardPercent": 90,
+          "guardPercent": 95,
           "guardDuration": 4
         }
       ]
@@ -177,19 +177,19 @@
         {
           "id": "arkanes-echo",
           "name": "Arkanes Echo",
-          "effect": { "type": "damage-percent", "scope": "self", "value": 25 },
+          "effect": { "type": "damage-percent", "scope": "self", "value": 50 },
           "description": "Erhöht den Schaden des Magiers dauerhaft um {value} %."
         },
         {
           "id": "aetherblick",
           "name": "Ätherblick",
-          "effect": { "type": "stat-flat", "stat": "Kritische Chance", "scope": "party", "value": 20 },
+          "effect": { "type": "stat-flat", "stat": "Kritische Chance", "scope": "party", "value": 25 },
           "description": "Erhöht die kritische Trefferchance der Gruppe um {value} %."
         },
         {
           "id": "fast-caster",
           "name": "Schnellzauberer",
-          "effect": { "type": "stat-flat", "stat": "Abklingzeitreduktion", "scope": "self", "value": 20 },
+          "effect": { "type": "stat-flat", "stat": "Abklingzeitreduktion", "scope": "self", "value": 25 },
           "description": "Erhöht die Abklingzeitreduktion dauerhaft um {value} %."
         }
       ],
@@ -228,7 +228,7 @@
           "id": "lebenssegen",
           "name": "Lebenssegen",
           "effect": [
-            { "type": "stat-percent", "stat": "Lebenskraft", "scope": "party", "value": 25 },
+            { "type": "stat-percent", "stat": "Lebenskraft", "scope": "party", "value": 50 },
             { "type": "rest-healing-percent", "scope": "party", "value": 5 }
           ],
           "description": "Erhöht die Lebenskraft der gesamten Gruppe dauerhaft um {value} %. Rastplatzheilung: +{restHealingPercent} %."
@@ -236,8 +236,8 @@
         {
           "id": "kampfsegen",
           "name": "Kampfsegen",
-          "effect": { "type": "multiplicative-damage-percent", "scope": "party", "value": 25 },
-          "description": "Multipliziert den verursachten Schaden beider Gruppenmitglieder mit 1,25."
+          "effect": { "type": "multiplicative-damage-percent", "scope": "party", "value": 50 },
+          "description": "Multipliziert den verursachten Schaden beider Gruppenmitglieder mit 1,5."
         },
         {
           "id": "lichtwacht",
@@ -291,6 +291,7 @@
     "Glaube",
     "Trefferchance",
     "Kritische Chance",
+    "Doppeltrefferchance",
     "Kritischer Schaden",
     "Schaden gegen verwundbare Ziele",
     "Schaden über Zeit",
@@ -300,6 +301,7 @@
     "Buff- und Heileffektivität"
   ],
   "baseStats": {
+    "Doppeltrefferchance": 0,
     "Lebenskraft": 1000,
     "Angriff": 100,
     "Verteidigung": 45,

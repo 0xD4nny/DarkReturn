@@ -17,7 +17,7 @@
         {
           "stat": "soulBonusPercent",
           "label": "Seelen",
-          "value": 25
+          "value": 10
         },
         {
           "stat": "dropRatePercent",
@@ -48,7 +48,7 @@
         {
           "stat": "soulBonusPercent",
           "label": "Seelen",
-          "value": 50
+          "value": 20
         },
         {
           "stat": "dropRatePercent",
