@@ -1,0 +1,104 @@
+@charset "UTF-8";
+/* Slot study 02. Only the existing equipment panel changes; the inventory,
+   character selector, stats tab and surrounding navigation keep their layout. */
+.equipment-panel.equipment-paperdoll {
+    container-type: inline-size;
+}
+.equipment-paperdoll .loadout-paperdoll {
+    --loadout-gap: 8px;
+    --equipment-slot-size: min(64px, calc((100cqw - 40px) / 5), calc((100dvh - 380px) / 7));
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: var(--equipment-slot-size) minmax(0, 1fr) var(--equipment-slot-size);
+    grid-template-rows: minmax(0, 1fr) var(--equipment-slot-size);
+    gap: var(--loadout-gap) 12px;
+    width: 100%;
+    max-width: 560px;
+    height: min(440px, calc(100dvh - 340px - var(--equipment-slot-size)));
+    min-height: 0;
+    margin-inline: auto;
+    margin-block-start: var(--equipment-slot-size);
+}
+.equipment-paperdoll .loadout-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--loadout-gap);
+    grid-row: 1;
+    z-index: 2;
+    min-width: 0;
+    min-height: 0;
+}
+.equipment-paperdoll .loadout-armor { grid-column: 1; }
+.equipment-paperdoll .loadout-jewelry { grid-column: 3; }
+.equipment-paperdoll .loadout-figure {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    pointer-events: none;
+    z-index: 0;
+    transform: translateY(calc(-1 * var(--equipment-slot-size)));
+}
+.equipment-paperdoll .loadout-figure img {
+    position: absolute;
+    bottom: 0;
+    left: -27.5%;
+    width: 155%;
+    max-width: none;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    filter: drop-shadow(0 9px 15px #0008);
+    user-select: none;
+}
+.equipment-paperdoll .loadout-footer {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--equipment-slot-size) minmax(0, 1fr) var(--equipment-slot-size);
+    column-gap: 12px;
+    min-width: 0;
+    z-index: 2;
+}
+.equipment-paperdoll .loadout-weapon { grid-column: 1; }
+.equipment-paperdoll .loadout-offhand { grid-column: 3; }
+.equipment-paperdoll .loadout-glyphs {
+    grid-column: 2;
+    display: flex;
+    justify-content: center;
+    gap: var(--loadout-gap);
+    min-width: 0;
+}
+.inventory-character-panel .equipment-paperdoll .gear-slot.compact-gear-slot,
+.inventory-character-panel .equipment-paperdoll .gear-slot-placeholder {
+    flex: 0 0 var(--equipment-slot-size);
+    width: var(--equipment-slot-size);
+    height: var(--equipment-slot-size);
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+}
+.inventory-detail-content:has(> .equipment-paperdoll) {
+    overflow: visible;
+}
+@media (max-width: 900px), (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+    .equipment-paperdoll .loadout-paperdoll {
+        --equipment-slot-size: min(60px, calc((100cqw - 40px) / 5), calc((100dvh - 340px) / 7));
+        gap: var(--loadout-gap) 12px;
+        height: min(440px, calc(100dvh - 300px - var(--equipment-slot-size)));
+        max-width: 440px;
+    }
+    .equipment-paperdoll .loadout-figure img {
+        width: 165%;
+        left: -32.5%;
+    }
+}
+@media (max-height: 650px) {
+    .equipment-paperdoll .loadout-paperdoll {
+        --loadout-gap: 6px;
+    }
+}

@@ -79,6 +79,32 @@ function renderView({ background = false } = {}) {
   if (currentView === 'equipment' && pageLabel) pageLabel.textContent = 'AUSRÜSTUNG & WERTE';
   const soulBalance = document.querySelector('#soul-balance');
   if (soulBalance) soulBalance.textContent = number(state.souls);
+  const mobileSoulBalance = document.getElementById('mobile-soul-balance');
+  if (mobileSoulBalance) {
+    mobileSoulBalance.textContent = compactLifetimeNumber(state.souls);
+    mobileSoulBalance.parentElement.title = `${number(state.souls)} Seelen`;
+    mobileSoulBalance.parentElement.setAttribute('aria-label', `${number(state.souls)} Seelen`);
+  }
+  const mobilePlayer = document.getElementById('mobile-player-shortcut');
+  if (mobilePlayer) {
+    mobilePlayer.hidden = !state.mainClass;
+    if (state.mainClass) {
+      const info = CLASSES[state.mainClass];
+      const level = characterLevel(state.mainClass);
+      const name = state.playerName || 'Dein Charakter';
+      if (mobilePlayer.dataset.className !== state.mainClass) {
+        mobilePlayer.querySelector('.mobile-player-class-icon').innerHTML = assetIconMarkup(info.asset, info.icon, 'mobile-player-class-glyph');
+        mobilePlayer.dataset.className = state.mainClass;
+      }
+      mobilePlayer.querySelector('strong').textContent = name;
+      mobilePlayer.querySelector('small').textContent = `Lv. ${number(level)}`;
+      mobilePlayer.title = `${name} · ${info.label} · Stufe ${number(level)}`;
+      mobilePlayer.setAttribute('aria-label', `${name}, ${info.label}, Stufe ${number(level)} – Spielerchronik öffnen`);
+      mobilePlayer.classList.toggle('is-active', currentView === 'profile');
+      if (currentView === 'profile') mobilePlayer.setAttribute('aria-current', 'page');
+      else mobilePlayer.removeAttribute('aria-current');
+    }
+  }
   const playerIdentity = document.querySelector('#player-identity');
   if (playerIdentity) playerIdentity.hidden = !state.mainClass;
   if (!background && state.mainClass && playerIdentity) {

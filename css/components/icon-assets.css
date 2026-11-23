@@ -30,3 +30,22 @@
 .codex-class-image.icon-asset,
 .battle-sigil-image.icon-asset { display: block; width: 30px; height: 30px; }
 .character-class-image.icon-asset { display: block; width: 24px; height: 24px; }
+
+/* Shared filled silhouettes for navigation on desktop and mobile. */
+.nav-item[data-view="map"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/delapouite/atlas.svg"); }
+.nav-item[data-view="contracts"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/scroll-unfurled.svg"); }
+.nav-item[data-view="profile"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/delapouite/scroll-quill.svg"); }
+.nav-item[data-view="altar"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/delapouite/crystal-shrine.svg"); }
+.nav-item[data-view="inventory"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/knapsack.svg"); }
+.nav-item[data-view="equipment"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/breastplate.svg"); }
+.nav-item[data-view="skilltree"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg"); }
+.nav-item[data-view="companions"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg"); }
+.nav-item[data-view="shop"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/hood.svg"); }
+.nav-item[data-view="blacksmith"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/anvil.svg"); }
+.nav-item[data-view="sockets"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/crystal-cluster.svg"); }
+.nav-item[data-view="enchant"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/crystal-wand.svg"); }
+.nav-item[data-view="documentation"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/open-book.svg"); }
+.shell-icon-asset.icon-asset { display: block; flex: 0 0 19px; width: 19px; height: 19px; }
+.codex-shortcut .shell-icon-asset { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/open-book.svg"); }
+.workshop-mode-icon.icon-asset { display: inline-block; flex: 0 0 18px; width: 18px; height: 18px; vertical-align: -3px; margin-right: 7px; }
+.page-header-glyph.icon-asset { display: block; width: 30px; height: 30px; }

@@ -1,0 +1,44 @@
+/* Mobile panels use spacing and artwork instead of decorative outlines.
+   Keep border widths so panel dimensions and content positions stay stable.
+   Item rarity frames, control states and focus outlines retain their styling. */
+@media (max-width: 900px), (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+    :is(.content-wrap, .mobile-detail-sheet, .mobile-status-panel, .mailbox-panel, .activity-panel, .offline-farm-report) :is(
+        section, article, aside, header, footer, fieldset, dl, hr,
+        table, thead, tbody, tr, td, th,
+        .character-panel-surface, .inventory-main, .equipment-panel, .character-panel,
+        .inventory-character-panel, .inventory-detail-tabs, .inventory-expansion-controls,
+        .forge-selection, .forge-workbench, .socket-selection, .socket-workbench,
+        .enchant-selection, .enchant-workbench,
+        .abilities-selection, .ability-inspector, .abilities-equipped-summary,
+        .altar-hero-stage, .altar-inspector,
+        .boss-challenge-art, .boss-challenge-copy, .boss-challenge-facts,
+        .skill-tree-board, .skill-tree-detail, .skill-tree-legend, .skill-tree-board-points,
+        .compact-quest-group, .compact-quest-card,
+        .shop-inventory-panel, .shop-catalog-column, .shop-product-card,
+        .codex-index, .codex-section, .codex-table-wrap,
+        .settings-card, .save-backup-card, .delete-save-card, .settings-note,
+        .settings-section-switch, .gameplay-option-card, .gameplay-placeholder,
+        .gameplay-setting, .loot-collection-rule,
+        .admin-item-builder, .admin-resource-builder, .admin-actions-panel, .admin-action-card,
+        .onboarding-card, .main-companion-card, .companion-card,
+        .expedition-card, .atlas-map-frame, .atlas-map-topline, .atlas-map-footer,
+        .atlas-sidebar, .tower-entry-panel, .tower-meta-panel,
+        .quest-journal-intro, .quest-stage-content,
+        .player-profile-identity, .player-stats-group, .player-stats-row, .player-stats-heading,
+        .inventory-stat-group, .inventory-stat-row, .altar-stat-row,
+        .section-heading, .offline-farm-totals,
+        .tooltip-set-info, .tooltip-set-tier, .tooltip-mythic-effect, .tooltip-socket-heading
+    ),
+    .main-area > .topbar,
+    .mobile-footer,
+    .mobile-footer-tabs > button:not([aria-pressed="true"]),
+    .mobile-status-panel,
+    .mobile-detail-sheet,
+    .offline-farm-report,
+    .mailbox-panel,
+    .activity-panel,
+    :is(.inventory-view, .skill-tree-view, .abilities-view, .altar-ritual-view) .mobile-inventory-owners {
+        border-color: transparent !important;
+    }
+    :is(.content-wrap, .mobile-detail-sheet) hr { background: transparent; }
+}

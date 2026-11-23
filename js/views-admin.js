@@ -40,6 +40,7 @@ function renderAdminTools(embedded = false) {
   const affixFields = Array.from({ length: 4 }, (_, index) =>
     `<label>Affix ${index + 1}<select class="ui-control ui-select" name="affix">${adminAffixOptions('bow')}</select></label>`).join('');
   const actions = [
+    ['admin-simulate-offline-hour', '1 Stunde AFK-Farmzeit', 'Eine Stunde Abwesenheit mit normaler AFK-Effizienz simulieren. Aktives Farmziel und vollständige Messung erforderlich.'],
     ['admin-grant-souls', '1 Mrd. Seelen', 'Eine Milliarde Seelen gutschreiben'],
     ['admin-next-hundred-level', 'Nächste Hunderterstufe', 'Main, Gefährte und ihre Tiere anheben'],
     ['admin-max-weapon-levels', 'Waffenlevel maximieren', `Angelegte Waffen von Main und Gefährte auf Level ${WEAPON_PROGRESSION.maxLevel} setzen`],
@@ -47,7 +48,7 @@ function renderAdminTools(embedded = false) {
   ].map(([action, title, detail]) => `
     <article class="admin-action-card">
       <div><strong>${title}</strong><small>${detail}</small></div>
-      <button class="primary-button ui-control ui-button" type="button" data-admin-action="${action}">Ausführen</button>
+      <button class="primary-button ui-control ui-button" type="button" data-admin-action="${action}" ${action === 'admin-simulate-offline-hour' && adminFarmSimulationPending ? 'disabled' : ''}>Ausführen</button>
     </article>`).join('');
   const activeEventId = currentWorldEvent?.id || '';
   const worldEventOptions = WORLD_EVENTS.flatMap((rarity) => rarity.effects.map((effect) => {

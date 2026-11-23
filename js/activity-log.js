@@ -122,7 +122,8 @@ function activityFor(payload, result) {
     const mailed = (result.storedRewardItems || []).filter((entry) => entry.destination === 'mailbox').length;
     return { title: 'Auftragsbelohnung abgeholt', detail: `+${number(result.reward)} Seelen · ${mailed ? `${mailed} Gegenstand${mailed === 1 ? '' : 'e'} im Briefkasten` : `${result.readyCount} gebündelte Belohnung${result.readyCount === 1 ? '' : 'en'}`}` };
   }
-  return actions[payload.action]?.() || null;
+  const action = payload.action === 'admin-simulate-offline-hour' ? 'offline-settle' : payload.action;
+  return actions[action]?.() || null;
 }
 function appendActivity(title, detail) {
   if (!state || !isUsefulActivity(title)) return;

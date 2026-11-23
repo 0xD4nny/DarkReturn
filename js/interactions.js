@@ -166,6 +166,7 @@ document.addEventListener('click', (event) => {
     selectedAltarPetOwner = event.target.closest('[data-altar-pet]').dataset.altarPet;
     selectedAltarOwner = 'pet';
     renderView();
+    if (isMobileLayout()) viewContainer.querySelector(`.mobile-inventory-owners [data-altar-pet="${CSS.escape(selectedAltarPetOwner)}"]`)?.focus({ preventScroll: true });
     return;
   }
   if (event.target.closest('[data-return-workshop]') && activeWorkshopJob) {
@@ -190,7 +191,7 @@ document.addEventListener('click', (event) => {
     if (partyOwner.dataset.partyContext === 'altar') selectedAltarOwner = owner;
     if (partyOwner.dataset.partyContext === 'skilltree') selectedSkillTreeOwner = owner;
     renderView();
-    if (isMobileLayout() && ['inventory', 'skilltree', 'abilities'].includes(partyOwner.dataset.partyContext)) viewContainer.querySelector(`.mobile-inventory-owners [data-party-owner="${CSS.escape(owner)}"]`)?.focus({ preventScroll: true });
+    if (isMobileLayout() && ['inventory', 'skilltree', 'abilities', 'altar'].includes(partyOwner.dataset.partyContext)) viewContainer.querySelector(`.mobile-inventory-owners [data-party-owner="${CSS.escape(owner)}"]`)?.focus({ preventScroll: true });
     return;
   }
   const onboardingMain = event.target.closest('[data-onboarding-main]');
@@ -212,6 +213,7 @@ document.addEventListener('click', (event) => {
   }
   const adminAction = event.target.closest('[data-admin-action]');
   if (adminAction) {
+    if (adminAction.dataset.adminAction === 'admin-simulate-offline-hour') { simulateAdminFarmHour(); return; }
     performAction({ action: adminAction.dataset.adminAction });
     return;
   }

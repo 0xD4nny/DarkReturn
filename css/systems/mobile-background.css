@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/* Portrait adaptation of the desktop sanctuary. The background belongs to the
+   viewport, so long mobile views do not stretch the columns or hide the arch. */
+@media (max-width: 900px), (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+    .sidebar ~ .main-area {
+        isolation: isolate;
+    }
+    .sidebar ~ .main-area::before {
+        content: "";
+        position: fixed;
+        inset: var(--topbar-height) 0 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+            linear-gradient(180deg, #1112161f, #1112160a 45%, #11121629),
+            url("../../Assets/Art/world/mobile-sanctuary-v1.jpg") center top / cover no-repeat;
+    }
+}

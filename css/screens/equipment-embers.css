@@ -1,0 +1,140 @@
+@charset "UTF-8";
+/* Effect study 02: Glut & Funken. Actual affixes choose the greater treatment;
+   rarity alone never makes a legendary item a greater item. */
+.tooltip-rarity.mythic { color: #dd83e9; }
+.inventory-item.equipment-item,
+.gear-slot.filled { --equipment-color: #b8b5bc; --equipment-surface: #1b1b21; }
+.inventory-item.equipment-item.uncommon,
+.gear-slot.filled.uncommon { --equipment-color: #78c28d; }
+.inventory-item.equipment-item.rare,
+.gear-slot.filled.rare { --equipment-color: #78b7e7; }
+.inventory-item.equipment-item.epic,
+.gear-slot.filled.epic { --equipment-color: #c68be4; }
+.inventory-item.equipment-item.legendary,
+.gear-slot.filled.legendary { --equipment-color: #e8b060; }
+.inventory-item.equipment-item.mythic,
+.gear-slot.filled.mythic { --equipment-color: #dd83e9; --equipment-surface: #26131e; }
+
+.inventory-item.equipment-item,
+.gear-slot.filled {
+    isolation: isolate;
+    background:
+        radial-gradient(ellipse at 50% 115%, color-mix(in srgb, var(--equipment-color) 15%, transparent), transparent 75%),
+        var(--equipment-surface);
+}
+.inventory-item.equipment-item:not(.has-greater-affix),
+.gear-slot.filled:not(.has-greater-affix) {
+    border-color: color-mix(in srgb, var(--equipment-color) 35%, #38343a);
+}
+.inventory-item.equipment-item:not(.has-greater-affix) > .item-icon,
+.gear-slot.filled:not(.has-greater-affix) > .gear-icon {
+    color: color-mix(in srgb, var(--equipment-color) 68%, #a39c98);
+}
+/* The old moving border is gone. Both variants use a static ember glow. */
+.inventory-item.equipment-item::before,
+.gear-slot.filled::before { content: none; }
+.inventory-item.equipment-item::after,
+.gear-slot.filled::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse at bottom, var(--equipment-color), transparent 75%);
+    opacity: .15;
+    pointer-events: none;
+}
+.inventory-item.equipment-item.has-greater-affix,
+.gear-slot.filled.has-greater-affix {
+    border-color: var(--equipment-color);
+    background:
+        radial-gradient(ellipse at 50% 110%, color-mix(in srgb, var(--equipment-color) 38%, transparent), transparent 80%),
+        linear-gradient(145deg, color-mix(in srgb, var(--equipment-color) 12%, transparent), transparent 70%),
+        var(--equipment-surface);
+    box-shadow:
+        0 0 15px color-mix(in srgb, var(--equipment-color) 35%, transparent),
+        inset 0 0 18px color-mix(in srgb, var(--equipment-color) 22%, transparent);
+}
+.inventory-item.equipment-item.has-greater-affix::after,
+.gear-slot.filled.has-greater-affix::after { opacity: .38; }
+.inventory-item.equipment-item.has-greater-affix > .item-icon,
+.gear-slot.filled.has-greater-affix > .gear-icon {
+    color: color-mix(in srgb, var(--equipment-color) 88%, #fff1dc);
+}
+.inventory-item.equipment-item.has-greater-affix > .item-icon,
+.gear-slot.filled.has-greater-affix .gear-icon-image {
+    filter: drop-shadow(0 0 5px color-mix(in srgb, var(--equipment-color) 65%, transparent));
+}
+
+/* Three sparse sparks on normal gear; two staggered layers on greater gear. */
+.equipment-embers {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 22% 80%, #ffe2a8 0 1px, transparent 2px),
+        radial-gradient(circle at 68% 58%, var(--equipment-color) 0 1px, transparent 2px),
+        radial-gradient(circle at 42% 90%, var(--equipment-color) 0 1.5px, transparent 2.5px);
+    animation: equipment-ember-rise 4s linear infinite;
+}
+.has-greater-affix > .equipment-embers { background: none; animation: none; }
+.has-greater-affix > .equipment-embers::before,
+.has-greater-affix > .equipment-embers::after {
+    content: "";
+    position: absolute;
+    inset: -10% 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 9% 84%, #ffe2a8 0 .8px, transparent 1.7px),
+        radial-gradient(circle at 21% 55%, var(--equipment-color) 0 1px, transparent 2px),
+        radial-gradient(circle at 32% 92%, #fff0cc 0 1.2px, transparent 2.2px),
+        radial-gradient(circle at 44% 68%, var(--equipment-color) 0 .7px, transparent 1.6px),
+        radial-gradient(circle at 57% 88%, #ffe2a8 0 1px, transparent 2px),
+        radial-gradient(circle at 69% 45%, var(--equipment-color) 0 .7px, transparent 1.6px),
+        radial-gradient(circle at 81% 74%, #fff0cc 0 1.2px, transparent 2.2px),
+        radial-gradient(circle at 92% 95%, var(--equipment-color) 0 .9px, transparent 1.8px),
+        radial-gradient(circle at 37% 39%, #ffe2a8 0 .6px, transparent 1.4px),
+        radial-gradient(circle at 74% 98%, var(--equipment-color) 0 1.3px, transparent 2.3px);
+    background-repeat: no-repeat;
+    animation: equipment-ember-rise 3s -1s linear infinite;
+}
+.has-greater-affix > .equipment-embers::after {
+    background-size: 89% 94%;
+    background-position: 7px -3px;
+    animation-duration: 3.8s;
+    animation-delay: -2.7s;
+}
+/* Decorative layers never obscure icons, set markers or item counters. */
+.inventory-item.equipment-item > :is(.item-icon, .item-name, .item-type),
+.gear-slot.filled > :is(.gear-icon, .gear-copy) { position: relative; z-index: 1; }
+.inventory-item.equipment-item > :is(.item-greater-count, .item-upgrade-level, .item-socket-count, .item-stack-count) { z-index: 3; }
+
+/* Selection and drop feedback remain distinct from rarity and affix effects. */
+.inventory-item.equipment-item:hover,
+.gear-slot.filled:hover { border-color: color-mix(in srgb, var(--equipment-color) 75%, #fff1dc); }
+.inventory-item.equipment-item.selected { border-color: #d2ad70; box-shadow: 0 0 0 1px #d2ad7055; }
+.inventory-item.equipment-item.selected.has-greater-affix {
+    box-shadow:
+        0 0 0 1px #d2ad7088,
+        0 0 15px color-mix(in srgb, var(--equipment-color) 35%, transparent),
+        inset 0 0 18px color-mix(in srgb, var(--equipment-color) 22%, transparent);
+}
+.gear-slot.filled.drop-target { border-color: #d2ad70; box-shadow: inset 0 0 0 1px #d2ad70; }
+.inventory-item:is(:disabled, .dragging) > .equipment-embers,
+.inventory-item:is(:disabled, .dragging) > .equipment-embers::before,
+.inventory-item:is(:disabled, .dragging) > .equipment-embers::after,
+.gear-slot.locked > .equipment-embers,
+.gear-slot.locked > .equipment-embers::before,
+.gear-slot.locked > .equipment-embers::after { animation-play-state: paused; }
+@keyframes equipment-ember-rise {
+    0% { transform: translateY(45%); opacity: 0; }
+    25% { opacity: .8; }
+    100% { transform: translateY(-60%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .equipment-embers,
+    .has-greater-affix > .equipment-embers::before,
+    .has-greater-affix > .equipment-embers::after { animation: none; transform: none; opacity: .65; }
+}

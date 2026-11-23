@@ -1,611 +1,834 @@
 {
-    "scope":  "Current game source: index.html, script.js, style.css, js/, css/, data/config/. Includes explicit SVG paths and configured ability icons resolved from abilityPresentation, plus its fallback. Excludes inline SVG markup, old reports, tests and documentation-only references.",
-    "iconCount":  61,
-    "configuredAbilitiesResolved":  24,
-    "icons":  [
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/caro-asercion/fox.svg",
-                      "copy":  "000000/transparent/1x1/caro-asercion/fox.svg",
-                      "usedBy":  [
-                                     "data/config/pets.json:41"
-                                 ],
-                      "sha256":  "e66c2e18b1af967b385c5f1d33509c476394991b1f433aef0ddc2a5d81137395",
-                      "originalPackSource":  "icons/000000/transparent/1x1/caro-asercion/fox.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/caro-asercion/warlord-helmet.svg",
-                      "copy":  "000000/transparent/1x1/caro-asercion/warlord-helmet.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:55"
-                                 ],
-                      "sha256":  "907ecfb4fe56b2d0b4b16a459d1b91b517af976af2d1c21c88e0bc6d094fc99c",
-                      "originalPackSource":  "icons/000000/transparent/1x1/caro-asercion/warlord-helmet.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
-                      "copy":  "000000/transparent/1x1/cathelineau/swordman.svg",
-                      "usedBy":  [
-                                     "data/config/classes.json:13",
-                                     "data/config/skill-tree.json:112",
-                                     "data/config/skill-tree.json:128",
-                                     "data/config/skill-tree.json:435",
-                                     "data/config/skill-tree.json:47",
-                                     "data/config/skill-tree.json:545",
-                                     "data/config/skill-tree.json:63",
-                                     "data/config/skill-tree.json:79",
-                                     "data/config/skill-tree.json:95"
-                                 ],
-                      "sha256":  "a60f5dcf8cd711db17dfcc35866ce5e43e190b7e9b4a8cf8b7efc4812446db29",
-                      "originalPackSource":  "icons/000000/transparent/1x1/cathelineau/swordman.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/archer.svg",
-                      "usedBy":  [
-                                     "data/config/classes.json:6",
-                                     "data/config/skill-tree.json:241",
-                                     "data/config/skill-tree.json:257",
-                                     "data/config/skill-tree.json:273",
-                                     "data/config/skill-tree.json:289",
-                                     "data/config/skill-tree.json:306",
-                                     "data/config/skill-tree.json:322"
-                                 ],
-                      "sha256":  "dfa7a0daf33a9d76a0c7cb14db0ed391290f12f54ecb54c0bceba99e4eea704a",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/archer.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/atlas.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/atlas.svg",
-                      "usedBy":  [
-                                     "data/config/quests.json:42"
-                                 ],
-                      "sha256":  "5f8b63dde50602493fe5deef2fc233e0f87c6d7ab0e730625f4f9d8123f6fd4c",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/atlas.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/bow-arrow.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/bow-arrow.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:30"
-                                 ],
-                      "sha256":  "d89c0d7b24c0a7dfd0c64742239ba4611e191d4aa1d93f01617d16ade125defe",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/bow-arrow.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/burning-forest.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/burning-forest.svg",
-                      "usedBy":  [
-                                     "data/config/world.json:31"
-                                 ],
-                      "sha256":  "6014b948dfbd1e318ce144eccbc258f2eb9afd2ac72647a68ae7d13d0069f5d4",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/burning-forest.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/cave-entrance.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/cave-entrance.svg",
-                      "usedBy":  [
-                                     "data/config/world.json:65"
-                                 ],
-                      "sha256":  "49629b400da547f22f01ddc725db2b60676741a51e6de28907f8ef3904739d53",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/cave-entrance.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/chest.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:119",
-                                     "data/config/equipment.json:124",
-                                     "data/config/equipment.json:149",
-                                     "data/config/market.json:25",
-                                     "data/config/market.json:33"
-                                 ],
-                      "sha256":  "b57cb31393783165782a146005ce80c62cc6c3facdfb478c91bf633927f7962a",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/chest.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/crosshair.svg",
-                      "usedBy":  [
-                                     "data/config/skill-tree.json:483",
-                                     "data/config/skill-tree.json:593"
-                                 ],
-                      "sha256":  "a18e443ac2ba4ecaf7c3ba6ded3ac611965cab3740ae9801c433d010cafe723c",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/crosshair.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/crystal-shrine.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/crystal-shrine.svg",
-                      "usedBy":  [
-                                     "data/config/world.json:82"
-                                 ],
-                      "sha256":  "b6f70a93b62a942b18489006e2d8127d40741ce084e5cead25f4015f1d94f953",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/crystal-shrine.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/diamond-ring.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/diamond-ring.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:75"
-                                 ],
-                      "sha256":  "094c87d62a1c66721e23326a6449e3fec2cdcb971ac1a871f36de6968d3c5680",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/diamond-ring.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/drop-earrings.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/drop-earrings.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:85"
-                                 ],
-                      "sha256":  "ea135c4a26795b28c4da845cdefa94345c1734d737350974bef7aa786b6c2826",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/drop-earrings.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/eagle-head.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/eagle-head.svg",
-                      "usedBy":  [
-                                     "data/config/pets.json:27"
-                                 ],
-                      "sha256":  "6781dcc853261dea0b823399d3fa8d6626b27c08564c03e68e89ddda4c4e570d",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/eagle-head.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/evil-tower.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/evil-tower.svg",
-                      "usedBy":  [
-                                     "data/config/quests.json:50"
-                                 ],
-                      "sha256":  "26a4d2bad43142a97f3e089a83a5a71982483d7b5d354f58ae786f733d82a759",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/evil-tower.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/gloves.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/gloves.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:65"
-                                 ],
-                      "sha256":  "500a048d98da178564beb0f5ab02cec947fa74bcd5b703265c44c9c69e9c2756",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/gloves.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/star-medal.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/star-medal.svg",
-                      "usedBy":  [
-                                     "js/character.js:702"
-                                 ],
-                      "sha256":  "a48b325bdb34d0d3bbe409c5dfe58aebeb68ff98f2d23ba6ed012f8508b27e0f",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/star-medal.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/swamp.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/swamp.svg",
-                      "usedBy":  [
-                                     "data/config/world.json:48"
-                                 ],
-                      "sha256":  "e39f928b2799a323b4ab2118cc40cc65ca2eaf6a097e9023029327945e6b0e9b",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/swamp.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/watchtower.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/watchtower.svg",
-                      "usedBy":  [
-                                     "data/config/world.json:14"
-                                 ],
-                      "sha256":  "3f80cfae005be7d3c9c7b9e76e6f5315de69e343dd959c4f39c427db0a4df446",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/watchtower.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
-                      "copy":  "000000/transparent/1x1/delapouite/wizard-face.svg",
-                      "usedBy":  [
-                                     "data/config/classes.json:20",
-                                     "data/config/skill-tree.json:144",
-                                     "data/config/skill-tree.json:160",
-                                     "data/config/skill-tree.json:176",
-                                     "data/config/skill-tree.json:192",
-                                     "data/config/skill-tree.json:209",
-                                     "data/config/skill-tree.json:225"
-                                 ],
-                      "sha256":  "f62e9d6b33ca21f1c43d0b51760f3dd0899af0d4adbe38a96a60acd6dcdfc410",
-                      "originalPackSource":  "icons/000000/transparent/1x1/delapouite/wizard-face.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/arrow-cluster.svg",
-                      "copy":  "000000/transparent/1x1/lorc/arrow-cluster.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:hunter:active:pfeilsalve"
-                                 ],
-                      "sha256":  "c6d8b39d8e1df8449d516651041b973ae172c7d9c82af15f626ae25b97852f05",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/arrow-cluster.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
-                      "copy":  "000000/transparent/1x1/lorc/aura.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:hunter:passive:soul-scent"
-                                 ],
-                      "sha256":  "aa7b5035a4c866eaacfd650fe4bf92108207b47ae5803084190fce6a1a1e6173",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/aura.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/barbed-arrow.svg",
-                      "copy":  "000000/transparent/1x1/lorc/barbed-arrow.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:hunter:active:verwundender-schuss"
-                                 ],
-                      "sha256":  "58d00f95ed5183caf3dda5518aefd2a8f5fb3d142f3660f496ca7f3d94cc672f",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/barbed-arrow.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
-                      "copy":  "000000/transparent/1x1/lorc/beast-eye.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:hunter:passive:predator-eye"
-                                 ],
-                      "sha256":  "7c53f2b509a42aec84a5fdd8d53ade2b9f5d8b1217d49b00ecc08ea43f43cbac",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/beast-eye.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
-                      "copy":  "000000/transparent/1x1/lorc/bordered-shield.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:warrior:passive:wachtwall"
-                                 ],
-                      "sha256":  "187a6fdbe8f9a60ae2ec48609abc5ecb5b32c895b79fdbdf11dd8aea8863f8a6",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/bordered-shield.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/breastplate.svg",
-                      "copy":  "000000/transparent/1x1/lorc/breastplate.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:60"
-                                 ],
-                      "sha256":  "f7a7c9780981e720a7953c65700de2469509cead1eaec86fdff7f59f9041c981",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/breastplate.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
-                      "copy":  "000000/transparent/1x1/lorc/broadsword.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:35",
-                                     "dynamic:abilityPresentation:warrior:active:henkerschlag"
-                                 ],
-                      "sha256":  "4da0be0f53477ffb489abe26abcac44fe49e223e25bca820d4fd800d24d9eeaf",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/broadsword.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/cat.svg",
-                      "copy":  "000000/transparent/1x1/lorc/cat.svg",
-                      "usedBy":  [
-                                     "data/config/pets.json:48"
-                                 ],
-                      "sha256":  "537391c632e1e60cd9431228fe15caac12a7b2d15775365bb05bd7764c5b1969",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/cat.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/chemical-arrow.svg",
-                      "copy":  "000000/transparent/1x1/lorc/chemical-arrow.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:hunter:passive:poison-arrow"
-                                 ],
-                      "sha256":  "38e8291ff572681d1d10c1d4a016129eee966a92b441de810fee48c7ce964f71",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/chemical-arrow.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/clover.svg",
-                      "copy":  "000000/transparent/1x1/lorc/clover.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:154"
-                                 ],
-                      "sha256":  "1ce1af9ef5a2e514316623cfc904819a2d2dff676551c36a9c523d06cc64ac1c",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/clover.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
-                      "copy":  "000000/transparent/1x1/lorc/crossed-swords.svg",
-                      "usedBy":  [
-                                     "data/config/quests.json:34",
-                                     "dynamic:abilityPresentation:warrior:passive:kampfrausch"
-                                 ],
-                      "sha256":  "e81dc3a86844c9287a456b0b813a465d5a72a27434846034acb4ef223d3aa4a5",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/crossed-swords.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
-                      "copy":  "000000/transparent/1x1/lorc/crown.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:129"
-                                 ],
-                      "sha256":  "19e3ddcd5773f549172764b44d2feed80eda5f88a7cac01a78680e51b2935e65",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/crown.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/crowned-skull.svg",
-                      "copy":  "000000/transparent/1x1/lorc/crowned-skull.svg",
-                      "usedBy":  [
-                                     "css/layout/shell.css:40",
-                                     "js/views-world.js:8"
-                                 ],
-                      "sha256":  "f544a5f172cd62b22f902deb82f2d2e007e1bbed153d00b283615947173bcc78",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/crowned-skull.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/crystal-cluster.svg",
-                      "copy":  "000000/transparent/1x1/lorc/crystal-cluster.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:108",
-                                     "data/config/equipment.json:96"
-                                 ],
-                      "sha256":  "8925dd8027be1a52aa3b684e4c7c5c5407bffbcc2807ba2d3dc2888c9398fcd9",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/crystal-cluster.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
-                      "copy":  "000000/transparent/1x1/lorc/crystal-eye.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:mage:passive:aetherblick"
-                                 ],
-                      "sha256":  "26ee972d756689f1d447902a41c9737a1e91cd27d54fcf737a8c547591306b64",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/crystal-eye.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg",
-                      "copy":  "000000/transparent/1x1/lorc/crystal-shine.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:102",
-                                     "data/config/equipment.json:134",
-                                     "data/config/equipment.json:139",
-                                     "data/config/equipment.json:159",
-                                     "data/config/equipment.json:90"
-                                 ],
-                      "sha256":  "6769c7c0d4a1b3ee852e227e11211a07f62354a6069737cbe21d71298136f4d2",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/crystal-shine.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/earth-crack.svg",
-                      "copy":  "000000/transparent/1x1/lorc/earth-crack.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:warrior:active:stampfen"
-                                 ],
-                      "sha256":  "402dfe3390f4ff2d9a77c301e4899f814e28bdc8f88f1125cc7c9c20c172457c",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/earth-crack.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/eye-shield.svg",
-                      "copy":  "000000/transparent/1x1/lorc/eye-shield.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:healer:passive:lichtwacht"
-                                 ],
-                      "sha256":  "5f2525394f14e6c46f3781e11c1796bbd4cf329496b52e663e77b071bcc573c3",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/eye-shield.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
-                      "copy":  "000000/transparent/1x1/lorc/fireball.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:mage:active:feuerball"
-                                 ],
-                      "sha256":  "acfc83811b8adfbc64295ca6f1c1e1a1a85b660fd18c3e6364b6f5d9e0ec10a0",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/fireball.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/gem-pendant.svg",
-                      "copy":  "000000/transparent/1x1/lorc/gem-pendant.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:80"
-                                 ],
-                      "sha256":  "05400d904fa8010c5810f8fe8c23b3182021b28419f67cc6065d2d993849c896",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/gem-pendant.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
-                      "copy":  "000000/transparent/1x1/lorc/heart-tower.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:warrior:passive:unbeugsam"
-                                 ],
-                      "sha256":  "f9397f119e3ee9ce3f0a02e3bb1820852c21e86bf7ec739df7d064d113791ca4",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/heart-tower.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
-                      "copy":  "000000/transparent/1x1/lorc/holy-grail.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:healer:active:erneuerung"
-                                 ],
-                      "sha256":  "0850dd47353685bffc1a3110690f74fa632c0a997d64cc35be8d57523c176c0c",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/holy-grail.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
-                      "copy":  "000000/transparent/1x1/lorc/hourglass.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:114",
-                                     "data/config/equipment.json:165",
-                                     "dynamic:abilityPresentation:mage:passive:fast-caster"
-                                 ],
-                      "sha256":  "ae6cd2ea759345d715c48889c1adaa26019798e7b3e47f06734bd80b63eed0e8",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/hourglass.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
-                      "copy":  "000000/transparent/1x1/lorc/lightning-branches.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:mage:active:funken"
-                                 ],
-                      "sha256":  "90cfa5ec892a101d227109d7c1e992621e91baf23fafd7a276a51740bbabe992",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/lightning-branches.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/lion.svg",
-                      "copy":  "000000/transparent/1x1/lorc/lion.svg",
-                      "usedBy":  [
-                                     "data/config/pets.json:34"
-                                 ],
-                      "sha256":  "53a58069d99a06737dfca3fd5258c75ba79c4268100362f55cbba560fc24c86d",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/lion.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/magic-shield.svg",
-                      "copy":  "000000/transparent/1x1/lorc/magic-shield.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:healer:active:unkillable"
-                                 ],
-                      "sha256":  "314f88d6282777d90aefd94fe0673a2ac4ec2f0026446cb5253420ac70e773a6",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/magic-shield.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
-                      "copy":  "000000/transparent/1x1/lorc/magic-swirl.svg",
-                      "usedBy":  [
-                                     "data/config/skill-tree.json:35",
-                                     "data/config/skill-tree.json:467",
-                                     "data/config/skill-tree.json:515",
-                                     "data/config/skill-tree.json:530",
-                                     "data/config/skill-tree.json:577",
-                                     "data/config/skill-tree.json:624",
-                                     "data/config/skill-tree.json:639",
-                                     "dynamic:abilityPresentation:fallback",
-                                     "dynamic:abilityPresentation:mage:passive:arkanes-echo"
-                                 ],
-                      "sha256":  "1afe770118c00580985c7156f5738a0b037a0c4491b5b7a39633f9bb669d829f",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/magic-swirl.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/meteor-impact.svg",
-                      "copy":  "000000/transparent/1x1/lorc/meteor-impact.svg",
-                      "usedBy":  [
-                                     "data/config/world.json:99"
-                                 ],
-                      "sha256":  "a3d53a6140a7d695bbc3a508a71e723970e2fcb199012077e74b8c4530c4160d",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/meteor-impact.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/rally-the-troops.svg",
-                      "copy":  "000000/transparent/1x1/lorc/rally-the-troops.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:healer:passive:kampfsegen",
-                                     "js/views-progression.js:318"
-                                 ],
-                      "sha256":  "4d106ee89bf4785427907c89aab0f93826482e407138371739cc8e7fe0bb11dd",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/rally-the-troops.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
-                      "copy":  "000000/transparent/1x1/lorc/ringing-bell.svg",
-                      "usedBy":  [
-                                     "data/config/classes.json:27",
-                                     "data/config/equipment.json:50",
-                                     "data/config/skill-tree.json:338",
-                                     "data/config/skill-tree.json:354",
-                                     "data/config/skill-tree.json:370",
-                                     "data/config/skill-tree.json:386",
-                                     "data/config/skill-tree.json:403",
-                                     "data/config/skill-tree.json:419"
-                                 ],
-                      "sha256":  "ea84d71ac02be5f93d48f230de8ac82702a311e90aab49ce65908d697b75c449",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/ringing-bell.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/rune-stone.svg",
-                      "copy":  "000000/transparent/1x1/lorc/rune-stone.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:144"
-                                 ],
-                      "sha256":  "c471774567bb35000d1f9023018d30cf04cb09ef47428c3f7d127d36504c04e4",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/rune-stone.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/shield-echoes.svg",
-                      "copy":  "000000/transparent/1x1/lorc/shield-echoes.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:warrior:active:schildwall"
-                                 ],
-                      "sha256":  "255f9f293c52cbc1059375889b1da83c76600a3dc303146520b0afd37403d8ef",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/shield-echoes.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
-                      "copy":  "000000/transparent/1x1/lorc/shining-heart.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:healer:passive:lebenssegen"
-                                 ],
-                      "sha256":  "486ce447948612bf64bc4b68169020c8a26e09291c98ee0186035cdc7321743e",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/shining-heart.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/snowflake-1.svg",
-                      "copy":  "000000/transparent/1x1/lorc/snowflake-1.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:mage:active:erfrieren"
-                                 ],
-                      "sha256":  "55f8b97b6d96434e8eab7fa157ad07836e47577860e65dda485adb6d989cb9ed",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/snowflake-1.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/steeltoe-boots.svg",
-                      "copy":  "000000/transparent/1x1/lorc/steeltoe-boots.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:70"
-                                 ],
-                      "sha256":  "b64276889e8ac60489c2cc30cee19edfb8b8b2f54b04f8dc7b1abdc8d76051b7",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/steeltoe-boots.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/stone-tower.svg",
-                      "copy":  "000000/transparent/1x1/lorc/stone-tower.svg",
-                      "usedBy":  [
-                                     "css/layout/shell.css:39",
-                                     "js/views-world.js:7"
-                                 ],
-                      "sha256":  "c7a2eb5e39d5f4dc6111971600cabb610c8332d05c61fc850d24db4ad9fc6c83",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/stone-tower.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/sunbeams.svg",
-                      "copy":  "000000/transparent/1x1/lorc/sunbeams.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:healer:active:holy-circle"
-                                 ],
-                      "sha256":  "9bd53d9638cecbc9c635c0d2ce1dd85524b07b20905399282175da92d425ef6d",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/sunbeams.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/target-arrows.svg",
-                      "copy":  "000000/transparent/1x1/lorc/target-arrows.svg",
-                      "usedBy":  [
-                                     "dynamic:abilityPresentation:hunter:active:jagdstoss"
-                                 ],
-                      "sha256":  "47cc540e502089d64005dac9f1f3e41986fac9dcc04a5c2d05c81dcfcfbb4849",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/target-arrows.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/lorc/wizard-staff.svg",
-                      "copy":  "000000/transparent/1x1/lorc/wizard-staff.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:40"
-                                 ],
-                      "sha256":  "c183a609d32c5b72576c69b3880fea044cacba091c02499f0f2bcdd51db7a995",
-                      "originalPackSource":  "icons/000000/transparent/1x1/lorc/wizard-staff.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/sbed/shield.svg",
-                      "copy":  "000000/transparent/1x1/sbed/shield.svg",
-                      "usedBy":  [
-                                     "data/config/equipment.json:45",
-                                     "data/config/skill-tree.json:451",
-                                     "data/config/skill-tree.json:561"
-                                 ],
-                      "sha256":  "b89f5b8f9d91689d36e652c9772ffab108c05368b5431c6bee19aff398702e0a",
-                      "originalPackSource":  "icons/000000/transparent/1x1/sbed/shield.svg"
-                  },
-                  {
-                      "source":  "Assets/Icons/000000/transparent/1x1/zeromancer/heart-plus.svg",
-                      "copy":  "000000/transparent/1x1/zeromancer/heart-plus.svg",
-                      "usedBy":  [
-                                     "data/config/skill-tree.json:499",
-                                     "data/config/skill-tree.json:609"
-                                 ],
-                      "sha256":  "4ca0432c6957a65b0b20e7b8996aeac4986a4440cb3399263c7444cbc7e031e8",
-                      "originalPackSource":  "icons/000000/transparent/1x1/zeromancer/heart-plus.svg"
-                  }
-              ]
+  "scope": "Current game sources: index.html, script.js, style.css, js/, css/, data/config/. Includes explicit SVG references and the abilityPresentation map plus fallback. Archived assets and inline SVG backups are not runtime assets.",
+  "iconCount": 73,
+  "configuredAbilitiesResolved": 24,
+  "icons": [
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/caro-asercion/fox.svg",
+      "copy": "000000/transparent/1x1/caro-asercion/fox.svg",
+      "usedBy": [
+        "data/config/pets.json:42"
+      ],
+      "sha256": "e66c2e18b1af967b385c5f1d33509c476394991b1f433aef0ddc2a5d81137395",
+      "originalPackSource": "icons/000000/transparent/1x1/caro-asercion/fox.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/caro-asercion/warlord-helmet.svg",
+      "copy": "000000/transparent/1x1/caro-asercion/warlord-helmet.svg",
+      "usedBy": [
+        "data/config/equipment.json:55"
+      ],
+      "sha256": "907ecfb4fe56b2d0b4b16a459d1b91b517af976af2d1c21c88e0bc6d094fc99c",
+      "originalPackSource": "icons/000000/transparent/1x1/caro-asercion/warlord-helmet.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/dark-return/chest-crown.svg",
+      "copy": "000000/transparent/1x1/dark-return/chest-crown.svg",
+      "usedBy": [
+        "data/config/equipment.json:124",
+        "data/config/market.json:33"
+      ],
+      "sha256": "40dd4926600d339a8c571a59728d59517fd214c8abd510e94df752623464e3ca",
+      "originalPackSources": [
+        "icons/000000/transparent/1x1/delapouite/chest.svg",
+        "icons/000000/transparent/1x1/lorc/crown.svg"
+      ],
+      "modification": "Chest silhouette with rune/crown badge; original paths retained, composed and masked."
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/dark-return/chest-rune.svg",
+      "copy": "000000/transparent/1x1/dark-return/chest-rune.svg",
+      "usedBy": [
+        "data/config/equipment.json:119",
+        "data/config/market.json:25"
+      ],
+      "sha256": "6b831e74264b0e45b3f0ae4c401d68f2c2cdd7ee801604c0df7ace8b9e2cfb98",
+      "originalPackSources": [
+        "icons/000000/transparent/1x1/delapouite/chest.svg",
+        "icons/000000/transparent/1x1/lorc/rune-stone.svg"
+      ],
+      "modification": "Chest silhouette with rune/crown badge; original paths retained, composed and masked."
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/atlas.svg",
+      "copy": "000000/transparent/1x1/delapouite/atlas.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:35",
+        "data/config/quests.json:42"
+      ],
+      "sha256": "5f8b63dde50602493fe5deef2fc233e0f87c6d7ab0e730625f4f9d8123f6fd4c",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/atlas.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/bow-arrow.svg",
+      "copy": "000000/transparent/1x1/delapouite/bow-arrow.svg",
+      "usedBy": [
+        "data/config/classes.json:6",
+        "data/config/equipment.json:30",
+        "data/config/skill-tree.json:241"
+      ],
+      "sha256": "d89c0d7b24c0a7dfd0c64742239ba4611e191d4aa1d93f01617d16ade125defe",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/bow-arrow.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/burning-forest.svg",
+      "copy": "000000/transparent/1x1/delapouite/burning-forest.svg",
+      "usedBy": [
+        "data/config/world.json:31"
+      ],
+      "sha256": "6014b948dfbd1e318ce144eccbc258f2eb9afd2ac72647a68ae7d13d0069f5d4",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/burning-forest.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/cave-entrance.svg",
+      "copy": "000000/transparent/1x1/delapouite/cave-entrance.svg",
+      "usedBy": [
+        "data/config/world.json:65"
+      ],
+      "sha256": "49629b400da547f22f01ddc725db2b60676741a51e6de28907f8ef3904739d53",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/cave-entrance.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg",
+      "copy": "000000/transparent/1x1/delapouite/chest.svg",
+      "usedBy": [
+        "data/config/equipment.json:149"
+      ],
+      "sha256": "b57cb31393783165782a146005ce80c62cc6c3facdfb478c91bf633927f7962a",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/chest.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
+      "copy": "000000/transparent/1x1/delapouite/crosshair.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:306",
+        "data/config/skill-tree.json:467"
+      ],
+      "sha256": "a18e443ac2ba4ecaf7c3ba6ded3ac611965cab3740ae9801c433d010cafe723c",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/crosshair.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/crystal-shrine.svg",
+      "copy": "000000/transparent/1x1/delapouite/crystal-shrine.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:38",
+        "data/config/world.json:82"
+      ],
+      "sha256": "b6f70a93b62a942b18489006e2d8127d40741ce084e5cead25f4015f1d94f953",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/crystal-shrine.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/diamond-ring.svg",
+      "copy": "000000/transparent/1x1/delapouite/diamond-ring.svg",
+      "usedBy": [
+        "data/config/equipment.json:75"
+      ],
+      "sha256": "094c87d62a1c66721e23326a6449e3fec2cdcb971ac1a871f36de6968d3c5680",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/diamond-ring.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/drop-earrings.svg",
+      "copy": "000000/transparent/1x1/delapouite/drop-earrings.svg",
+      "usedBy": [
+        "data/config/equipment.json:85"
+      ],
+      "sha256": "ea135c4a26795b28c4da845cdefa94345c1734d737350974bef7aa786b6c2826",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/drop-earrings.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/eagle-head.svg",
+      "copy": "000000/transparent/1x1/delapouite/eagle-head.svg",
+      "usedBy": [
+        "data/config/pets.json:28"
+      ],
+      "sha256": "6781dcc853261dea0b823399d3fa8d6626b27c08564c03e68e89ddda4c4e570d",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/eagle-head.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/evil-tower.svg",
+      "copy": "000000/transparent/1x1/delapouite/evil-tower.svg",
+      "usedBy": [
+        "data/config/quests.json:50"
+      ],
+      "sha256": "26a4d2bad43142a97f3e089a83a5a71982483d7b5d354f58ae786f733d82a759",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/evil-tower.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/gloves.svg",
+      "copy": "000000/transparent/1x1/delapouite/gloves.svg",
+      "usedBy": [
+        "data/config/equipment.json:65"
+      ],
+      "sha256": "500a048d98da178564beb0f5ab02cec947fa74bcd5b703265c44c9c69e9c2756",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/gloves.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/scroll-quill.svg",
+      "copy": "000000/transparent/1x1/delapouite/scroll-quill.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:37"
+      ],
+      "sha256": "3de30e22d31b513863062c4812a4352f2cb8f7027f36b32cdff4c25155765574",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/scroll-quill.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/star-medal.svg",
+      "copy": "000000/transparent/1x1/delapouite/star-medal.svg",
+      "usedBy": [
+        "data/config/equipment.json:102",
+        "js/character.js:715"
+      ],
+      "sha256": "a48b325bdb34d0d3bbe409c5dfe58aebeb68ff98f2d23ba6ed012f8508b27e0f",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/star-medal.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/swamp.svg",
+      "copy": "000000/transparent/1x1/delapouite/swamp.svg",
+      "usedBy": [
+        "data/config/world.json:48"
+      ],
+      "sha256": "e39f928b2799a323b4ab2118cc40cc65ca2eaf6a097e9023029327945e6b0e9b",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/swamp.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/upgrade.svg",
+      "copy": "000000/transparent/1x1/delapouite/upgrade.svg",
+      "usedBy": [
+        "js/character.js:705"
+      ],
+      "sha256": "f8c89393056094b16faf2f34e6bd0381a82a1d8764154f2a382d851ef7cd9a2e",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/upgrade.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/delapouite/watchtower.svg",
+      "copy": "000000/transparent/1x1/delapouite/watchtower.svg",
+      "usedBy": [
+        "data/config/world.json:14"
+      ],
+      "sha256": "3f80cfae005be7d3c9c7b9e76e6f5315de69e343dd959c4f39c427db0a4df446",
+      "originalPackSource": "icons/000000/transparent/1x1/delapouite/watchtower.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/anvil.svg",
+      "copy": "000000/transparent/1x1/lorc/anvil.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:44"
+      ],
+      "sha256": "c357a994a822976dd68c6245f39a1ec24d8be02f13c0313dadaf5dcf9a0c09e9",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/anvil.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/arrow-cluster.svg",
+      "copy": "000000/transparent/1x1/lorc/arrow-cluster.svg",
+      "usedBy": [
+        "js/views-progression.js:13 (abilityPresentation)"
+      ],
+      "sha256": "c6d8b39d8e1df8449d516651041b973ae172c7d9c82af15f626ae25b97852f05",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/arrow-cluster.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "copy": "000000/transparent/1x1/lorc/aura.svg",
+      "usedBy": [
+        "js/views-progression.js:12 (abilityPresentation)"
+      ],
+      "sha256": "aa7b5035a4c866eaacfd650fe4bf92108207b47ae5803084190fce6a1a1e6173",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/aura.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/barbed-arrow.svg",
+      "copy": "000000/transparent/1x1/lorc/barbed-arrow.svg",
+      "usedBy": [
+        "js/views-progression.js:13 (abilityPresentation)"
+      ],
+      "sha256": "58d00f95ed5183caf3dda5518aefd2a8f5fb3d142f3660f496ca7f3d94cc672f",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/barbed-arrow.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "copy": "000000/transparent/1x1/lorc/beast-eye.svg",
+      "usedBy": [
+        "js/views-progression.js:12 (abilityPresentation)"
+      ],
+      "sha256": "7c53f2b509a42aec84a5fdd8d53ade2b9f5d8b1217d49b00ecc08ea43f43cbac",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/beast-eye.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "copy": "000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:609"
+      ],
+      "sha256": "5167d32369c009846400e7c3f457329a2de946dce878783731e32f6e8e0fe24f",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/bleeding-heart.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "copy": "000000/transparent/1x1/lorc/bordered-shield.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:160",
+        "data/config/skill-tree.json:257",
+        "data/config/skill-tree.json:354",
+        "data/config/skill-tree.json:63",
+        "js/views-progression.js:14 (abilityPresentation)"
+      ],
+      "sha256": "187a6fdbe8f9a60ae2ec48609abc5ecb5b32c895b79fdbdf11dd8aea8863f8a6",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/bordered-shield.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/breastplate.svg",
+      "copy": "000000/transparent/1x1/lorc/breastplate.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:40",
+        "data/config/equipment.json:60"
+      ],
+      "sha256": "f7a7c9780981e720a7953c65700de2469509cead1eaec86fdff7f59f9041c981",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/breastplate.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "copy": "000000/transparent/1x1/lorc/broadsword.svg",
+      "usedBy": [
+        "data/config/equipment.json:35",
+        "data/config/skill-tree.json:499",
+        "data/config/skill-tree.json:95",
+        "js/views-progression.js:15 (abilityPresentation)"
+      ],
+      "sha256": "4da0be0f53477ffb489abe26abcac44fe49e223e25bca820d4fd800d24d9eeaf",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/broadsword.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/cat.svg",
+      "copy": "000000/transparent/1x1/lorc/cat.svg",
+      "usedBy": [
+        "data/config/pets.json:49"
+      ],
+      "sha256": "537391c632e1e60cd9431228fe15caac12a7b2d15775365bb05bd7764c5b1969",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/cat.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/chemical-arrow.svg",
+      "copy": "000000/transparent/1x1/lorc/chemical-arrow.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:322",
+        "js/views-progression.js:12 (abilityPresentation)"
+      ],
+      "sha256": "38e8291ff572681d1d10c1d4a016129eee966a92b441de810fee48c7ce964f71",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/chemical-arrow.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/clover.svg",
+      "copy": "000000/transparent/1x1/lorc/clover.svg",
+      "usedBy": [
+        "data/config/equipment.json:155"
+      ],
+      "sha256": "1ce1af9ef5a2e514316623cfc904819a2d2dff676551c36a9c523d06cc64ac1c",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/clover.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "copy": "000000/transparent/1x1/lorc/crossed-swords.svg",
+      "usedBy": [
+        "data/config/classes.json:13",
+        "data/config/quests.json:34",
+        "data/config/skill-tree.json:128",
+        "data/config/skill-tree.json:435",
+        "data/config/skill-tree.json:451",
+        "js/views-progression.js:14 (abilityPresentation)"
+      ],
+      "sha256": "e81dc3a86844c9287a456b0b813a465d5a72a27434846034acb4ef223d3aa4a5",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/crossed-swords.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
+      "copy": "000000/transparent/1x1/lorc/crown.svg",
+      "usedBy": [
+        "data/config/equipment.json:129",
+        "data/config/skill-tree.json:176",
+        "data/config/skill-tree.json:273",
+        "data/config/skill-tree.json:370",
+        "data/config/skill-tree.json:79"
+      ],
+      "sha256": "19e3ddcd5773f549172764b44d2feed80eda5f88a7cac01a78680e51b2935e65",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/crown.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/crowned-skull.svg",
+      "copy": "000000/transparent/1x1/lorc/crowned-skull.svg",
+      "usedBy": [
+        "css/layout/shell.css:40",
+        "js/views-world.js:8"
+      ],
+      "sha256": "f544a5f172cd62b22f902deb82f2d2e007e1bbed153d00b283615947173bcc78",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/crowned-skull.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/crystal-cluster.svg",
+      "copy": "000000/transparent/1x1/lorc/crystal-cluster.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:45",
+        "data/config/equipment.json:96"
+      ],
+      "sha256": "8925dd8027be1a52aa3b684e4c7c5c5407bffbcc2807ba2d3dc2888c9398fcd9",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/crystal-cluster.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
+      "copy": "000000/transparent/1x1/lorc/crystal-eye.svg",
+      "usedBy": [
+        "data/config/equipment.json:160",
+        "data/config/skill-tree.json:144",
+        "js/views-progression.js:16 (abilityPresentation)"
+      ],
+      "sha256": "26ee972d756689f1d447902a41c9737a1e91cd27d54fcf737a8c547591306b64",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/crystal-eye.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg",
+      "copy": "000000/transparent/1x1/lorc/crystal-shine.svg",
+      "usedBy": [
+        "data/config/equipment.json:134",
+        "data/config/equipment.json:139",
+        "data/config/equipment.json:90"
+      ],
+      "sha256": "6769c7c0d4a1b3ee852e227e11211a07f62354a6069737cbe21d71298136f4d2",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/crystal-shine.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/crystal-wand.svg",
+      "copy": "000000/transparent/1x1/lorc/crystal-wand.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:46"
+      ],
+      "sha256": "7f5c0be10fc1ac371ec4b024712dd2ee7e66851d45f1a26efa1ed6ada61ab96e",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/crystal-wand.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/earth-crack.svg",
+      "copy": "000000/transparent/1x1/lorc/earth-crack.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:112",
+        "js/views-progression.js:15 (abilityPresentation)"
+      ],
+      "sha256": "402dfe3390f4ff2d9a77c301e4899f814e28bdc8f88f1125cc7c9c20c172457c",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/earth-crack.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/eye-shield.svg",
+      "copy": "000000/transparent/1x1/lorc/eye-shield.svg",
+      "usedBy": [
+        "js/views-progression.js:18 (abilityPresentation)"
+      ],
+      "sha256": "5f2525394f14e6c46f3781e11c1796bbd4cf329496b52e663e77b071bcc573c3",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/eye-shield.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
+      "copy": "000000/transparent/1x1/lorc/fireball.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:225",
+        "js/views-progression.js:17 (abilityPresentation)"
+      ],
+      "sha256": "acfc83811b8adfbc64295ca6f1c1e1a1a85b660fd18c3e6364b6f5d9e0ec10a0",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/fireball.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/gem-pendant.svg",
+      "copy": "000000/transparent/1x1/lorc/gem-pendant.svg",
+      "usedBy": [
+        "data/config/equipment.json:80"
+      ],
+      "sha256": "05400d904fa8010c5810f8fe8c23b3182021b28419f67cc6065d2d993849c896",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/gem-pendant.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/ghost.svg",
+      "copy": "000000/transparent/1x1/lorc/ghost.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:639"
+      ],
+      "sha256": "ad6fb1a85982abaa487fc2317a2a1aba4075a80e211e6c4698945db97896df30",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/ghost.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
+      "copy": "000000/transparent/1x1/lorc/heart-tower.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:624",
+        "js/views-progression.js:14 (abilityPresentation)"
+      ],
+      "sha256": "f9397f119e3ee9ce3f0a02e3bb1820852c21e86bf7ec739df7d064d113791ca4",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/heart-tower.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
+      "copy": "000000/transparent/1x1/lorc/holy-grail.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:338",
+        "js/views-progression.js:19 (abilityPresentation)"
+      ],
+      "sha256": "0850dd47353685bffc1a3110690f74fa632c0a997d64cc35be8d57523c176c0c",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/holy-grail.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/hood.svg",
+      "copy": "000000/transparent/1x1/lorc/hood.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:43",
+        "js/views-workshop.js:31"
+      ],
+      "sha256": "cc52149d4f4cee1af275e561379a66fe6fbe5fc567bbfc25f5fda290bc0ff1ca",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/hood.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "copy": "000000/transparent/1x1/lorc/hourglass.svg",
+      "usedBy": [
+        "data/config/equipment.json:114",
+        "data/config/equipment.json:166",
+        "data/config/skill-tree.json:577",
+        "js/views-progression.js:16 (abilityPresentation)"
+      ],
+      "sha256": "ae6cd2ea759345d715c48889c1adaa26019798e7b3e47f06734bd80b63eed0e8",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/hourglass.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/knapsack.svg",
+      "copy": "000000/transparent/1x1/lorc/knapsack.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:39"
+      ],
+      "sha256": "58bdba0cb9e5b51495161c689570327a5620f8712cf7a4a40d5b065c33fd893f",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/knapsack.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
+      "copy": "000000/transparent/1x1/lorc/lightning-branches.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:41",
+        "data/config/skill-tree.json:192",
+        "js/views-progression.js:17 (abilityPresentation)"
+      ],
+      "sha256": "90cfa5ec892a101d227109d7c1e992621e91baf23fafd7a276a51740bbabe992",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/lightning-branches.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/lion.svg",
+      "copy": "000000/transparent/1x1/lorc/lion.svg",
+      "usedBy": [
+        "data/config/pets.json:35"
+      ],
+      "sha256": "53a58069d99a06737dfca3fd5258c75ba79c4268100362f55cbba560fc24c86d",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/lion.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/magic-shield.svg",
+      "copy": "000000/transparent/1x1/lorc/magic-shield.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:419",
+        "js/views-progression.js:19 (abilityPresentation)"
+      ],
+      "sha256": "314f88d6282777d90aefd94fe0673a2ac4ec2f0026446cb5253420ac70e773a6",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/magic-shield.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "copy": "000000/transparent/1x1/lorc/magic-swirl.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:42",
+        "data/config/equipment.json:108",
+        "data/config/skill-tree.json:209",
+        "data/config/skill-tree.json:35",
+        "data/config/skill-tree.json:515",
+        "js/views-progression.js (abilityPresentation fallback)",
+        "js/views-progression.js:16 (abilityPresentation)"
+      ],
+      "sha256": "1afe770118c00580985c7156f5738a0b037a0c4491b5b7a39633f9bb669d829f",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/magic-swirl.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/meteor-impact.svg",
+      "copy": "000000/transparent/1x1/lorc/meteor-impact.svg",
+      "usedBy": [
+        "data/config/world.json:99"
+      ],
+      "sha256": "a3d53a6140a7d695bbc3a508a71e723970e2fcb199012077e74b8c4530c4160d",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/meteor-impact.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/mineral-heart.svg",
+      "copy": "000000/transparent/1x1/lorc/mineral-heart.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:561"
+      ],
+      "sha256": "882b7fb185a25051d0aedec8dd1fcf6fa75dcca0be8544f3607cddcee50a0393",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/mineral-heart.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/muscle-up.svg",
+      "copy": "000000/transparent/1x1/lorc/muscle-up.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:47"
+      ],
+      "sha256": "6f8c64165b86018b8a750f0382be6167901a869e8af329316f612776f5dc4b09",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/muscle-up.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/open-book.svg",
+      "copy": "000000/transparent/1x1/lorc/open-book.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:47",
+        "css/components/icon-assets.css:49"
+      ],
+      "sha256": "4fa2c2d5816c1880f6d88b0cb3289ed7eae3c9491a6e1fe9f8fe225771dc4bc4",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/open-book.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/quick-slash.svg",
+      "copy": "000000/transparent/1x1/lorc/quick-slash.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:483"
+      ],
+      "sha256": "c9caae88a908454f0e19692e2506e9e52c192c6ecc9aeb6a5b4b67615bbd594e",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/quick-slash.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/rally-the-troops.svg",
+      "copy": "000000/transparent/1x1/lorc/rally-the-troops.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:403",
+        "js/views-progression.js:18 (abilityPresentation)",
+        "js/views-progression.js:317"
+      ],
+      "sha256": "4d106ee89bf4785427907c89aab0f93826482e407138371739cc8e7fe0bb11dd",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/rally-the-troops.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "copy": "000000/transparent/1x1/lorc/ringing-bell.svg",
+      "usedBy": [
+        "data/config/classes.json:27",
+        "data/config/equipment.json:50"
+      ],
+      "sha256": "ea84d71ac02be5f93d48f230de8ac82702a311e90aab49ce65908d697b75c449",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/ringing-bell.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/rune-stone.svg",
+      "copy": "000000/transparent/1x1/lorc/rune-stone.svg",
+      "usedBy": [
+        "data/config/equipment.json:144"
+      ],
+      "sha256": "c471774567bb35000d1f9023018d30cf04cb09ef47428c3f7d127d36504c04e4",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/rune-stone.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/scroll-unfurled.svg",
+      "copy": "000000/transparent/1x1/lorc/scroll-unfurled.svg",
+      "usedBy": [
+        "css/components/icon-assets.css:36"
+      ],
+      "sha256": "dcea52f42f15240fd40d96a000cc6ba36c066fb2f3efff34822449a69578f9dc",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/scroll-unfurled.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/shield-echoes.svg",
+      "copy": "000000/transparent/1x1/lorc/shield-echoes.svg",
+      "usedBy": [
+        "js/views-progression.js:15 (abilityPresentation)"
+      ],
+      "sha256": "255f9f293c52cbc1059375889b1da83c76600a3dc303146520b0afd37403d8ef",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/shield-echoes.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "copy": "000000/transparent/1x1/lorc/shining-heart.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:545",
+        "data/config/skill-tree.json:593",
+        "js/views-progression.js:18 (abilityPresentation)"
+      ],
+      "sha256": "486ce447948612bf64bc4b68169020c8a26e09291c98ee0186035cdc7321743e",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/shining-heart.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/snowflake-1.svg",
+      "copy": "000000/transparent/1x1/lorc/snowflake-1.svg",
+      "usedBy": [
+        "js/views-progression.js:17 (abilityPresentation)"
+      ],
+      "sha256": "55f8b97b6d96434e8eab7fa157ad07836e47577860e65dda485adb6d989cb9ed",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/snowflake-1.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/steeltoe-boots.svg",
+      "copy": "000000/transparent/1x1/lorc/steeltoe-boots.svg",
+      "usedBy": [
+        "data/config/equipment.json:70"
+      ],
+      "sha256": "b64276889e8ac60489c2cc30cee19edfb8b8b2f54b04f8dc7b1abdc8d76051b7",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/steeltoe-boots.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/stone-tower.svg",
+      "copy": "000000/transparent/1x1/lorc/stone-tower.svg",
+      "usedBy": [
+        "css/layout/shell.css:39",
+        "js/views-world.js:7"
+      ],
+      "sha256": "c7a2eb5e39d5f4dc6111971600cabb610c8332d05c61fc850d24db4ad9fc6c83",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/stone-tower.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/sunbeams.svg",
+      "copy": "000000/transparent/1x1/lorc/sunbeams.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:386",
+        "js/views-progression.js:19 (abilityPresentation)"
+      ],
+      "sha256": "9bd53d9638cecbc9c635c0d2ce1dd85524b07b20905399282175da92d425ef6d",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/sunbeams.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/sword-clash.svg",
+      "copy": "000000/transparent/1x1/lorc/sword-clash.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:530"
+      ],
+      "sha256": "2960f800c1e8405660b26a055ef7829483ce505918231b0baf01e3686b12b2b0",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/sword-clash.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/target-arrows.svg",
+      "copy": "000000/transparent/1x1/lorc/target-arrows.svg",
+      "usedBy": [
+        "data/config/skill-tree.json:289",
+        "js/views-progression.js:13 (abilityPresentation)"
+      ],
+      "sha256": "47cc540e502089d64005dac9f1f3e41986fac9dcc04a5c2d05c81dcfcfbb4849",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/target-arrows.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/wizard-staff.svg",
+      "copy": "000000/transparent/1x1/lorc/wizard-staff.svg",
+      "usedBy": [
+        "data/config/classes.json:20",
+        "data/config/equipment.json:40"
+      ],
+      "sha256": "c183a609d32c5b72576c69b3880fea044cacba091c02499f0f2bcdd51db7a995",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/wizard-staff.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/sbed/shield.svg",
+      "copy": "000000/transparent/1x1/sbed/shield.svg",
+      "usedBy": [
+        "data/config/equipment.json:45"
+      ],
+      "sha256": "b89f5b8f9d91689d36e652c9772ffab108c05368b5431c6bee19aff398702e0a",
+      "originalPackSource": "icons/000000/transparent/1x1/sbed/shield.svg"
+    }
+  ],
+  "archivedIconCount": 20,
+  "archivedIcons": [
+    {
+      "source": "Assets/Icons/Archiv/000000/transparent/1x1/cathelineau/swordman.svg",
+      "sha256": "a60f5dcf8cd711db17dfcc35866ce5e43e190b7e9b4a8cf8b7efc4812446db29",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/000000/transparent/1x1/delapouite/archer.svg",
+      "sha256": "dfa7a0daf33a9d76a0c7cb14db0ed391290f12f54ecb54c0bceba99e4eea704a",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "sha256": "f62e9d6b33ca21f1c43d0b51760f3dd0899af0d4adbe38a96a60acd6dcdfc410",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/000000/transparent/1x1/lorc/gears.svg",
+      "sha256": "d192314eb66fd711cd9ab496b23c7daa491fff1a1dd19efddd9644ab13bebbdf",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/000000/transparent/1x1/zeromancer/heart-plus.svg",
+      "sha256": "4ca0432c6957a65b0b20e7b8996aeac4986a4440cb3399263c7444cbc7e031e8",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-altar.svg",
+      "sha256": "5571a93221381dba8dc6f332ba6e3f50fbca81884e707c41326c1018f2fd9b38",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-blacksmith.svg",
+      "sha256": "0475a31b0c4f80c91bb3ef7232e8ec13cb2fb3bf5853d90d31d29fe3f48085bf",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-companions.svg",
+      "sha256": "a307b62e6d32bb2efa3c8a6f2d80e5e930ab39567f7e31a42d0ed5cf04b167fa",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-contracts.svg",
+      "sha256": "2156196582d6267c098de45efab7809cb7b23d05586d70f1ced82dc30aac0ae2",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-documentation.svg",
+      "sha256": "6a879244ce09c1017354c8a978f41ea49212827c737e5e7baf90bac1e2f283fd",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-enchant.svg",
+      "sha256": "8db4f35fa52acfba073a98db9c8260999d876c5ba7e48610be264e21c539b224",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-equipment.svg",
+      "sha256": "4c26b8ac10cdee7246efc340d3df276dcdeced306d38dc27ec7b63a60036fec2",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-inventory.svg",
+      "sha256": "602378c851041bf3f671dbd61bbf34c078158473c0fb90ce84ef5b469b509257",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-map.svg",
+      "sha256": "4bb22741d40a8b730ed4a400df6fd6b1e34ca2c5e7552c7f45e112799e90efc7",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-profile.svg",
+      "sha256": "adeba5495cdef1f941de455314cc017448982569d6906d83d72fb10d9e4202d0",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-settings.svg",
+      "sha256": "97158a088dda7f23e1b6b955ccaf0956ade7a51fe7157a164e3760ea865e373f",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-shop.svg",
+      "sha256": "264bcda0bb2538f0dc691ef402c9ab046bc938d01f391da28360c1ac4182eccf",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-skilltree.svg",
+      "sha256": "fb966f79d9b73880bf4f2f0a0172f08ddc8024b2b28e0ea5931d75618bb08759",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/navigation-sockets.svg",
+      "sha256": "baa87c8f9cc665fb3dcabbcab2f089f7cc136ef328aa9b09e5f2ef2fde7804e6",
+      "runtimeReference": false
+    },
+    {
+      "source": "Assets/Icons/Archiv/inline/settings-shortcut.svg",
+      "sha256": "371474b5fa540a5ec956998fe54e566fbc802bca99debe6942ae8fa7530c0c8b",
+      "runtimeReference": false
+    }
+  ]
 }

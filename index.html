@@ -15,29 +15,33 @@
       <div class="sidebar-header"><a class="brand" href="#start" aria-label="Dark Return Startseite"><img class="brand-logo" src="Assets/Art/branding/dark-return-logo-v2.png" alt="Dark Return" width="1280" height="1280"></a><button class="mobile-menu-close ui-control ui-button ui-icon-button ui-close-button" type="button" aria-label="Menü schließen">×</button></div>
       <nav class="main-nav" aria-label="Spielbereiche">
         <div class="nav-group-label">WELT & JOURNAL</div>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="map" title="Karte"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15m6-12v15"/></svg><span>Karte</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="map" title="Karte"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Karte</span></button>
         <button class="nav-item ui-control ui-navigation" type="button" data-view="tower" title="Turm"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Turm</span></button>
         <button class="nav-item ui-control ui-navigation" type="button" data-view="boss" title="Bossprüfung"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Bossprüfung</span></button>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="contracts" title="Aufträge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5h10M7 8.5h10M7 12.5h7M5 3h14a1 1 0 0 1 1 1v16H4V4a1 1 0 0 1 1-1Zm3 16v2m9-2v2"/></svg><span>Aufträge</span><span class="nav-count" id="quest-count" hidden></span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="contracts" title="Aufträge"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Aufträge</span><span class="nav-count" id="quest-count" hidden></span></button>
         <div class="nav-group-label">KAMPFGRUPPE</div>
-        <button class="nav-item mobile-profile-nav ui-control ui-navigation" type="button" data-view="profile" title="Spielerchronik"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg><span>Spielerchronik</span></button>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="altar" title="Altar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20m-7-3h14M7 19a5 5 0 0 1 10 0M5 9l7-7 7 7-7 4z"/></svg><span>Altar</span></button>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="inventory" title="Inventar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l1 12H3L4 8Zm4 0V6a4 4 0 0 1 8 0v2"/></svg><span>Inventar</span><span class="nav-count" id="inventory-count">0</span></button>
-        <button class="nav-item mobile-equipment-nav ui-control ui-navigation" type="button" data-view="equipment" title="Ausrüstung und Werte"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3v5c0 5-3.4 8.3-8 10-4.6-1.7-8-5-8-10V6l8-3Z"/><path d="M8 9h8m-4-3v10"/></svg><span>Ausrüstung &amp; Werte</span></button>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="skilltree" title="Skilltree"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="m11 7-4 9m6-9 4 9M8.2 18h7.6"/></svg><span>Skilltree</span><span class="nav-count" id="skilltree-count" hidden></span></button>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="companions" title="Fähigkeiten"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c.5-3.5 2.8-5.5 7-5.5s6.5 2 7 5.5m-1.5-5c3.8-.7 6.5 1 7 4.5"/></svg><span>Fähigkeiten</span></button>
+        <button class="nav-item mobile-profile-nav ui-control ui-navigation" type="button" data-view="profile" title="Spielerchronik"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Spielerchronik</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="altar" title="Altar"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Altar</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="inventory" title="Inventar"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Inventar</span><span class="nav-count" id="inventory-count">0</span></button>
+        <button class="nav-item mobile-equipment-nav ui-control ui-navigation" type="button" data-view="equipment" title="Ausrüstung und Werte"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Ausrüstung &amp; Werte</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="skilltree" title="Skilltree"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Skilltree</span><span class="nav-count" id="skilltree-count" hidden></span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="companions" title="Fähigkeiten"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Fähigkeiten</span></button>
         <div class="nav-group-label">UNTERSCHLUPF</div>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="shop" title="Schwarzmarkt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16l1 13H3L4 8Zm4 0V6a4 4 0 0 1 8 0v2"/></svg><span>Schwarzmarkt</span></button>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="blacksmith" title="Schmiede"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4 20 10l-3 3-6-6M4 20l8-8m-5-5 4-4 3 3-4 4M3 21l4-4"/></svg><span>Schmiede</span></button>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="sockets" title="Sockel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 8 5v10l-8 5-8-5V7l8-5Z"/><path d="M12 7v10M7 12h10"/></svg><span>Sockel</span></button>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="enchant" title="Verzauberung"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2Z"/><path d="m19 16 .9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16Z"/></svg><span>Verzauberung</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="shop" title="Schwarzmarkt"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Schwarzmarkt</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="blacksmith" title="Schmiede"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Schmiede</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="sockets" title="Sockel"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Sockel</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="enchant" title="Verzauberung"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Verzauberung</span></button>
         <div class="nav-group-label">HANDBUCH</div>
-        <button class="nav-item ui-control ui-navigation" type="button" data-view="documentation" title="Spiel-Dokumentation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H20v18H7.5A2.5 2.5 0 0 0 5 22V4.5Zm0 0V22m4-15h7m-7 4h7m-7 4h5"/></svg><span>Kodex</span></button>
-        <button class="nav-item mobile-settings-nav ui-control ui-navigation" type="button" data-view="settings" title="Einstellungen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="M19.4 13.5a7.7 7.7 0 0 0 0-3l1.7-1.3-1.8-3.1-2 .8a7.8 7.8 0 0 0-2.6-1.5L14.4 3h-4.8L9.3 5.4a7.8 7.8 0 0 0-2.6 1.5l-2-.8-1.8 3.1L4.6 10.5a7.7 7.7 0 0 0 0 3l-1.7 1.3 1.8 3.1 2-.8a7.8 7.8 0 0 0 2.6 1.5l.3 2.4h4.8l.3-2.4a7.8 7.8 0 0 0 2.6-1.5l2 .8 1.8-3.1-1.7-1.3Z"/></svg><span>Einstellungen</span></button>
+        <button class="nav-item ui-control ui-navigation" type="button" data-view="documentation" title="Spiel-Dokumentation"><span class="nav-item-icon icon-asset" aria-hidden="true"></span><span>Kodex</span></button>
+        <button class="nav-item mobile-settings-nav ui-control ui-navigation" type="button" data-view="settings" title="Einstellungen"><svg fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="M19.4 13.5a7.7 7.7 0 0 0 0-3l1.7-1.3-1.8-3.1-2 .8a7.8 7.8 0 0 0-2.6-1.5L14.4 3h-4.8L9.3 5.4a7.8 7.8 0 0 0-2.6 1.5l-2-.8-1.8 3.1L4.6 10.5a7.7 7.7 0 0 0 0 3l-1.7 1.3 1.8 3.1 2-.8a7.8 7.8 0 0 0 2.6 1.5l.3 2.4h4.8l.3-2.4a7.8 7.8 0 0 0 2.6-1.5l2 .8 1.8-3.1-1.7-1.3Z"/></svg><span>Einstellungen</span></button>
       </nav>
     </aside>
     <main class="main-area" id="start">
       <header class="topbar">
+        <button class="mobile-player-shortcut" id="mobile-player-shortcut" type="button" data-view="profile" aria-label="Spielerchronik öffnen" hidden>
+          <span class="mobile-player-class-icon" aria-hidden="true"></span>
+          <span class="mobile-player-copy"><strong></strong><small></small></span>
+        </button>
         <button class="mobile-menu-toggle ui-control ui-button" id="mobile-menu-toggle" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="sidebar">☰</button>
         <div class="breadcrumb" aria-label="Aktuelle Seite">
           <span>UNTERSCHLUPF</span>
@@ -55,6 +59,7 @@
           <div class="soul-balance" aria-label="Seelen">
             <span aria-hidden="true">✦</span>
             <strong id="soul-balance">0</strong>
+            <strong class="mobile-soul-balance" id="mobile-soul-balance">0</strong>
             <small>SEELEN</small>
           </div>
           <span class="topbar-divider" aria-hidden="true"></span>
@@ -90,14 +95,23 @@
               <div class="activity-list" id="activity-list"></div>
             </section>
           </div>
+          <button class="icon-button shell-icon-button codex-shortcut" type="button" data-view="documentation" aria-label="Kodex" title="Kodex"><span class="shell-icon-asset icon-asset" aria-hidden="true"></span></button>
           <button class="icon-button shell-icon-button settings-shortcut" type="button" data-view="settings" aria-label="Einstellungen" title="Einstellungen">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="M19.4 13.5a7.7 7.7 0 0 0 0-3l1.7-1.3-1.8-3.1-2 .8a7.8 7.8 0 0 0-2.6-1.5L14.4 3h-4.8L9.3 5.4a7.8 7.8 0 0 0-2.6 1.5l-2-.8-1.8 3.1L4.6 10.5a7.7 7.7 0 0 0 0 3l-1.7 1.3 1.8 3.1 2-.8a7.8 7.8 0 0 0 2.6 1.5l.3 2.4h4.8l.3-2.4a7.8 7.8 0 0 0 2.6-1.5l2 .8 1.8-3.1-1.7-1.3Z"/></svg>
+            <svg fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="M19.4 13.5a7.7 7.7 0 0 0 0-3l1.7-1.3-1.8-3.1-2 .8a7.8 7.8 0 0 0-2.6-1.5L14.4 3h-4.8L9.3 5.4a7.8 7.8 0 0 0-2.6 1.5l-2-.8-1.8 3.1L4.6 10.5a7.7 7.7 0 0 0 0 3l-1.7 1.3 1.8 3.1 2-.8a7.8 7.8 0 0 0 2.6 1.5l.3 2.4h4.8l.3-2.4a7.8 7.8 0 0 0 2.6-1.5l2 .8 1.8-3.1-1.7-1.3Z"/></svg>
           </button>
         </div>
       </header>
       <div class="content-wrap" id="view-container" aria-live="polite"></div>
     </main>
   </div>
+  <nav class="mobile-footer" id="mobile-footer" aria-label="Spielnavigation">
+    <div class="mobile-footer-tabs" role="group" aria-label="Navigationsseite wechseln">
+      <button type="button" data-footer-page="0" aria-controls="mobile-footer-world" aria-pressed="true">Welt &amp; Journal <span aria-hidden="true">•</span></button>
+      <button type="button" data-footer-page="1" aria-controls="mobile-footer-character" aria-pressed="false">Kampfgruppe <span aria-hidden="true">•</span></button>
+    </div>
+    <div class="mobile-footer-page" id="mobile-footer-world" aria-label="Welt, Journal und Schwarzmarkt"></div>
+    <div class="mobile-footer-page mobile-footer-page-more" id="mobile-footer-character" aria-label="Kampfgruppe" hidden></div>
+  </nav>
   <button class="mobile-nav-backdrop" id="mobile-nav-backdrop" type="button" aria-label="Menü schließen" hidden></button>
   <section class="mobile-status-panel" id="mobile-status-panel" aria-label="Spielstatus" hidden>
     <header><strong>Dein Unterschlupf</strong><button class="ui-control ui-button ui-close-button" type="button" data-close-mobile-status aria-label="Status schließen">×</button></header>

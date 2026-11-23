@@ -4,6 +4,7 @@ const OFFLINE_RULES = BALANCE.offlineProgress;
 let offlineFarmSuspended = false;
 let offlineFarmTransition = Promise.resolve();
 let offlineFarmSettling = false;
+let adminFarmSimulationPending = false;
 
 function offlineFingerprint(value) {
   const text = JSON.stringify(value);
@@ -276,9 +277,18 @@ async function offlineFarmAction(save, body) {
       save.offlineFarm.carry = save.offlineFarm.cursor = 0;
     }
     if (save.offlineFarm?.active) save.offlineFarm.checkpointAt = Math.max(save.offlineFarm.checkpointAt, Number(body.at) || Date.now());
-  } else if (body.action === 'offline-settle') {
+  } else if (body.action === 'offline-settle' || body.action === 'offline-simulate-hour') {
+    const settleAt = Date.now();
+    if (body.action === 'offline-simulate-hour') {
+      if (!save.offlineFarm?.active) throw new Error('Starte zuerst einen Gebietskampf oder Turmlauf als AFK-Farmziel.');
+      if (save.offlineFarm.signature !== offlineFarmSignature(save) || !offlineFarmCalibrated(save.offlineFarm)) {
+        throw new Error('Die AFK-Messung ist noch nicht bereit. Sammle zuerst passende Runden mit Auto-Fähigkeiten.');
+      }
+      // Use the real clock and reward resolver; only the farm checkpoint is backdated.
+      save.offlineFarm.checkpointAt = settleAt - 3600000;
+    }
     offlineFarmSettling = true;
-    try { report = await settleOfflineFarm(save); }
+    try { report = await settleOfflineFarm(save, settleAt); }
     finally { offlineFarmSettling = false; }
   } else if (body.action === 'offline-dismiss') {
     if (save.offlineFarm?.report?.id === body.reportId) save.offlineFarm.report.pending = false;
@@ -316,6 +326,34 @@ function showOfflineFarmReport() {
   panel.querySelector('button').focus({ preventScroll: true });
 }
 async function resumeOfflineFarm() {
+  return settleAndResumeOfflineFarm('offline-settle');
+}
+async function simulateAdminFarmHour() {
+  if (adminFarmSimulationPending || document.hidden || saveMaintenance || saveBlocked) return;
+  if (!state?.offlineFarm?.active) {
+    toastMessageFor('Keine aktive AFK-Farm', 'Starte zuerst einen Gebietskampf oder Turmlauf.');
+    return;
+  }
+  if (battle && !['area', 'tower'].includes(battle.mode)) {
+    toastMessageFor('AFK-Simulation nicht möglich', 'Beende zuerst den laufenden Bosskampf.');
+    return;
+  }
+  adminFarmSimulationPending = true;
+  const button = document.querySelector('[data-admin-action="admin-simulate-offline-hour"]');
+  if (button) button.disabled = true;
+  try {
+    suspendOfflineFarm();
+    offlineFarmTransition = offlineFarmTransition.then(() => settleAndResumeOfflineFarm('admin-simulate-offline-hour'));
+    await offlineFarmTransition;
+  } finally {
+    // A rejected simulation must not leave the live battle paused.
+    if (offlineFarmSuspended && !document.hidden) await resumeOfflineFarm();
+    adminFarmSimulationPending = false;
+    const currentButton = document.querySelector('[data-admin-action="admin-simulate-offline-hour"]');
+    if (currentButton) currentButton.disabled = false;
+  }
+}
+async function settleAndResumeOfflineFarm(action) {
   if (document.hidden) { offlineFarmSuspended = Boolean(state?.offlineFarm?.active); return; }
   if (saveMaintenance || saveBlocked || !state?.mainClass) return;
   if (!state.offlineFarm?.active) { showOfflineFarmReport(); return; }
@@ -327,7 +365,7 @@ async function resumeOfflineFarm() {
   loading.textContent = 'AFK-Fortschritt wird berechnet \u2026';
   document.body.append(loading);
   let result;
-  try { result = await performAction({ action: 'offline-settle' }); }
+  try { result = await performAction({ action }); }
   finally { loading.remove(); }
   if (!result || document.hidden) return;
   offlineFarmSuspended = false;

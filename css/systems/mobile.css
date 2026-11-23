@@ -1,11 +1,12 @@
 /* Loaded last: mobile presentation never changes the desktop panel rules. */
+.codex-shortcut.shell-icon-button { display: none; }
 .mobile-menu-toggle, .mobile-status-toggle, .mobile-nav-backdrop,
 .mobile-status-panel, .mobile-workspace-tabs, .mobile-workshop-back,
 .mobile-skill-controls, .mobile-socket-target, .mobile-area-list { display: none; }
 .ui-control.mobile-menu-toggle, .ui-control.mobile-menu-close, .ui-control.mobile-status-toggle, .ui-control.mobile-workshop-back { display: none; }
 .ui-control.mobile-map-details { display: none; }
 .ui-control.mobile-inventory-sell-filter { display: none; }
-.mobile-map-heading, .mobile-map-destination-label { display: none; }
+.mobile-map-heading { display: none; }
 .mobile-battle-enemy-heading { display: none; }
 .sidebar .mobile-profile-nav, .sidebar .mobile-settings-nav, .sidebar .mobile-equipment-nav { display: none; }
 .content-wrap:has(> .equipment-view) { height: auto; }
@@ -286,12 +287,15 @@
     .altar-ritual-view .view-heading { margin-bottom: 12px; }
     .altar-selection-layout, .altar-ritual-layout { grid-template-columns: minmax(0, 1fr); }
     .altar-selection-layout { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .altar-selection-layout.mobile-inventory-owners > .altar-character-tabs { display: contents; }
     .altar-character-tabs { gap: 8px; }
-    .altar-character-tab { position: relative; justify-content: center; height: 64px; min-height: 64px; gap: 0; padding: 8px; }
+    .altar-character-tab.ui-control.ui-card-choice { position: relative; justify-content: center; height: 64px; min-height: 64px; gap: 0; padding: 0; overflow: hidden; border-radius: var(--mobile-radius-control); }
     .altar-character-tab > span:not(.altar-tab-portrait) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .altar-character-tab > i { display: none; }
-    .altar-character-tab .altar-tab-portrait { width: 40px; height: 44px; flex-basis: 40px; }
-    .altar-tab-portrait img { width: 54px; left: -7px; }
+    .altar-character-tab .altar-tab-portrait { display: grid; place-items: center; width: 100%; height: 100%; flex: 1 1 100%; background: transparent; color: var(--gold); }
+    .altar-character-tab .altar-tab-portrait > img,
+    .altar-character-tab .altar-pet-tab-glyph { display: none; }
+    .altar-character-tab .altar-tab-mobile-icon { display: block; width: 28px; height: 28px; }
     .altar-character-tab strong { font-size: 15px; }
     .altar-character-tab small { font-size: 11px; letter-spacing: .02em; }
     .altar-character-tab .altar-tab-level { width: 100%; text-align: right; }
@@ -414,7 +418,7 @@
     .main-area:has(> .content-wrap > .atlas-shell) .mobile-status-toggle { --control-background: transparent; --control-border: #373138; --control-hover-background: #1b1b20; --control-hover-border: #65514f; min-height: 36px; padding-inline: 10px; font-size: 12px; font-weight: 500; }
     .content-wrap:has(> .atlas-shell) { padding: 20px max(22px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(22px, env(safe-area-inset-left, 0px)); }
     .atlas-heading { display: none; }
-    .atlas-shell { min-height: calc(100svh - var(--topbar-height) - 20px - max(16px, env(safe-area-inset-bottom, 0px))); grid-template-rows: auto auto minmax(min-content, 1fr); gap: 14px; align-items: stretch; }
+    .atlas-shell { min-height: 0; grid-template-rows: auto auto auto; gap: 14px; align-items: stretch; }
     .mobile-map-heading { display: block; }
     .mobile-map-heading > .eyebrow { margin: 0 0 7px; color: #a99089; font: 500 11px/1.4 var(--sans); letter-spacing: .15em; }
     .mobile-map-heading h1 { margin: 0; color: #e9dfd1; font: 400 29px/1.15 var(--serif); letter-spacing: -.02em; }
@@ -441,15 +445,14 @@
     .atlas-shell .atlas-sidebar { border-top: 1px solid #393036; }
     .atlas-sidebar .expedition-card { display: flex; flex-direction: column; align-items: stretch; gap: 12px; width: 100%; padding: 20px 0 0; border: 0; background: transparent; }
     .atlas-sidebar .expedition-card > :is(.eyebrow, h3, .expedition-description, .expedition-notes, .codex-panel-link) { display: none; }
-    .mobile-map-destination-label { display: block; color: #a99089; font: 500 11px/1.2 var(--sans); letter-spacing: .15em; }
-    .atlas-sidebar .expedition-card h2 { margin: -4px 0 0; color: #eee2d2; font: 400 32px/1.15 var(--serif); letter-spacing: -.02em; }
+    .atlas-sidebar .expedition-card > h2 { display: none; }
     .expedition-card .expedition-data { display: none; }
     .expedition-data.boss-challenge-facts > div { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
     .expedition-data.boss-challenge-facts small { color: #a49b97; font: 400 13px/1.4 var(--sans); letter-spacing: 0; text-transform: lowercase; }
     .expedition-data.boss-challenge-facts small::first-letter { text-transform: uppercase; }
     .expedition-data.boss-challenge-facts strong { color: #d7b47e; font: 400 22px/1.2 var(--serif); font-variant-numeric: tabular-nums; }
     .atlas-sidebar .expedition-card > .first-clear-note { max-width: none; margin: 0; color: #bcaa92; font-size: 13px; line-height: 1.5; }
-    .expedition-controls { display: grid; width: 100%; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 8px; margin-top: auto; padding-top: 4px; align-items: stretch; }
+    .expedition-controls { display: grid; width: 100%; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 8px; margin-top: 0; padding-top: 0; align-items: stretch; }
     .expedition-controls .deep-tier-control { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; grid-column: 1; grid-row: 1; margin: 0; }
     .expedition-controls .deep-tier-control > span { display: none; }
     .expedition-controls .deep-tier-control select { --control-background: #19191e; --control-border: #3b353b; min-height: 44px; padding-inline: 12px; font-size: 16px; }
@@ -526,7 +529,8 @@
 @media (max-width: 900px), (hover: none) and (pointer: coarse) and (max-width: 1100px) {
     .sidebar .mobile-profile-nav, .sidebar .mobile-settings-nav, .sidebar .mobile-equipment-nav { display: flex; }
     .sidebar .mobile-settings-nav { margin-top: 20px; }
-    .main-area > .topbar .settings-shortcut.shell-icon-button { display: none; }
+    .main-area > .topbar .settings-shortcut.shell-icon-button { display: inline-flex; }
+    .main-area > .topbar .codex-shortcut.shell-icon-button { display: inline-flex; }
     .main-area > .topbar > .breadcrumb { display: none; }
     .main-area > .topbar > .soul-balance { display: flex; flex: 1 1 0; align-items: center; min-width: 0; gap: 4px; margin-left: -6px; overflow: hidden; white-space: nowrap; }
     .main-area > .topbar > .soul-balance > span { flex: 0 0 auto; color: var(--gold); }
@@ -546,9 +550,9 @@
     #mobile-status-toggle:hover,
     .mobile-status-panel [data-close-mobile-status]:hover { border: 0; background: transparent; box-shadow: none; color: #efdfd1; }
     #mobile-status-toggle[aria-expanded="true"] { color: var(--ui-accent); }
-    .main-area > .topbar .shell-icon-button, #mobile-status-toggle { position: relative; width: 34px; min-width: 34px; }
-    .main-area > .topbar .shell-icon-button svg { display: block; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .main-area > .topbar #mailbox-toggle svg { width: 20px; height: 20px; transform: translateY(-1px); }
+    .main-area > .topbar .shell-icon-button, #mobile-status-toggle { position: relative; flex: 0 0 44px; width: 44px; min-width: 44px; }
+    .main-area > .topbar .shell-icon-button svg { display: block; flex: 0 0 20px; width: 20px; height: 20px; transform: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .main-area > .topbar .shell-icon-asset { flex: 0 0 20px; width: 20px; height: 20px; }
     .main-area > .topbar .notification-button > i { top: 5px; right: 0; min-width: 14px; min-height: 14px; padding: 0 3px; font-size: 10px; line-height: 14px; }
     .mobile-status-panel [data-close-mobile-status] { font: 26px/1 var(--sans); }
     .mobile-status-panel > header { margin-bottom: 10px; }
@@ -686,9 +690,9 @@
     .inventory-view:not(.equipment-view) .inventory-main > .inventory-expansion-controls { flex: 0 0 auto; margin-top: 12px; padding-top: 10px; }
     .inventory-view .inventory-character-panel { height: auto; max-height: none; }
     .inventory-view .inventory-detail-content { height: auto; max-height: none; overflow: visible; }
-    :is(.inventory-view, .skill-tree-view, .abilities-view) .mobile-inventory-owners { position: fixed; z-index: 30; left: max(16px, env(safe-area-inset-left, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: nowrap; gap: 6px; width: max-content; margin: 0; padding: 6px; border: 1px solid #44383d; border-radius: var(--mobile-radius-panel); background: #18171bf5; box-shadow: 0 6px 24px #0008; }
-    :is(.inventory-view, .skill-tree-view, .abilities-view) .mobile-inventory-owners > .party-owner-button { display: inline-flex; flex: 0 0 46px; align-items: center; justify-content: center; width: 46px; min-width: 46px; height: 46px; min-height: 46px; margin: 0; padding: 8px; border-color: transparent; border-radius: var(--mobile-radius-control); background: transparent; color: #afa19a; }
-    :is(.inventory-view, .skill-tree-view, .abilities-view) .mobile-inventory-owners > .party-owner-button[aria-pressed="true"] { border-color: #9f5d54; background: #c05c5421; color: #edb39b; box-shadow: none; }
+    :is(.inventory-view, .skill-tree-view, .abilities-view, .altar-ritual-view) .mobile-inventory-owners { position: fixed; z-index: 30; left: max(16px, env(safe-area-inset-left, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: nowrap; gap: 6px; width: max-content; margin: 0; padding: 6px; border: 1px solid #44383d; border-radius: var(--mobile-radius-panel); background: #18171bf5; box-shadow: 0 6px 24px #0008; }
+    :is(.inventory-view, .skill-tree-view, .abilities-view, .altar-ritual-view) .mobile-inventory-owners .party-owner-button { display: inline-flex; flex: 0 0 46px; align-items: center; justify-content: center; width: 46px; min-width: 46px; height: 46px; min-height: 46px; margin: 0; padding: 8px; border-color: transparent; border-radius: var(--mobile-radius-control); background: transparent; color: #afa19a; }
+    :is(.inventory-view, .skill-tree-view, .abilities-view, .altar-ritual-view) .mobile-inventory-owners .party-owner-button[aria-pressed="true"] { border-color: #9f5d54; background: #c05c5421; color: #edb39b; box-shadow: none; }
     .mobile-inventory-owner-icon { display: block; width: 28px; height: 28px; }
     .inventory-view.equipment-view .inventory-character-panel { padding: 0; border: 0; background: transparent; }
     .inventory-view .gear-hint { display: none; }
@@ -742,7 +746,7 @@
     .skill-tree-board > :is(.skill-tree-board-points, .mobile-skill-controls, .skill-tree-legend) { flex: 0 0 auto; }
     .skill-tree-view .mobile-skill-viewport { flex: 1 1 0; height: 0; min-height: 160px; }
     .skill-tree-view .skill-tree-legend { margin: 0; padding: 10px 12px; font-size: 10px; gap: 6px 12px; }
-    :is(.inventory-view, .skill-tree-view, .abilities-view) .mobile-inventory-owners { left: max(var(--mobile-page-gutter), env(safe-area-inset-left, 0px)); }
+    :is(.inventory-view, .skill-tree-view, .abilities-view, .altar-ritual-view) .mobile-inventory-owners { left: max(var(--mobile-page-gutter), env(safe-area-inset-left, 0px)); }
 
     .content-wrap :is(.codex-panel-link, .mobile-map-details) {
         display: inline-flex; align-items: center; min-height: 44px; padding: 8px 0;

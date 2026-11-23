@@ -22,7 +22,7 @@
       "title": "Glyphen-Luckybox",
       "subtitle": "0,5% Chance auf jeden Glyphtyp; sonst Nietenpool.",
       "icon": "▣",
-      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+      "asset": "Assets/Icons/000000/transparent/1x1/dark-return/chest-rune.svg"
     },
     {
       "group": "vipBox",
@@ -30,7 +30,7 @@
       "title": "VIP-Luckybox",
       "subtitle": "0,5% Chance auf ein VIP-Ticket für 7 Tage; sonst Nietenpool.",
       "icon": "▣",
-      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+      "asset": "Assets/Icons/000000/transparent/1x1/dark-return/chest-crown.svg"
     }
   ],
   "boxRules": {

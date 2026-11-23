@@ -345,6 +345,11 @@ function assetIconMarkup(asset, fallback, className) {
 function equipmentIconMarkup(slot, fallback, className) {
   return assetIconMarkup(SLOT_DATA[slot]?.asset, fallback || SLOT_DATA[slot]?.icon, className);
 }
+function equipmentEmbersMarkup(item) {
+  return item && (isSellableEquipment(item) || item.slot === 'pet')
+    ? '<span class="equipment-embers" aria-hidden="true"></span>'
+    : '';
+}
 function workshopRitualCore(item, fallback) {
   return `<div class="ritual-core"><span class="ritual-item-symbol">${item ? itemIconMarkup(item, 'ritual-item-icon') : fallback}</span></div>`;
 }
@@ -383,7 +388,7 @@ function itemCard(item, index, options = {}) {
   const itemIndex = options.shopOffer ? `data-shop-offer-preview="${item.id}"` : options.socketTarget || options.enchantTarget || options.forge ? '' : `data-item-index="${index}"`;
   const saleAction = options.sell && sellable ? `data-sell-item="${item.id}"` : '';
   const saleLabel = options.sell ? sellable ? `<span class="item-sell">VERKAUFEN · ${isMythicWeapon(item) ? MYTHIC_ITEMS.saleStones + ' mystische Steine' : number(sellValue(item)) + ' ✧'}</span>` : '<span class="item-sell item-unsellable-label">NICHT VERKÄUFLICH</span>' : '';
-  return `<button class="ui-control ui-graphic ${classes}" type="button" data-item-key="${item.id}" draggable="${canDrag}" ${itemIndex} ${options.socketTarget ? `data-socket-target-item="${item.id}"` : ''} ${options.enchantTarget ? `data-enchant-target-item="${item.id}"` : ''} ${forgeAttrs} ${saleAction} ${options.sell && !sellable ? 'aria-disabled="true"' : ''} aria-label="${escapeHtml(item.name)}, ${escapeHtml(item.rarity)}${item.set ? `, Set ${escapeHtml(item.set)}` : ''}${upgradeLabel ? `, ${upgradeLabel}` : ''}${openedSockets ? `, ${socketLabel}` : ''}${options.sell && !sellable ? ', nicht verkäuflich' : ''}">${itemIconMarkup(item, 'item-icon')}${greaterCount ? `<span class="item-greater-count" aria-label="${greaterCount} Greater Affixe">✦ <span class="item-greater-value">${greaterCount}</span></span>` : ''}${openedSockets ? `<span class="item-socket-count" title="${socketLabel}" aria-label="${socketLabel}">${filledSockets}/${openedSockets}</span>` : ''}${quantity > 1 ? `<span class="item-stack-count">${number(quantity)}</span>` : ''}${!isMaterial && item.upgradeLevel ? `<span class="item-upgrade-level">+${item.upgradeLevel}</span>` : ''}<span class="item-name">${escapeHtml(item.name)}</span><span class="item-type">${escapeHtml(slotName)}</span>${saleLabel}</button>`;
+  return `<button class="ui-control ui-graphic ${classes}" type="button" data-item-key="${item.id}" draggable="${canDrag}" ${itemIndex} ${options.socketTarget ? `data-socket-target-item="${item.id}"` : ''} ${options.enchantTarget ? `data-enchant-target-item="${item.id}"` : ''} ${forgeAttrs} ${saleAction} ${options.sell && !sellable ? 'aria-disabled="true"' : ''} aria-label="${escapeHtml(item.name)}, ${escapeHtml(item.rarity)}${item.set ? `, Set ${escapeHtml(item.set)}` : ''}${upgradeLabel ? `, ${upgradeLabel}` : ''}${openedSockets ? `, ${socketLabel}` : ''}${options.sell && !sellable ? ', nicht verkäuflich' : ''}">${equipmentEmbersMarkup(item)}${itemIconMarkup(item, 'item-icon')}${greaterCount ? `<span class="item-greater-count" aria-label="${greaterCount} Greater Affixe">✦ <span class="item-greater-value">${greaterCount}</span></span>` : ''}${openedSockets ? `<span class="item-socket-count" title="${socketLabel}" aria-label="${socketLabel}">${filledSockets}/${openedSockets}</span>` : ''}${quantity > 1 ? `<span class="item-stack-count">${number(quantity)}</span>` : ''}${!isMaterial && item.upgradeLevel ? `<span class="item-upgrade-level">+${item.upgradeLevel}</span>` : ''}<span class="item-name">${escapeHtml(item.name)}</span><span class="item-type">${escapeHtml(slotName)}</span>${saleLabel}</button>`;
 }
 
 function renderItemGridControls(items, gridKey, category, sort, { includeAll = false, excludeCategories = [], includeCategories = null } = {}) {
@@ -440,9 +445,9 @@ function gearSlot(key, label, item, opts = {}) {
   }
   const icon = item?.slot === 'pet' ? itemIconMarkup(item, 'gear-icon-image') : equipmentIconMarkup(iconSlot, item?.icon || opts.icon, 'gear-icon-image');
   const text = item ? `${item.name}${item.slot === 'pet' ? ` · Stufe ${item.level}` : item.upgradeLevel ? ` · +${item.upgradeLevel}` : ''}` : opts.empty || 'Leer';
-  const classNames = ['gear-slot', item ? 'filled' : 'empty', item?.rarityColor || '', (item?.affixes || []).some(affix => affix.greater) ? 'has-greater-affix' : '', item?.set ? 'set-item' : '', opts.wide ? 'wide' : '', opts.disabled ? 'locked' : ''].filter(Boolean).join(' ');
+  const classNames = ['gear-slot', 'compact-gear-slot', item ? 'filled' : 'empty', item?.rarityColor || '', (item?.affixes || []).some(affix => affix.greater) ? 'has-greater-affix' : '', item?.set ? 'set-item' : '', opts.wide ? 'wide' : '', opts.disabled ? 'locked' : ''].filter(Boolean).join(' ');
   const dataAttr = `data-gear-owner="${ownerClass === state.mainClass ? 'main' : 'companion'}" data-gear-class="${ownerClass}" data-gear-slot="${key}"`;
-  return `<button class="ui-control ui-graphic ${classNames}" type="button" ${dataAttr} ${opts.disabled ? 'disabled' : ''} aria-label="${escapeHtml(label)}: ${escapeHtml(text)}${item?.set ? `, Set ${escapeHtml(item.set)}` : ''}"><span class="gear-icon">${icon}</span><span class="gear-copy"><small>${escapeHtml(label)}</small><strong>${escapeHtml(text)}</strong></span>${item?.upgradeLevel ? `<span class="gear-upgrade-level">+${item.upgradeLevel}</span>` : ''}</button>`;
+  return `<button class="ui-control ui-graphic ${classNames}" type="button" ${dataAttr} ${opts.disabled ? 'disabled' : ''} aria-label="${escapeHtml(label)}: ${escapeHtml(text)}${item?.set ? `, Set ${escapeHtml(item.set)}` : ''}">${equipmentEmbersMarkup(item)}<span class="gear-icon">${icon}</span></button>`;
 }
 function renderEquipment(className = state.mainClass) {
   const gear = equipmentForClass(className);
@@ -456,7 +461,6 @@ function renderEquipment(className = state.mainClass) {
     gearSlot('gloves', 'Handschuhe', gear.gloves, { className }),
     gearSlot('boots', 'Schuhe', gear.boots, { className }),
     petForClass(className) ? gearSlot('pet', 'Begleittier · fest gebunden', petForClass(className), { className }) : '<div class="gear-slot-placeholder" aria-hidden="true"></div>',
-    weapon,
   ];
   const rightSlots = [
     gearSlot('amulet', 'Amulett', gear.amulet, { className }),
@@ -464,10 +468,9 @@ function renderEquipment(className = state.mainClass) {
     gearSlot('ring2', 'Ring II', gear.ring2, { className, icon: '◉' }),
     gearSlot('earring1', 'Ohrring I', gear.earring1, { className, icon: '◈' }),
     gearSlot('earring2', 'Ohrring II', gear.earring2, { className, icon: '◈' }),
-    offHand,
   ];
   const glyphSlots = ['glyph1', 'glyph2', 'glyph3'].map((slot, index) => gearSlot(slot, `Glyphe ${index + 1}`, gear[slot], { className, icon: SLOT_DATA.glyph.icon }));
-  return `<section class="equipment-panel character-panel-surface"><div class="panel-heading"><div><p class="eyebrow">${isMain ? 'DEIN LOADOUT' : 'GEF&Auml;HRTEN-LOADOUT'}</p><h3>${isMain ? 'Ausr&uuml;stung' : escapeHtml(CLASSES[className].label)}</h3></div><span class="equipment-count">${Object.values(gear).filter(Boolean).length + (petForClass(className) ? 1 : 0)} / 15</span></div><p class="gear-hint">Doppelklick oder ziehe Gegenst&auml;nde in einen Slot.</p><div class="gear-grid"><div class="gear-column">${leftSlots.join('')}</div><div class="gear-column">${rightSlots.join('')}</div></div><div class="glyph-slot-spacer" aria-hidden="true"></div><div class="glyph-slot-grid">${glyphSlots.join('')}</div></section>`;
+  return `<section class="equipment-panel character-panel-surface equipment-paperdoll"><div class="panel-heading"><div><p class="eyebrow">${isMain ? 'DEIN LOADOUT' : 'GEF&Auml;HRTEN-LOADOUT'}</p><h3>${isMain ? 'Ausr&uuml;stung' : escapeHtml(CLASSES[className].label)}</h3></div><span class="equipment-count">${Object.values(gear).filter(Boolean).length + (petForClass(className) ? 1 : 0)} / 15</span></div><p class="gear-hint">Doppelklick oder ziehe Gegenst&auml;nde in einen Slot.</p><div class="loadout-paperdoll" aria-label="Ausrüstungsplätze um den Charakter"><div class="loadout-side loadout-armor">${leftSlots.join('')}</div><div class="loadout-figure" aria-hidden="true"><img src="Assets/Art/battle/runtime/${className}/${className}-idle.png" alt="" draggable="false"></div><div class="loadout-side loadout-jewelry">${rightSlots.join('')}</div><div class="loadout-footer" role="group" aria-label="Waffe, Glyphen und Nebenhand"><div class="loadout-weapon">${weapon}</div><div class="loadout-glyphs" role="group" aria-label="Glyphenplätze">${glyphSlots.join('')}</div><div class="loadout-offhand">${offHand}</div></div></div></section>`;
 }
 
 // Shared by combat and the character sheet: only unconditional total-damage factors.
@@ -699,7 +702,7 @@ function renderEnchantments() {
     : rarityMaxed ? 'H&ouml;chste Seltenheit erreicht.' : `${escapeHtml(target.rarity)} &#x2192; ${escapeHtml(nextRarity?.name || '')}` : affixes.length ? 'W&auml;hle ein Affix zum Umpr&auml;gen.' : 'Dieser Gegenstand hat noch keine Affixe.';
   const modeLabel = isRarityMode ? 'Seltenheit erh&ouml;hen' : 'Affix umpr&auml;gen';
   const modes = [['rarity', 'Seltenheit erhöhen'], ['affix', 'Affix umprägen'], ['pet', 'Begleittier']];
-  const modeButtons = `<div class="party-owner-switch socket-mode-buttons" role="group" aria-label="Ansicht der Verzauberung">${modes.map(([mode, label]) => `<button class="party-owner-button ui-control ui-choice ${selectedEnchantMode === mode ? 'is-selected' : ''}" type="button" data-enchant-mode="${mode}" aria-pressed="${selectedEnchantMode === mode}" ${forgeAnimationInProgress ? 'disabled' : ''}>${escapeHtml(label)}</button>`).join('')}</div>`;
+  const modeButtons = `<div class="party-owner-switch socket-mode-buttons" role="group" aria-label="Ansicht der Verzauberung">${modes.map(([mode, label]) => `<button class="party-owner-button ui-control ui-choice ${selectedEnchantMode === mode ? 'is-selected' : ''}" type="button" data-enchant-mode="${mode}" aria-pressed="${selectedEnchantMode === mode}" ${forgeAnimationInProgress ? 'disabled' : ''}>${mode === 'rarity' ? assetIconMarkup('Assets/Icons/000000/transparent/1x1/delapouite/upgrade.svg', '', 'workshop-mode-icon') : ''}${escapeHtml(label)}</button>`).join('')}</div>`;
   const actionLabel = isRarityMode ? legendaryUpgrade ? 'GREATER AFFIX ERZEUGEN' : 'SELTENHEIT ERH&Ouml;HEN' : 'AFFIX UMPR&Auml;GEN';
   const stoneQuantity = stone ? inventoryQuantityForSlot(state, stone.slot) : 0;
   const preview = isRarityMode ? rarityUpgradePreview(target).map((entry) => `<p><strong>${escapeHtml(entry.label)}:</strong> ${formatRuleNumber(entry.current)} → ${formatRuleNumber(entry.minimum)}${entry.maximum !== entry.minimum ? `–${formatRuleNumber(entry.maximum)}` : ''}${entry.minimum < entry.current ? ' · Kann sinken' : ''}</p>`).join('') : '';

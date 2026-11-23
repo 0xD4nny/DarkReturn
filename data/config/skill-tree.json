@@ -44,7 +44,7 @@
       "requiredParentPoints": 0,
       "branch": "warrior",
       "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/muscle-up.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 5,
@@ -60,7 +60,7 @@
       "requiredParentPoints": 10,
       "branch": "warrior",
       "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 3,
@@ -76,7 +76,7 @@
       "requiredParentPoints": 10,
       "branch": "warrior",
       "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
       "effect": {
         "type": "final-percent",
         "perPoint": 1,
@@ -92,7 +92,7 @@
       "requiredParentPoints": 10,
       "branch": "warrior",
       "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
       "effect": {
         "type": "skill-damage-flat-percent",
         "perPoint": 5,
@@ -109,7 +109,7 @@
       "requiredParentPoints": 10,
       "branch": "warrior",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/earth-crack.svg",
       "effect": {
         "type": "warrior-stomp-area",
         "perPoint": 1
@@ -125,7 +125,7 @@
       "requiredParentPoints": 10,
       "branch": "warrior",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
       "effect": {
         "type": "warrior-execution-area-penalty",
         "perPoint": 50
@@ -141,7 +141,7 @@
       "requiredParentPoints": 0,
       "branch": "mage",
       "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 5,
@@ -157,7 +157,7 @@
       "requiredParentPoints": 10,
       "branch": "mage",
       "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 3,
@@ -173,7 +173,7 @@
       "requiredParentPoints": 10,
       "branch": "mage",
       "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 1,
@@ -189,7 +189,7 @@
       "requiredParentPoints": 10,
       "branch": "mage",
       "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
       "effect": {
         "type": "skill-damage-flat-percent",
         "perPoint": 5,
@@ -206,7 +206,7 @@
       "requiredParentPoints": 10,
       "branch": "mage",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
       "effect": {
         "type": "extra-attack-chance",
         "perPoint": 20
@@ -222,7 +222,7 @@
       "requiredParentPoints": 10,
       "branch": "mage",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
       "effect": {
         "type": "mage-instant-fireball",
         "perPoint": 1
@@ -238,7 +238,7 @@
       "requiredParentPoints": 0,
       "branch": "hunter",
       "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/bow-arrow.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 5,
@@ -254,7 +254,7 @@
       "requiredParentPoints": 10,
       "branch": "hunter",
       "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 3,
@@ -270,7 +270,7 @@
       "requiredParentPoints": 10,
       "branch": "hunter",
       "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 1,
@@ -286,7 +286,7 @@
       "requiredParentPoints": 10,
       "branch": "hunter",
       "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/target-arrows.svg",
       "effect": {
         "type": "skill-damage-flat-percent",
         "perPoint": 5,
@@ -303,7 +303,7 @@
       "requiredParentPoints": 10,
       "branch": "hunter",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
       "effect": {
         "type": "hunter-critical-overflow",
         "perPoint": 1
@@ -319,7 +319,7 @@
       "requiredParentPoints": 10,
       "branch": "hunter",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/chemical-arrow.svg",
       "effect": {
         "type": "hunter-poison-chance",
         "perPoint": 50
@@ -335,7 +335,7 @@
       "requiredParentPoints": 0,
       "branch": "healer",
       "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 5,
@@ -351,7 +351,7 @@
       "requiredParentPoints": 10,
       "branch": "healer",
       "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 3,
@@ -367,7 +367,7 @@
       "requiredParentPoints": 10,
       "branch": "healer",
       "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 1,
@@ -383,7 +383,7 @@
       "requiredParentPoints": 10,
       "branch": "healer",
       "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/sunbeams.svg",
       "effect": {
         "type": "skill-damage-flat-percent",
         "perPoint": 5,
@@ -400,7 +400,7 @@
       "requiredParentPoints": 10,
       "branch": "healer",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/rally-the-troops.svg",
       "effect": {
         "type": "healer-final-damage-percent",
         "perPoint": 50
@@ -416,7 +416,7 @@
       "requiredParentPoints": 10,
       "branch": "healer",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ringing-bell.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-shield.svg",
       "effect": {
         "type": "healer-damage-reduction-cap",
         "perPoint": 95
@@ -432,7 +432,7 @@
       "requiredParentPoints": 0,
       "branch": "attack",
       "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 5,
@@ -448,7 +448,7 @@
       "requiredParentPoints": 10,
       "branch": "attack",
       "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/sbed/shield.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
       "effect": {
         "type": "final-percent",
         "perPoint": 0.5,
@@ -464,7 +464,7 @@
       "requiredParentPoints": 10,
       "branch": "attack",
       "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 1,
@@ -480,7 +480,7 @@
       "requiredParentPoints": 10,
       "branch": "attack",
       "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/quick-slash.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 1,
@@ -496,7 +496,7 @@
       "requiredParentPoints": 10,
       "branch": "attack",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/zeromancer/heart-plus.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 1,
@@ -527,7 +527,7 @@
       "requiredParentPoints": 10,
       "branch": "attack",
       "tier": 6,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/sword-clash.svg",
       "effect": {
         "type": "extra-attack-chance",
         "perPoint": 50
@@ -542,7 +542,7 @@
       "requiredParentPoints": 0,
       "branch": "health",
       "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 25,
@@ -558,7 +558,7 @@
       "requiredParentPoints": 10,
       "branch": "health",
       "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/sbed/shield.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/mineral-heart.svg",
       "effect": {
         "type": "attribute-flat",
         "perPoint": 5,
@@ -574,7 +574,7 @@
       "requiredParentPoints": 10,
       "branch": "health",
       "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
       "effect": {
         "type": "stat-flat",
         "perPoint": 1,
@@ -590,7 +590,7 @@
       "requiredParentPoints": 10,
       "branch": "health",
       "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
       "effect": {
         "type": "final-percent",
         "perPoint": 1,
@@ -606,7 +606,7 @@
       "requiredParentPoints": 10,
       "branch": "health",
       "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/zeromancer/heart-plus.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
       "effect": {
         "type": "self-life-steal-percent",
         "perPoint": 0.1
@@ -621,7 +621,7 @@
       "requiredParentPoints": 10,
       "branch": "health",
       "tier": 6,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
       "effect": {
         "type": "additional-passive-slot",
         "perPoint": 1
@@ -636,7 +636,7 @@
       "requiredParentPoints": 10,
       "branch": "health",
       "tier": 6,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ghost.svg",
       "effect": {
         "type": "dodge-chance",
         "perPoint": 40

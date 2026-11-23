@@ -104,9 +104,10 @@ function renderPetOffering() {
 }
 function petAltarTabPortrait(pet) {
   const portrait = petDefinition(pet)?.portrait;
-  return portrait
+  const desktopPortrait = portrait
     ? `<img class="altar-pet-tab-image" src="${escapeHtml(portrait)}" alt="" draggable="false">`
     : itemIconMarkup(pet, 'altar-pet-tab-glyph');
+  return `${desktopPortrait}${itemIconMarkup(pet, 'altar-tab-mobile-icon')}`;
 }
 function renderPetAltarStage() {
   const pet = selectedAltarPet();

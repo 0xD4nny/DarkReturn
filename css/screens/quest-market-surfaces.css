@@ -1,0 +1,5 @@
+/* Plain surfaces with 50% background opacity; content remains opaque. */
+.content-wrap :is(.compact-quest-group, .compact-quest-card, .shop-product-card) {
+    background: rgba(25, 25, 28, .5);
+    box-shadow: none;
+}

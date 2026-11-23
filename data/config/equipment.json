@@ -99,13 +99,13 @@
     "rarityStone": {
       "label": "Seltenheitsstein",
       "icon": "✧",
-      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/star-medal.svg",
       "description": "Erhöht die Seltenheit eines Ausrüstungsgegenstands beim Verzauberer."
     },
     "affixStone": {
       "label": "Umprägungsstein",
       "icon": "✥",
-      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-cluster.svg",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
       "description": "Prägt einen zufälligen Affix beim Verzauberer um."
     },
     "bossReset": {
@@ -116,12 +116,12 @@
     "glyphBox": {
       "label": "Glyphen-Luckybox",
       "icon": "▣",
-      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+      "asset": "Assets/Icons/000000/transparent/1x1/dark-return/chest-rune.svg"
     },
     "vipBox": {
       "label": "VIP-Luckybox",
       "icon": "▣",
-      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
+      "asset": "Assets/Icons/000000/transparent/1x1/dark-return/chest-crown.svg"
     },
     "vipTicket": {
       "label": "VIP-Ticket",
@@ -157,7 +157,7 @@
     "mythicUpgradeStone": {
       "label": "Mystischer Aufwertungsstein",
       "icon": "✦",
-      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
       "description": "Wird für einen mystischen Aufwertungsversuch an einer mystischen Waffe verbraucht. Verkauf mystischer Waffen: 10 Stück je Waffe."
     },
     "towerReset": {

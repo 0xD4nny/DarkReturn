@@ -3,21 +3,21 @@
     "hunter": {
       "label": "Jäger",
       "icon": "⌁",
-      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/archer.svg",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/bow-arrow.svg",
       "role": "Präziser Fernkampf",
       "description": "Der Jäger setzt auf Bögen, kritische Treffer und verlässlichen Schaden gegen einzelne Ziele."
     },
     "warrior": {
       "label": "Krieger",
       "icon": "⚔",
-      "asset": "Assets/Icons/000000/transparent/1x1/cathelineau/swordman.svg",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
       "role": "Frontlinie & Wucht",
       "description": "Der Krieger führt das Schwert und hält mit seiner Stärke den Feind in Schach."
     },
     "mage": {
       "label": "Magier",
       "icon": "ϟ",
-      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/wizard-face.svg",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/wizard-staff.svg",
       "role": "Arkaner Flächenschaden",
       "description": "Der Magier entfesselt mit seinem Stab zerstörerische Zauber gegen ganze Gegnergruppen."
     },

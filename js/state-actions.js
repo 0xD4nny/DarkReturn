@@ -343,6 +343,8 @@ async function localAction(body) {
     response = { state: save };
   } else if (action.startsWith('offline-')) {
     response = await offlineFarmAction(save, body);
+  } else if (action === 'admin-simulate-offline-hour') {
+    response = await offlineFarmAction(save, { action: 'offline-simulate-hour' });
   } else if (action === 'visit-shop') {
     response = { state: save, message: 'Marktangebote gespeichert.' };
   } else if (action === 'claim-hunting-event') {
