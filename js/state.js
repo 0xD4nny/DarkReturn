@@ -319,6 +319,8 @@ function normalizeSaveState(save) {
   save.settings.compactDamageNumbers = save.settings.compactDamageNumbers === true;
   ['forgeAnimations', 'socketAnimations', 'enchantAnimations'].forEach(key => { save.settings[key] = save.settings[key] !== false; });
   save.settings.autoSellNonSet = save.settings.autoSellNonSet === true;
+  if (save.workshopJob != null && !validWorkshopJob(save.workshopJob)) save.workshopJob = null;
+  if (!validLootCollectionRules(save.settings.lootCollectionRules)) save.settings.lootCollectionRules = { enabled: false, rules: [] };
   const exclusions = save.settings.enchantExcludedAffixes || {};
   save.settings.enchantExcludedAffixes = Object.fromEntries(['equipment', 'pet'].map(group => [group,
     [...new Set((Array.isArray(exclusions[group]) ? exclusions[group] : []).filter(stat =>
@@ -333,6 +335,7 @@ function normalizeSaveState(save) {
     : [...(save.visitedAreas || [])];
   save.mailbox = Array.isArray(save.mailbox) ? save.mailbox.slice(0, MAILBOX_CAPACITY) : [];
   const activePowerupStats = new Set();
+  if (migrateRetiredTowerLootBoost(save)) Object.defineProperty(save, 'towerLootMigrationPending', { value: true, configurable: true });
   save.activePowerups = (Array.isArray(save.activePowerups) ? save.activePowerups : []).filter((entry) => {
     if (!entry || entry.expiresAt <= Date.now() || activePowerupStats.has(entry.stat)) return false;
     activePowerupStats.add(entry.stat);
@@ -455,6 +458,7 @@ function normalizeSaveState(save) {
   save.questBook.counters ||= questDefaults.counters;
   if (save.questBook.counters.towerRounds === undefined) save.questBook.counters.towerRounds = save.statistics.towerRoundsWon || 0;
   Object.keys(questDefaults.counters).forEach((key) => { save.questBook.counters[key] = Math.max(0, Number(save.questBook.counters[key]) || 0); });
+  save.statistics.towerBossesKilled = Math.max(0, Math.floor(Number(save.statistics.towerBossesKilled) || 0), Math.floor(save.questBook.counters.towerBosses || 0));
   save.questBook.board ||= makeQuestBoardGroup(Object.values(save.questBook.stageRewards).filter(Boolean).length, save);
   if (save.questBook.board.version !== QUEST_BOARD.schemaVersion) {
     save.questBook.board = makeQuestBoardGroup(0, save);
@@ -573,7 +577,7 @@ function defaultState() {
   return {
     playerName: null, mainClass: null, souls: 0, level: 1, experience: 0, vipExpiresAt: 0,
     huntingEvent: null,
-    statistics: { towerRoundsWon: 0, towerBestRunRounds: 0, playTimeMs: 0, deaths: 0, monstersKilled: 0, soulsEarned: 0, damageDealt: 0, highestHit: 0, luckyBoxesOpened: { glyphBox: 0, vipBox: 0, farmBox: 0 }, forgeAttempts: 0, socketAttempts: 0, raritiesUpgraded: 0, affixesRerolled: 0, itemsSold: 0, autoSoldItems: 0 },
+    statistics: { towerBossesKilled: 0, towerRoundsWon: 0, towerBestRunRounds: 0, playTimeMs: 0, deaths: 0, monstersKilled: 0, soulsEarned: 0, damageDealt: 0, highestHit: 0, luckyBoxesOpened: { glyphBox: 0, vipBox: 0, farmBox: 0 }, forgeAttempts: 0, socketAttempts: 0, raritiesUpgraded: 0, affixesRerolled: 0, itemsSold: 0, autoSoldItems: 0 },
     pets: {},
     characterLevels: Object.fromEntries(Object.keys(CLASSES).map((className) => [className, 1])),
     skillTree: Object.fromEntries(Object.keys(CLASSES).map((className) => [className, { version: BALANCE.skillTree.schemaVersion, nodes: {} }])),
@@ -1143,12 +1147,41 @@ function makePowerup(stat) {
 function makeVipTicket() {
   return { id: createItemId(), slot: 'vipTicket', name: SLOT_DATA.vipTicket.label, quantity: 1, upgradeLevel: 0, rarity: 'Verbrauchsgegenstand', rarityColor: 'legendary', icon: SLOT_DATA.vipTicket.icon, affixVersion: 5, affixes: [] };
 }
-function makeTowerLootBoost() {
-  return { id: createItemId(), slot: 'towerLootBoost', name: SLOT_DATA.towerLootBoost.label, quantity: 1, upgradeLevel: 0, rarity: 'Verbrauchsgegenstand', rarityColor: 'epic', icon: SLOT_DATA.towerLootBoost.icon, affixVersion: 5, affixes: [] };
+function migrateRetiredTowerLootBoost(save) {
+  let changed = false;
+  for (const item of [...(save.inventory || []), ...(save.mailbox || []).map(entry => entry?.item)]) {
+    if (item?.slot !== 'towerLootBoost') continue;
+    const id = item.id;
+    const quantity = item.quantity;
+    Object.assign(item, makePowerup('Droprate'), { id, quantity });
+    changed = true;
+  }
+  for (const key of [save, save.offlineFarm].filter(Boolean)) {
+    if (!Array.isArray(key.activePowerups || key.powerups)) continue;
+    const field = key === save ? 'activePowerups' : 'powerups';
+    const entries = key[field];
+    if (!entries.some(entry => entry?.stat === TOWER_LOOT_BOOST_STAT)) continue;
+    const combined = [];
+    for (const entry of entries) {
+      if (!entry) continue;
+      if (entry.stat === TOWER_LOOT_BOOST_STAT) { entry.stat = 'Droprate'; entry.value = 10; changed = true; }
+      const existing = combined.find(candidate => candidate.stat === entry.stat);
+      if (existing) existing.expiresAt = Math.max(existing.expiresAt, entry.expiresAt);
+      else combined.push(entry);
+    }
+    key[field] = combined;
+  }
+  return changed;
+}
+function towerLootBaseChance(choice, sourceState = state) {
+  const kills = Math.max(0, Math.floor(Number(sourceState?.statistics?.towerBossesKilled) || 0));
+  return Math.min(100, Math.round((choice.chance + kills * BALANCE.loot.towerLootChancePerBoss) * 10) / 10);
 }
 function towerLootChance(choice, sourceState = state) {
-  const boosted = (sourceState?.activePowerups || []).some(entry => entry.stat === TOWER_LOOT_BOOST_STAT && entry.expiresAt > rewardTime(sourceState));
-  return boosted ? 100 : applyLootDropBonus(choice.chance / 100, sourceState) * 100;
+  return applyLootDropBonus(towerLootBaseChance(choice, sourceState) / 100, sourceState) * 100;
+}
+function towerLootProgressLabel(sourceState = state) {
+  return `${number(sourceState.statistics.towerBossesKilled || 0)} Turmbosse · +${formatRuleNumber(BALANCE.loot.towerLootChancePerBoss)} Prozentpunkte je Sieg`;
 }
 function applyLootDropBonus(baseChance, sourceState = state) {
   const bonus = powerupBonusForStat('Droprate', sourceState) + (getWorldEvent(sourceState).dropRatePercent || 0)
@@ -1156,7 +1189,7 @@ function applyLootDropBonus(baseChance, sourceState = state) {
   return Math.min(1, Math.max(0, baseChance * (1 + bonus / 100)));
 }
 function workshopSuccessChance(baseChance, sourceState = state) {
-  const bonus = powerupBonusForStat('Upgradechance', sourceState) + (getWorldEvent().upgradeChancePercent || 0)
+  const bonus = powerupBonusForStat('Upgradechance', sourceState) + (getWorldEvent(sourceState).upgradeChancePercent || 0)
     + (vipIsActive(sourceState) ? VIP_RULES.upgradeChancePercent : 0);
   return Math.min(100, Math.max(0, Math.round(baseChance * (1 + bonus / 100) * 1000000) / 1000000));
 }
@@ -1203,7 +1236,6 @@ function makeFarmBoxReward() {
       affixStone: () => makeEnchantmentStone('affixStone'),
       rarityStone: () => makeEnchantmentStone('rarityStone'),
       bossReset: makeBossResetConsumable, towerReset: makeTowerResetConsumable,
-      towerLootBoost: makeTowerLootBoost,
     };
     if (['material', 'consumable'].includes(outcome.type) && factories[outcome.slot]) return { item: factories[outcome.slot]() };
     throw new Error('Unbekannter Farm-Luckybox-Inhalt.');
@@ -1237,7 +1269,7 @@ function powerupBonusForStat(stat, sourceState = state) {
   return (sourceState?.activePowerups || []).some((entry) => entry.stat === stat && entry.expiresAt > rewardTime(sourceState)) ? 10 : 0;
 }
 function consumablePowerupStat(item) {
-  if (item.slot === 'towerLootBoost') return TOWER_LOOT_BOOST_STAT;
+  if (item.slot === 'towerLootBoost') return 'Droprate'; // Legacy imports are migrated to normal power-ups.
   return item.slot === 'powerup' && POWERUP_STATS.includes(item.powerupStat) ? item.powerupStat : null;
 }
 function renderActivePowerupsWidget() {
@@ -1262,6 +1294,8 @@ function startActivePowerupTimer() {
       const label = `${choice.label} (${formatRuleNumber(towerLootChance(choice))} %)`;
       if (option.textContent !== label) option.textContent = label;
     });
+    const progression = document.querySelector('[data-tower-loot-progression]');
+    if (progression) progression.textContent = towerLootProgressLabel();
     const active = state.activePowerups || [];
     const remaining = active.filter((entry) => entry.expiresAt > Date.now());
     if (remaining.length !== active.length) {
@@ -1618,7 +1652,7 @@ async function request(path, body) {
       saved.activityUnread ||= 0;
       normalizeLegacyWeapons(saved);
       // Persist newly assigned pets once so reloading cannot reroll their first affixes.
-      if (saved.petNeedsPersist || saved.huntNeedsPersist) await writeSavedState(saved);
+      if (saved.petNeedsPersist || saved.huntNeedsPersist || saved.towerLootMigrationPending) await writeSavedState(saved);
       // Other migrations are persisted with the next action.
     }
     return { state: saved };

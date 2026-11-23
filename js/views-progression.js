@@ -339,7 +339,7 @@ function renderCurrentTower() {
         <div class="boss-challenge-facts"><div class="tower-hero-level"><small>HÖCHSTE HELDENSTUFE</small><strong>Stufe ${number(towerStats.level)}</strong></div><div><small>LEBEN PRO GEGNER</small><strong>ca. ${number(towerStats.health)} LP</strong></div></div>
         <p data-daily-attempts="tower">${escapeHtml(towerAttemptSummary())}</p>
         <div class="tower-entry-actions">
-          <label class="tower-loot-choice"><span>BEUTE WÄHLEN</span><select class="ui-control ui-select" data-tower-loot>${lootOptions}</select></label>
+          <label class="tower-loot-choice"><span>BEUTE WÄHLEN</span><select class="ui-control ui-select" data-tower-loot>${lootOptions}</select><small class="tower-loot-progression" data-tower-loot-progression>${escapeHtml(towerLootProgressLabel())}</small></label>
           ${startControls}
         </div>
         <a class="ui-control ui-link codex-panel-link" href="#codex-tower" data-open-codex-section="codex-tower">TURMREGELN IM KODEX</a>

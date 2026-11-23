@@ -24,6 +24,7 @@ function validateImportedSave(backup) {
   if (backup.app !== 'DarkReturn' || backup.version !== 1) fail('Dateiformat');
   const save = backup.state;
   record(save, 'Spielstand');
+  if (save.workshopJob != null && !validWorkshopJob(save.workshopJob)) fail('Werkstattauftrag');
   if (save.offlineContext !== undefined) fail('Interner Offline-Kontext');
   if (save.offlineFarm != null) {
     const farm = save.offlineFarm;
@@ -286,6 +287,7 @@ function validateImportedSave(backup) {
       list(save.settings.autoSellRarities, 'Lootfilter');
       if (save.settings.autoSellRarities.some((color) => !RARITIES.some((rarity) => rarity.color === color))) fail('Lootfilter');
     }
+    if (save.settings.lootCollectionRules !== undefined && !validLootCollectionRules(save.settings.lootCollectionRules)) fail('Sammelregeln');
   }
   Object.entries(save.characterLevels || {}).forEach(([owner, level]) => { if (!Object.hasOwn(CLASSES, owner)) fail('Stufenklasse'); numeric(level, 'Charakterstufe', 1, true); });
   Object.entries(save.companions || {}).forEach(([owner, companion]) => {

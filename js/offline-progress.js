@@ -201,6 +201,7 @@ async function settleOfflineFarm(save, now = Date.now()) {
           eventUntil += WORLD_EVENT_INTERVAL_MS;
         }
         save.offlineContext = { now: roundStartedAt, worldEvent: event };
+        if (save.workshopJob) await settleWorkshopThrough(save, roundStartedAt);
         const pause = sample.won ? 1300 : farm.mode === 'tower' ? 0 : BALANCE.combat.defeatRecoveryMilliseconds;
         const milliseconds = pause + Math.max(BALANCE.combat.tickMilliseconds,
           Math.max(BALANCE.combat.tickMilliseconds, sample.milliseconds - pause)
@@ -215,6 +216,8 @@ async function settleOfflineFarm(save, now = Date.now()) {
           eventUntil += WORLD_EVENT_INTERVAL_MS;
         }
         save.offlineContext = { now: at, worldEvent: event };
+        // Finish due attempts before awarding this round's materials, never using future drops.
+        if (save.workshopJob) await settleWorkshopThrough(save, at);
         let won = sample.won;
         if (farm.mode === 'tower') {
           const health = Object.fromEntries(owners.map(owner => [owner, Math.max(0, Math.min(1,

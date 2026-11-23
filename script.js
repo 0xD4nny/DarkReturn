@@ -93,12 +93,13 @@
       || !Array.isArray(farmBox.rewards) || !farmBox.rewards.length
       || farmBox.rewards.some(outcome => !outcome.label || !Number.isFinite(outcome.chance) || outcome.chance <= 0
         || (outcome.type === 'souls' ? !Number.isSafeInteger(outcome.minimum) || outcome.minimum < 0 || !Number.isSafeInteger(outcome.maximum) || outcome.maximum < outcome.minimum
-          : outcome.quantity !== 1 || !(outcome.type === 'powerup' || (outcome.type === 'consumable' && outcome.slot === 'towerLootBoost' && config.slots.towerLootBoost) || (outcome.type === 'material' && farmMaterialSlots.includes(outcome.slot))
+          : outcome.quantity !== 1 || !(outcome.type === 'powerup' || (outcome.type === 'material' && farmMaterialSlots.includes(outcome.slot))
             || (outcome.type === 'box' && ['glyphBox', 'vipBox'].includes(outcome.group)))))
       || Math.abs(farmBox.rewards.reduce((sum, outcome) => sum + outcome.chance, 0) - 100) > 0.000001) {
       throw new Error('Die Farm-Luckybox ist unvollständig konfiguriert.');
     }
     const towerLootChoices = config.balance.loot?.towerLootChoices;
+    if (!Number.isFinite(config.balance.loot?.towerLootChancePerBoss) || config.balance.loot.towerLootChancePerBoss < 0) throw new Error('Der Turmboss-Beutebonus ist ungültig.');
     const towerEarlyScaling = config.balance.combat?.towerEarlyScaling;
     if (!Number.isInteger(towerEarlyScaling?.fullScalingLevel) || towerEarlyScaling.fullScalingLevel <= 1
       || !Number.isFinite(towerEarlyScaling.startHealth) || towerEarlyScaling.startHealth <= 0
@@ -180,7 +181,7 @@
     }
     window.DARK_RETURN_CONFIG = config;
 
-    const scripts = ['config', 'world-events', 'state', 'hunting-events', 'pets', 'activity-log', 'state-actions', 'character', 'offline-progress', 'save-validation', 'views-world', 'views-workshop', 'views-progression', 'views-admin', 'views-handbook', 'views-settings', 'views-codex', 'views', 'actions', 'workshop-animation', 'battle-scene', 'combat', 'mobile', 'mobile-workshop', 'interactions'];
+    const scripts = ['config', 'world-events', 'state', 'hunting-events', 'pets', 'activity-log', 'state-actions', 'character', 'offline-progress', 'save-validation', 'views-world', 'views-workshop', 'views-progression', 'views-admin', 'views-handbook', 'views-settings', 'views-codex', 'views', 'actions', 'workshop-animation', 'workshop-jobs', 'battle-scene', 'combat', 'mobile', 'mobile-workshop', 'interactions'];
     const moduleVersion = `20261113-combat-finish-2-${Date.now().toString(36)}`;
     for (const name of scripts) {
       await new Promise((resolve, reject) => {

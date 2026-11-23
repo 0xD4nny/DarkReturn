@@ -62,6 +62,7 @@ function patchBackgroundMarkup(parent, markup) {
 function renderView({ background = false } = {}) {
   if (!state) return;
   captureMobileViewState();
+  syncWorkshopRuntime();
   if (!background) stopWorkshopVisuals();
   renderWorkshopStatus();
   renderHuntingEventWidget();

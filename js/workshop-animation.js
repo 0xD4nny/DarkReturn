@@ -20,7 +20,7 @@ function stopWorkshopVisuals() {
   });
   visual.workbench.classList.remove('is-forging', 'forge-success', 'forge-failure');
   visual.status.classList.remove('is-success', 'is-failure');
-  if (visual.status.isConnected) visual.status.innerHTML = visual.statusMarkup;
+  if (visual.status.isConnected && visual.restoreStatus !== false) visual.status.innerHTML = visual.statusMarkup;
 }
 function cancelWorkshopAnimation() {
   activeWorkshopAttempt = null;
@@ -31,7 +31,8 @@ function syncWorkshopAnimation() {
   stopWorkshopVisuals();
   const attempt = activeWorkshopAttempt;
   if (attempt?.headless || (typeof isMobileLayout === 'function' && isMobileLayout())) return;
-  if (!attempt || attempt.generation !== stateGeneration || currentView !== attempt.view || document.hidden) return;
+  if (!attempt) { syncPersistedWorkshopVisuals(); return; }
+  if (attempt.generation !== stateGeneration || currentView !== attempt.view || document.hidden) return;
   if (attempt.view === 'blacksmith' && (attempt.result.kind === 'glyph-fusion' ? selectedForgeMode !== 'glyphs' : selectedForgeMode !== (attempt.result.mythic ? 'mythic' : 'upgrade'))) return;
   const selector = attempt.socketMode ? '.socket-workbench' : attempt.enchantMode ? '.enchant-workbench' : '.forge-workbench:not(.socket-workbench):not(.enchant-workbench)';
   const workbench = document.querySelector(selector);

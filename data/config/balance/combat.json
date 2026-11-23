@@ -16,31 +16,32 @@
       "greaterAffixMinimumDeepTier": 3,
       "greaterAffixChance": 0.1,
       "greaterAffixMaxMultiplier": 1.5,
+      "towerLootChancePerBoss": 0.1,
       "towerLootChoices": [
         {
           "id": "upgradeStone",
           "label": "Aufwertungssteine",
-          "chance": 50
+          "chance": 1
         },
         {
           "id": "socketStone",
           "label": "Sockelsteine",
-          "chance": 50
+          "chance": 1
         },
         {
           "id": "affixStone",
           "label": "Umprägungssteine",
-          "chance": 50
+          "chance": 1
         },
         {
           "id": "gems",
           "label": "Edelsteine",
-          "chance": 50
+          "chance": 1
         },
         {
           "id": "powerup",
           "label": "Powerups",
-          "chance": 50
+          "chance": 1
         }
       ],
       "mythicWeapons": {

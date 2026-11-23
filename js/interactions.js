@@ -126,10 +126,30 @@ document.addEventListener('click', (event) => {
   if (tooltip.classList.contains('player-statistics-tooltip') && !event.target.closest('.player-statistics-tooltip')) closePlayerStatisticsTooltip();
   const settingsTab = event.target.closest('[data-settings-tab]');
   if (settingsTab) {
+    lootRuleDraft = null;
     selectedSettingsTab = ['management', 'loot-filter', 'admin'].includes(settingsTab.dataset.settingsTab) ? settingsTab.dataset.settingsTab : 'gameplay';
     renderView();
     return;
   }
+  if (event.target.closest('[data-loot-rule-add]')) {
+    if (lootRuleSavePending) return;
+    captureLootRuleDraft();
+    const draft = lootRuleEditorState();
+    if (draft.rules.length < 20) draft.rules.push({ slot: 'any', rarity: 'legendary', set: 'any', minGreater: 0 });
+    renderView();
+    viewContainer.querySelector('.loot-rule-list > :last-child [data-loot-rule-field]')?.focus({ preventScroll: true });
+    return;
+  }
+  const removeLootRule = event.target.closest('[data-loot-rule-remove]');
+  if (removeLootRule) {
+    if (lootRuleSavePending) return;
+    captureLootRuleDraft();
+    lootRuleEditorState().rules.splice(Number(removeLootRule.dataset.lootRuleRemove), 1);
+    renderView();
+    viewContainer.querySelector('[data-loot-rule-add]')?.focus({ preventScroll: true });
+    return;
+  }
+  if (event.target.closest('[data-loot-rules-save]')) { void saveLootRuleDraft(); return; }
   const activatePowerups = event.target.closest('[data-activate-powerups]');
   if (activatePowerups) {
     if (Number(activatePowerups.dataset.availablePowerups) > 0) performAction({ action: 'activate-all-powerups' });
@@ -538,6 +558,16 @@ document.addEventListener('dblclick', (event) => {
   }
 });
 document.addEventListener('change', (event) => {
+  if (event.target.matches('[data-loot-rule-field], [data-loot-rules-enabled]')) {
+    if (lootRuleSavePending) return;
+    const index = event.target.closest('[data-loot-rule-index]')?.dataset.lootRuleIndex;
+    const field = event.target.dataset.lootRuleField;
+    captureLootRuleDraft();
+    renderView();
+    const selector = field ? `[data-loot-rule-index="${index}"] [data-loot-rule-field="${field}"]` : '[data-loot-rules-enabled]';
+    viewContainer.querySelector(selector)?.focus({ preventScroll: true });
+    return;
+  }
   if (event.target.id === 'admin-max-equipment-gem') {
     const button = document.querySelector('[data-admin-max-equipment]');
     if (button) button.disabled = !event.target.value;
@@ -837,12 +867,11 @@ function renderItemTooltipContent(item, { card = null, gear = null, questPreview
     'Die Laufzeit zählt auch bei geschlossenem Spiel.',
   ].map(line => `<p>${escapeHtml(line)}</p>`).join('')}</div>` : '';
   const powerupInfo = item.slot === 'powerup' ? `<div class="tooltip-special"><span>1 STUNDE</span><p>Gew&auml;hrt +10 % ${escapeHtml(item.powerupStat)}. Doppelklick im Inventar aktiviert das Power-up. Weitere Exemplare verl&auml;ngern die Laufzeit um je eine Stunde; der Bonuswert bleibt gleich.</p>${item.powerupStat === 'Upgradechance' ? '<p>Erhöht die Erfolgschance für normale und mystische Aufwertung sowie Sockelöffnen relativ: 1 % wird zu 1,1 %. Addiert sich mit Upgradechance aus Welt-Events und VIP; maximal 100 % Erfolgschance.</p>' : ''}${item.powerupStat === 'Droprate' ? '<p>Erhöht die Chancen auf Gebietsausrüstung, gewählte Turmbeute und Farm-Luckybox-Drops relativ: 50 % werden zu 55 %. Addiert sich mit Dropraten-Events. Boxinhalte und Affixwürfe bleiben unverändert.</p>' : ''}</div>` : '';
-  const towerLootBoostInfo = item.slot === 'towerLootBoost' ? '<div class="tooltip-special"><span>1 STUNDE</span><p>Setzt die Dropchance der gewählten Turmbeute auf 100 %. Doppelklick im Inventar aktiviert den Segen. Weitere Exemplare verlängern die Restlaufzeit um je eine Stunde. Die Zeit läuft auch bei geschlossenem Spiel weiter. Kein Bonus auf Farm-Luckyboxen, Gebietsbeute oder die Bossprüfung.</p></div>' : '';
   const bossResetInfo = ['bossReset', 'towerReset'].includes(item.slot) ? `<div class="tooltip-special"><span>EIN ZUSÄTZLICHER VERSUCH</span><p>Doppelklick im Inventar gewährt genau einen Versuch ${item.slot === 'bossReset' ? 'in der Bossprüfung' : 'im Turm'}.</p><p>Nur verwendbar, wenn kein Versuch mehr vorhanden ist und kein entsprechender Lauf aktiv ist. Ein ungenutzter Steinversuch bleibt beim Tageswechsel erhalten.</p></div>` : '';
-  const farmBoxInfo = item.slot === 'farmBox' ? '<div class="tooltip-special"><span>FARMBEUTE</span><p>1 % Basis-Dropchance pro gewonnenem Gebiets- oder Turmkampf; Dropratenboni erhöhen sie relativ. Enthält genau einen Gewinn: Seelen, Materialien, ein Powerup, einen Boss-Zeitstein, Turm-Zeitstein, einen Turm-Beutesegen oder eine Glyphen-/VIP-Luckybox. Alle Chancen stehen im Kodex unter Schwarzmarkt und Luckyboxen.</p></div>' : '';
+  const farmBoxInfo = item.slot === 'farmBox' ? `<div class="tooltip-special"><span>FARMBEUTE</span><p>${formatRuleNumber(BOX_RULES.farmBox.dropChance * 100)} % Basis-Dropchance pro gewonnenem Gebiets- oder Turmkampf; Dropratenboni erhöhen sie relativ. Enthält genau einen Gewinn: Seelen, Materialien, ein Powerup, einen Boss-Zeitstein, Turm-Zeitstein oder eine Glyphen-/VIP-Luckybox. Alle Chancen stehen im Kodex unter Schwarzmarkt und Luckyboxen.</p></div>` : '';
   const luckyBoxInfo = BOX_GROUPS.includes(item.slot) ? (questPreview ? '<div class="tooltip-special"><span>VERSIEGELT</span><p>Nach dem Abholen im Inventar öffnen.</p></div>' : `<div class="tooltip-special"><span>VERSIEGELT</span><p>Einfach anklicken, um die Box zu öffnen. Der Inhalt wird im Aktivitätslog festgehalten.</p></div>`) : '';
   const socketInfo = item.sockets?.length ? `<div class="tooltip-special"><span>SOCKEL · ${item.sockets.filter(Boolean).length}/${item.sockets.length}</span><p>Sockel aktiv</p></div>` : '';
-  return `<div class="tooltip-rarity ${item.rarityColor}">${itemRank}</div><strong class="tooltip-name">${escapeHtml(item.name)}</strong><small class="tooltip-type">${escapeHtml(SLOT_DATA[item.slot]?.label || item.slot)}${item.set ? ` · Set ${escapeHtml(item.set)}` : ''}</small>${weaponDamage}${weaponLevelInfo}${armorDefense}${mythicEffect}${affixes ? `<div class="tooltip-affixes">${affixes}</div>` : ''}${materialInfo}${vipInfo}${powerupInfo}${towerLootBoostInfo}${bossResetInfo}${luckyBoxInfo}${farmBoxInfo}${socketInfo}${setBonus}${milestoneDescription}${milestoneRollNote}${item.passives ? `<div class="tooltip-special"><span>PASSIVE EFFEKTE</span>${item.passives.map((passive) => `<p>${escapeHtml(passive)}</p>`).join('')}</div>` : ''}${card?.hasAttribute('data-sell-item') ? `<div class="tooltip-sale-value">VERKAUFSWERT <strong>✧ ${isMythicWeapon(item) ? MYTHIC_ITEMS.saleStones + ' MYSTISCHE AUFWERTUNGSSTEINE' : number(sellValue(item)) + ' SEELEN'}</strong></div>` : ''}${card?.classList.contains('not-for-sale') ? '<div class="tooltip-sale-unavailable">Materialien, Verbrauchsgegenstände und Luckyboxen sind unverkäuflich.</div>' : ''}`;
+  return `<div class="tooltip-rarity ${item.rarityColor}">${itemRank}</div><strong class="tooltip-name">${escapeHtml(item.name)}</strong><small class="tooltip-type">${escapeHtml(SLOT_DATA[item.slot]?.label || item.slot)}${item.set ? ` · Set ${escapeHtml(item.set)}` : ''}</small>${weaponDamage}${weaponLevelInfo}${armorDefense}${mythicEffect}${affixes ? `<div class="tooltip-affixes">${affixes}</div>` : ''}${materialInfo}${vipInfo}${powerupInfo}${bossResetInfo}${luckyBoxInfo}${farmBoxInfo}${socketInfo}${setBonus}${milestoneDescription}${milestoneRollNote}${item.passives ? `<div class="tooltip-special"><span>PASSIVE EFFEKTE</span>${item.passives.map((passive) => `<p>${escapeHtml(passive)}</p>`).join('')}</div>` : ''}${card?.hasAttribute('data-sell-item') ? `<div class="tooltip-sale-value">VERKAUFSWERT <strong>✧ ${isMythicWeapon(item) ? MYTHIC_ITEMS.saleStones + ' MYSTISCHE AUFWERTUNGSSTEINE' : number(sellValue(item)) + ' SEELEN'}</strong></div>` : ''}${card?.classList.contains('not-for-sale') ? '<div class="tooltip-sale-unavailable">Materialien, Verbrauchsgegenstände und Luckyboxen sind unverkäuflich.</div>' : ''}`;
 }
 
 let comparisonTooltipCloseTimer = null;
@@ -871,7 +900,7 @@ document.addEventListener('mouseover', (event) => {
   if (activePowerups) {
     const entries = (state?.activePowerups || []).filter((entry) => entry.expiresAt > Date.now());
     const available = Number(activePowerups.dataset.availablePowerups) || 0;
-    const activeRows = entries.length ? entries.map((entry) => { const seconds = Math.max(0, Math.ceil((entry.expiresAt - Date.now()) / 1000)); const hours = Math.floor(seconds / 3600); const minutes = Math.floor((seconds % 3600) / 60); const time = hours ? `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}` : `${minutes}:${String(seconds % 60).padStart(2, '0')}`; return `<span>${entry.stat === TOWER_LOOT_BOOST_STAT ? '100 % gewählte Turmbeute' : `+10 % ${escapeHtml(entry.stat)}`} · ${time} verbleibend</span>`; }).join('') : '<span>Keine Power-ups aktiv</span>';
+    const activeRows = entries.length ? entries.map((entry) => { const seconds = Math.max(0, Math.ceil((entry.expiresAt - Date.now()) / 1000)); const hours = Math.floor(seconds / 3600); const minutes = Math.floor((seconds % 3600) / 60); const time = hours ? `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}` : `${minutes}:${String(seconds % 60).padStart(2, '0')}`; return `<span>${`+10 % ${escapeHtml(entry.stat)}`} · ${time} verbleibend</span>`; }).join('') : '<span>Keine Power-ups aktiv</span>';
     setTooltipMarkup(`<div class="tooltip-rarity epic">${entries.length} AKTIV · ${available} BEREIT</div><strong class="tooltip-name">Dunkle Stärkung</strong><div class="tooltip-affixes">${activeRows}</div><div class="tooltip-special"><p>${available ? 'Klicken aktiviert ein Exemplar je Power-up-Typ. Bei Stapeln bleibt der Rest erhalten; gleiche Boni verlängern die Dauer.' : 'Power-ups aus Glückskisten erscheinen hier nach dem Kauf.'}</p></div>`);
     tooltip.classList.add('powerup-tooltip');
     tooltip.classList.add('visible');
@@ -1030,6 +1059,7 @@ function renderPlayerStatisticsGroups() {
       ['Erhaltene Seelen', number(stats.soulsEarned)],
       ['Tode', number(stats.deaths)],
       ['Turm · Rundenrekord', number(stats.towerBestRunRounds)],
+      ['Turm · besiegte Bosse', number(stats.towerBossesKilled || 0)],
       ['VIP-Status', vipIsActive() ? `Aktiv bis ${new Date(state.vipExpiresAt).toLocaleString('de-DE')}` : 'Nicht aktiv'],
     ]],
     ['Kampf', [
@@ -1084,6 +1114,7 @@ async function init() {
     startWorldEventSystem();
     offlineFarmTransition = offlineFarmTransition.then(resumeOfflineFarm);
     await offlineFarmTransition;
+    await tickPersistedWorkshop();
   } catch (error) {
     viewContainer.innerHTML = `<section class="server-error"><p class="eyebrow">LOKALER SPEICHER NICHT VERFÜGBAR</p><h1>Die Reise ruht.</h1><p>${escapeHtml(error.message)} Öffne Dark Return über eine lokale Vorschau wie VS Code Live Server oder über die veröffentlichte HTTPS-Adresse.</p><button class="primary-button ui-control ui-button" type="button" onclick="location.reload()">ERNEUT VERBINDEN <span>↻</span></button></section>`;
   }

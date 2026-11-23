@@ -23,6 +23,7 @@ function activityFor(payload, result) {
   const inventoryItem = state.inventory.find((item) => item.id === payload.itemId);
   const itemName = result.item?.name || result.sold?.name || equipped?.name || inventoryItem?.name || 'Gegenstand';
   const actions = {
+    'sell-inventory-category': () => ({ title: 'Kategorie verkauft', detail: `${result.count} Gegenstände · ${INVENTORY_CATEGORIES[result.category]?.label || 'Alle Kategorien'} · ${number(result.value)} Seelen` }),
     'offline-settle': () => {
       const report = result.offlineReport;
       if (!report || (!report.wins && !report.defeats)) return null;

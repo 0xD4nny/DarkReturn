@@ -11,7 +11,7 @@ const RARITY_ORDER = GAME_CONFIG.rarityOrder;
 const SHOP_OFFERS = GAME_CONFIG.shopOffers;
 const EQUIPMENT_SHOP = GAME_CONFIG.equipmentShop;
 const VIP_RULES = GAME_CONFIG.vip;
-const TOWER_LOOT_BOOST_STAT = 'Turmbeute';
+const TOWER_LOOT_BOOST_STAT = 'Turmbeute'; // Retired: accepted only to migrate existing saves.
 const BOX_RULES = GAME_CONFIG.boxRules;
 const BOX_GROUPS = Object.keys(BOX_RULES).filter(group => SLOT_DATA[group]);
 const GEM_PROFILES = GAME_CONFIG.gemProfiles;
@@ -54,6 +54,41 @@ function detailLinesMarkup(value) { return detailTextLines(value).map(escapeHtml
 
 function isMythicWeapon(item) {
   return item?.rarityColor === 'mythic' && MYTHIC_ITEMS.weaponSlots.includes(item.slot);
+}
+
+function lootRuleSlots() {
+  return Object.keys(SLOT_DATA).filter(slot => AFFIX_POOLS[slot] || slot === 'glyph');
+}
+function lootRuleSets(slot = 'any') {
+  if (['helmet', 'chest', 'gloves', 'boots'].includes(slot)) return Object.keys(ARMOR_SETS);
+  if (['ring', 'amulet', 'earring'].includes(slot)) return Object.keys(JEWELRY_SETS);
+  return slot === 'any' ? [...Object.keys(ARMOR_SETS), ...Object.keys(JEWELRY_SETS)] : [];
+}
+function lootRuleMaxGreater() {
+  return Math.max(0, ...Object.values(BALANCE.items.affixCountByRarity));
+}
+function validLootCollectionRules(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || typeof value.enabled !== 'boolean'
+    || !Array.isArray(value.rules) || value.rules.length > 20 || (value.enabled && !value.rules.length)) return false;
+  return value.rules.every(rule => rule && typeof rule === 'object'
+    && (rule.slot === 'any' || lootRuleSlots().includes(rule.slot))
+    && (rule.rarity === 'any' || RARITIES.some(rarity => rarity.color === rule.rarity && rarity.color !== 'mythic'))
+    && (['any', 'without-set'].includes(rule.set) || (rule.set === 'with-set' && lootRuleSets(rule.slot).length > 0) || lootRuleSets(rule.slot).includes(rule.set))
+    && Number.isInteger(rule.minGreater) && rule.minGreater >= 0 && rule.minGreater <= lootRuleMaxGreater());
+}
+function shouldAutoSellEquipmentDrop(save, item) {
+  if (item.rarityColor === 'mythic') return false;
+  const greaterCount = (item.affixes || []).filter(affix => affix.greater).length;
+  const filter = save.settings.lootCollectionRules;
+  if (filter?.enabled && validLootCollectionRules(filter)) {
+    return !filter.rules.some(rule => (rule.slot === 'any' || rule.slot === item.slot)
+      && (rule.rarity === 'any' || rule.rarity === item.rarityColor)
+      && (rule.set === 'any' || (rule.set === 'with-set' ? Boolean(item.set)
+        : rule.set === 'without-set' ? !item.set : item.set === rule.set))
+      && greaterCount >= rule.minGreater);
+  }
+  return !greaterCount && (save.settings.autoSellRarities || []).includes(item.rarityColor)
+    && (!save.settings.autoSellNonSet || !item.set);
 }
 
 function isLevelWeapon(item) { return Boolean(item && WEAPON_PROGRESSION.weaponSlots.includes(item.slot)); }

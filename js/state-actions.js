@@ -60,7 +60,10 @@ function resolveBattleRewards(save, body) {
   if (elite && body.mode === 'area') {
     for (let tier = 1; tier <= body.deepTier; tier++) save.questBook.counters['championsDeep' + tier] += 1;
   }
-  if (body.mode === 'tower' && towerRound % 10 === 0) save.questBook.counters.towerBosses += 1;
+  if (body.mode === 'tower' && towerRound % 10 === 0) {
+    save.questBook.counters.towerBosses += 1;
+    save.statistics.towerBossesKilled = (save.statistics.towerBossesKilled || 0) + 1;
+  }
   const lootRules = BALANCE.loot;
   const scalingLevel = body.mode === 'tower' ? highestPartyLevel(save) : partyLevel(save);
   let eliteBonus = elite ? randomInt(lootRules.eliteSoulsMinimumBase + scalingLevel * lootRules.eliteSoulsMinimumPerLevel, lootRules.eliteSoulsMaximumBase + scalingLevel * lootRules.eliteSoulsMaximumPerLevel) : 0;
@@ -121,9 +124,7 @@ function resolveBattleRewards(save, body) {
       if (equipmentDrop.rarityColor === 'epic') save.questBook.counters.epicDrops += 1;
       const jewelrySlots = ['ring', 'amulet', 'earring'];
       if (jewelrySlots.includes(equipmentDrop.slot)) save.questBook.counters.jewelryDrops += 1;
-      const matchesLootFilter = (save.settings.autoSellRarities || []).includes(equipmentDrop.rarityColor)
-        && (!save.settings.autoSellNonSet || !equipmentDrop.set);
-      if (!hasGreaterAffix && matchesLootFilter) {
+      if (shouldAutoSellEquipmentDrop(save, equipmentDrop)) {
         equipmentDropSold = true;
         save.statistics.itemsSold += Math.max(1, Number(equipmentDrop.quantity) || 1);
         save.statistics.autoSoldItems += Math.max(1, Number(equipmentDrop.quantity) || 1);
@@ -192,13 +193,120 @@ function grantWeaponExperience(save, combatStats) {
     normalizeWeaponProgress(item);
   }
 }
+function applyWorkshopAttempt(save, body) {
+  let response;
+  if (body.action === 'upgrade') {
+    const target = requireWorkshopItem(save, body.itemId);
+    if (!target) throw new Error('Gegenstand nicht gefunden.');
+    const mythic = body.mythic === true;
+    if (mythic && !isMythicWeapon(target)) throw new Error('Mystische Aufwertung ist nur für mystische Waffen verfügbar.');
+    const levelKey = mythic ? 'mythicUpgradeLevel' : 'upgradeLevel';
+    const stoneSlot = mythic ? 'mythicUpgradeStone' : 'upgradeStone';
+    const maxLevel = mythic ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
+    if (!AFFIX_POOLS[target.slot] && target.slot !== 'glyph') throw new Error('Wähle zuerst eine Ausrüstung als Ziel.');
+    if ((target[levelKey] || 0) >= maxLevel) throw new Error(`Dieser Ausrüstungsplatz ist bereits auf +${maxLevel}.`);
+    const stoneIds = body.auto
+      ? stackUnitIds(save, stoneSlot)
+      : [body.stoneId];
+    if (!stoneIds.length || !stoneIds[0]) throw new Error('Wähle einen Aufwertungsstein.');
+    if (stoneIds.some((id) => !save.inventory.some((item) => item.id === id && item.slot === stoneSlot))) throw new Error('Ein Aufwertungsstein wurde nicht gefunden.');
+    const attempts = body.auto ? stoneIds.length : 1;
+    let successes = 0;
+    let failures = 0;
+    let lastChance = 0;
+    const outcomes = [];
+    for (const stoneId of stoneIds.slice(0, attempts)) {
+      if ((target[levelKey] || 0) >= maxLevel) break;
+      const stoneIndex = inventoryIndex(save, stoneId);
+      if (stoneIndex < 0 || save.inventory[stoneIndex].slot !== stoneSlot) break;
+      consumeInventoryItem(save, stoneId, stoneSlot);
+      const attemptedLevel = target[levelKey] || 0;
+      lastChance = workshopSuccessChance(BALANCE.items.upgradeSuccessChanceByLevel[attemptedLevel] || 0, save);
+      if (Math.random() * 100 < lastChance) {
+        target[levelKey] = (target[levelKey] || 0) + 1;
+        if (!mythic) {
+          const upgradeMultiplier = Math.pow(BALANCE.items.upgradeBaseStatMultiplier, target[levelKey]);
+          if (target.baseWeaponDamage) target.weaponDamage = Math.round(target.baseWeaponDamage * upgradeMultiplier);
+          if (target.baseArmorDefense) target.armorDefense = Math.round(target.baseArmorDefense * upgradeMultiplier);
+          target.affixes = (target.affixes || []).map((affix) => {
+            const baseValue = affix.baseValue ?? affix.value;
+            return { ...affix, baseValue, value: affixValueAtUpgrade({ ...affix, baseValue }, target[levelKey]) };
+          });
+        }
+        successes += 1;
+        outcomes.push({ success: true, level: attemptedLevel, resultingLevel: target[levelKey], chance: lastChance });
+      } else {
+        failures += 1;
+        outcomes.push({ success: false, level: target[levelKey] || 0, chance: lastChance });
+      }
+    }
+    if (!mythic) save.questBook.counters.forges += successes;
+    save.statistics.forgeAttempts += successes + failures;
+    response = { item: target, mythic, attempts: successes + failures, successes, failures, chance: lastChance, outcomes, state: save, message: successes ? 'Aufwertung abgeschlossen.' : 'Aufwertung fehlgeschlagen.' };
+  } else if (body.action === 'socket-slot') {
+    const target = requireWorkshopItem(save, body.itemId);
+    if (!target) throw new Error('Ausrüstungsteil nicht gefunden.');
+    const capacity = socketCapacityForSlot(target.slot, target);
+    if (!capacity) throw new Error('Dieses Teil kann keine Sockel erhalten.');
+    const socketStones = body.auto
+      ? stackUnitIds(save, 'socketStone')
+      : [body.stoneId].filter(Boolean);
+    if (!socketStones.length) throw new Error('Du brauchst einen Sockelstein für den Versuch.');
+    if ((target.socketSlots || 0) >= capacity) throw new Error('Dieses Teil hat bereits die maximale Anzahl an Sockelplätzen.');
+    let successes = 0;
+    let failures = 0;
+    let stoppedForMaterials = false;
+    const outcomes = [];
+    const attempts = body.auto ? socketStones.length : 1;
+    for (let index = 0; index < attempts; index += 1) {
+      if ((target.socketSlots || 0) >= capacity) break;
+      const socketStoneId = socketStones[index];
+      const stoneIndex = inventoryIndex(save, socketStoneId);
+      if (stoneIndex < 0 || save.inventory[stoneIndex].slot !== 'socketStone') throw new Error('Ein Sockelstein wurde nicht gefunden.');
+      consumeInventoryItem(save, socketStoneId, 'socketStone');
+      const socketLevel = target.socketSlots || 0;
+      const chance = workshopSuccessChance(BALANCE.items.socketSuccessChanceByTarget.equipment[socketLevel] || 0, save);
+      if (Math.random() * 100 < chance) {
+        target.socketSlots = socketLevel + 1;
+        target.sockets = [...(target.sockets || []), null];
+        successes += 1;
+        outcomes.push({ success: true, level: socketLevel, resultingLevel: target.socketSlots, capacity, chance });
+      } else {
+        failures += 1;
+        outcomes.push({ success: false, level: socketLevel, resultingLevel: socketLevel, capacity, chance });
+      }
+      if (!body.auto) break;
+    }
+    stoppedForMaterials = Boolean(body.auto && (target.socketSlots || 0) < capacity && !save.inventory.some((item) => item.slot === 'socketStone'));
+    response = { kind: 'socket', item: target, attempts: successes + failures, successes, failures, outcomes, stoppedForMaterials, state: save, message: successes ? 'Sockelritual abgeschlossen.' : 'Sockelritual fehlgeschlagen.' };
+    save.questBook.counters.socketAttempts += response.attempts;
+    save.questBook.counters.socketsOpened += successes;
+    save.statistics.socketAttempts += response.attempts;
+  } else throw new Error('Unbekannter Werkstattversuch.');
+  captureEquipmentSlotProgress(save);
+  return response;
+}
 async function localAction(body) {
   const save = normalizeSaveState(cloneState(state));
   if (!save.mainClass) throw new Error('Wähle zuerst deine Hauptklasse.');
   save.bossChallenge ||= { lastAttemptAt: 0, lastClaimedAt: 0 };
   const action = body.action;
   let response = {};
-  if (action.startsWith('offline-')) {
+  if (save.workshopJob && ['equip-main', 'equip-companion', 'unequip'].includes(action)) {
+    const locked = equipmentSlotEntries(save, true).find(entry => entry.item.id === save.workshopJob.targetId);
+    const owner = action === 'equip-main' || (action === 'unequip' && (!body.owner || body.owner === 'main')) ? 'main' : body.class;
+    if (locked && locked.owner === owner && locked.slot === body.slot) throw new Error('Stoppe zuerst den Werkstattauftrag für diesen Ausrüstungsplatz.');
+  }
+  if (save.workshopJob && ['upgrade', 'socket-slot', 'fuse-glyphs', 'enchant-rarity', 'enchant-affix', 'upgrade-gems'].includes(action)) throw new Error('Beende zuerst den laufenden Werkstattauftrag.');
+  if (action === 'workshop-start') {
+    await settleWorkshopJob(save);
+    createWorkshopJob(save, body);
+    response = { state: save };
+  } else if (action === 'workshop-tick' || action === 'workshop-stop') {
+    await settleWorkshopJob(save);
+    if (action === 'workshop-stop' && save.workshopJob?.id === body.jobId) finishWorkshopJob(save, 'Manuell gestoppt.', Date.now());
+    response = { state: save };
+  } else if (action.startsWith('offline-')) {
     response = await offlineFarmAction(save, body);
   } else if (action === 'visit-shop') {
     response = { state: save, message: 'Marktangebote gespeichert.' };
@@ -219,6 +327,11 @@ async function localAction(body) {
     if (['autoSkillsDefault', 'compactDamageNumbers', 'autoSellNonSet', 'forgeAnimations', 'socketAnimations', 'enchantAnimations'].includes(body.key)) {
       if (typeof body.value !== 'boolean') throw new Error('Die Einstellung benötigt einen Wahrheitswert.');
       save.settings[body.key] = body.value;
+    } else if (body.key === 'lootCollectionRules') {
+      if (!validLootCollectionRules(body.value)) throw new Error('Ungültige Sammelregeln. Aktiviere mindestens eine vollständige Regel.');
+      save.settings.lootCollectionRules = { enabled: body.value.enabled, rules: body.value.rules.map(rule => ({
+        slot: rule.slot, rarity: rule.rarity, set: rule.set, minGreater: rule.minGreater,
+      })) };
     } else if (body.key === 'towerLoot') {
       if (!(BALANCE.loot.towerLootChoices || []).some(choice => choice.id === body.value)) throw new Error('Unbekannte Turmbeute.');
       save.settings.towerLoot = body.value;
@@ -447,17 +560,16 @@ async function localAction(body) {
   } else if (action === 'activate-powerup') {
     if (currentView !== 'inventory') throw new Error('Power-ups kannst du im Inventar aktivieren.');
     const { item } = requireInventoryItem(save, body.itemId);
-    const isTowerLootBoost = item.slot === 'towerLootBoost';
-    if (!isTowerLootBoost && (item.slot !== 'powerup' || !POWERUP_STATS.includes(item.powerupStat))) throw new Error('Dieses Item ist kein gültiges Power-up.');
+    if (item.slot !== 'powerup' || !POWERUP_STATS.includes(item.powerupStat)) throw new Error('Dieses Item ist kein gültiges Power-up.');
     const consumed = consumeInventoryItem(save, item.id, item.slot);
-    const stat = isTowerLootBoost ? TOWER_LOOT_BOOST_STAT : consumed.powerupStat;
+    const stat = consumed.powerupStat;
     const activatedAt = Date.now();
     save.activePowerups = save.activePowerups.filter((entry) => entry.expiresAt > activatedAt);
     const active = save.activePowerups.find((entry) => entry.stat === stat && entry.expiresAt > activatedAt);
     if (active) {
       active.expiresAt += 60 * 60 * 1000;
     } else {
-      save.activePowerups.push({ id: createItemId(), stat, value: isTowerLootBoost ? 100 : 10, activatedAt, expiresAt: activatedAt + 60 * 60 * 1000 });
+      save.activePowerups.push({ id: createItemId(), stat, value: 10, activatedAt, expiresAt: activatedAt + 60 * 60 * 1000 });
     }
     const updated = active || save.activePowerups.at(-1);
     response = { item: consumed, active: updated, extended: Boolean(active), state: save, message: `${consumed.name} für eine weitere Stunde aktiviert.` };
@@ -478,7 +590,7 @@ async function localAction(body) {
       consumeInventoryItem(save, item.id, item.slot);
       const active = save.activePowerups.find((entry) => entry.stat === item.stat);
       if (active) active.expiresAt += 60 * 60 * 1000;
-      else save.activePowerups.push({ id: createItemId(), stat: item.stat, value: item.stat === TOWER_LOOT_BOOST_STAT ? 100 : 10, activatedAt: now, expiresAt: now + 60 * 60 * 1000 });
+      else save.activePowerups.push({ id: createItemId(), stat: item.stat, value: 10, activatedAt: now, expiresAt: now + 60 * 60 * 1000 });
       activatedByStat.set(item.stat, { stat: item.stat, expiresAt: (active || save.activePowerups.at(-1)).expiresAt, quantity: 1 });
     });
     const activated = [...activatedByStat.values()];
@@ -517,6 +629,20 @@ async function localAction(body) {
     if (body.group === 'jewelry') save.questBook.counters.jewelryPurchases += quantity;
     if (BOX_RULES[body.group]) save.questBook.counters.luckyPurchases += quantity;
     response = { item: items[0], items, quantity, cost, group: body.group, state: save, message: `${quantity} Gegenstände gekauft.` };
+  } else if (action === 'sell-inventory-category') {
+    const ids = body.itemIds;
+    if (!Array.isArray(ids) || !ids.length || ids.length > save.inventory.length
+      || ids.some(id => typeof id !== 'string') || new Set(ids).size !== ids.length) throw new Error('Ungültige Verkaufsauswahl.');
+    const allowed = new Set(inventorySaleCandidates(save, body.ownerClass, body.category).map(item => item.id));
+    if (ids.some(id => !allowed.has(id))) throw new Error('Das Inventar hat sich geändert. Öffne die Verkaufsauswahl erneut.');
+    const selected = new Set(ids);
+    const sold = save.inventory.filter(item => selected.has(item.id));
+    const value = sold.reduce((sum, item) => sum + itemSaleValue(item), 0);
+    const count = sold.reduce((sum, item) => sum + Math.max(1, Math.floor(Number(item.quantity) || 1)), 0);
+    save.inventory = save.inventory.filter(item => !selected.has(item.id));
+    save.statistics.itemsSold += count;
+    addQuestTrackedSouls(save, value);
+    response = { count, value, category: body.category, state: save, message: 'Gegenstände verkauft.' };
   } else if (action === 'sell') {
     const { index, item } = requireInventoryItem(save, body.itemId);
     if (!['bow', 'sword', 'staff', 'shield', 'bell', 'helmet', 'chest', 'gloves', 'boots', 'ring', 'amulet', 'earring', 'glyph'].includes(item.slot)) {
@@ -539,53 +665,7 @@ async function localAction(body) {
     addItemsToInventory(save, [item]);
     response = { kind: 'glyph-fusion', item, consumed: ingredients, state: save, outcomes: [{ success: true }], message: 'Drei Glyphen zu einer neuen Glyphe kombiniert.' };
   } else if (action === 'upgrade') {
-    const target = requireWorkshopItem(save, body.itemId);
-    if (!target) throw new Error('Gegenstand nicht gefunden.');
-    const mythic = body.mythic === true;
-    if (mythic && !isMythicWeapon(target)) throw new Error('Mystische Aufwertung ist nur für mystische Waffen verfügbar.');
-    const levelKey = mythic ? 'mythicUpgradeLevel' : 'upgradeLevel';
-    const stoneSlot = mythic ? 'mythicUpgradeStone' : 'upgradeStone';
-    const maxLevel = mythic ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
-    if (!AFFIX_POOLS[target.slot] && target.slot !== 'glyph') throw new Error('Wähle zuerst eine Ausrüstung als Ziel.');
-    if ((target[levelKey] || 0) >= maxLevel) throw new Error(`Dieser Ausrüstungsplatz ist bereits auf +${maxLevel}.`);
-    const stoneIds = body.auto
-      ? stackUnitIds(save, stoneSlot)
-      : [body.stoneId];
-    if (!stoneIds.length || !stoneIds[0]) throw new Error('Wähle einen Aufwertungsstein.');
-    if (stoneIds.some((id) => !save.inventory.some((item) => item.id === id && item.slot === stoneSlot))) throw new Error('Ein Aufwertungsstein wurde nicht gefunden.');
-    const attempts = body.auto ? stoneIds.length : 1;
-    let successes = 0;
-    let failures = 0;
-    let lastChance = 0;
-    const outcomes = [];
-    for (const stoneId of stoneIds.slice(0, attempts)) {
-      if ((target[levelKey] || 0) >= maxLevel) break;
-      const stoneIndex = inventoryIndex(save, stoneId);
-      if (stoneIndex < 0 || save.inventory[stoneIndex].slot !== stoneSlot) break;
-      consumeInventoryItem(save, stoneId, stoneSlot);
-      const attemptedLevel = target[levelKey] || 0;
-      lastChance = workshopSuccessChance(BALANCE.items.upgradeSuccessChanceByLevel[attemptedLevel] || 0, save);
-      if (Math.random() * 100 < lastChance) {
-        target[levelKey] = (target[levelKey] || 0) + 1;
-        if (!mythic) {
-          const upgradeMultiplier = Math.pow(BALANCE.items.upgradeBaseStatMultiplier, target[levelKey]);
-          if (target.baseWeaponDamage) target.weaponDamage = Math.round(target.baseWeaponDamage * upgradeMultiplier);
-          if (target.baseArmorDefense) target.armorDefense = Math.round(target.baseArmorDefense * upgradeMultiplier);
-          target.affixes = (target.affixes || []).map((affix) => {
-            const baseValue = affix.baseValue ?? affix.value;
-            return { ...affix, baseValue, value: affixValueAtUpgrade({ ...affix, baseValue }, target[levelKey]) };
-          });
-        }
-        successes += 1;
-        outcomes.push({ success: true, level: attemptedLevel, resultingLevel: target[levelKey], chance: lastChance });
-      } else {
-        failures += 1;
-        outcomes.push({ success: false, level: target[levelKey] || 0, chance: lastChance });
-      }
-    }
-    if (!mythic) save.questBook.counters.forges += successes;
-    save.statistics.forgeAttempts += successes + failures;
-    response = { item: target, mythic, attempts: successes + failures, successes, failures, chance: lastChance, outcomes, state: save, message: successes ? 'Aufwertung abgeschlossen.' : 'Aufwertung fehlgeschlagen.' };
+    response = applyWorkshopAttempt(save, body);
   } else if (action === 'enchant-rarity') {
     const target = requireWorkshopItem(save, body.itemId);
     if (!target || !AFFIX_POOLS[target.slot]) throw new Error('Wähle ein Ausrüstungsteil.');
@@ -717,44 +797,7 @@ async function localAction(body) {
     const stored = save.inventory.find(entry => stackKey(entry) === stackKey(item));
     response = { item, quantity, consumed: quantity * quote.ratio, previousRarity: quote.gem.rarity, profile: quote.profile.profile, nextGemId: stored.id, state: save, message: 'Edelsteine aufgewertet.' };
   } else if (action === 'socket-slot') {
-    const target = requireWorkshopItem(save, body.itemId);
-    if (!target) throw new Error('Ausrüstungsteil nicht gefunden.');
-    const capacity = socketCapacityForSlot(target.slot, target);
-    if (!capacity) throw new Error('Dieses Teil kann keine Sockel erhalten.');
-    const socketStones = body.auto
-      ? stackUnitIds(save, 'socketStone')
-      : [body.stoneId].filter(Boolean);
-    if (!socketStones.length) throw new Error('Du brauchst einen Sockelstein für den Versuch.');
-    if ((target.socketSlots || 0) >= capacity) throw new Error('Dieses Teil hat bereits die maximale Anzahl an Sockelplätzen.');
-    let successes = 0;
-    let failures = 0;
-    let stoppedForMaterials = false;
-    const outcomes = [];
-    const attempts = body.auto ? socketStones.length : 1;
-    for (let index = 0; index < attempts; index += 1) {
-      if ((target.socketSlots || 0) >= capacity) break;
-      const socketStoneId = socketStones[index];
-      const stoneIndex = inventoryIndex(save, socketStoneId);
-      if (stoneIndex < 0 || save.inventory[stoneIndex].slot !== 'socketStone') throw new Error('Ein Sockelstein wurde nicht gefunden.');
-      consumeInventoryItem(save, socketStoneId, 'socketStone');
-      const socketLevel = target.socketSlots || 0;
-      const chance = workshopSuccessChance(BALANCE.items.socketSuccessChanceByTarget.equipment[socketLevel] || 0, save);
-      if (Math.random() * 100 < chance) {
-        target.socketSlots = socketLevel + 1;
-        target.sockets = [...(target.sockets || []), null];
-        successes += 1;
-        outcomes.push({ success: true, level: socketLevel, resultingLevel: target.socketSlots, capacity, chance });
-      } else {
-        failures += 1;
-        outcomes.push({ success: false, level: socketLevel, resultingLevel: socketLevel, capacity, chance });
-      }
-      if (!body.auto) break;
-    }
-    stoppedForMaterials = Boolean(body.auto && (target.socketSlots || 0) < capacity && !save.inventory.some((item) => item.slot === 'socketStone'));
-    response = { kind: 'socket', item: target, attempts: successes + failures, successes, failures, outcomes, stoppedForMaterials, state: save, message: successes ? 'Sockelritual abgeschlossen.' : 'Sockelritual fehlgeschlagen.' };
-    save.questBook.counters.socketAttempts += response.attempts;
-    save.questBook.counters.socketsOpened += successes;
-    save.statistics.socketAttempts += response.attempts;
+    response = applyWorkshopAttempt(save, body);
   } else if (action === 'socket-gem') {
     const target = requireWorkshopItem(save, body.itemId);
     const gem = requireInventoryItem(save, body.gemId).item;
@@ -859,7 +902,7 @@ async function localAction(body) {
     const requestedUpgrade = body.maxUpgrade === true ? maxUpgrade : 0;
     const itemFactories = {
       vipTicket: makeVipTicket,
-      towerLootBoost: makeTowerLootBoost,
+      towerLootBoost: () => makePowerup('Droprate'), // Compatibility with old admin requests.
       upgradeStone: makeUpgradeStone,
       mythicUpgradeStone: makeMythicUpgradeStone,
       socketStone: makeSocketStone,
@@ -1160,6 +1203,7 @@ async function localAction(body) {
     response = { cost, slotsBought: quantity, state: save, message: 'Inventar erweitert.' };
   } else throw new Error('Unbekannte Aktion.');
   captureEquipmentSlotProgress(save);
+  captureWorkshopBonuses(save);
   normalizeHuntingEvent(save);
   await writeSavedState(save);
   return response;

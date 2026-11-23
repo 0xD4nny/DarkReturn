@@ -149,6 +149,7 @@
       "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
     },
     "towerLootBoost": {
+      "deprecated": true,
       "label": "Turm-Beutesegen",
       "icon": "✦",
       "asset": "Assets/Icons/000000/transparent/1x1/lorc/clover.svg"
@@ -229,7 +230,6 @@
         "powerup",
         "bossReset",
         "vipTicket",
-        "towerLootBoost",
         "towerReset"
       ]
     },

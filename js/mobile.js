@@ -92,6 +92,7 @@ document.addEventListener('keydown', event => {
 let mobileItemContext = null;
 let mobileSheetReturnFocus = null;
 let mobileActionPending = false;
+let mobileBulkSale = null;
 let mobileWorkshopReturn = null;
 const mobileWorkshopPanes = { blacksmith: 'selection', sockets: 'selection', enchant: 'selection' };
 const mobileSkillView = { zoom: 1, left: 0, top: 0, owner: null };
@@ -110,6 +111,7 @@ mobileSheet.addEventListener('click', event => {
   }
 });
 mobileSheet.addEventListener('close', () => {
+  mobileBulkSale = null;
   delete mobileSheet.dataset.skillDetails;
   delete mobileSheet.dataset.abilityDetails;
   document.body.classList.remove('mobile-sheet-open');
@@ -268,7 +270,25 @@ function syncMobileInventory(inventory) {
     }
     const grid = inventory.querySelector('.inventory-main > .inventory-grid');
     if (grid && expansion) grid.after(expansion);
+    if (grid && expansion) {
+      let sell = expansion.querySelector('[data-mobile-sell-category]');
+      if (!sell) {
+        sell = document.createElement('button');
+        sell.type = 'button'; sell.className = 'mobile-inventory-sell-filter ui-control ui-button';
+        sell.dataset.mobileSellCategory = '';
+        expansion.append(sell);
+      }
+      const ownerClass = inventory.querySelector('[data-inventory-owner]')?.dataset.inventoryOwner;
+      const category = itemGridPreferences.inventory.category;
+      const items = inventorySaleCandidates(state, ownerClass, category);
+      sell.textContent = `Alle verkaufen (${items.length})`;
+      sell.disabled = !items.length;
+      sell.setAttribute('aria-label', `${items.length} Gegenstände aus ${INVENTORY_CATEGORIES[category]?.label || 'dieser Kategorie'} verkaufen`);
+      expansion.setAttribute('aria-label', 'Inventar verwalten');
+    }
   } else {
+    expansion?.querySelector('[data-mobile-sell-category]')?.remove();
+    expansion?.setAttribute('aria-label', 'Inventarplätze kaufen');
     if (owners?.classList.contains('mobile-inventory-owners')) {
       owners.classList.remove('mobile-inventory-owners');
       owners.setAttribute('aria-label', 'Charakter auswählen');
@@ -287,7 +307,7 @@ function showMobilePowerups() {
   mobileItemContext = null;
   const active = (state?.activePowerups || []).filter(entry => entry.expiresAt > Date.now());
   const available = Number(document.querySelector('[data-activate-powerups]')?.dataset.availablePowerups) || 0;
-  showMobileSheet('Power-ups', `<p>${active.length} aktiv · ${available} bereit</p><div class="tooltip-affixes">${active.map(entry => `<span>${escapeHtml(entry.stat === TOWER_LOOT_BOOST_STAT ? '100 % gewählte Turmbeute' : '+10 % ' + entry.stat)} · bis ${escapeHtml(new Date(entry.expiresAt).toLocaleTimeString('de-DE'))}</span>`).join('') || '<p>Keine Power-ups aktiv.</p>'}</div><p>Aktiviert ein Exemplar je verfügbarem Power-up-Typ. Weitere Exemplare verlängern die Laufzeit.</p>`, available ? '<button class="ui-control ui-button" type="button" data-mobile-activate-powerups>VERFÜGBARE POWER-UPS AKTIVIEREN</button>' : '');
+  showMobileSheet('Power-ups', `<p>${active.length} aktiv · ${available} bereit</p><div class="tooltip-affixes">${active.map(entry => `<span>${escapeHtml('+10 % ' + entry.stat)} · bis ${escapeHtml(new Date(entry.expiresAt).toLocaleTimeString('de-DE'))}</span>`).join('') || '<p>Keine Power-ups aktiv.</p>'}</div><p>Aktiviert ein Exemplar je verfügbarem Power-up-Typ. Weitere Exemplare verlängern die Laufzeit.</p>`, available ? '<button class="ui-control ui-button" type="button" data-mobile-activate-powerups>VERFÜGBARE POWER-UPS AKTIVIEREN</button>' : '');
 }
 function captureMobileViewState() {
   const viewport = viewContainer.querySelector('.mobile-skill-viewport');
@@ -569,6 +589,33 @@ document.addEventListener('click', event => {
   if (!isMobileLayout()) return;
   const stop = () => { event.preventDefault(); event.stopImmediatePropagation(); };
   if (event.target.closest('[data-mobile-close]')) { stop(); mobileSheet.close(); return; }
+  const sellCategory = event.target.closest('[data-mobile-sell-category]');
+  if (sellCategory) {
+    stop();
+    if (sellCategory.disabled || mobileActionPending || currentView !== 'inventory') return;
+    const ownerClass = viewContainer.querySelector('[data-inventory-owner]')?.dataset.inventoryOwner;
+    const category = itemGridPreferences.inventory.category;
+    const items = inventorySaleCandidates(state, ownerClass, category);
+    if (!items.length) return;
+    const value = items.reduce((sum, item) => sum + itemSaleValue(item), 0);
+    const count = items.reduce((sum, item) => sum + Math.max(1, Math.floor(Number(item.quantity) || 1)), 0);
+    mobileItemContext = null;
+    showMobileSheet('Kategorie verkaufen', `<p>${escapeHtml(INVENTORY_CATEGORIES[category]?.label || 'Alle Kategorien')} · ${escapeHtml(CLASSES[ownerClass].label)}</p><p><strong>${number(count)} Gegenstände</strong> für <strong>${number(value)} Seelen</strong> verkaufen?</p><p class="mobile-detail-note">Mythische und angelegte Gegenstände bleiben erhalten. Neu eintreffende Beute wird nicht mitverkauft.</p>`, '<button class="primary-button ui-control ui-button" type="button" data-mobile-confirm-category-sale>Alle angezeigten Gegenstände verkaufen</button>');
+    mobileBulkSale = { ownerClass, category, itemIds: items.map(item => item.id) };
+    return;
+  }
+  const confirmSale = event.target.closest('[data-mobile-confirm-category-sale]');
+  if (confirmSale) {
+    stop();
+    if (confirmSale.disabled || mobileActionPending || !mobileBulkSale) return;
+    const selection = mobileBulkSale;
+    mobileActionPending = true;
+    confirmSale.disabled = true;
+    performAction({ action: 'sell-inventory-category', ...selection }, 'Kategorie verkauft', result => `${number(result.count)} Gegenstände · ${number(result.value)} Seelen`)
+      .then(() => { if (mobileSheet.open && mobileBulkSale === selection) mobileSheet.close(); })
+      .finally(() => { mobileActionPending = false; });
+    return;
+  }
   const abilityEquip = event.target.closest('[data-skill-class]');
   if (abilityEquip && mobileSheet.contains(abilityEquip) && mobileSheet.dataset.abilityDetails) {
     stop();

@@ -69,70 +69,28 @@ async function upgrade() {
   if (forgeAnimationInProgress || activeWorkshopJob) return;
   const mythic = selectedForgeMode === 'mythic';
   const itemId = [...selectedForForge][0];
-  const stone = state.inventory.find(item => item.slot === (mythic ? 'mythicUpgradeStone' : 'upgradeStone'));
-  if (!itemId || !stone) return;
-  await performAction(
-    { action: 'upgrade', itemId, stoneId: stone.id, mythic },
-    'Verbesserungsversuch beendet',
-    (response) => response.successes
-      ? `${response.item.name} ist jetzt +${response.item[mythic ? 'mythicUpgradeLevel' : 'upgradeLevel']}. Erfolg bei ${response.chance} %.`
-      : `Der Versuch ist fehlgeschlagen. Der Stein wurde verbraucht; das Teil bleibt auf +${response.item[mythic ? 'mythicUpgradeLevel' : 'upgradeLevel']}.`,
-  );
+  const target = workshopEquipmentItems(state).find(item => item.id === itemId);
+  if (!target) return;
+  const level = target[mythic ? 'mythicUpgradeLevel' : 'upgradeLevel'] || 0;
+  await startPersistedWorkshopJob({ kind: 'upgrade', itemId, mythic, targetLevel: level + 1, single: true, headless: isMobileLayout() });
 }
 async function autoUpgrade(options = {}) {
   if (saveMaintenance || saveBlocked) return;
   if (autoUpgradeRunning) { if (!options.itemId) stopWorkshopJob(); return; }
-  if (activeWorkshopJob || forgeAnimationInProgress || (!options.itemId && !selectedForForge.size)) return;
+  if (activeWorkshopJob || forgeAnimationInProgress) return;
   const mythic = options.itemId ? Boolean(options.mythic) : selectedForgeMode === 'mythic';
-  const levelKey = mythic ? 'mythicUpgradeLevel' : 'upgradeLevel';
   const maximum = mythic ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
+  const itemId = options.itemId || [...selectedForForge][0];
+  if (!itemId) return;
   const targetLevel = options.itemId ? Math.max(1, Math.min(maximum, Math.floor(Number(options.targetLevel) || maximum))) : forgeUpgradeTargetLevel();
-  const targetId = options.itemId || [...selectedForForge][0];
-  const job = { kind: 'upgrade', mythic, view: 'blacksmith', targetId, targetLevel, headless: Boolean(options.headless), stopRequested: false };
-  activeWorkshopJob = job;
-  autoUpgradeRunning = true;
-  const generation = stateGeneration;
-  renderView();
-  let attempts = 0;
-  let successes = 0;
-  let failures = 0;
-  let itemName = '';
-  try {
-    while (autoUpgradeRunning && !job.stopRequested && generation === stateGeneration && !saveMaintenance && !saveBlocked) {
-      const target = workshopEquipmentItems(state).find(item => item.id === targetId);
-      if (!target || (target[levelKey] || 0) >= targetLevel) break;
-      const stone = state.inventory.find((item) => item.slot === (mythic ? 'mythicUpgradeStone' : 'upgradeStone'));
-      if (!stone) break;
-      renderWorkshopStatus();
-      const result = await performAction({ action: 'upgrade', itemId: target.id, stoneId: stone.id, mythic, silent: true }, null, null, { background: true });
-      if (!result || generation !== stateGeneration || saveMaintenance || saveBlocked) break;
-      attempts += result.attempts || 0;
-      successes += result.successes || 0;
-      failures += result.failures || 0;
-      itemName = result.item?.name || itemName;
-      if (!result.attempts || result.item?.[levelKey] >= targetLevel) break;
-    }
-  } finally {
-    if (activeWorkshopJob === job) activeWorkshopJob = null;
-    if (generation === stateGeneration) {
-      autoUpgradeRunning = false;
-      if (!saveMaintenance && !saveBlocked) renderView({ background: true });
-    }
-    renderWorkshopStatus();
-  }
-  if (attempts && generation === stateGeneration && !saveMaintenance && !saveBlocked) {
-    const detail = `${itemName}: +${findInventoryOrEquippedItem(state, targetId)?.[levelKey] ?? '—'} · ${successes} Erfolg${successes === 1 ? '' : 'e'}, ${failures} Fehlschläge. ${attempts} Steine verbraucht. Ziel: +${targetLevel}.`;
-    await queueActivity('Auto-Upgrade beendet', detail).catch(() => {});
-  }
+  return startPersistedWorkshopJob({ kind: 'upgrade', itemId, mythic, targetLevel, headless: Boolean(options.headless) });
 }
-
 function stopWorkshopJob() {
-  if (!activeWorkshopJob) return;
+  if (!activeWorkshopJob || activeWorkshopJob.stopRequested) return;
+  const jobId = activeWorkshopJob.id;
   activeWorkshopJob.stopRequested = true;
-  const selector = activeWorkshopJob.kind === 'upgrade' ? '[data-forge-auto]' : '[data-socket-auto]';
-  const button = document.querySelector(selector);
-  if (button) { button.disabled = true; button.textContent = 'WIRD GESTOPPT'; }
   renderWorkshopStatus();
+  void performAction({ action: 'workshop-stop', jobId, silent: true }, null, null, { background: true });
 }
 function renderWorkshopStatus() {
   const slot = document.querySelector('#workshop-status-slot');
@@ -155,60 +113,20 @@ function renderWorkshopStatus() {
 async function autoSocket(options = {}) {
   if (saveMaintenance || saveBlocked) return;
   if (autoSocketRunning) { if (!options.itemId) stopWorkshopJob(); return; }
-  if (activeWorkshopJob || forgeAnimationInProgress || (!options.itemId && !selectedSocketTargetId)) return;
-  const targetId = options.itemId || selectedSocketTargetId;
-  const target = workshopEquipmentItems(state).find(item => item.id === targetId);
-  const targetCount = options.itemId ? Math.max(0, Math.min(socketCapacityForSlot(target?.slot, target), Math.floor(Number(options.targetCount) || 0))) : socketAutoTargetCount(target);
+  if (activeWorkshopJob || forgeAnimationInProgress) return;
+  const itemId = options.itemId || selectedSocketTargetId;
+  const target = workshopEquipmentItems(state).find(item => item.id === itemId);
+  if (!target) return;
+  const targetCount = options.itemId ? Math.max(0, Math.min(socketCapacityForSlot(target.slot, target), Math.floor(Number(options.targetCount) || 0))) : socketAutoTargetCount(target);
   if (!targetCount) return;
-  const job = { kind: 'socket', view: 'sockets', targetId, targetCount, headless: Boolean(options.headless), stopRequested: false };
-  activeWorkshopJob = job;
-  autoSocketRunning = true;
-  const generation = stateGeneration;
-  renderView();
-  let attempts = 0;
-  let successes = 0;
-  let failures = 0;
-  let itemName = '';
-  try {
-    while (autoSocketRunning && !job.stopRequested && generation === stateGeneration && !saveMaintenance && !saveBlocked) {
-      const target = workshopEquipmentItems(state).find(item => item.id === targetId);
-      if (!target || (target.socketSlots || 0) >= Math.min(targetCount, socketCapacityForSlot(target.slot, target))) break;
-      const socketStone = state.inventory.find((item) => item.slot === 'socketStone');
-      if (!socketStone) break;
-      renderWorkshopStatus();
-      const result = await performAction({ action: 'socket-slot', itemId: target.id, stoneId: socketStone.id, silent: true }, null, null, { background: true });
-      if (!result || generation !== stateGeneration || saveMaintenance || saveBlocked) break;
-      attempts += result.attempts || 0;
-      successes += result.successes || 0;
-      failures += result.failures || 0;
-      itemName = result.item?.name || itemName;
-      if (!result.attempts) break;
-    }
-  } finally {
-    if (activeWorkshopJob === job) activeWorkshopJob = null;
-    if (generation === stateGeneration) {
-      autoSocketRunning = false;
-      if (!saveMaintenance && !saveBlocked) renderView({ background: true });
-    }
-    renderWorkshopStatus();
-  }
-  if (attempts && generation === stateGeneration && !saveMaintenance && !saveBlocked) {
-    const target = workshopEquipmentItems(state).find(item => item.id === targetId);
-    const noMaterials = target && (target.socketSlots || 0) < targetCount && (!state.inventory.some((item) => item.slot === 'socketStone'));
-    const detail = `${itemName}: ${successes} Sockel geöffnet, ${failures} Fehlversuche. ${attempts} Sockelsteine verbraucht. Ziel: ${targetCount} Sockel.${noMaterials ? ' Materialvorrat erschöpft.' : ''}`;
-    await queueActivity('Auto-Sockeln beendet', detail).catch(() => {});
-  }
+  return startPersistedWorkshopJob({ kind: 'socket', itemId, targetCount, headless: Boolean(options.headless) });
 }
-
 async function socketAttempt(auto = false) {
-  if (forgeAnimationInProgress || activeWorkshopJob || !selectedSocketTargetId) return;
-  const socketStone = state.inventory.find((item) => item.slot === 'socketStone');
-  if (!socketStone) return;
-  await performAction(
-    { action: 'socket-slot', itemId: selectedSocketTargetId, stoneId: socketStone.id, auto },
-    auto ? 'Auto-Sockeln beendet' : 'Sockelversuch beendet',
-    (result) => `${result.item.name}: ${result.successes} Sockel geöffnet, ${result.failures} Fehlversuche. ${result.attempts} Sockelsteine verbraucht.${result.stoppedForMaterials ? ' Materialvorrat erschöpft.' : ''}`,
-  );
+  if (forgeAnimationInProgress || activeWorkshopJob) return;
+  const target = workshopEquipmentItems(state).find(item => item.id === selectedSocketTargetId);
+  if (!target) return;
+  await startPersistedWorkshopJob({ kind: 'socket', itemId: target.id,
+    targetCount: auto ? socketCapacityForSlot(target.slot, target) : (target.socketSlots || 0) + 1,
+    single: !auto, headless: isMobileLayout() });
 }
-
 let forgeAnimationInProgress = false;

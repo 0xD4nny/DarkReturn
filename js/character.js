@@ -350,6 +350,20 @@ function workshopRitualCore(item, fallback) {
 function isSellableEquipment(item) {
   return ['bow', 'sword', 'staff', 'shield', 'bell', 'helmet', 'chest', 'gloves', 'boots', 'ring', 'amulet', 'earring', 'glyph'].includes(item?.slot);
 }
+function inventoryItemsForOwner(save, ownerClass) {
+  if (!ownerClass || ![save.mainClass, save.activeCompanion].includes(ownerClass)) return [];
+  return save.inventory.filter(item => {
+    if (!itemUsesInventorySlot(item)) return true;
+    const slot = equipmentSlotFor(item, ownerClass, {});
+    return Boolean(slot && validateEquipmentForClass(save, item, slot, ownerClass));
+  });
+}
+function inventorySaleCandidates(save, ownerClass, category) {
+  if (category !== 'all' && !Object.hasOwn(INVENTORY_CATEGORIES, category)) return [];
+  const slots = category === 'all' ? null : INVENTORY_CATEGORIES[category].slots;
+  return inventoryItemsForOwner(save, ownerClass).filter(item => (!slots || slots.includes(item.slot))
+    && isSellableEquipment(item) && item.rarityColor !== 'mythic');
+}
 function itemCard(item, index, options = {}) {
   const rarity = item.rarityColor || 'common';
   const quantity = Math.max(1, Math.floor(Number(item.quantity) || 1));
@@ -541,12 +555,7 @@ function renderInventory() {
   const emptyHtml = state.inventory.length
     ? '<div class="inventory-category-empty"><span>&#x2726;</span><strong>Keine Gegenst&auml;nde in dieser Kategorie</strong></div>'
     : '<div class="inventory-category-empty"><span>&#x2726;</span><strong>Noch keine Beute</strong><small>Dein erster Gegenstand wartet in Waffen, R&uuml;stung oder Schmuck.</small></div>';
-  const ownedItems = state.inventory.filter((item) => {
-    if (!itemUsesInventorySlot(item)) return true;
-    // Class compatibility does not depend on whether the current loadout has a free slot.
-    const slot = equipmentSlotFor(item, ownerClass, {});
-    return Boolean(slot && validateEquipmentForClass(state, item, slot, ownerClass));
-  });
+  const ownedItems = inventoryItemsForOwner(state, ownerClass);
   const inventoryCategory = itemGridPreferences.inventory.category;
   const visibleCategoryItems = ownedItems.some((item) => INVENTORY_CATEGORIES[inventoryCategory]?.slots.includes(item.slot));
   const luckyBoxCount = ownedItems.filter((item) => BOX_GROUPS.includes(item.slot)).reduce((sum, item) => sum + Math.max(1, Math.floor(Number(item.quantity) || 1)), 0);

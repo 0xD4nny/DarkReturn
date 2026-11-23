@@ -23,7 +23,7 @@ function openMobileItemWorkshop(itemId, mode = 'upgrade') {
     const target = Math.min(maximum, level + 10);
     const options = Array.from({ length: maximum - level }, (_, index) => level + index + 1).map(value => `<option value="${value}" ${value === target ? 'selected' : ''}>+${value}${value === maximum ? ' · Maximum' : ''}</option>`).join('');
     content += `<p>Aktuell +${level} · ${number(materials)} ${mythic ? 'mystische ' : ''}Aufwertungssteine</p>`;
-    if (options) content += `<label class="mobile-workshop-target">Zielstufe<select class="ui-control ui-select" data-item-workshop-target>${options}</select></label><p class="mobile-detail-note">Läuft im Hintergrund bis zur Zielstufe, bis das Material ausgeht oder du stoppst. Auch Fehlversuche verbrauchen Steine.</p><button class="primary-button ui-control ui-button" type="button" data-item-workshop-start="upgrade" ${!materials || activeWorkshopJob || forgeAnimationInProgress ? 'disabled' : ''}>Aufwertung starten</button>`;
+    if (options) content += `<label class="mobile-workshop-target">Zielstufe<select class="ui-control ui-select" data-item-workshop-target>${options}</select></label><p class="mobile-detail-note">Läuft auch bei geschlossener App bis zur Zielstufe, bis das Material ausgeht oder du stoppst. Auch Fehlversuche verbrauchen Steine.</p><button class="primary-button ui-control ui-button" type="button" data-item-workshop-start="upgrade" ${!materials || activeWorkshopJob || forgeAnimationInProgress ? 'disabled' : ''}>Aufwertung starten</button>`;
     else content += '<p>Maximale Aufwertung erreicht.</p>';
   } else if (mode === 'sockets' && capacity) {
     const opened = item.socketSlots || 0;
@@ -31,7 +31,7 @@ function openMobileItemWorkshop(itemId, mode = 'upgrade') {
     content += `<p>${opened} / ${capacity} Sockel geöffnet · ${number(materials)} Sockelsteine</p>`;
     if (opened < capacity) {
       const options = Array.from({ length: capacity - opened }, (_, index) => opened + index + 1).map(value => `<option value="${value}" ${value === capacity ? 'selected' : ''}>${value} Sockel${value === capacity ? ' · Maximum' : ''}</option>`).join('');
-      content += `<label class="mobile-workshop-target">Zielanzahl<select class="ui-control ui-select" data-item-workshop-target>${options}</select></label><p class="mobile-detail-note">Öffnet Sockel im Hintergrund bis zum Ziel oder Materialende. Fehlversuche verbrauchen ebenfalls Steine.</p><button class="primary-button ui-control ui-button" type="button" data-item-workshop-start="socket" ${!materials || activeWorkshopJob || forgeAnimationInProgress ? 'disabled' : ''}>Sockeln starten</button>`;
+      content += `<label class="mobile-workshop-target">Zielanzahl<select class="ui-control ui-select" data-item-workshop-target>${options}</select></label><p class="mobile-detail-note">Öffnet Sockel auch bei geschlossener App bis zum Ziel oder Materialende. Fehlversuche verbrauchen ebenfalls Steine.</p><button class="primary-button ui-control ui-button" type="button" data-item-workshop-start="socket" ${!materials || activeWorkshopJob || forgeAnimationInProgress ? 'disabled' : ''}>Sockeln starten</button>`;
     }
     const gems = state.inventory.filter(gem => gem.slot === 'weaponGem');
     if (opened) content += `<h3>Edelsteine</h3><div class="mobile-workshop-sockets">${Array.from({ length: opened }, (_, index) => {
@@ -59,7 +59,7 @@ function openMobileWorkshopStatus() {
     ? `+${target?.[job.mythic ? 'mythicUpgradeLevel' : 'upgradeLevel'] || 0} → +${job.targetLevel}`
     : `${target?.socketSlots || 0} / ${job?.targetCount || 0} Sockel`;
   const content = job
-    ? `<p>${escapeHtml(target?.name || 'Ausrüstung')}</p><p>${job.kind === 'upgrade' ? 'Aufwertung' : 'Sockeln'} · ${progress}</p><p>${job.stopRequested ? 'Wird nach dem laufenden Versuch gestoppt.' : 'Läuft im Hintergrund.'}</p>`
+    ? `<p>${escapeHtml(target?.name || 'Ausrüstung')}</p><p>${job.kind === 'upgrade' ? 'Aufwertung' : 'Sockeln'} · ${progress}</p><p>${job.stopRequested ? 'Auftrag wird gestoppt.' : 'Läuft auch bei geschlossener App weiter.'}</p><p>${number(job.attempts || 0)} Versuche · ${number(job.successes || 0)} Erfolge · ${number(job.failures || 0)} Fehlschläge</p>`
     : '<p>Der Auftrag ist beendet.</p>';
   if (mobileSheet.open && mobileSheet.dataset.workshopStatus) {
     const body = mobileSheet.querySelector('.mobile-sheet-content');
@@ -106,9 +106,17 @@ document.addEventListener('click', event => {
     if (!item) return;
     const target = Number(mobileSheet.querySelector('[data-item-workshop-target]')?.value);
     if (!Number.isInteger(target) || target < 1) return;
-    mobileSheet.close();
-    if (start.dataset.itemWorkshopStart === 'upgrade') void autoUpgrade({ itemId, targetLevel: target, mythic: isMythicWeapon(item), headless: true });
-    else void autoSocket({ itemId, targetCount: target, headless: true });
+    mobileActionPending = true;
+    const mode = mobileSheet.dataset.workshopMode;
+    mobileSheet.querySelectorAll('button, select').forEach(control => control.disabled = true);
+    const task = start.dataset.itemWorkshopStart === 'upgrade'
+      ? autoUpgrade({ itemId, targetLevel: target, mythic: isMythicWeapon(item), headless: true })
+      : autoSocket({ itemId, targetCount: target, headless: true });
+    Promise.resolve(task).then(result => {
+      if (!mobileSheet.open || mobileSheet.dataset.workshopItem !== itemId) return;
+      if (result?.state?.workshopJob) mobileSheet.close();
+      else openMobileItemWorkshop(itemId, mode);
+    }).finally(() => { mobileActionPending = false; });
     return;
   }
   const insert = event.target.closest('[data-item-workshop-insert]');

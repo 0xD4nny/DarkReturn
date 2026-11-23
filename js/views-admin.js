@@ -18,7 +18,7 @@ function adminGemOptions(slot) {
 }
 
 function renderAdminTools(embedded = false) {
-  const slots = Object.entries(SLOT_DATA);
+  const slots = Object.entries(SLOT_DATA).filter(([, definition]) => !definition.deprecated);
   const equipmentOptions = slots
     .filter(([slot]) => AFFIX_POOLS[slot] && slot !== 'glyph')
     .map(([slot, info]) => `<option value="${escapeHtml(slot)}">${escapeHtml(info.label)}</option>`)

@@ -45,22 +45,22 @@
       {
         "type": "material",
         "slot": "upgradeStone",
-        "quantity": 10
+        "quantity": 1
       },
       {
         "type": "material",
         "slot": "socketStone",
-        "quantity": 10
+        "quantity": 1
       }
     ],
     "glyphBox": {
-      "chancePerGlyph": 0.5
+      "chancePerGlyph": 0.25
     },
     "vipBox": {
-      "ticketChance": 0.5
+      "ticketChance": 0.25
     },
     "farmBox": {
-      "dropChance": 0.01,
+      "dropChance": 0.1,
       "rewards": [
         {
           "type": "souls",
@@ -93,7 +93,7 @@
         {
           "type": "powerup",
           "label": "Zufälliges Powerup",
-          "chance": 10,
+          "chance": 15,
           "quantity": 1
         },
         {
@@ -122,13 +122,6 @@
           "group": "vipBox",
           "label": "VIP-Luckybox",
           "chance": 1,
-          "quantity": 1
-        },
-        {
-          "type": "consumable",
-          "slot": "towerLootBoost",
-          "label": "Turm-Beutesegen",
-          "chance": 5,
           "quantity": 1
         },
         {

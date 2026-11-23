@@ -4,6 +4,7 @@
 .mobile-skill-controls, .mobile-socket-target, .mobile-area-list { display: none; }
 .ui-control.mobile-menu-toggle, .ui-control.mobile-menu-close, .ui-control.mobile-status-toggle, .ui-control.mobile-workshop-back { display: none; }
 .ui-control.mobile-map-details { display: none; }
+.ui-control.mobile-inventory-sell-filter { display: none; }
 .mobile-map-heading, .mobile-map-destination-label { display: none; }
 .mobile-battle-enemy-heading { display: none; }
 .sidebar .mobile-profile-nav, .sidebar .mobile-settings-nav, .sidebar .mobile-equipment-nav { display: none; }
@@ -601,6 +602,7 @@
     .tower-challenge-card .tower-entry-actions { order: 3; display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; gap: 12px; margin: 0 0 4px; }
     .tower-challenge-card .tower-loot-choice { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; gap: 7px; font-size: 12px; letter-spacing: .03em; }
     .tower-challenge-card .tower-loot-choice select { width: 100%; min-height: 46px; padding-inline: 12px; font-size: 16px; }
+    .tower-challenge-card .tower-loot-progression { color: #aaa09b; font-size: 12px; line-height: 1.4; letter-spacing: 0; }
     .tower-challenge-card .tower-entry-actions .ui-button { --control-background: #813e39; --control-border: #b56359; --control-hover-background: #954a43; --control-hover-border: #cc8072; min-width: 0; width: 100%; min-height: 52px; padding: 12px; font-size: 15px; font-weight: 600; letter-spacing: .025em; white-space: normal; }
     .tower-challenge-card .boss-challenge-copy > [data-daily-attempts="tower"] { order: 4; margin: auto 0 0; padding-top: 14px; max-width: none; color: #aaa09a; font-size: 13px; line-height: 1.4; }
     .tower-challenge-card .boss-challenge-copy > .codex-panel-link { order: 5; align-self: flex-start; min-height: 44px; display: inline-flex; align-items: center; margin: -8px 0 -8px; color: #b9aaa0; font-size: 13px; letter-spacing: 0; text-decoration: underline; text-underline-offset: 4px; }
@@ -661,6 +663,10 @@
     .inventory-view .inventory-expansion-controls > .filter-label { grid-column: 1 / -1; width: auto; margin: 0; font-size: 13px; letter-spacing: 0; }
     .inventory-view .inventory-expansion-controls > input { width: 76px; min-height: 44px; }
     .inventory-view .inventory-expansion-controls > button { min-width: 0; min-height: 44px; padding-inline: 10px; font-size: 13px; white-space: normal; }
+    .inventory-view .inventory-main > .inventory-expansion-controls:has(> [data-mobile-sell-category]) { grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+    .inventory-view .inventory-expansion-controls:has(> [data-mobile-sell-category]) > input { width: 48px; }
+    .inventory-view .inventory-expansion-controls:has(> [data-mobile-sell-category]) > button { padding-inline: 6px; font-size: 12px; letter-spacing: 0; }
+    .inventory-view .inventory-expansion-controls > .mobile-inventory-sell-filter { display: inline-flex; }
     .inventory-view .inventory-hint,
     .inventory-view:not(.equipment-view) > .view-heading .welcome-sub { display: none; }
     body:has(.content-wrap > .inventory-view:not(.equipment-view)) { overflow: hidden; }
