@@ -597,14 +597,16 @@ function launchHealerShockwave(targets, duration = 640) {
 function playBattleEntrance() {
   const overlay = document.querySelector('#battle-overlay');
   if (!overlay || !overlay.querySelector('.battle-scene.has-raster-art')) return;
-  if (overlay.querySelector('.battle-scene.has-front-enemies')) {
+  if (overlay.querySelector('.battle-scene.has-front-enemies, .battle-scene.has-front-boss')) {
     battle.enemiesAdvancedForRanged = true;
     battle.sceneReadyAt = performance.now() + 250;
     overlay.querySelectorAll('.battle-hero').forEach((actor) => {
+      actor.style.setProperty('--battle-lane-x', '0px');
       actor.style.opacity = '1';
       actor.style.translate = '0 0';
     });
     overlay.querySelectorAll('.battle-enemy').forEach((actor) => {
+      actor.style.setProperty('--battle-lane-x', '0px');
       actor.style.opacity = '1';
       actor.style.translate = '0 0';
       const index = Number(actor.dataset.enemy);
@@ -677,6 +679,10 @@ function advanceEnemiesForRangedParty() {
 
   const overlay = document.querySelector('#battle-overlay');
   if (!overlay?.querySelector('.battle-scene.has-raster-art')) return;
+  if (overlay.querySelector('.battle-scene.has-front-enemies, .battle-scene.has-front-boss')) {
+    battle.enemiesAdvancedForRanged = true;
+    return;
+  }
   battle.enemiesAdvancedForRanged = true;
   const enemyOffsets = [-316, -406, -496];
   overlay.querySelectorAll('.battle-enemy').forEach((actor, index) => {
