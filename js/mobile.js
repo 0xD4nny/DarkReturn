@@ -109,10 +109,11 @@ function toggleMobileMenu(open = false) {
   if (open) sidebar.querySelector('.nav-item.is-active:not(:disabled), .nav-item:not(:disabled)')?.focus();
   else if (mobileMenuReturnFocus?.isConnected) { mobileMenuReturnFocus.focus({ preventScroll: true }); mobileMenuReturnFocus = null; }
 }
-function syncMobileShell() {
+function syncMobileStatusPlacement() {
   const content = document.getElementById('mobile-status-content');
   if (!mobileStatusHomes.length) {
-    document.querySelectorAll('.topbar-right > :is(.player-identity, .soul-balance, .active-powerups-slot, .hunting-event-slot, .world-event-slot, .mailbox-wrap, .notification-wrap, .settings-shortcut, .workshop-status-slot, .battle-status-slot)').forEach(node => {
+    const selectors = ['#player-identity', '.soul-balance', '#active-powerups-slot', '#hunting-event-slot', '#world-event-slot', '.mailbox-wrap', '#activity-toggle', '.settings-shortcut', '#workshop-status-slot', '#battle-status-slot'];
+    selectors.map(selector => document.querySelector(selector)).filter(Boolean).forEach(node => {
       const placeholder = document.createComment('desktop status position');
       node.before(placeholder);
       mobileStatusHomes.push({ node, placeholder });
@@ -120,13 +121,16 @@ function syncMobileShell() {
   }
   mobileStatusHomes.forEach(({ node, placeholder }) => {
     if (isMobileLayout() && node.matches('.soul-balance')) document.querySelector('.breadcrumb').before(node);
-    else if (isMobileLayout() && !node.matches('.player-identity, .mailbox-wrap, .notification-wrap, .settings-shortcut')) content.append(node);
+    else if (isMobileLayout() && !node.matches('.player-identity, .mailbox-wrap, .settings-shortcut')) content.append(node);
     else placeholder.after(node);
   });
   if (isMobileLayout()) {
     const header = document.querySelector('.topbar-right');
-    for (const selector of ['.mailbox-wrap', '.notification-wrap', '#mobile-status-toggle', '.codex-shortcut', '.settings-shortcut']) header.append(document.querySelector(selector));
+    for (const selector of ['.mailbox-wrap', '#mobile-status-toggle', '.settings-shortcut']) header.append(document.querySelector(selector));
   }
+}
+function syncMobileShell() {
+  syncMobileStatusPlacement();
   const worldEvent = document.getElementById('world-event-slot');
   if (isMobileLayout()) { worldEvent.setAttribute('role', 'button'); worldEvent.tabIndex = 0; worldEvent.setAttribute('aria-label', 'Welt-Event anzeigen'); }
   else { worldEvent.removeAttribute('role'); worldEvent.removeAttribute('tabindex'); worldEvent.removeAttribute('aria-label'); }
@@ -182,7 +186,8 @@ let mobileActionPending = false;
 let mobileBulkSale = null;
 let mobileWorkshopReturn = null;
 const mobileWorkshopPanes = { blacksmith: 'selection', sockets: 'selection', enchant: 'selection' };
-const mobileSkillView = { zoom: 1, left: 0, top: 0, owner: null };
+const MOBILE_SKILL_TREE_SCALE = .75;
+const mobileSkillView = { left: 0, top: 0, owner: null };
 let mobileSkillPointer = null;
 let mobileSkillHoldTimer = null;
 let mobileSkillDragUntil = 0;
@@ -207,7 +212,7 @@ mobileSheet.addEventListener('close', () => {
   else (isMobileLayout() ? (document.querySelector('#mobile-footer .mobile-footer-page:not([hidden]) .nav-item.is-active') || document.querySelector('#mobile-footer [aria-pressed="true"]')) : document.querySelector('.nav-item.is-active'))?.focus({ preventScroll: true });
 });
 function showMobileSheet(title, content, actions = '') {
-  for (const key of ['workshopStatus', 'workshopItem', 'workshopMode', 'skillDetails', 'abilityDetails']) delete mobileSheet.dataset[key];
+  for (const key of ['workshopStatus', 'workshopItem', 'workshopMode', 'skillDetails', 'abilityDetails', 'shopGroup']) delete mobileSheet.dataset[key];
   if (!mobileSheet.open) mobileSheetReturnFocus = document.activeElement;
   mobileSheet.setAttribute('aria-label', title);
   const touchContent = content.replaceAll('Doppelklick im Inventar', 'Die Aktion in den Gegenstandsdetails').replaceAll('Einfach anklicken, um die Box zu öffnen.', 'Über „Eine Box öffnen“ in den Gegenstandsdetails öffnen.');
@@ -222,13 +227,19 @@ function mobileButton(action, label, attributes = '') {
 }
 function mobileCurrentItem() {
   if (!mobileItemContext || !state) return null;
+  if (mobileItemContext.shopOffer) return state.shopEquipmentOffers.find(item => item.id === mobileItemContext.id);
   return findInventoryOrEquippedItem(state, mobileItemContext.id) || partyPets(state).find(pet => pet.id === mobileItemContext.id);
 }
-function openMobileItem(item, source, { preview = false, description = '' } = {}) {
+function mobileItemIconMarkup(item) {
+  const visual = itemVisualStyle(item);
+  const classes = visual.special ? `inventory-item ${itemVisualClasses(item)}` : visual.rarity;
+  return `<div class="mobile-item-icon ${classes}">${visual.special ? equipmentEmbersMarkup(item) : ''}${itemIconMarkup(item, 'item-icon')}</div>`;
+}
+function openMobileItem(item, source, { preview = false, description = '', shopOffer = false } = {}) {
   if (!item) return;
   const gear = source?.closest('[data-gear-slot]');
   const ownerClass = item.slot === 'pet' ? item.ownerClass : itemComparisonOwner(item, source || document.body, gear, null);
-  mobileItemContext = { id: item.id, ownerClass, preview, description };
+  mobileItemContext = { id: item.id, ownerClass, preview, description, shopOffer };
   renderMobileItem(item);
 }
 function renderMobileItem(item = mobileCurrentItem()) {
@@ -241,6 +252,11 @@ function renderMobileItem(item = mobileCurrentItem()) {
   const ownerPicker = inventoryItem && owners.some(owner => compatibleSlots(owner).length)
     ? `<label class="mobile-owner-label">Ausrüstung für<select class="ui-control ui-select" data-mobile-item-owner>${owners.filter(owner => compatibleSlots(owner).length).map(owner => `<option value="${owner}" ${owner === ownerClass ? 'selected' : ''}>${escapeHtml(CLASSES[owner].label)} · ${owner === state.mainClass ? 'Main' : 'Gefährte'}</option>`).join('')}</select></label>` : '';
   let actions = '';
+  if (mobileItemContext.shopOffer) {
+    const price = equipmentShopPrice(item);
+    const unavailable = state.souls < price || inventoryOccupiedSlots(state) >= state.inventoryCapacity || totalRewardStorageSlots(state) - 1 < reservedBossStorageSlots(state);
+    actions = `<button type="button" class="ui-control ui-button" data-mobile-shop-equipment-buy="${escapeHtml(item.id)}" ${unavailable ? 'disabled' : ''}>Kaufen · ${number(price)} Seelen</button>`;
+  }
   if (inventoryItem) {
     actions += compatibleSlots(ownerClass).map(({ slot, label }) => mobileButton('equip', `ANLEGEN · ${escapeHtml(label)}`, `data-mobile-slot="${slot}"`)).join('');
     const useActions = { bossReset: 'use-boss-reset', towerReset: 'use-tower-reset', vipTicket: 'activate-vip', powerup: 'activate-powerup', towerLootBoost: 'activate-powerup' };
@@ -265,10 +281,34 @@ function renderMobileItem(item = mobileCurrentItem()) {
   const enchantable = ['weapons', 'armor', 'jewelry'].some(category => INVENTORY_CATEGORIES[category].slots.includes(item.slot));
   if (!preview && (slotEntry && enchantable || item.slot === 'pet')) actions += mobileButton('enchant', 'VERZAUBERN');
   const petDetails = item.slot === 'pet' ? `<p>Stufe ${number(item.level)} · fest an ${ownerClass === state.mainClass ? 'deinen Main' : 'deinen Gefährten'} gebunden.</p><p>+${number(item.level * PET_RULES.attributePerLevel)} ${escapeHtml(petDefinition(item).stat)}. Tierstufen am Altar erhöhen; Affixe über Verzauberung umprägen.</p>` : '';
-  const content = `${ownerPicker}<div class="mobile-item-icon ${item.rarityColor || ''}">${itemIconMarkup(item, 'item-icon')}</div>${renderItemTooltipContent(item, { ownerClass, milestoneDescription: description })}${petDetails}${inventoryItem && compatibleSlots(ownerClass).length ? '<p class="mobile-detail-note">Aufwertung und Sockel gehören zum Ausrüstungsplatz. Für die Werkstatt zuerst anlegen.</p>' : ''}`;
+  const content = `${ownerPicker}${mobileItemIconMarkup(item)}${renderItemTooltipContent(item, { ownerClass, milestoneDescription: description })}${petDetails}${inventoryItem && compatibleSlots(ownerClass).length ? '<p class="mobile-detail-note">Aufwertung und Sockel gehören zum Ausrüstungsplatz. Für die Werkstatt zuerst anlegen.</p>' : ''}`;
   showMobileSheet(item.name, content, actions);
 }
+function openMobileShopBox(group) {
+  const offer = SHOP_OFFERS.find(entry => entry.group === group && entry.purchasable !== false);
+  if (!offer) return;
+  const quote = shopOfferQuote(group);
+  shopQuantities[group] = quote.quantity;
+  mobileItemContext = null;
+  const item = makeLuckyBoxItem(group);
+  const content = `${mobileItemIconMarkup(item)}${renderItemTooltipContent(item)}`;
+  const actions = `<div class="mobile-shop-quantity"><label>Menge<input class="ui-control ui-field" type="number" inputmode="numeric" min="${quote.maxQuantity ? 1 : 0}" max="${quote.maxQuantity}" step="1" value="${quote.quantity}" data-mobile-shop-quantity="${group}" ${quote.maxQuantity ? '' : 'disabled'}></label><strong data-mobile-shop-total>${number(quote.totalPrice || quote.unitPrice)} Seelen</strong></div><button class="ui-control ui-button" type="button" data-mobile-shop-box-buy="${group}" ${quote.unavailable ? 'disabled' : ''}>Kaufen</button>`;
+  showMobileSheet(offer.title, content, actions);
+  mobileSheet.dataset.shopGroup = group;
+}
+document.addEventListener('input', event => {
+  const input = event.target.closest('[data-mobile-shop-quantity]');
+  if (!input || !mobileSheet.contains(input)) return;
+  const group = input.dataset.mobileShopQuantity;
+  const quote = shopOfferQuote(group, input.value);
+  shopQuantities[group] = quote.quantity;
+  input.max = String(quote.maxQuantity);
+  if (input.value !== '') input.value = String(quote.quantity);
+  mobileSheet.querySelector('[data-mobile-shop-total]').textContent = `${number(quote.totalPrice || quote.unitPrice)} Seelen`;
+  mobileSheet.querySelector('[data-mobile-shop-box-buy]').disabled = quote.unavailable || mobileActionPending;
+});
 function syncMobileView({ background = false, root = viewContainer } = {}) {
+  syncMobileStatusPlacement();
   syncMobileFooter();
   const inventory = root.querySelector('.inventory-view');
   if (inventory) {
@@ -417,23 +457,14 @@ function syncMobileSkillTree(root = viewContainer) {
     mobileSkillView.owner = selectedSkillTreeOwner; mobileSkillView.left = 0; mobileSkillView.top = 0;
   }
   if (!viewport) {
-    const controls = document.createElement('div');
-    controls.className = 'mobile-skill-controls';
-    controls.innerHTML = '<p>Baum mit dem Finger verschieben. Knoten antippen für Details; Punkte separat vergeben.</p><div><button class="ui-control ui-button" type="button" data-mobile-skill-zoom="out" aria-label="Talentbaum verkleinern">−</button><button class="ui-control ui-button" type="button" data-mobile-skill-zoom="reset">100 %</button><button class="ui-control ui-button" type="button" data-mobile-skill-zoom="in" aria-label="Talentbaum vergrößern">+</button><button class="ui-control ui-button" type="button" data-mobile-skill-details>DETAILS</button></div>';
     viewport = document.createElement('div');
-    controls.querySelector('p')?.remove();
-    controls.querySelector('[data-mobile-skill-details]')?.remove();
     viewport.className = 'mobile-skill-viewport';
     viewport.tabIndex = 0; viewport.setAttribute('role', 'region'); viewport.setAttribute('aria-label', 'Verschiebbarer Talentbaum');
     const svg = board.querySelector('svg');
-    svg.before(controls, viewport); viewport.append(svg);
+    svg.before(viewport); viewport.append(svg);
   }
-  viewport.style.setProperty('--mobile-tree-zoom', mobileSkillView.zoom);
+  viewport.style.setProperty('--mobile-tree-zoom', MOBILE_SKILL_TREE_SCALE);
   viewport.scrollLeft = mobileSkillView.left; viewport.scrollTop = mobileSkillView.top;
-  const reset = board.querySelector('[data-mobile-skill-zoom="reset"]');
-  reset.textContent = `${Math.round(mobileSkillView.zoom * 100)} %`;
-  board.querySelector('[data-mobile-skill-zoom="out"]').disabled = mobileSkillView.zoom <= .85;
-  board.querySelector('[data-mobile-skill-zoom="in"]').disabled = mobileSkillView.zoom >= 1.5;
 }
 function openMobileSkillDetails(nodeId) {
   if (!isMobileLayout() || currentView !== 'skilltree') return;
@@ -730,6 +761,25 @@ document.addEventListener('click', event => {
     });
     return;
   }
+  const shopBuy = event.target.closest('[data-mobile-shop-box-buy], [data-mobile-shop-equipment-buy]');
+  if (shopBuy && mobileSheet.contains(shopBuy)) {
+    stop();
+    if (shopBuy.disabled || mobileActionPending) return;
+    const group = shopBuy.dataset.mobileShopBoxBuy;
+    const quote = group ? shopOfferQuote(group, mobileSheet.querySelector('[data-mobile-shop-quantity]')?.value) : null;
+    if (quote?.unavailable) { openMobileShopBox(group); return; }
+    const payload = group ? { action: 'buy', group, quantity: quote.quantity } : { action: 'buy-equipment-offer', offerId: shopBuy.dataset.mobileShopEquipmentBuy };
+    mobileActionPending = true;
+    shopBuy.disabled = true;
+    performAction(payload, 'Gekauft').then(result => {
+      if (!mobileSheet.contains(shopBuy)) return;
+      if (result) mobileSheet.close();
+      else shopBuy.disabled = false;
+    }).finally(() => { mobileActionPending = false; });
+    return;
+  }
+  const shopBox = event.target.closest('[data-mobile-shop-box]');
+  if (shopBox) { stop(); openMobileShopBox(shopBox.dataset.mobileShopBox); return; }
   const action = event.target.closest('[data-mobile-action]');
   if (action) { stop(); runMobileItemAction(action); return; }
   if (event.target.closest('[data-mobile-map-details]')) {
@@ -773,8 +823,8 @@ document.addEventListener('click', event => {
     else { mobileItemContext = null; showMobileSheet('Auftragsbelohnung', questRewardDescriptionMarkup(preview.reward)); }
     return;
   }
-  const offer = event.target.closest('[data-shop-offer-preview]');
-  if (offer) { stop(); openMobileItem(state.shopEquipmentOffers.find(item => item.id === offer.dataset.shopOfferPreview), offer, { preview: true, description: '<p>Angebotsvorschau. Den Kauf über den Kaufen-Button im Schwarzmarkt abschließen.</p>' }); return; }
+  const offer = event.target.closest('[data-shop-offer-preview], [data-mobile-shop-equipment]');
+  if (offer) { stop(); openMobileItem(state.shopEquipmentOffers.find(item => item.id === (offer.dataset.shopOfferPreview || offer.dataset.mobileShopEquipment)), offer, { preview: true, shopOffer: true }); return; }
   const mail = event.target.closest('[data-mailbox-item]');
   if (mail && !event.target.closest('[data-claim-mailbox]')) {
     stop(); openMobileItem(state.mailbox.find(entry => entry.id === mail.dataset.mailboxItem)?.item, mail, { preview: true, description: '<p>Dieser Gegenstand liegt im Briefkasten. Dort über Abholen ins Inventar übernehmen.</p>' }); return;
@@ -785,16 +835,6 @@ document.addEventListener('click', event => {
     const item = [...state.inventory, ...equipmentSlotEntries(state).map(entry => entry.item)].find(entry => entry.name === reward.name && entry.slot === reward.kind)
       || { name: reward.name, slot: reward.kind, icon: reward.icon, rarityColor: 'common', rarity: RARITIES.find(rarity => rarity.color === 'common')?.name || 'Gewöhnlich', affixes: ['ring', 'amulet'].includes(reward.kind) ? [{ stat: 'Seelenfund', value: 10, baseValue: 10, fixed: true }] : [], ...(reward.set ? { set: reward.set } : {}) };
     openMobileItem(item, milestone, { preview: true, description: `<p>${escapeHtml(reward.description)}</p>` }); return;
-  }
-  const treeZoom = event.target.closest('[data-mobile-skill-zoom]');
-  if (treeZoom) {
-    stop(); captureMobileViewState();
-    const viewport = viewContainer.querySelector('.mobile-skill-viewport');
-    const previous = mobileSkillView.zoom;
-    mobileSkillView.zoom = treeZoom.dataset.mobileSkillZoom === 'reset' ? 1 : Math.max(.85, Math.min(1.5, Math.round((previous + (treeZoom.dataset.mobileSkillZoom === 'in' ? .15 : -.15)) * 100) / 100));
-    mobileSkillView.left = (mobileSkillView.left + viewport.clientWidth / 2) * mobileSkillView.zoom / previous - viewport.clientWidth / 2;
-    mobileSkillView.top = (mobileSkillView.top + viewport.clientHeight / 2) * mobileSkillView.zoom / previous - viewport.clientHeight / 2;
-    syncMobileSkillTree(); return;
   }
   const skillNode = event.target.closest('[data-skill-node]');
   if (skillNode) {

@@ -6,7 +6,7 @@
 }
 .equipment-paperdoll .loadout-paperdoll {
     --loadout-gap: 8px;
-    --equipment-slot-size: min(64px, calc((100cqw - 40px) / 5), calc((100dvh - 380px) / 7));
+    --equipment-slot-size: min(64px, calc((100cqw - 40px) / 5), calc((100cqh - 40px) / 7));
     position: relative;
     isolation: isolate;
     display: grid;
@@ -15,7 +15,7 @@
     gap: var(--loadout-gap) 12px;
     width: 100%;
     max-width: 560px;
-    height: min(440px, calc(100dvh - 340px - var(--equipment-slot-size)));
+    height: min(440px, calc(100cqh - var(--equipment-slot-size)));
     min-height: 0;
     margin-inline: auto;
     margin-block-start: var(--equipment-slot-size);
@@ -83,9 +83,22 @@
     margin: 0;
 }
 .inventory-detail-content:has(> .equipment-paperdoll) {
+    /* The whole loadout, including the raised hero, fits the remaining panel. */
+    container-type: size;
+    display: flex;
+    align-items: center;
     overflow: visible;
 }
+.inventory-detail-content > .equipment-paperdoll {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 0;
+}
 @media (max-width: 900px), (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+    .inventory-detail-content:has(> .equipment-paperdoll) {
+        container-type: normal;
+        display: block;
+    }
     .equipment-paperdoll .loadout-paperdoll {
         --equipment-slot-size: min(60px, calc((100cqw - 40px) / 5), calc((100dvh - 340px) / 7));
         gap: var(--loadout-gap) 12px;

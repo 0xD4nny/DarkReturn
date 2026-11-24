@@ -1,39 +1,41 @@
 @charset "UTF-8";
-/* Effect study 02: Glut & Funken. Actual affixes choose the greater treatment;
-   rarity alone never makes a legendary item a greater item. */
+/* Glut & Funken. Equipment follows actual affixes; selected consumables reuse
+   the decoration through has-greater-effect without gaining real affixes. */
 .tooltip-rarity.mythic { color: #dd83e9; }
-.inventory-item.equipment-item,
+.mailbox-item-icon-wrap.inventory-item { display: grid; place-items: center; width: 48px; height: 48px; min-width: 0; min-height: 0; padding: 8px; }
+.mobile-item-icon.inventory-item { min-width: 0; min-height: 0; padding: 8px; }
+.inventory-item:is(.equipment-item, .special-item),
 .gear-slot.filled { --equipment-color: #b8b5bc; --equipment-surface: #1b1b21; }
-.inventory-item.equipment-item.uncommon,
+.inventory-item:is(.equipment-item, .special-item).uncommon,
 .gear-slot.filled.uncommon { --equipment-color: #78c28d; }
-.inventory-item.equipment-item.rare,
+.inventory-item:is(.equipment-item, .special-item).rare,
 .gear-slot.filled.rare { --equipment-color: #78b7e7; }
-.inventory-item.equipment-item.epic,
+.inventory-item:is(.equipment-item, .special-item).epic,
 .gear-slot.filled.epic { --equipment-color: #c68be4; }
-.inventory-item.equipment-item.legendary,
+.inventory-item:is(.equipment-item, .special-item).legendary,
 .gear-slot.filled.legendary { --equipment-color: #e8b060; }
-.inventory-item.equipment-item.mythic,
+.inventory-item:is(.equipment-item, .special-item).mythic,
 .gear-slot.filled.mythic { --equipment-color: #dd83e9; --equipment-surface: #26131e; }
 
-.inventory-item.equipment-item,
+.inventory-item:is(.equipment-item, .special-item),
 .gear-slot.filled {
     isolation: isolate;
     background:
         radial-gradient(ellipse at 50% 115%, color-mix(in srgb, var(--equipment-color) 15%, transparent), transparent 75%),
         var(--equipment-surface);
 }
-.inventory-item.equipment-item:not(.has-greater-affix),
-.gear-slot.filled:not(.has-greater-affix) {
+.inventory-item:is(.equipment-item, .special-item):not(:is(.has-greater-affix, .has-greater-effect)),
+.gear-slot.filled:not(:is(.has-greater-affix, .has-greater-effect)) {
     border-color: color-mix(in srgb, var(--equipment-color) 35%, #38343a);
 }
-.inventory-item.equipment-item:not(.has-greater-affix) > .item-icon,
-.gear-slot.filled:not(.has-greater-affix) > .gear-icon {
+.inventory-item:is(.equipment-item, .special-item):not(:is(.has-greater-affix, .has-greater-effect)) > .item-icon,
+.gear-slot.filled:not(:is(.has-greater-affix, .has-greater-effect)) > .gear-icon {
     color: color-mix(in srgb, var(--equipment-color) 68%, #a39c98);
 }
 /* The old moving border is gone. Both variants use a static ember glow. */
-.inventory-item.equipment-item::before,
+.inventory-item:is(.equipment-item, .special-item)::before,
 .gear-slot.filled::before { content: none; }
-.inventory-item.equipment-item::after,
+.inventory-item:is(.equipment-item, .special-item)::after,
 .gear-slot.filled::after {
     content: "";
     position: absolute;
@@ -44,8 +46,8 @@
     opacity: .15;
     pointer-events: none;
 }
-.inventory-item.equipment-item.has-greater-affix,
-.gear-slot.filled.has-greater-affix {
+.inventory-item:is(.equipment-item, .special-item):is(.has-greater-affix, .has-greater-effect),
+.gear-slot.filled:is(.has-greater-affix, .has-greater-effect) {
     border-color: var(--equipment-color);
     background:
         radial-gradient(ellipse at 50% 110%, color-mix(in srgb, var(--equipment-color) 38%, transparent), transparent 80%),
@@ -55,14 +57,14 @@
         0 0 15px color-mix(in srgb, var(--equipment-color) 35%, transparent),
         inset 0 0 18px color-mix(in srgb, var(--equipment-color) 22%, transparent);
 }
-.inventory-item.equipment-item.has-greater-affix::after,
-.gear-slot.filled.has-greater-affix::after { opacity: .38; }
-.inventory-item.equipment-item.has-greater-affix > .item-icon,
-.gear-slot.filled.has-greater-affix > .gear-icon {
+.inventory-item:is(.equipment-item, .special-item):is(.has-greater-affix, .has-greater-effect)::after,
+.gear-slot.filled:is(.has-greater-affix, .has-greater-effect)::after { opacity: .38; }
+.inventory-item:is(.equipment-item, .special-item):is(.has-greater-affix, .has-greater-effect) > .item-icon,
+.gear-slot.filled:is(.has-greater-affix, .has-greater-effect) > .gear-icon {
     color: color-mix(in srgb, var(--equipment-color) 88%, #fff1dc);
 }
-.inventory-item.equipment-item.has-greater-affix > .item-icon,
-.gear-slot.filled.has-greater-affix .gear-icon-image {
+.inventory-item:is(.equipment-item, .special-item):is(.has-greater-affix, .has-greater-effect) > .item-icon,
+.gear-slot.filled:is(.has-greater-affix, .has-greater-effect) .gear-icon-image {
     filter: drop-shadow(0 0 5px color-mix(in srgb, var(--equipment-color) 65%, transparent));
 }
 
@@ -79,9 +81,9 @@
         radial-gradient(circle at 42% 90%, var(--equipment-color) 0 1.5px, transparent 2.5px);
     animation: equipment-ember-rise 4s linear infinite;
 }
-.has-greater-affix > .equipment-embers { background: none; animation: none; }
-.has-greater-affix > .equipment-embers::before,
-.has-greater-affix > .equipment-embers::after {
+:is(.has-greater-affix, .has-greater-effect) > .equipment-embers { background: none; animation: none; }
+:is(.has-greater-affix, .has-greater-effect) > .equipment-embers::before,
+:is(.has-greater-affix, .has-greater-effect) > .equipment-embers::after {
     content: "";
     position: absolute;
     inset: -10% 0;
@@ -100,22 +102,22 @@
     background-repeat: no-repeat;
     animation: equipment-ember-rise 3s -1s linear infinite;
 }
-.has-greater-affix > .equipment-embers::after {
+:is(.has-greater-affix, .has-greater-effect) > .equipment-embers::after {
     background-size: 89% 94%;
     background-position: 7px -3px;
     animation-duration: 3.8s;
     animation-delay: -2.7s;
 }
 /* Decorative layers never obscure icons, set markers or item counters. */
-.inventory-item.equipment-item > :is(.item-icon, .item-name, .item-type),
+.inventory-item:is(.equipment-item, .special-item) > :is(.item-icon, .item-name, .item-type),
 .gear-slot.filled > :is(.gear-icon, .gear-copy) { position: relative; z-index: 1; }
-.inventory-item.equipment-item > :is(.item-greater-count, .item-upgrade-level, .item-socket-count, .item-stack-count) { z-index: 3; }
+.inventory-item:is(.equipment-item, .special-item) > :is(.item-greater-count, .item-upgrade-level, .item-socket-count, .item-stack-count) { z-index: 3; }
 
 /* Selection and drop feedback remain distinct from rarity and affix effects. */
-.inventory-item.equipment-item:hover,
+.inventory-item:is(.equipment-item, .special-item):hover,
 .gear-slot.filled:hover { border-color: color-mix(in srgb, var(--equipment-color) 75%, #fff1dc); }
-.inventory-item.equipment-item.selected { border-color: #d2ad70; box-shadow: 0 0 0 1px #d2ad7055; }
-.inventory-item.equipment-item.selected.has-greater-affix {
+.inventory-item:is(.equipment-item, .special-item).selected { border-color: #d2ad70; box-shadow: 0 0 0 1px #d2ad7055; }
+.inventory-item:is(.equipment-item, .special-item).selected:is(.has-greater-affix, .has-greater-effect) {
     box-shadow:
         0 0 0 1px #d2ad7088,
         0 0 15px color-mix(in srgb, var(--equipment-color) 35%, transparent),
@@ -135,6 +137,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
     .equipment-embers,
-    .has-greater-affix > .equipment-embers::before,
-    .has-greater-affix > .equipment-embers::after { animation: none; transform: none; opacity: .65; }
+    :is(.has-greater-affix, .has-greater-effect) > .equipment-embers::before,
+    :is(.has-greater-affix, .has-greater-effect) > .equipment-embers::after { animation: none; transform: none; opacity: .65; }
 }

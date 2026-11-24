@@ -32,7 +32,6 @@
 .character-class-image.icon-asset { display: block; width: 24px; height: 24px; }
 
 /* Shared filled silhouettes for navigation on desktop and mobile. */
-.nav-item[data-view="map"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/delapouite/atlas.svg"); }
 .nav-item[data-view="contracts"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/scroll-unfurled.svg"); }
 .nav-item[data-view="profile"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/delapouite/scroll-quill.svg"); }
 .nav-item[data-view="altar"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/delapouite/crystal-shrine.svg"); }

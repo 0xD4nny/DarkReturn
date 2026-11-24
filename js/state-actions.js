@@ -361,7 +361,10 @@ async function localAction(body) {
     hunt.claimed = true;
     response = { rewards, tier, areaId: hunt.areaId, state: save, message: 'Jagd abgeschlossen. Das nächste Event beginnt beim regulären Zeitwechsel.' };
   } else if (action === 'update-settings') {
-    if (['autoSkillsDefault', 'compactDamageNumbers', 'autoSellNonSet', 'forgeAnimations', 'socketAnimations', 'enchantAnimations'].includes(body.key)) {
+    if (body.key === 'workshopAnimations') {
+      if (typeof body.value !== 'boolean') throw new Error('Die Einstellung benötigt einen Wahrheitswert.');
+      for (const key of ['forgeAnimations', 'socketAnimations', 'enchantAnimations']) save.settings[key] = body.value;
+    } else if (['autoSkillsDefault', 'compactDamageNumbers', 'autoSellNonSet', 'forgeAnimations', 'socketAnimations', 'enchantAnimations'].includes(body.key)) {
       if (typeof body.value !== 'boolean') throw new Error('Die Einstellung benötigt einen Wahrheitswert.');
       save.settings[body.key] = body.value;
     } else if (body.key === 'lootCollectionRules') {

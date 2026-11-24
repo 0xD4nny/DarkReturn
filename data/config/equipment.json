@@ -99,7 +99,7 @@
     "rarityStone": {
       "label": "Seltenheitsstein",
       "icon": "✧",
-      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/star-medal.svg",
+      "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-growth.svg",
       "description": "Erhöht die Seltenheit eines Ausrüstungsgegenstands beim Verzauberer."
     },
     "affixStone": {
@@ -298,7 +298,6 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
@@ -316,7 +315,6 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
@@ -334,7 +332,6 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
@@ -352,7 +349,6 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
@@ -370,13 +366,11 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
     "helmet": [
       "Lebenskraft",
-      "Angriff",
       "Verteidigung",
       "Stärke",
       "Geschicklichkeit",
@@ -388,13 +382,11 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
     "chest": [
       "Lebenskraft",
-      "Angriff",
       "Verteidigung",
       "Stärke",
       "Geschicklichkeit",
@@ -406,13 +398,11 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
     "gloves": [
       "Lebenskraft",
-      "Angriff",
       "Verteidigung",
       "Stärke",
       "Geschicklichkeit",
@@ -424,13 +414,11 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
     "boots": [
       "Lebenskraft",
-      "Angriff",
       "Verteidigung",
       "Stärke",
       "Geschicklichkeit",
@@ -442,61 +430,39 @@
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
     "ring": [
       "Lebenskraft",
-      "Angriff",
       "Verteidigung",
-      "Stärke",
-      "Geschicklichkeit",
-      "Intelligenz",
-      "Ausdauer",
-      "Glaube",
       "Kritische Chance",
       "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
     "amulet": [
       "Lebenskraft",
-      "Angriff",
       "Verteidigung",
-      "Stärke",
-      "Geschicklichkeit",
-      "Intelligenz",
-      "Ausdauer",
-      "Glaube",
       "Kritische Chance",
       "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ],
     "earring": [
       "Lebenskraft",
-      "Angriff",
       "Verteidigung",
-      "Stärke",
-      "Geschicklichkeit",
-      "Intelligenz",
-      "Ausdauer",
-      "Glaube",
       "Kritische Chance",
       "Doppeltrefferchance",
       "Kritischer Schaden",
       "Abklingzeitreduktion",
       "Angriffsgeschwindigkeit",
-      "Seelenfund",
       "Schaden gegen verwundbare Ziele",
       "Schaden über Zeit"
     ]
@@ -551,8 +517,8 @@
       25
     ],
     "Schaden über Zeit": [
-      20,
-      30
+      15,
+      25
     ],
     "Abklingzeitreduktion": [
       5,

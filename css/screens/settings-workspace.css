@@ -1,0 +1,71 @@
+.settings-page .settings-section-switch {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 4px;
+    width: min(540px, 100%);
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+.settings-page .settings-section-switch .settings-section-button {
+    justify-content: center;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px 5px;
+    border: 0;
+    border-radius: 5px;
+    background: #19191c80;
+    color: #aaa39b;
+    font: 500 12px/1.2 var(--sans);
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+.settings-page .settings-section-switch .settings-section-button:is(.is-selected, :hover) {
+    background: #d9b47a16;
+    color: #e5c18b;
+    box-shadow: none;
+}
+.settings-page-body > :is(.settings-save-overview, .settings-backup-panel, .settings-danger-panel) {
+    margin: 0;
+    padding: 18px;
+    border: 0;
+    border-radius: 8px;
+    background: #19191c80;
+}
+.settings-save-identity { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.settings-save-icon { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; color: #d9b47a; }
+.settings-class-glyph { display: block; width: 30px; height: 30px; }
+.settings-page-body :is(.settings-save-overview, .settings-backup-panel) h3 { margin: 0 0 5px; color: #eee2d2; font: 400 20px/1.2 var(--serif); }
+.settings-page-body :is(.settings-save-overview, .settings-backup-panel, .settings-danger-panel) p { margin: 0; color: #aaa39b; font: 400 13px/1.5 var(--sans); }
+.settings-storage-state { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; color: #a1b297; font: 400 11px/1.3 var(--sans); }
+.settings-storage-state i { width: 5px; height: 5px; border-radius: 50%; background: #8da77d; }
+.settings-backup-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+.settings-backup-buttons > .ui-control.ui-button {
+    width: 100%; min-width: 0; min-height: 44px; margin: 0; padding: 10px 8px;
+    border: 0; border-radius: 5px; background: #29282c; color: #e1d5c6;
+    font: 500 13px/1.3 var(--sans); letter-spacing: 0; cursor: pointer;
+}
+.settings-backup-buttons > .ui-control.ui-button:hover { background: #343136; color: #eee2d2; }
+.settings-backup-buttons > .ui-control.ui-button > span { color: #d3b17e; font-size: 18px; }
+.settings-storage-help { margin-top: 14px; }
+.settings-storage-help > summary, .settings-danger-panel > summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; list-style: none; cursor: pointer; color: #aaa39b; font: 400 12px/1.4 var(--sans); }
+:is(.settings-storage-help, .settings-danger-panel) > summary::-webkit-details-marker { display: none; }
+:is(.settings-storage-help, .settings-danger-panel) > summary::after { content: "+"; flex: 0 0 auto; color: #bcab95; font-size: 18px; }
+:is(.settings-storage-help, .settings-danger-panel)[open] > summary::after { content: "−"; }
+.settings-page-body .settings-storage-help p { padding-top: 8px; font-size: 12px; }
+.settings-page-body > .settings-danger-panel { padding-block: 4px; }
+.settings-page .settings-help-link { min-height: 44px; padding: 8px 0; font-size: 12px; letter-spacing: 0; }
+.settings-danger-panel > summary { color: #ba8d82; }
+.settings-danger-panel > div { padding: 4px 0 14px; }
+.settings-danger-panel .danger-button { width: 100%; min-height: 44px; margin-top: 12px; letter-spacing: 0; }
+@media (max-width: 900px), (hover: none) and (pointer: coarse) and (max-width: 1100px) {
+    .settings-page > .view-heading { display: flex; flex-direction: column; align-items: stretch; gap: 16px; }
+    .settings-page .settings-section-switch { width: 100%; gap: 3px; }
+    .settings-page .settings-section-switch .settings-section-button { padding-inline: 2px; font-size: 11px; }
+    .settings-page .settings-page-body { gap: 12px; }
+    .settings-page-body > :is(.gameplay-settings-grid, .loot-filter-workspace) { padding: 0; }
+    .settings-page-body :is(.gameplay-option-card, .loot-collection-rule, .gameplay-placeholder, .loot-legacy-settings) { padding: 16px; border-radius: 8px; background: #19191c80; }
+    .settings-page .gameplay-setting:last-child { padding-bottom: 0; }
+    .settings-page-body > :is(.settings-save-overview, .settings-backup-panel) { padding: 16px; }
+    .settings-storage-state { margin-left: 48px; margin-top: -5px; flex-basis: calc(100% - 48px); }
+}

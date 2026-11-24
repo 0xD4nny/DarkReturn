@@ -933,14 +933,13 @@ function applyHeroSingleHit(className, skillMultiplier, skillName, areaEffect, t
   const fightState = battleStatsState();
   const weapon = equipmentForClass(className, fightState).mainHand;
   const setEffects = activeArmorSetEffects(fightState, className);
-  const stats = getStats(className, fightState);
+  const { stats, attack } = calculateCharacterStats(className, fightState);
   const hitChance = Math.max(0, Math.min(100, stats['Trefferchance'] || 0));
   const guaranteedHit = Boolean(skillName) || damageOverTime;
   if (!guaranteedHit && Math.random() * 100 >= hitChance) {
     recordBattleHitDisplay(display, targetIndexes, 0, 0, false, false, true);
     return false;
   }
-  const attack = getAttackModifiers(className, fightState);
   let base = CLASS_DAMAGE[className] + Math.max(0, characterLevel(className, fightState) - 1) * 2 + effectiveWeaponDamage(weapon) + Math.floor(attack.base / 5);
   base *= damageAttributeMultiplier(className, stats);
   base *= 1 + attack.percent / 100;

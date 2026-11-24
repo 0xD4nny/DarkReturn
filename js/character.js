@@ -159,7 +159,7 @@ function extraAttackChanceFor(className, sourceState = state) {
     + skillTreeSpecialValue('extra-attack-chance', className, sourceState));
 }
 // Ordinary attack bonuses share one additive bucket, independent of equipment order.
-function getAttackModifiers(className = state.mainClass, sourceState = state) {
+function getAttackModifiers(className = state.mainClass, sourceState = state, convertedDotBonus = 0) {
   const effects = activeArmorSetEffects(sourceState, className);
   const tree = skillTreeEffectsFor(className, sourceState);
   let base = BASE_STATS['Angriff'] + (characterLevel(className, sourceState) - 1) * BALANCE.groupLevel.attackPerLevel;
@@ -181,13 +181,16 @@ function getAttackModifiers(className = state.mainClass, sourceState = state) {
       else if (effect.stat === 'Angriff' && effect.type === 'stat-flat') base += effect.value;
     });
   });
-  return { base, percent };
+  return { base, percent: percent + convertedDotBonus };
 }
 function damageAttributeMultiplier(className, stats) {
   const scaling = CLASS_ATTRIBUTE_SCALING[className] || {};
   return scaling.damageAttribute ? 1 + Math.max(0, stats[scaling.damageAttribute] - BASE_STATS[scaling.damageAttribute]) * (scaling.damagePercentPerPoint || 0) / 100 : 1;
 }
 function getStats(className = state.mainClass, sourceState = state, { uncapped = false } = {}) {
+  return calculateCharacterStats(className, sourceState, { uncapped }).stats;
+}
+function calculateCharacterStats(className = state.mainClass, sourceState = state, { uncapped = false } = {}) {
   const gear = equipmentForClass(className, sourceState);
   const gearItems = equippedItems(className, sourceState);
   const stats = { ...BASE_STATS };
@@ -309,9 +312,13 @@ function getStats(className = state.mainClass, sourceState = state, { uncapped =
     stats['Angriffsgeschwindigkeit'] = Math.min(BALANCE.combat.attackSpeedCapPercent || 200, stats['Angriffsgeschwindigkeit']);
     stats['Abklingzeitreduktion'] = Math.min(BALANCE.combat.cooldownReductionCapPercent || 75, stats['Abklingzeitreduktion']);
   }
-  const attack = getAttackModifiers(className, sourceState);
+  // Convert the owner's complete DoT bonus once, after gear, passives and buffs.
+  const dotConversion = Math.min(1, Math.max(0, skillTreeSpecialValue('dot-to-attack-percent', className, sourceState)));
+  const convertedDotBonus = Math.max(0, stats['Schaden über Zeit'] || 0) * dotConversion;
+  stats['Schaden über Zeit'] -= convertedDotBonus;
+  const attack = getAttackModifiers(className, sourceState, convertedDotBonus);
   stats['Angriff'] = Math.round(attack.base * (1 + attack.percent / 100) * damageAttributeMultiplier(className, stats));
-  return stats;
+  return { stats, attack };
 }
 function healerFaithScaling(stats = getStats('healer')) {
   return Math.max(0, stats['Glaube'] - BASE_STATS['Glaube']) * (CLASS_ATTRIBUTE_SCALING.healer.healingPercentPerFaith || 0) + (stats[BUFF_EFFECT_STAT] || 0);
@@ -345,10 +352,44 @@ function assetIconMarkup(asset, fallback, className) {
 function equipmentIconMarkup(slot, fallback, className) {
   return assetIconMarkup(SLOT_DATA[slot]?.asset, fallback || SLOT_DATA[slot]?.icon, className);
 }
+const SPECIAL_ITEM_APPEARANCE = {
+  glyphBox: { rarity: 'legendary', greater: true },
+  vipBox: { rarity: 'legendary', greater: true },
+  farmBox: { rarity: 'rare', greater: true },
+  powerup: { rarity: 'rare', greater: true },
+  vipTicket: { rarity: 'legendary', greater: true },
+  towerReset: { rarity: 'mythic', greater: true },
+  bossReset: { rarity: 'legendary', greater: true },
+  mythicUpgradeStone: { rarity: 'mythic', greater: true },
+  upgradeStone: { rarity: 'rare', greater: false },
+  socketStone: { rarity: 'rare', greater: false },
+  affixStone: { rarity: 'rare', greater: false },
+  rarityStone: { rarity: 'rare', greater: false },
+  weaponGem: { greater: false },
+  armorGem: { greater: false },
+};
+function itemVisualStyle(item) {
+  const special = SPECIAL_ITEM_APPEARANCE[item?.slot];
+  const rarity = special?.rarity || item?.rarityColor || 'common';
+  return { rarity, special: Boolean(special), greater: special?.greater ?? false };
+}
+function itemVisualClasses(item) {
+  const visual = itemVisualStyle(item);
+  return [visual.rarity, isSellableEquipment(item) ? 'equipment-item' : '', visual.special ? 'special-item' : '',
+    (item?.affixes || []).some(affix => affix.greater) ? 'has-greater-affix' : '',
+    visual.special && visual.greater ? 'has-greater-effect' : ''].filter(Boolean).join(' ');
+}
 function equipmentEmbersMarkup(item) {
-  return item && (isSellableEquipment(item) || item.slot === 'pet')
+  return item && (isSellableEquipment(item) || ['pet', 'weaponGem', 'armorGem'].includes(item.slot) || itemVisualStyle(item).greater)
     ? '<span class="equipment-embers" aria-hidden="true"></span>'
     : '';
+}
+function itemMarkersMarkup(item) {
+  if (!item) return '';
+  const greaterCount = (item.affixes || []).filter(affix => affix.greater).length;
+  const set = item.set ? `<span class="item-set-badge" aria-label="Set ${escapeHtml(item.set)}">SET</span>` : '';
+  const greater = greaterCount ? `<span class="item-greater-count" aria-label="${greaterCount} Greater Affixe">✦ <span class="item-greater-value">${greaterCount}</span></span>` : '';
+  return set + greater;
 }
 function workshopRitualCore(item, fallback) {
   return `<div class="ritual-core"><span class="ritual-item-symbol">${item ? itemIconMarkup(item, 'ritual-item-icon') : fallback}</span></div>`;
@@ -371,16 +412,14 @@ function inventorySaleCandidates(save, ownerClass, category) {
     && isSellableEquipment(item) && item.rarityColor !== 'mythic');
 }
 function itemCard(item, index, options = {}) {
-  const rarity = item.rarityColor || 'common';
   const quantity = Math.max(1, Math.floor(Number(item.quantity) || 1));
-  const greaterCount = (item.affixes || []).filter((affix) => affix.greater).length;
   const socketCapacity = socketCapacityForSlot(item.slot, item);
   const openedSockets = Math.max(0, Math.min(socketCapacity, Number(item.socketSlots) || 0));
   const filledSockets = (item.sockets || []).slice(0, openedSockets).filter(Boolean).length;
   const socketLabel = `${filledSockets} von ${openedSockets} geöffneten Sockelplätzen belegt`;
   const slotName = options.forge || options.socketTarget || options.enchantTarget ? workshopSlotLabel(item) : SLOT_DATA[item.slot]?.label || item.slot;
   const sellable = !options.sell || isSellableEquipment(item);
-  const classes = ['inventory-item', rarity, isSellableEquipment(item) ? 'equipment-item' : '', greaterCount ? 'has-greater-affix' : '', item.set ? 'set-item' : '', options.selected ? 'selected' : '', options.sell && !sellable ? 'not-for-sale' : ''].filter(Boolean).join(' ');
+  const classes = ['inventory-item', itemVisualClasses(item), item.set ? 'set-item' : '', options.selected ? 'selected' : '', options.sell && !sellable ? 'not-for-sale' : ''].filter(Boolean).join(' ');
   const forgeAttrs = options.glyphFusion ? `data-glyph-fusion-item="${item.id}" ${options.disabled ? 'disabled' : ''}` : options.forge ? `data-forge-item="${item.id}" ${options.disabled ? 'disabled' : ''}` : options.gemUpgrade ? `data-gem-upgrade-item="${item.id}"` : '';
   const canDrag = !options.forge && !options.sell && !options.socketTarget && !options.enchantTarget && options.draggable !== false && !BOX_GROUPS.includes(item.slot);
   const isMaterial = ['upgradeStone', 'mythicUpgradeStone', 'socketStone', 'rarityStone', 'affixStone', 'weaponGem', 'armorGem', 'powerup', 'vipTicket', 'towerLootBoost', 'towerReset', 'bossReset', 'glyphBox', 'vipBox', 'farmBox'].includes(item.slot);
@@ -388,7 +427,7 @@ function itemCard(item, index, options = {}) {
   const itemIndex = options.shopOffer ? `data-shop-offer-preview="${item.id}"` : options.socketTarget || options.enchantTarget || options.forge ? '' : `data-item-index="${index}"`;
   const saleAction = options.sell && sellable ? `data-sell-item="${item.id}"` : '';
   const saleLabel = options.sell ? sellable ? `<span class="item-sell">VERKAUFEN · ${isMythicWeapon(item) ? MYTHIC_ITEMS.saleStones + ' mystische Steine' : number(sellValue(item)) + ' ✧'}</span>` : '<span class="item-sell item-unsellable-label">NICHT VERKÄUFLICH</span>' : '';
-  return `<button class="ui-control ui-graphic ${classes}" type="button" data-item-key="${item.id}" draggable="${canDrag}" ${itemIndex} ${options.socketTarget ? `data-socket-target-item="${item.id}"` : ''} ${options.enchantTarget ? `data-enchant-target-item="${item.id}"` : ''} ${forgeAttrs} ${saleAction} ${options.sell && !sellable ? 'aria-disabled="true"' : ''} aria-label="${escapeHtml(item.name)}, ${escapeHtml(item.rarity)}${item.set ? `, Set ${escapeHtml(item.set)}` : ''}${upgradeLabel ? `, ${upgradeLabel}` : ''}${openedSockets ? `, ${socketLabel}` : ''}${options.sell && !sellable ? ', nicht verkäuflich' : ''}">${equipmentEmbersMarkup(item)}${itemIconMarkup(item, 'item-icon')}${greaterCount ? `<span class="item-greater-count" aria-label="${greaterCount} Greater Affixe">✦ <span class="item-greater-value">${greaterCount}</span></span>` : ''}${openedSockets ? `<span class="item-socket-count" title="${socketLabel}" aria-label="${socketLabel}">${filledSockets}/${openedSockets}</span>` : ''}${quantity > 1 ? `<span class="item-stack-count">${number(quantity)}</span>` : ''}${!isMaterial && item.upgradeLevel ? `<span class="item-upgrade-level">+${item.upgradeLevel}</span>` : ''}<span class="item-name">${escapeHtml(item.name)}</span><span class="item-type">${escapeHtml(slotName)}</span>${saleLabel}</button>`;
+  return `<button class="ui-control ui-graphic ${classes}" type="button" data-item-key="${item.id}" draggable="${canDrag}" ${itemIndex} ${options.socketTarget ? `data-socket-target-item="${item.id}"` : ''} ${options.enchantTarget ? `data-enchant-target-item="${item.id}"` : ''} ${forgeAttrs} ${saleAction} ${options.sell && !sellable ? 'aria-disabled="true"' : ''} aria-label="${escapeHtml(item.name)}${isSellableEquipment(item) ? `, ${escapeHtml(item.rarity)}` : ''}${item.set ? `, Set ${escapeHtml(item.set)}` : ''}${upgradeLabel ? `, ${upgradeLabel}` : ''}${openedSockets ? `, ${socketLabel}` : ''}${options.sell && !sellable ? ', nicht verkäuflich' : ''}">${equipmentEmbersMarkup(item)}${itemIconMarkup(item, 'item-icon')}${itemMarkersMarkup(item)}${openedSockets ? `<span class="item-socket-count" title="${socketLabel}" aria-label="${socketLabel}">${filledSockets}/${openedSockets}</span>` : ''}${quantity > 1 ? `<span class="item-stack-count">${number(quantity)}</span>` : ''}${!isMaterial && item.upgradeLevel ? `<span class="item-upgrade-level">+${item.upgradeLevel}</span>` : ''}<span class="item-name">${escapeHtml(item.name)}</span><span class="item-type">${escapeHtml(slotName)}</span>${saleLabel}</button>`;
 }
 
 function renderItemGridControls(items, gridKey, category, sort, { includeAll = false, excludeCategories = [], includeCategories = null } = {}) {
@@ -447,7 +486,7 @@ function gearSlot(key, label, item, opts = {}) {
   const text = item ? `${item.name}${item.slot === 'pet' ? ` · Stufe ${item.level}` : item.upgradeLevel ? ` · +${item.upgradeLevel}` : ''}` : opts.empty || 'Leer';
   const classNames = ['gear-slot', 'compact-gear-slot', item ? 'filled' : 'empty', item?.rarityColor || '', (item?.affixes || []).some(affix => affix.greater) ? 'has-greater-affix' : '', item?.set ? 'set-item' : '', opts.wide ? 'wide' : '', opts.disabled ? 'locked' : ''].filter(Boolean).join(' ');
   const dataAttr = `data-gear-owner="${ownerClass === state.mainClass ? 'main' : 'companion'}" data-gear-class="${ownerClass}" data-gear-slot="${key}"`;
-  return `<button class="ui-control ui-graphic ${classNames}" type="button" ${dataAttr} ${opts.disabled ? 'disabled' : ''} aria-label="${escapeHtml(label)}: ${escapeHtml(text)}${item?.set ? `, Set ${escapeHtml(item.set)}` : ''}">${equipmentEmbersMarkup(item)}<span class="gear-icon">${icon}</span></button>`;
+  return `<button class="ui-control ui-graphic ${classNames}" type="button" ${dataAttr} ${opts.disabled ? 'disabled' : ''} aria-label="${escapeHtml(label)}: ${escapeHtml(text)}${item?.set ? `, Set ${escapeHtml(item.set)}` : ''}">${equipmentEmbersMarkup(item)}<span class="gear-icon">${icon}</span>${itemMarkersMarkup(item)}</button>`;
 }
 function renderEquipment(className = state.mainClass) {
   const gear = equipmentForClass(className);
@@ -470,7 +509,7 @@ function renderEquipment(className = state.mainClass) {
     gearSlot('earring2', 'Ohrring II', gear.earring2, { className, icon: '◈' }),
   ];
   const glyphSlots = ['glyph1', 'glyph2', 'glyph3'].map((slot, index) => gearSlot(slot, `Glyphe ${index + 1}`, gear[slot], { className, icon: SLOT_DATA.glyph.icon }));
-  return `<section class="equipment-panel character-panel-surface equipment-paperdoll"><div class="panel-heading"><div><p class="eyebrow">${isMain ? 'DEIN LOADOUT' : 'GEF&Auml;HRTEN-LOADOUT'}</p><h3>${isMain ? 'Ausr&uuml;stung' : escapeHtml(CLASSES[className].label)}</h3></div><span class="equipment-count">${Object.values(gear).filter(Boolean).length + (petForClass(className) ? 1 : 0)} / 15</span></div><p class="gear-hint">Doppelklick oder ziehe Gegenst&auml;nde in einen Slot.</p><div class="loadout-paperdoll" aria-label="Ausrüstungsplätze um den Charakter"><div class="loadout-side loadout-armor">${leftSlots.join('')}</div><div class="loadout-figure" aria-hidden="true"><img src="Assets/Art/battle/runtime/${className}/${className}-idle.png" alt="" draggable="false"></div><div class="loadout-side loadout-jewelry">${rightSlots.join('')}</div><div class="loadout-footer" role="group" aria-label="Waffe, Glyphen und Nebenhand"><div class="loadout-weapon">${weapon}</div><div class="loadout-glyphs" role="group" aria-label="Glyphenplätze">${glyphSlots.join('')}</div><div class="loadout-offhand">${offHand}</div></div></div></section>`;
+  return `<section class="equipment-panel character-panel-surface equipment-paperdoll"><div class="panel-heading"><div><p class="eyebrow">${isMain ? 'DEIN LOADOUT' : 'GEF&Auml;HRTEN-LOADOUT'}</p><h3>${isMain ? 'Ausr&uuml;stung' : escapeHtml(CLASSES[className].label)}</h3></div><span class="equipment-count">${Object.values(gear).filter(Boolean).length + (petForClass(className) ? 1 : 0)} / 15</span></div><div class="loadout-paperdoll" aria-label="Ausrüstungsplätze um den Charakter"><div class="loadout-side loadout-armor">${leftSlots.join('')}</div><div class="loadout-figure" aria-hidden="true"><img src="Assets/Art/battle/runtime/${className}/${className}-idle.png" alt="" draggable="false"></div><div class="loadout-side loadout-jewelry">${rightSlots.join('')}</div><div class="loadout-footer" role="group" aria-label="Waffe, Glyphen und Nebenhand"><div class="loadout-weapon">${weapon}</div><div class="loadout-glyphs" role="group" aria-label="Glyphenplätze">${glyphSlots.join('')}</div><div class="loadout-offhand">${offHand}</div></div></div></section>`;
 }
 
 // Shared by combat and the character sheet: only unconditional total-damage factors.

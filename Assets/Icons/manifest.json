@@ -1,6 +1,6 @@
 {
   "scope": "Current game sources: index.html, script.js, style.css, js/, css/, data/config/. Includes explicit SVG references and the abilityPresentation map plus fallback. Archived assets and inline SVG backups are not runtime assets.",
-  "iconCount": 73,
+  "iconCount": 74,
   "configuredAbilitiesResolved": 24,
   "icons": [
     {
@@ -175,8 +175,7 @@
       "source": "Assets/Icons/000000/transparent/1x1/delapouite/star-medal.svg",
       "copy": "000000/transparent/1x1/delapouite/star-medal.svg",
       "usedBy": [
-        "data/config/equipment.json:102",
-        "js/character.js:715"
+        "js/character.js:738"
       ],
       "sha256": "a48b325bdb34d0d3bbe409c5dfe58aebeb68ff98f2d23ba6ed012f8508b27e0f",
       "originalPackSource": "icons/000000/transparent/1x1/delapouite/star-medal.svg"
@@ -382,6 +381,15 @@
       ],
       "sha256": "26ee972d756689f1d447902a41c9737a1e91cd27d54fcf737a8c547591306b64",
       "originalPackSource": "icons/000000/transparent/1x1/lorc/crystal-eye.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/crystal-growth.svg",
+      "copy": "000000/transparent/1x1/lorc/crystal-growth.svg",
+      "usedBy": [
+        "data/config/equipment.json:102"
+      ],
+      "sha256": "5d984f3ca6fd6a7ff422a18128630084c78d8ca1a75e33278fca49947ed78a85",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/crystal-growth.svg"
     },
     {
       "source": "Assets/Icons/000000/transparent/1x1/lorc/crystal-shine.svg",

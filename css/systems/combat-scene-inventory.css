@@ -1,27 +1,26 @@
 @charset "UTF-8";
-/* Set membership is a small icon badge; rarity keeps its normal colors. */
-.inventory-item.set-item .item-icon,
-.gear-slot.set-item .gear-icon,
+/* Inventory and loadout use the same markers, anchored to the whole tile. */
+.gear-slot { --item-tile-size: var(--equipment-slot-size, 64px); }
 .contract-relic-step.is-set-item .relic-step-icon { position: relative; }
-.inventory-item.set-item .item-icon::after,
-.gear-slot.set-item .gear-icon::after,
+.contract-relic-step.is-set-item .relic-step-icon::after { content: "SET"; }
+.item-set-badge,
 .contract-relic-step.is-set-item .relic-step-icon::after {
-    content: "SET";
     position: absolute;
-    right: -2px;
-    bottom: -3px;
-    z-index: 1;
-    padding: 1px 3px;
+    right: clamp(2px, calc(var(--item-tile-size, 64px) * .078125), 5px);
+    bottom: clamp(2px, calc(var(--item-tile-size, 64px) * .0625), 4px);
+    z-index: 3;
+    padding: 1px clamp(1px, calc(var(--item-tile-size, 64px) * .046875), 3px);
     border: 1px solid #766b5c;
     border-radius: 2px;
     background: #151519f2;
     color: #d6cfc4;
     box-shadow: 0 1px 4px #0008;
-    font: 700 7px/1.2 var(--sans);
+    font: 700 clamp(5px, calc(var(--item-tile-size, 64px) * .109375), 7px)/1.2 var(--sans);
     letter-spacing: .04em;
     text-shadow: none;
     pointer-events: none;
 }
+.contract-relic-step.is-set-item .relic-step-icon::after { right: -2px; bottom: -3px; z-index: 1; }
 
 /* Full scene combat view built from inline vector art. */
 .battle-overlay {

@@ -1,6 +1,6 @@
 # Icon credits
 
-The 73 active icons are selected from Game-icons.net. Original contributor folders are preserved under `000000/transparent/1x1/`. The full license and contributor list is in [license.txt](license.txt). Runtime references, provenance and checksums are recorded in [manifest.json](manifest.json).
+The 74 active icons are selected from Game-icons.net. Original contributor folders are preserved under `000000/transparent/1x1/`. The full license and contributor list is in [license.txt](license.txt). Runtime references, provenance and checksums are recorded in [manifest.json](manifest.json).
 
 | Icon | Creator | License |
 | --- | --- | --- |
@@ -42,6 +42,7 @@ The 73 active icons are selected from Game-icons.net. Original contributor folde
 | [lorc/crowned-skull.svg](000000/transparent/1x1/lorc/crowned-skull.svg) | Lorc | CC BY 3.0 |
 | [lorc/crystal-cluster.svg](000000/transparent/1x1/lorc/crystal-cluster.svg) | Lorc | CC BY 3.0 |
 | [lorc/crystal-eye.svg](000000/transparent/1x1/lorc/crystal-eye.svg) | Lorc | CC BY 3.0 |
+| [lorc/crystal-growth.svg](000000/transparent/1x1/lorc/crystal-growth.svg) | Lorc | CC BY 3.0 |
 | [lorc/crystal-shine.svg](000000/transparent/1x1/lorc/crystal-shine.svg) | Lorc | CC BY 3.0 |
 | [lorc/crystal-wand.svg](000000/transparent/1x1/lorc/crystal-wand.svg) | Lorc | CC BY 3.0 |
 | [lorc/earth-crack.svg](000000/transparent/1x1/lorc/earth-crack.svg) | Lorc | CC BY 3.0 |

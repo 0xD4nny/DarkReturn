@@ -1,23 +1,21 @@
 // Black-market and forge page templates.
+function shopOfferQuote(group, requested = shopQuantities[group]) {
+  const freeSlots = Math.max(0, state.inventoryCapacity - inventoryOccupiedSlots(state));
+  const stackable = STACKABLE_SHOP_GROUPS.has(group);
+  const maxQuantity = Math.min(maxAffordableShopQuantity(state, group), stackable ? 1000 : freeSlots);
+  const quantity = maxQuantity > 0 ? Math.max(1, Math.min(Math.floor(Number(requested) || 1), maxQuantity)) : 0;
+  const unitPrice = shopPriceForLevel(partyLevel(state), group);
+  return { quantity, maxQuantity, unitPrice, totalPrice: unitPrice * quantity, unavailable: !quantity || state.souls < unitPrice * quantity };
+}
 function renderShop() {
   syncEquipmentShop(state);
   const freeSlots = Math.max(0, state.inventoryCapacity - inventoryOccupiedSlots(state));
   const renderOfferCard = (group) => {
     const offer = SHOP_OFFERS.find((entry) => entry.group === group);
-    const requested = Math.max(1, Math.floor(Number(shopQuantities[group]) || 1));
-    const stackableOffer = STACKABLE_SHOP_GROUPS.has(group);
-    const canUseExistingStack = stackableOffer && state.inventory.some((item) => item.slot === group);
-    const consumesInventorySlot = !stackableOffer;
-    const maxAffordable = maxAffordableShopQuantity(state, group);
-    const maxQuantity = Math.min(maxAffordable, consumesInventorySlot ? freeSlots : 1000);
-    const canPurchaseSpace = !consumesInventorySlot || freeSlots > 0 || canUseExistingStack;
-    const quantity = canPurchaseSpace && maxQuantity > 0 ? Math.max(1, Math.min(requested, maxQuantity)) : 0;
+    const { quantity, maxQuantity, unitPrice, totalPrice, unavailable } = shopOfferQuote(group);
     shopQuantities[group] = quantity;
-    const unitPrice = shopPriceForLevel(partyLevel(state), group);
-    const totalPrice = unitPrice * quantity;
     const displayedPrice = quantity ? totalPrice : unitPrice;
-    const unavailable = !canPurchaseSpace || !quantity || state.souls < totalPrice;
-    return `<article class="shop-card shop-product-card"><div class="shop-card-icon">${assetIconMarkup(offer.asset, offer.icon, 'shop-offer-image')}</div><div class="shop-card-copy"><span class="shop-type">${offer.category}</span><h3>${offer.title}</h3><p>${offer.subtitle}</p><div class="shop-purchase-controls"><label>MENGE<input class="ui-control ui-field ui-compact" type="number" min="${maxQuantity ? 1 : 0}" max="${maxQuantity}" step="1" value="${quantity}" data-shop-quantity="${group}" ${maxQuantity ? '' : 'disabled'} aria-label="Kaufmenge ${offer.title}"></label><div class="shop-price"><strong data-shop-total>\u2727 ${number(displayedPrice)} Seelen${quantity ? '' : ' / Stück'}</strong></div><button class="primary-button ui-control ui-button ui-compact purchase-button" type="button" data-buy="${group}" ${unavailable ? 'disabled' : ''}>KAUFEN</button></div></div></article>`;
+    return `<article class="shop-card shop-product-card shop-box-card"><button class="shop-box-tile inventory-item ${itemVisualClasses({ slot: group })}" type="button" data-mobile-shop-box="${group}" aria-label="${escapeHtml(offer.title)} – Details und Kauf">${equipmentEmbersMarkup({ slot: group })}<span class="shop-box-tile-icon item-icon">${assetIconMarkup(offer.asset, offer.icon, 'shop-box-tile-glyph')}</span><span class="shop-box-tile-name">${escapeHtml(offer.title)}</span><span class="shop-mobile-price">✧ ${compactLifetimeNumber(unitPrice)}</span></button><div class="shop-card-icon">${assetIconMarkup(offer.asset, offer.icon, 'shop-offer-image')}</div><div class="shop-card-copy"><span class="shop-type">${offer.category}</span><h3>${offer.title}</h3><p>${offer.subtitle}</p><div class="shop-purchase-controls"><label>MENGE<input class="ui-control ui-field ui-compact" type="number" min="${maxQuantity ? 1 : 0}" max="${maxQuantity}" step="1" value="${quantity}" data-shop-quantity="${group}" ${maxQuantity ? '' : 'disabled'} aria-label="Kaufmenge ${offer.title}"></label><div class="shop-price"><strong data-shop-total>\u2727 ${number(displayedPrice)} Seelen${quantity ? '' : ' / Stück'}</strong></div><button class="primary-button ui-control ui-button ui-compact purchase-button" type="button" data-buy="${group}" ${unavailable ? 'disabled' : ''}>KAUFEN</button></div></div></article>`;
   };
   const leftGroups = SHOP_OFFERS.filter(offer => offer.purchasable !== false).map(offer => offer.group);
   const equipmentOffers = state.shopEquipmentOffers.map((item, index) => {
@@ -25,7 +23,7 @@ function renderShop() {
     const greaterCount = (item.affixes || []).filter(affix => affix.greater).length;
     const owners = dropPartyClasses(state).filter(owner => partyCanEquipDrop(item, { ...state, mainClass: owner, activeCompanion: null }));
     const disabled = state.souls < price || freeSlots < 1 || totalRewardStorageSlots(state) - 1 < reservedBossStorageSlots(state);
-    return `<article class="shop-card shop-product-card shop-equipment-card">${itemCard(item, index, { shopOffer: true, draggable: false })}<div class="shop-card-copy"><span class="shop-type">${escapeHtml(item.rarity)}${greaterCount ? ` · ✦ ${greaterCount} Greater Affixe` : ''}</span><h3>${escapeHtml(item.name)}</h3><p>${owners.map(owner => escapeHtml(CLASSES[owner].label)).join(' / ')}${item.set ? ` · ${escapeHtml(item.set)}` : ''}</p><div class="shop-purchase-controls"><div class="shop-price"><strong>✧ ${number(price)} Seelen</strong></div><button class="primary-button ui-control ui-button ui-compact purchase-button" type="button" data-buy-equipment-offer="${item.id}" ${disabled ? 'disabled' : ''}>KAUFEN</button></div></div></article>`;
+    return `<article class="shop-card shop-product-card shop-equipment-card" data-mobile-shop-equipment="${escapeHtml(item.id)}">${itemCard(item, index, { shopOffer: true, draggable: false })}<span class="shop-mobile-price">✧ ${compactLifetimeNumber(price)}</span><div class="shop-card-copy"><span class="shop-type">${escapeHtml(item.rarity)}${greaterCount ? ` · ✦ ${greaterCount} Greater Affixe` : ''}</span><h3>${escapeHtml(item.name)}</h3><p>${owners.map(owner => escapeHtml(CLASSES[owner].label)).join(' / ')}${item.set ? ` · ${escapeHtml(item.set)}` : ''}</p><div class="shop-purchase-controls"><div class="shop-price"><strong>✧ ${number(price)} Seelen</strong></div><button class="primary-button ui-control ui-button ui-compact purchase-button" type="button" data-buy-equipment-offer="${item.id}" ${disabled ? 'disabled' : ''}>KAUFEN</button></div></div></article>`;
   }).join('');
   const inventoryPanel = `<section class="shop-inventory-panel item-selection"><div class="section-heading shop-heading sell-heading"><div><h3>Gegenst\u00e4nde verkaufen</h3></div></div>${renderItemGrid(state.inventory, { gridKey: 'shopSell', filters: true, gridClass: 'sell-grid', cardOptions: { sell: true }, emptyHtml: '<div class="forge-placeholder">Dein Inventar ist leer.</div>' })}</section>`;
   return `<div class="view-heading"><div><p class="eyebrow"><span></span> DEIN UNTERSCHLUPF</p><h1>Der <em>Schwarzmarkt</em></h1><p class="welcome-sub">Glyphen- und VIP-Luckyboxen sowie passende Ausrüstung kaufen oder eigene Beute verkaufen.</p></div><div class="smith-mark page-header-icon" aria-hidden="true">${assetIconMarkup('Assets/Icons/000000/transparent/1x1/lorc/hood.svg', '', 'page-header-glyph')}</div></div><div class="shop-catalog-layout shop-equipment-offers">${inventoryPanel}<section class="shop-catalog-column shop-boxes-panel"><header class="shop-catalog-heading"><p class="eyebrow">KISTEN</p></header>${leftGroups.map(renderOfferCard).join('')}</section><section class="shop-catalog-column shop-gear-panel"><header class="shop-catalog-heading"><p class="eyebrow">WECHSELNDE ANGEBOTE</p><small class="shop-refresh-timer" data-shop-refresh-timer title="Bis zur Erneuerung aller Angebote">${formatWorldEventTime(state.shopEquipmentRefreshAt - Date.now())}</small></header>${equipmentOffers}</section></div>`;

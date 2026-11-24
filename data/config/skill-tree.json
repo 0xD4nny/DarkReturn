@@ -71,7 +71,7 @@
       "id": "warrior_4",
       "name": "Klassenmeisterschaft",
       "rarity": "rare",
-      "maxPoints": 30,
+      "maxPoints": 50,
       "parent": "warrior_2",
       "requiredParentPoints": 10,
       "branch": "warrior",
@@ -168,16 +168,16 @@
       "id": "mage_4",
       "name": "Klassenmeisterschaft",
       "rarity": "rare",
-      "maxPoints": 30,
+      "maxPoints": 50,
       "parent": "mage_2",
       "requiredParentPoints": 10,
       "branch": "mage",
       "tier": 3,
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
       "effect": {
-        "type": "stat-flat",
+        "type": "final-percent",
         "perPoint": 1,
-        "stat": "Schaden über Zeit"
+        "stat": "Angriff"
       }
     },
     {
@@ -265,16 +265,16 @@
       "id": "hunter_4",
       "name": "Klassenmeisterschaft",
       "rarity": "rare",
-      "maxPoints": 30,
+      "maxPoints": 50,
       "parent": "hunter_2",
       "requiredParentPoints": 10,
       "branch": "hunter",
       "tier": 3,
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
       "effect": {
-        "type": "stat-flat",
+        "type": "final-percent",
         "perPoint": 1,
-        "stat": "Schaden über Zeit"
+        "stat": "Angriff"
       }
     },
     {
@@ -362,16 +362,16 @@
       "id": "healer_4",
       "name": "Klassenmeisterschaft",
       "rarity": "rare",
-      "maxPoints": 30,
+      "maxPoints": 50,
       "parent": "healer_2",
       "requiredParentPoints": 10,
       "branch": "healer",
       "tier": 3,
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
       "effect": {
-        "type": "stat-flat",
+        "type": "final-percent",
         "perPoint": 1,
-        "stat": "Buff- und Heileffektivität"
+        "stat": "Angriff"
       }
     },
     {
@@ -520,7 +520,7 @@
     },
     {
       "id": "attack_legend_alt",
-      "name": "Doppelschlag",
+      "name": "Zehrende Kraft",
       "rarity": "legendary",
       "maxPoints": 1,
       "parent": "attack_5",
@@ -529,8 +529,8 @@
       "tier": 6,
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/sword-clash.svg",
       "effect": {
-        "type": "extra-attack-chance",
-        "perPoint": 50
+        "type": "dot-to-attack-percent",
+        "perPoint": 1
       }
     },
     {

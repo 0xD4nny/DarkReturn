@@ -334,17 +334,12 @@
     .mobile-sheet-content > .skill-tree-detail { padding: 0; border: 0; background: transparent; }
     .mobile-skill-viewport [data-skill-node] { -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
     .content-wrap:has(> .skill-tree-view) { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
-    .skill-tree-view > .view-heading .welcome-sub,
-    .skill-tree-view .mobile-skill-controls > p { display: none; }
-    .skill-tree-board .skill-tree-board-points { position: static; padding: 12px; }
-    .mobile-skill-controls { display: block; padding: 0 12px 12px; }
-    .mobile-skill-controls p { font-size: 14px; line-height: 1.5; }
-    .mobile-skill-controls > div { display: flex; gap: 8px; flex-wrap: wrap; }
-    .mobile-skill-controls button { min-width: 44px; padding-inline: 10px; }
-    .mobile-skill-viewport { width: 100%; height: min(58svh, 540px); min-height: 260px; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y pinch-zoom; border-block: 1px solid var(--ui-panel-border); }
-    .mobile-skill-viewport .skill-tree-svg { position: static; inset: auto; display: block; width: calc(900px * var(--mobile-tree-zoom, 1)); height: calc(840px * var(--mobile-tree-zoom, 1)); max-width: none; }
-    .skill-tree-board .skill-tree-legend { position: static; display: flex; flex-wrap: wrap; gap: 10px; padding: 12px; }
-    .skill-tree-board .skill-tree-legend { font-size: 12px; }
+    .skill-tree-view > .view-heading .welcome-sub { display: none; }
+    .skill-tree-board .skill-tree-board-points { position: static; padding: 0 0 8px; }
+    .mobile-skill-viewport { width: 100%; height: min(58svh, 540px); min-height: 260px; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; border: 0; }
+    .mobile-skill-viewport .skill-tree-svg { position: static; inset: auto; display: block; width: calc(900px * var(--mobile-tree-zoom, .75)); height: calc(840px * var(--mobile-tree-zoom, .75)); max-width: none; }
+    .skill-tree-board .skill-tree-legend { display: none; }
+    .skill-tree-view .skill-tree-toolbar:empty { display: none; }
     .skill-tree-detail-state strong { font-size: 13px; line-height: 1.5; }
     .skill-tree-effect strong, .skill-tree-effect small { font-size: 14px; }
     .mobile-detail-sheet { position: fixed; top: calc(var(--mobile-visible-top, 0px) + env(safe-area-inset-top, 0px) + 8px); bottom: auto; left: 0; right: 0; margin: 0 auto; max-height: calc(var(--mobile-visible-height, 100dvh) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 16px); }
@@ -740,12 +735,11 @@
     .content-wrap:has(> .inventory-view:not(.equipment-view)) { padding-bottom: var(--mobile-owner-space); }
     .content-wrap:has(> .skill-tree-view) { box-sizing: border-box; height: calc(100dvh - var(--topbar-height)); }
     .skill-tree-view { display: flex; flex-direction: column; height: 100%; min-height: 0; }
-    .skill-tree-view > .view-heading { flex: 0 0 auto; margin-bottom: 20px; }
+    .skill-tree-view > .view-heading { flex: 0 0 auto; margin-bottom: 8px; }
     .skill-tree-view .skill-tree-layout { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; }
     .skill-tree-view .skill-tree-board { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; }
-    .skill-tree-board > :is(.skill-tree-board-points, .mobile-skill-controls, .skill-tree-legend) { flex: 0 0 auto; }
+    .skill-tree-board > .skill-tree-board-points { flex: 0 0 auto; }
     .skill-tree-view .mobile-skill-viewport { flex: 1 1 0; height: 0; min-height: 160px; }
-    .skill-tree-view .skill-tree-legend { margin: 0; padding: 10px 12px; font-size: 10px; gap: 6px 12px; }
     :is(.inventory-view, .skill-tree-view, .abilities-view, .altar-ritual-view) .mobile-inventory-owners { left: max(var(--mobile-page-gutter), env(safe-area-inset-left, 0px)); }
 
     .content-wrap :is(.codex-panel-link, .mobile-map-details) {

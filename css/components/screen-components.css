@@ -377,16 +377,22 @@
 .tooltip-affixes .greater-affix { color: #f4d790; }
 .item-greater-count {
     position: absolute;
-    bottom: 4px;
-    left: 6px;
+    bottom: clamp(2px, calc(var(--item-tile-size, 64px) * .0625), 4px);
+    left: clamp(2px, calc(var(--item-tile-size, 64px) * .09375), 6px);
+    z-index: 3;
     color: #f4d790;
-    font-size: 12px;
+    font-size: clamp(8px, calc(var(--item-tile-size, 64px) * .1875), 12px);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0;
+    white-space: nowrap;
     text-shadow: 0 1px 4px #000;
 }
 .item-greater-value {
     display: inline-block;
     margin-left: -2px;
-    font-size: 11px;
+    font-size: .916667em;
 }
 .tooltip-affixes .tooltip-socket-heading { margin-top: 5px; padding-top: 8px; border-top: 1px solid #4b4038; color: #d2a66d; font-size: 10px; letter-spacing: .12em; }
 .tooltip-weapon-damage {
