@@ -746,17 +746,24 @@ function areaEnemyBaseDamage(areaId, deepTier = 0) {
   const scalingTier = rules.enemyDamageScalingTier || maximumTier;
   return Math.round(baseline * (target / baseline) ** (step / (scalingTier * AREAS.length)));
 }
-function towerEncounterStats(sourceState = state) {
+function towerEncounterStats(sourceState = state, round = 1) {
   const rules = BALANCE.combat;
   const level = highestPartyLevel(sourceState);
-  const early = rules.towerEarlyScaling;
-  const progress = early ? Math.max(0, Math.min(1, (level - 1) / (early.fullScalingLevel - 1))) : 1;
-  const health = (rules.partyPowerBase + level * rules.partyPowerPerLevel) * rules.towerHealthMultiplier;
-  const damage = rules.towerDamageBase + Math.floor(level * rules.towerDamagePerLevel);
+  const scaling = rules.towerScaling;
+  const towerRound = Math.max(1, Math.floor(Number(round) || 1));
+  const progress = (towerRound - 1) / (scaling.referenceRound - 1);
+  const interpolate = (start, target) => {
+    // Continue the same percentage growth beyond the reference round; keep enemy pools finite.
+    const exponent = Math.log(start) + Math.log(target / start) * progress;
+    return Math.max(1, Math.round(Math.exp(Math.min(Math.log(Number.MAX_VALUE / 100), exponent))));
+  };
+  const health = interpolate(areaEnemyBaseHealth(scaling.startArea, scaling.startDeepTier), areaEnemyBaseHealth(scaling.targetArea, scaling.targetDeepTier));
+  const damage = interpolate(areaEnemyBaseDamage(scaling.startArea, scaling.startDeepTier), areaEnemyBaseDamage(scaling.targetArea, scaling.targetDeepTier));
   return {
     level,
-    health: Math.round(early ? early.startHealth + (health - early.startHealth) * progress : health),
-    damage: Math.round(early ? early.startDamage + (damage - early.startDamage) * progress : damage),
+    round: towerRound,
+    health,
+    damage,
     soulsMinimum: Math.round(rules.towerSoulsMinimumBase + level * rules.towerSoulsMinimumPerLevel),
     soulsMaximum: Math.round(rules.towerSoulsMaximumBase + level * rules.towerSoulsMaximumPerLevel),
   };
@@ -1187,7 +1194,7 @@ function towerLootChance(choice, sourceState = state) {
   return applyLootDropBonus(towerLootBaseChance(choice, sourceState) / 100, sourceState, { cap: Infinity }) * 100;
 }
 function towerLootProgressLabel(sourceState = state) {
-  return `${number(sourceState.statistics.towerBossesKilled || 0)} Turmbosse · +${formatRuleNumber(BALANCE.loot.towerLootChancePerBoss)} Prozentpunkte je Sieg`;
+  return `${number(sourceState.statistics.towerBossesKilled || 0)} Turmbosse · +${formatRuleNumber(BALANCE.loot.towerLootChancePerBoss)} % je Sieg`;
 }
 function applyLootDropBonus(baseChance, sourceState = state, { cap = 1 } = {}) {
   const bonus = powerupBonusForStat('Droprate', sourceState) + (getWorldEvent(sourceState).dropRatePercent || 0)
@@ -1202,9 +1209,7 @@ function workshopSuccessChance(baseChance, sourceState = state) {
 function vipIsActive(sourceState = state) {
   return Number(sourceState?.vipExpiresAt) > rewardTime(sourceState);
 }
-function vipWorkshopSpeedMultiplier(sourceState = state) {
-  return vipIsActive(sourceState) ? VIP_RULES.workshopSpeedMultiplier : 1;
-}
+
 function renderVipBadge() {
   const name = document.querySelector('#player-identity > strong');
   if (!name) return;
@@ -1216,7 +1221,7 @@ function renderVipBadge() {
     badge.textContent = 'VIP';
     name.append(badge);
   }
-  badge.title = detailTextLines(`VIP bis ${new Date(state.vipExpiresAt).toLocaleString('de-DE')} · ${VIP_RULES.workshopSpeedMultiplier}× Werkstattgeschwindigkeit · +${VIP_RULES.upgradeChancePercent} % Upgradechance · +${VIP_RULES.dropRatePercent} % Droprate · +${VIP_RULES.soulBonusPercent} % Kampf-Seelen ? +${BALANCE.dailyAttempts.vipBonus} Tagesversuch für Bossprüfung und Turm ? +${BALANCE.dailyAttempts.vipBonus} Tagesversuch für Bossprüfung und Turm`).join('\n');
+  badge.title = detailTextLines(`VIP bis ${new Date(state.vipExpiresAt).toLocaleString('de-DE')} · +${VIP_RULES.upgradeChancePercent} % Upgradechance · +${VIP_RULES.dropRatePercent} % Droprate · +${VIP_RULES.soulBonusPercent} % Kampf-Seelen ? +${BALANCE.dailyAttempts.vipBonus} Tagesversuch für Bossprüfung und Turm ? +${BALANCE.dailyAttempts.vipBonus} Tagesversuch für Bossprüfung und Turm`).join('\n');
 }
 function makeConsolationReward() {
   const outcome = choose(BOX_RULES.consolationPool);
@@ -1705,7 +1710,7 @@ async function performAction(payload, successTitle, successText, { background = 
     });
     const result = await task;
     if (saveMaintenance || saveBlocked || generation !== stateGeneration) return null;
-    if (['upgrade', 'fuse-glyphs', 'socket-slot', 'enchant-rarity', 'enchant-affix'].includes(payload.action) && result.outcomes?.length) await playForgeAnimation(result);
+    if (['workshop-start', 'upgrade', 'fuse-glyphs', 'socket-slot', 'enchant-rarity', 'enchant-affix'].includes(payload.action) && result.outcomes?.length) playForgeAnimation(result);
     if (saveMaintenance || saveBlocked || generation !== stateGeneration) return null;
     if (['upgrade', 'upgrade-auto'].includes(payload.action) && currentView !== 'blacksmith' && !autoUpgradeRunning) {
       selectedForForge.clear();

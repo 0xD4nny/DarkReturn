@@ -54,7 +54,7 @@ function renderBlacksmith() {
     .filter((item, index, all) => item && (!mythicMode || isMythicWeapon(item)) && (AFFIX_POOLS[item.slot] || item.slot === 'glyph') && all.findIndex(candidate => candidate?.id === item.id) === index);
   const stones = state.inventory.filter((item) => item.slot === stoneSlot);
   const stoneQuantity = inventoryQuantityForSlot(state, stoneSlot);
-  const maxLevel = mythicMode ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
+  const maxLevel = mythicMode ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
   if (!items.some(item => selectedForForge.has(item.id))) {
     const initialTarget = items.find(item => (item[levelKey] || 0) < maxLevel) || items[0];
     selectedForForge.clear();
@@ -65,7 +65,7 @@ function renderBlacksmith() {
   const selectedStone = stones[0];
   const targetLevel = forgeUpgradeTargetLevel();
   const targetOptions = Array.from({ length: maxLevel }, (_, index) => index + 1).map(level => `<option value="${level}" ${level === targetLevel ? 'selected' : ''}>+${level}</option>`).join('');
-  const chance = target && currentUpgrade < maxLevel ? workshopSuccessChance(BALANCE.items.upgradeSuccessChanceByLevel[currentUpgrade] || 0) : 0;
+  const chance = target && currentUpgrade < maxLevel ? workshopSuccessChance((mythicMode ? MYTHIC_UPGRADES.successChanceByLevel : BALANCE.items.upgradeSuccessChanceByLevel)[currentUpgrade] || 0) : 0;
   const ready = Boolean(target && selectedStone && currentUpgrade < maxLevel && !activeWorkshopJob);
   const canAuto = Boolean(target && stoneQuantity && currentUpgrade < targetLevel && !activeWorkshopJob);
   return `${renderBlacksmithHeading()}<div class="smith-layout"><section class="forge-selection item-selection"><div class="section-heading"><div><h3>Ausger&uuml;steten Platz w&auml;hlen</h3></div><span class="selection-count">${items.length} Teile</span></div>${renderItemGrid(items, { gridKey: 'forge', filters: true, excludeCategories: ['materials', 'gems'], gridClass: 'forge-grid', cardOptions: (item) => ({ forge: true, selected: selectedForForge.has(item.id), disabled: (item[levelKey] || 0) >= maxLevel }), emptyHtml: '<div class="forge-placeholder">Lege zuerst passende Ausr&uuml;stung bei Main oder Begleiter an.</div>' })}</section><section class="forge-workbench ${workshopMotionClass('blacksmith')} ${ready ? 'is-ready' : ''}"><div class="socket-workbench-heading"><h3>${mythicMode ? 'Mystische Aufwertung' : 'Aufwertung'}</h3></div><div class="forge-ritual-art" aria-hidden="true"><div class="ritual-orbit ritual-orbit-outer"><i></i><i></i><i></i><i></i></div><div class="ritual-orbit ritual-orbit-middle"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="ritual-orbit ritual-orbit-inner"><i></i><i></i><i></i></div>${workshopRitualCore(target, '&#x2726;')}<span class="ritual-mark ritual-mark-one">&#x25C6;</span><span class="ritual-mark ritual-mark-two">&#x2727;</span><span class="ritual-mark ritual-mark-three">&#x25C6;</span><span class="ritual-caption">${target ? escapeHtml(target.name) : 'AUSR&Uuml;STUNG W&Auml;HLEN'}</span></div><div class="forge-controls">${target ? `<div class="forge-upgrade-status"><span>${mythicMode ? `Mythischer Effekt: +${mythicDamagePercent(target)} % &middot; ` : ''}${currentUpgrade < maxLevel ? `N&auml;chster Versuch: +${currentUpgrade} &#x2192; +${currentUpgrade + 1}` : ''}</span><strong>${currentUpgrade < maxLevel ? `${formatRuleNumber(chance)} % Erfolg` : 'MAXIMALSTUFE'}</strong></div>` : ''}<div class="forge-action-row forge-auto-actions"><button class="primary-button ui-control ui-button forge-button" type="button" data-forge ${ready && !autoUpgradeRunning ? '' : 'disabled'}>EINMAL VERSUCHEN <span>&#x2726;</span></button><label class="forge-auto-target"><span>AUTO-UPGRADE BIS</span><select class="ui-control ui-select" data-forge-target-level aria-label="Zielstufe der automatischen Aufwertung" ${autoUpgradeRunning || forgeAnimationInProgress ? 'disabled' : ''}>${targetOptions}</select></label><button class="secondary-button ui-control ui-button forge-auto-button ${autoUpgradeRunning ? 'is-armed' : ''}" type="button" data-forge-auto ${canAuto || autoUpgradeRunning ? '' : 'disabled'} aria-pressed="${autoUpgradeRunning}">${autoUpgradeRunning ? 'STOPPEN' : 'AUTO-UPGRADE'} <span>${stoneQuantity}&times;</span></button></div></div></section></div>`;
@@ -193,7 +193,7 @@ function openAutoEnchant() {
 // A native dialog keeps keyboard focus and Escape handling inside the picker.
 function openEnchantExclusions() {
   if (forgeAnimationInProgress) return;
-  const target = findInventoryOrEquippedItem(state, selectedEnchantTargetId);
+  const target = findInventoryOrEquippedItem(state, selectedEnchantTargetId) || partyPets(state).find(pet => pet.id === selectedEnchantTargetId);
   const index = selectedEnchantAffixIndex;
   if (!target?.affixes?.[index]) return;
   document.querySelector('#enchant-exclusions-dialog')?.remove();

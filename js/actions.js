@@ -42,7 +42,7 @@ async function sell(itemId) {
   if (result) renderView();
 }
 function forgeUpgradeTargetLevel() {
-  const maximum = selectedForgeMode === 'mythic' ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
+  const maximum = selectedForgeMode === 'mythic' ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
   return Math.max(1, Math.min(maximum, Math.floor(Number(selectedForgeTargetLevel) || maximum)));
 }
 async function fuseGlyphs() {
@@ -79,7 +79,7 @@ async function autoUpgrade(options = {}) {
   if (autoUpgradeRunning) { if (!options.itemId) stopWorkshopJob(); return; }
   if (activeWorkshopJob || forgeAnimationInProgress) return;
   const mythic = options.itemId ? Boolean(options.mythic) : selectedForgeMode === 'mythic';
-  const maximum = mythic ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
+  const maximum = mythic ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
   const itemId = options.itemId || [...selectedForForge][0];
   if (!itemId) return;
   const targetLevel = options.itemId ? Math.max(1, Math.min(maximum, Math.floor(Number(options.targetLevel) || maximum))) : forgeUpgradeTargetLevel();

@@ -79,7 +79,7 @@ function renderAdminTools(embedded = false) {
               <label>Seltenheit<select class="ui-control ui-select" name="rarity" required>${rarities}</select></label>
               <label>Set<select class="ui-control ui-select" name="set"><option value="">Kein Set</option>${sets}</select></label>
               <label>Waffenlevel<input class="ui-control ui-field" name="weaponLevel" type="number" min="0" max="${WEAPON_PROGRESSION.maxLevel}" step="1" value="0"></label>
-              <label>Mystische Stufe<input class="ui-control ui-field" name="mythicUpgradeLevel" type="number" min="0" max="${MYTHIC_ITEMS.maxUpgradeLevel}" step="1" value="0" disabled></label>
+              <label>Mystische Stufe<input class="ui-control ui-field" name="mythicUpgradeLevel" type="number" min="0" max="${MYTHIC_UPGRADES.maxUpgradeLevel}" step="1" value="0" disabled></label>
               ${affixFields}
               <label class="admin-checkbox-row">Maximale Affixwürfe<input class="ui-control ui-check" name="maxAffixRolls" type="checkbox"></label>
               <label class="admin-checkbox-row">Alle Greater Affixe<input class="ui-control ui-check" name="greaterAffixes" type="checkbox"></label>

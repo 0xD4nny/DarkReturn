@@ -618,7 +618,7 @@ document.addEventListener('change', (event) => {
   }
   if (event.target.matches('[data-forge-target-level]')) {
     if (autoUpgradeRunning || forgeAnimationInProgress) return;
-    selectedForgeTargetLevel = Math.max(1, Math.min(selectedForgeMode === 'mythic' ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel, Math.floor(Number(event.target.value) || 1)));
+    selectedForgeTargetLevel = Math.max(1, Math.min(selectedForgeMode === 'mythic' ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel, Math.floor(Number(event.target.value) || 1)));
     renderView();
     return;
   }
@@ -844,7 +844,7 @@ function renderItemTooltipContent(item, { card = null, gear = null, questPreview
     ? `<div class="tooltip-weapon-damage"><span>GRUNDVERTEIDIGUNG</span><strong>${number(item.armorDefense)}${baseStatRangeLabel('armorDefense')}</strong></div>`
     : '';
   const setBonus = setProgressTooltip(item, card, gear, ownerClass);
-  const mythicEffect = isMythicWeapon(item) ? `<div class="tooltip-special tooltip-mythic-effect"><span>MYTHISCHER EFFEKT &middot; ${item.mythicUpgradeLevel || 0}/${MYTHIC_ITEMS.maxUpgradeLevel}</span><p>+${formatRuleNumber(mythicDamagePercent(item))} % multiplikativer Schaden f&uuml;r den Tr&auml;ger (&times;${formatRuleNumber(1 + mythicDamagePercent(item) / 100)}). Wirkt auf Angriffe, Schadensf&auml;higkeiten und Schaden &uuml;ber Zeit.</p></div>` : '';
+  const mythicEffect = isMythicWeapon(item) ? `<div class="tooltip-special tooltip-mythic-effect"><span>MYTHISCHER EFFEKT &middot; ${item.mythicUpgradeLevel || 0}/${MYTHIC_UPGRADES.maxUpgradeLevel}</span><p>+${formatRuleNumber(mythicDamagePercent(item))} % multiplikativer Schaden f&uuml;r den Tr&auml;ger (&times;${formatRuleNumber(1 + mythicDamagePercent(item) / 100)}). Wirkt auf Angriffe, Schadensf&auml;higkeiten und Schaden &uuml;ber Zeit.</p></div>` : '';
   const baseAffixes = item.affixes || [];
   const socketTotals = new Map();
   (item.sockets || []).filter(Boolean).flatMap((gem) => gem.affixes || []).forEach((affix) => {
@@ -862,7 +862,6 @@ function renderItemTooltipContent(item, { card = null, gear = null, questPreview
   const itemRank = [isSellableEquipment(item) ? `${escapeHtml(item.rarity)}${item.upgradeLevel ? ` · +${item.upgradeLevel}` : ''}` : '', Number(item.quantity) > 1 ? `×${number(item.quantity)}` : ''].filter(Boolean).join(' · ');
   const vipInfo = item.slot === 'vipTicket' ? `<div class="tooltip-special"><span>${VIP_RULES.durationDays} TAGE VIP</span>${[
     `+${BALANCE.dailyAttempts.vipBonus} freier Versuch pro Tag für Bossprüfung und Turm`,
-    `${VIP_RULES.workshopSpeedMultiplier}× Geschwindigkeit für Schmiede, Sockel und Verzauberung.`,
     `+${VIP_RULES.upgradeChancePercent} % relative Upgradechance für normale und mystische Aufwertung sowie Sockelöffnen.`,
     `+${VIP_RULES.dropRatePercent} % relative Droprate.`,
     `+${VIP_RULES.soulBonusPercent} % Seelen aus Gebieten, Turm und Bossprüfung.`,

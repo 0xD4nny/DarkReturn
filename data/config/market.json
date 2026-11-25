@@ -136,7 +136,6 @@
   },
   "vip": {
     "durationDays": 7,
-    "workshopSpeedMultiplier": 2,
     "dropRatePercent": 50,
     "soulBonusPercent": 50,
     "upgradeChancePercent": 20

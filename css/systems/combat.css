@@ -400,6 +400,7 @@
     animation-duration: 2.6s;
 }
 .enemy-float-number.is-vulnerable-hit { color: #ff9a83; text-shadow: 0 2px 4px #170e08, 0 0 10px #fa3d51, 0 0 20px #fa3d5177; }
+.enemy-float-number.is-shadow-echo { color: #c2aedf; text-shadow: 0 2px 5px #100d18, 0 0 12px #9976b866; }
 .enemy-float-number.is-critical.is-vulnerable-hit { color: #fff0a8; text-shadow: 0 2px 4px #170e08, 0 0 9px #ffb03b, 0 0 22px #f53c67; }
 .enemy-float-number .damage-hit-count { display: inline-block; margin-left: 6px; color: #e9c88e; font: 700 .7em var(--sans); vertical-align: middle; }
 .enemy-float-number.miss {
@@ -646,3 +647,14 @@
     grid-template-columns: minmax(190px, .72fr) minmax(300px, 1.3fr) minmax(260px, 1fr);
 }
 
+.enemy-float-number.is-heartfall {
+  color: #dfa1b5;
+  text-shadow: 0 0 8px rgba(130, 44, 73, .55);
+}
+.battle-enemy.has-time-rift [data-battle-sprite] {
+  filter: drop-shadow(-3px 0 5px rgba(122, 176, 215, .55)) drop-shadow(3px 0 5px rgba(164, 127, 212, .45));
+}
+.enemy-float-number.is-time-rift {
+  color: #bcdcf2;
+  text-shadow: -2px 0 7px rgba(107, 154, 215, .7), 2px 0 7px rgba(172, 117, 212, .65);
+}

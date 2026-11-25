@@ -18,6 +18,7 @@ const GEM_PROFILES = GAME_CONFIG.gemProfiles;
 const AREAS = GAME_CONFIG.areas;
 const RARITIES = GAME_CONFIG.rarities;
 const MYTHIC_ITEMS = GAME_CONFIG.mythicItems;
+const MYTHIC_UPGRADES = GAME_CONFIG.balance.items.mythicUpgrades;
 const WEAPON_PROGRESSION = GAME_CONFIG.weaponProgression;
 const AFFIX_POOLS = GAME_CONFIG.affixPools;
 const AFFIX_RANGES = GAME_CONFIG.affixRanges;
@@ -115,7 +116,7 @@ function weaponCompletionDamageMultiplier(item) {
 function effectiveWeaponDamage(item) { return Math.round((item?.weaponDamage || 0) * weaponLevelDamageMultiplier(item)); }
 
 function mythicDamagePercent(item) {
-  return isMythicWeapon(item) ? MYTHIC_ITEMS.damagePercent * Math.max(0, Math.min(MYTHIC_ITEMS.maxUpgradeLevel, Math.floor(Number(item.mythicUpgradeLevel) || 0))) / MYTHIC_ITEMS.maxUpgradeLevel : 0;
+  return isMythicWeapon(item) ? MYTHIC_UPGRADES.damagePercentPerLevel * Math.max(0, Math.min(MYTHIC_UPGRADES.maxUpgradeLevel, Math.floor(Number(item.mythicUpgradeLevel) || 0))) : 0;
 }
 
 function skillTreeSpecialValue(type, className, sourceState = state) {
@@ -291,12 +292,19 @@ function setBonusDescription(bonus) {
     upgradeVulnerableDamagePercent: '% Schaden gegen verwundbare Ziele',
     criticalDamagePercent: '% Schaden bei kritischen Treffern',
     upgradeCriticalDamagePercent: '% Kritischer Schaden',
-    extraAttackChance: '% Chance auf einen zweiten Treffer',
+    extraAttackChance: '% Doppeltrefferchance',
+    multiHitDamagePercentPerHit: '% multiplikativer Schaden pro Treffer im selben Angriff',
+    damageOverTimePercent: '% Schaden über Zeit',
     dodgeChance: '% Ausweichchance',
     allAttributesPercent: '% auf alle Attribute',
     eliteSoulBonusPercent: '% auf Champion-Zusatzseelen, wenn vom Main getragen',
   };
   const parts = Object.entries(effects).flatMap(([key, value]) => labels[key] ? [`+${formatRuleNumber(value)} ${labels[key]}`] : []);
+  if (effects.timeRiftStoredPercent) parts.push(`Zeitriss: Speichert zusätzlich ${formatRuleNumber(effects.timeRiftStoredPercent)} % des tatsächlich verursachten Schadens im Ziel. Stirbt es, wird der gespeicherte Schaden sofort auf die übrigen Gegner verteilt`);
+  if (effects.timeRiftIntervalSeconds) parts.push(`Zeitriss bricht zusätzlich alle ${formatRuleNumber(effects.timeRiftIntervalSeconds)} Sekunden auf und verursacht den gespeicherten Schaden am Ziel. Keine erneuten Schadensboni oder weiteren Treffer-Effekte`);
+  if (effects.dotLifeStealPercent) parts.push(`Eigener Schaden über Zeit heilt den Träger um ${formatRuleNumber(effects.dotLifeStealPercent)} % des tatsächlich verursachten Schadens`);
+  if (effects.heartfallMaxHealthPercent) parts.push(`Herzverfall: Gegner mit eigenem Schaden über Zeit verlieren pro Kampftick (${formatRuleNumber(BALANCE.combat.tickMilliseconds / 1000)} s) zusätzlich ${formatRuleNumber(effects.heartfallMaxHealthPercent)} % ihrer maximalen Lebenskraft. Einmal pro Ziel und Tick, ohne Schadensboni, Heilung oder weitere Effekte. Wirkt nicht in der Bossprüfung`);
+  if (effects.shadowEchoPercent) parts.push(`Direkte Treffer verursachen zusätzlich ${formatRuleNumber(effects.shadowEchoPercent)} % ihres Schadens als stapelbaren Schattennachhall über ${formatRuleNumber(effects.shadowEchoSeconds || 3)} Sekunden`);
   if (effects.lowHealthDamageReduction) parts.push(`Bei höchstens ${formatRuleNumber(effects.lowHealthThreshold)} % eigener Lebenskraft: ${formatRuleNumber(effects.lowHealthDamageReduction)} % weniger erlittener Schaden`);
   if (effects.vulnerableEverySeconds) {
     const interval = combatIntervalTicks(effects.vulnerableEverySeconds) * BALANCE.combat.tickMilliseconds / 1000;

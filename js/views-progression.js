@@ -325,7 +325,7 @@ function towerAttemptSummary() {
 }
 function renderCurrentTower() {
   const unlocked = towerUnlocked(state);
-  const towerStats = towerEncounterStats(state);
+  const towerStats = towerEncounterStats(state, battle?.mode === 'tower' ? battle.towerRound : 1);
   const lootOptions = BALANCE.loot.towerLootChoices.map(choice => `<option value="${escapeHtml(choice.id)}" ${state.settings.towerLoot === choice.id ? 'selected' : ''}>${escapeHtml(choice.label)} (${formatRuleNumber(towerLootChance(choice))} %)</option>`).join('');
   const towerAttempts = dailyAttemptStatus('tower');
   const startControls = unlocked
@@ -337,7 +337,7 @@ function renderCurrentTower() {
       <div class="boss-challenge-copy">
         <p class="eyebrow">${unlocked ? 'ARCHONT DER KETTEN' : 'VERSIEGELT · AUFTRÄGE'}</p>
         <p class="tower-description"><span class="tower-desktop-copy">${unlocked ? 'Deine Gruppe kämpft automatisch ohne Etagenbegrenzung. Gegnerleben, Schaden und Seelen richten sich nach der höheren Stufe von Main und Gefährte. Jede zehnte Runde erwartet dich der Archont der Ketten.' : 'Schließe die erste Auftragsgruppe ab, um den Turm zu öffnen.'}</span><span class="tower-mobile-copy">${unlocked ? 'Endlose Auto-Kämpfe. Jede zehnte Runde stellt sich dir der Archont.' : 'Schließe die erste Auftragsgruppe ab, um den Turm zu öffnen.'}</span></p>
-        <div class="boss-challenge-facts"><div class="tower-hero-level"><small>HÖCHSTE HELDENSTUFE</small><strong>Stufe ${number(towerStats.level)}</strong></div><div><small>LEBEN PRO GEGNER</small><strong>ca. ${number(towerStats.health)} LP</strong></div></div>
+        <div class="boss-challenge-facts"><div class="tower-hero-level"><small>TURMRUNDE</small><strong>Runde ${number(towerStats.round)}</strong></div><div><small>GRUND-LEBEN PRO GEGNER</small><strong>${number(towerStats.health)} LP</strong></div></div>
         <p data-daily-attempts="tower">${escapeHtml(towerAttemptSummary())}</p>
         <div class="tower-entry-actions">
           <label class="tower-loot-choice"><span>BEUTE WÄHLEN</span><select class="ui-control ui-select" data-tower-loot>${lootOptions}</select><small class="tower-loot-progression" data-tower-loot-progression>${escapeHtml(towerLootProgressLabel())}</small></label>

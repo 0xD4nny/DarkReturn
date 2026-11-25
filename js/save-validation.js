@@ -48,8 +48,15 @@ function validateImportedSave(backup) {
       if (typeof sample.won !== 'boolean' || typeof sample.elite !== 'boolean') fail('AFK-Rundenergebnis');
       numeric(sample.milliseconds, 'AFK-Rundenzeit', BALANCE.combat.tickMilliseconds, false, 86400000);
       numeric(sample.damageRate, 'AFK-Schadensmessung', 1);
+      if (sample.fixedDamageFraction != null) numeric(sample.fixedDamageFraction, 'AFK-Festschadensanteil', 0, false, 1);
       if (mode === 'tower') {
         if (!['normal', 'champion', 'boss'].includes(sample.kind)) fail('AFK-Turmgegner');
+        if (sample.round !== undefined) numeric(sample.round, 'AFK-Turmrunde der Messung', 1, true);
+        if (sample.enemyAttackCount !== undefined) numeric(sample.enemyAttackCount, 'AFK-Gegnerangriffe', 0, true);
+        if (sample.damageTaken !== undefined) {
+          record(sample.damageTaken, 'AFK-Gegnerschaden');
+          [save.mainClass, save.activeCompanion].filter(Boolean).forEach(owner => numeric(sample.damageTaken[owner], 'AFK-erlittener Schaden'));
+        }
         for (const key of ['startHealth', 'endHealth', 'restoration']) {
           record(sample[key], 'AFK-Gruppenleben');
           [save.mainClass, save.activeCompanion].filter(Boolean).forEach(owner => numeric(sample[key][owner], 'AFK-Lebenskraft', 0, false, key === 'restoration' ? 10 : 1));
@@ -164,7 +171,7 @@ function validateImportedSave(backup) {
     }
     if (item.mythicUpgradeLevel !== undefined) {
       if (!isMythicWeapon(item)) fail('Mystische Aufwertung');
-      numeric(item.mythicUpgradeLevel, 'Mystische Aufwertung', 0, true, MYTHIC_ITEMS.maxUpgradeLevel);
+      numeric(item.mythicUpgradeLevel, 'Mystische Aufwertung', 0, true, MYTHIC_UPGRADES.maxUpgradeLevel);
     }
     item.affixes.forEach((affix) => {
       record(affix, 'Affix');

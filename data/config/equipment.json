@@ -615,7 +615,7 @@
           "pieces": 4,
           "effects": {
             "staminaFlat": 250,
-            "multiplicativeDamagePercent": 50
+            "multiplicativeDamagePercent": 25
           }
         }
       ]
@@ -639,7 +639,7 @@
           "pieces": 4,
           "effects": {
             "strengthFlat": 250,
-            "multiplicativeDamagePercent": 50
+            "multiplicativeDamagePercent": 25
           }
         }
       ]
@@ -663,7 +663,7 @@
           "pieces": 4,
           "effects": {
             "staminaFlat": 250,
-            "multiplicativeDamagePercent": 50
+            "multiplicativeDamagePercent": 25
           }
         }
       ]
@@ -688,7 +688,7 @@
           "pieces": 4,
           "effects": {
             "staminaFlat": 250,
-            "partyDamagePercent": 30
+            "partyDamagePercent": 25
           }
         }
       ]
@@ -726,19 +726,20 @@
         {
           "pieces": 2,
           "effects": {
-            "healthPercent": 25
+            "damageOverTimePercent": 50
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "staminaFlat": 250
+            "attackSpeedPercent": 25
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "dodgeChance": 40
+            "shadowEchoPercent": 30,
+            "shadowEchoSeconds": 3
           }
         }
       ]
@@ -749,22 +750,19 @@
         {
           "pieces": 2,
           "effects": {
-            "attackPercent": 25
+            "extraAttackChance": 50
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "strengthFlat": 250,
-            "dexterityFlat": 250,
-            "intelligenceFlat": 250,
-            "faithFlat": 250
+            "extraAttackChance": 50
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "extraAttackChance": 40
+            "multiHitDamagePercentPerHit": 10
           }
         }
       ]
@@ -795,7 +793,7 @@
         {
           "pieces": 5,
           "effects": {
-            "multiplicativeDamagePercent": 50
+            "multiplicativeDamagePercent": 25
           }
         }
       ]
@@ -824,7 +822,7 @@
         {
           "pieces": 5,
           "effects": {
-            "multiplicativeDamagePercent": 50
+            "multiplicativeDamagePercent": 25
           }
         }
       ]
@@ -853,7 +851,7 @@
         {
           "pieces": 5,
           "effects": {
-            "multiplicativeDamagePercent": 50
+            "multiplicativeDamagePercent": 25
           }
         }
       ]
@@ -883,7 +881,7 @@
         {
           "pieces": 5,
           "effects": {
-            "partyHealthPercent": 50
+            "partyHealthPercent": 25
           }
         }
       ]
@@ -894,13 +892,13 @@
         {
           "pieces": 2,
           "effects": {
-            "soulFind": 25
+            "soulFind": 50
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "multiplicativeDamagePercent": 50
+            "multiplicativeDamagePercent": 25
           }
         },
         {
@@ -912,7 +910,7 @@
         {
           "pieces": 5,
           "effects": {
-            "damageLifeStealPercent": 10
+            "damageLifeStealPercent": 5
           }
         }
       ]
@@ -935,13 +933,13 @@
         {
           "pieces": 4,
           "effects": {
-            "staminaFlat": 250
+            "timeRiftStoredPercent": 30
           }
         },
         {
           "pieces": 5,
           "effects": {
-            "activeSkillDamagePercent": 50
+            "timeRiftIntervalSeconds": 3
           }
         }
       ]
@@ -952,25 +950,25 @@
         {
           "pieces": 2,
           "effects": {
-            "healthPercent": 25
+            "damageOverTimePercent": 50
           }
         },
         {
           "pieces": 3,
           "effects": {
-            "staminaFlat": 250
+            "cooldownReduction": 20
           }
         },
         {
           "pieces": 4,
           "effects": {
-            "defensePercent": 25
+            "dotLifeStealPercent": 3
           }
         },
         {
           "pieces": 5,
           "effects": {
-            "criticalHealPercent": 10
+            "heartfallMaxHealthPercent": 5
           }
         }
       ]
@@ -1046,8 +1044,6 @@
       1000,
       2000
     ],
-    "damagePercent": 500,
-    "maxUpgradeLevel": 10,
     "saleStones": 10
   },
   "weaponProgression": {

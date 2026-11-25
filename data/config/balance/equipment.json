@@ -11,11 +11,11 @@
           60,
           40,
           20,
-          10,
-          5,
-          3,
           1,
-          0.5
+          0.75,
+          0.5,
+          0.25,
+          0.1
         ]
       },
       "gemUpgradeRatio": 10,
@@ -171,24 +171,24 @@
       "armorBaseDefenseRangesByRarity": {
         "rare": {
           "helmet": [
-            48,
-            60
+            100,
+            150
           ],
           "chest": [
-            128,
-            160
+            150,
+            200
           ],
           "gloves": [
-            32,
-            40
+            50,
+            100
           ],
           "boots": [
-            32,
-            40
+            50,
+            100
           ],
           "shield": [
-            80,
-            100
+            100,
+            150
           ]
         },
         "legendary": {
@@ -258,29 +258,45 @@
       "upgradeSuccessChanceByLevel": [
         100,
         100,
-        100,
-        50,
-        50,
-        50,
-        10,
+        80,
+        60,
+        40,
+        20,
         10,
         5,
-        5,
+        3,
+        2,
         1,
-        1,
-        1,
-        0.75,
-        0.75,
-        0.75,
+        0.9,
+        0.8,
+        0.7,
+        0.6,
         0.5,
-        0.5,
-        0.25,
-        0.25
+        0.4,
+        0.3,
+        0.2,
+        0.1
       ],
+      "mythicUpgrades": {
+        "damagePercentPerLevel": 30,
+        "maxUpgradeLevel": 10,
+        "successChanceByLevel": [
+          100,
+          100,
+          100,
+          50,
+          50,
+          50,
+          10,
+          10,
+          5,
+          5
+        ]
+      },
       "armorUpgradeMilestones": [
         {
           "level": 3,
-          "text": "+10 % Lebenskraft, +10 % Trefferchance, +4 % auf alle Attribute, +5 % Angriff, +10 % Angriffsgeschwindigkeit, +10 % kritische Chance, +10 % Abklingzeitreduktion",
+          "text": "+10 % Lebenskraft, +10 % Trefferchance, +4 % auf alle Attribute, +5 % Angriff, +5 % Angriffsgeschwindigkeit, +5 % kritische Chance, +5 % Abklingzeitreduktion",
           "effects": {
             "healthPercent": 10,
             "hitChance": 10,
@@ -319,10 +335,10 @@
         },
         {
           "level": 10,
-          "text": "+40 % Lebenskraft, +40 % Trefferchance, +10 % auf alle Attribute, +20 % Angriff, +20 % Angriffsgeschwindigkeit, +20 % kritische Chance, +20 % Abklingzeitreduktion",
+          "text": "+30 % Lebenskraft, +30 % Trefferchance, +10 % auf alle Attribute, +20 % Angriff, +20 % Angriffsgeschwindigkeit, +20 % kritische Chance, +20 % Abklingzeitreduktion",
           "effects": {
-            "healthPercent": 40,
-            "hitChance": 40,
+            "healthPercent": 30,
+            "hitChance": 30,
             "allAttributesPercent": 10,
             "attackPercent": 20,
             "attackSpeedPercent": 20,
@@ -332,54 +348,54 @@
         },
         {
           "level": 13,
-          "text": "+50 % Lebenskraft, +50 % Trefferchance, +25 % auf alle Attribute, +40 % Angriff, +40 % Angriffsgeschwindigkeit, +40 % kritische Chance, +40 % Abklingzeitreduktion",
+          "text": "+35 % Lebenskraft, +35 % Trefferchance, +50 % auf alle Attribute, +25 % Angriff, +25 % Angriffsgeschwindigkeit, +25 % kritische Chance, +25 % Abklingzeitreduktion",
           "effects": {
-            "healthPercent": 50,
-            "hitChance": 50,
+            "healthPercent": 35,
+            "hitChance": 35,
             "allAttributesPercent": 50,
-            "attackPercent": 40,
-            "attackSpeedPercent": 40,
-            "criticalChance": 40,
-            "cooldownReduction": 40
+            "attackPercent": 25,
+            "attackSpeedPercent": 25,
+            "criticalChance": 25,
+            "cooldownReduction": 25
           }
         },
         {
           "level": 16,
-          "text": "+60 % Lebenskraft, +60 % Trefferchance, +50 % auf alle Attribute, +60 % Angriff, +60 % Angriffsgeschwindigkeit, +60 % kritische Chance, +60 % Abklingzeitreduktion",
+          "text": "+40 % Lebenskraft, +40 % Trefferchance, +50 % auf alle Attribute, +30 % Angriff, +30 % Angriffsgeschwindigkeit, +30 % kritische Chance, +30 % Abklingzeitreduktion",
           "effects": {
-            "healthPercent": 60,
-            "hitChance": 60,
+            "healthPercent": 40,
+            "hitChance": 40,
             "allAttributesPercent": 50,
-            "attackPercent": 60,
-            "attackSpeedPercent": 60,
-            "criticalChance": 60,
-            "cooldownReduction": 60
+            "attackPercent": 30,
+            "attackSpeedPercent": 30,
+            "criticalChance": 30,
+            "cooldownReduction": 30
           }
         },
         {
           "level": 18,
-          "text": "+80 % Lebenskraft, +80 % Trefferchance, +75 % auf alle Attribute, +80 % Angriff, +80 % Angriffsgeschwindigkeit, +80 % kritische Chance, +80 % Abklingzeitreduktion",
+          "text": "+45 % Lebenskraft, +45 % Trefferchance, +75 % auf alle Attribute, +35 % Angriff, +35 % Angriffsgeschwindigkeit, +35 % kritische Chance, +35 % Abklingzeitreduktion",
           "effects": {
-            "healthPercent": 80,
-            "hitChance": 80,
+            "healthPercent": 45,
+            "hitChance": 45,
             "allAttributesPercent": 75,
-            "attackPercent": 80,
-            "attackSpeedPercent": 80,
-            "criticalChance": 80,
-            "cooldownReduction": 80
+            "attackPercent": 35,
+            "attackSpeedPercent": 35,
+            "criticalChance": 35,
+            "cooldownReduction": 35
           }
         },
         {
           "level": 20,
-          "text": "+100 % Lebenskraft, +100 % Trefferchance, +100 % auf alle Attribute, +100 % Angriff, +100 % Angriffsgeschwindigkeit, +100 % kritische Chance, +100 % Abklingzeitreduktion",
+          "text": "+50 % Lebenskraft, +50 % Trefferchance, +100 % auf alle Attribute, +40 % Angriff, +40 % Angriffsgeschwindigkeit, +40 % kritische Chance, +40 % Abklingzeitreduktion",
           "effects": {
-            "healthPercent": 100,
-            "hitChance": 100,
+            "healthPercent": 50,
+            "hitChance": 50,
             "allAttributesPercent": 100,
-            "attackPercent": 100,
-            "attackSpeedPercent": 100,
-            "criticalChance": 100,
-            "cooldownReduction": 100
+            "attackPercent": 40,
+            "attackSpeedPercent": 40,
+            "criticalChance": 40,
+            "cooldownReduction": 40
           }
         }
       ],

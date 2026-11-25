@@ -1,4 +1,4 @@
-// Persisted workshop orders: elapsed time and results are saved in one transaction.
+// Instant workshop orders: all attempts and results are saved in one transaction.
 let workshopTickPending = false;
 let workshopStartPending = false;
 function validWorkshopJob(job) {
@@ -12,7 +12,7 @@ function validWorkshopJob(job) {
     || job.successes + job.failures !== job.attempts
     || (job.maxAttempts !== null && (!Number.isSafeInteger(job.maxAttempts) || job.maxAttempts < 1))) return false;
   const target = job.kind === 'upgrade' ? job.targetLevel : job.targetCount;
-  const maximum = job.kind === 'upgrade' ? (job.mythic ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel) : BALANCE.items.socketCounts.equipment;
+  const maximum = job.kind === 'upgrade' ? (job.mythic ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel) : BALANCE.items.socketCounts.equipment;
   return Number.isInteger(target) && target >= 1 && target <= maximum
     && job.worldEvent && Number.isFinite(job.worldEvent.upgradeChancePercent || 0)
     && Array.isArray(job.bonuses) && job.bonuses.length <= 64
@@ -21,9 +21,6 @@ function validWorkshopJob(job) {
 }
 function workshopBonusActive(job, stat, at) {
   return job.bonuses.some(bonus => bonus.stat === stat && bonus.from <= at && bonus.until > at);
-}
-function workshopAttemptDuration(job, at) {
-  return Math.round(2000 / (workshopBonusActive(job, 'VIP', at) ? VIP_RULES.workshopSpeedMultiplier : 1));
 }
 function captureWorkshopBonuses(save, now = Date.now()) {
   const job = save.workshopJob;
@@ -62,7 +59,12 @@ function finishWorkshopJob(save, reason, at) {
 async function settleWorkshopJob(save, now = Date.now()) {
   const job = save.workshopJob;
   if (!job) return;
-  // Bounded batches keep large material stacks responsive; remaining time stays queued.
+  // Complete legacy timed orders immediately, using the currently active bonuses.
+  job.lastAttemptAt = now;
+  job.nextAttemptAt = now;
+  captureWorkshopBonuses(save, now);
+  let lastResult;
+  // Yield between batches for responsiveness, without a gameplay timer between attempts.
   for (let batch = 0; batch < 2000 && save.workshopJob === job; batch++) {
     const item = workshopTarget(save, job);
     if (!item) { finishWorkshopJob(save, 'Das Zielteil ist nicht mehr angelegt.', now); break; }
@@ -84,6 +86,7 @@ async function settleWorkshopJob(save, now = Date.now()) {
       save.activePowerups = workshopBonusActive(job, 'Upgradechance', attemptStartedAt) ? [{ stat: 'Upgradechance', expiresAt: attemptStartedAt + 1 }] : [];
       save.vipExpiresAt = workshopBonusActive(job, 'VIP', attemptStartedAt) ? attemptStartedAt + 1 : 0;
       result = applyWorkshopAttempt(save, { action: job.kind === 'upgrade' ? 'upgrade' : 'socket-slot', itemId: job.targetId, stoneId: stone.id, mythic: job.mythic });
+      lastResult = result;
     } finally {
       if (previousContext) save.offlineContext = previousContext;
       else delete save.offlineContext;
@@ -94,16 +97,19 @@ async function settleWorkshopJob(save, now = Date.now()) {
     job.successes += result.successes;
     job.failures += result.failures;
     job.lastAttemptAt = at;
-    job.nextAttemptAt = at + workshopAttemptDuration(job, at);
+    job.nextAttemptAt = at;
     if (workshopGoalReached(item, job)) finishWorkshopJob(save, 'Ziel erreicht.', now);
     else if (job.maxAttempts !== null && job.attempts >= job.maxAttempts) finishWorkshopJob(save, 'Versuch abgeschlossen.', now);
     if (batch % 100 === 99) await new Promise(resolve => window.setTimeout(resolve, 0));
   }
   captureWorkshopBonuses(save, now);
+  return lastResult;
 }
 async function settleWorkshopThrough(save, at) {
-  do { await settleWorkshopJob(save, at); }
+  let result;
+  do { result = await settleWorkshopJob(save, at) || result; }
   while (save.workshopJob && save.workshopJob.nextAttemptAt <= at);
+  return result;
 }
 function createWorkshopJob(save, body, now = Date.now()) {
   if (save.workshopJob || forgeAnimationInProgress || glyphFusionPending) throw new Error('Die Werkstatt ist bereits beschäftigt.');
@@ -112,7 +118,7 @@ function createWorkshopJob(save, body, now = Date.now()) {
   const mythic = body.mythic === true;
   if (mythic && !isMythicWeapon(item)) throw new Error('Wähle eine mystische Waffe.');
   const goal = Number(body.kind === 'upgrade' ? body.targetLevel : body.targetCount);
-  const maximum = body.kind === 'upgrade' ? (mythic ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel) : socketCapacityForSlot(item.slot, item);
+  const maximum = body.kind === 'upgrade' ? (mythic ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel) : socketCapacityForSlot(item.slot, item);
   if (!Number.isInteger(goal) || goal < 1 || goal > maximum || (body.kind === 'upgrade' && !AFFIX_POOLS[item.slot] && item.slot !== 'glyph')) throw new Error('Ungültiges Werkstattziel.');
   const stoneSlot = body.kind === 'socket' ? 'socketStone' : mythic ? 'mythicUpgradeStone' : 'upgradeStone';
   if (!save.inventory.some(entry => entry.slot === stoneSlot)) throw new Error('Das benötigte Material fehlt.');
@@ -125,7 +131,7 @@ function createWorkshopJob(save, body, now = Date.now()) {
   if (workshopGoalReached(item, job)) throw new Error('Das Ziel ist bereits erreicht.');
   save.workshopJob = job;
   captureWorkshopBonuses(save, now);
-  job.nextAttemptAt = now + workshopAttemptDuration(job, now);
+  job.nextAttemptAt = now;
 }
 function syncWorkshopRuntime() {
   activeWorkshopJob = state?.workshopJob ? { ...state.workshopJob, view: state.workshopJob.kind === 'upgrade' ? 'blacksmith' : 'sockets' } : null;
@@ -148,8 +154,7 @@ async function startPersistedWorkshopJob(options) {
   finally { workshopStartPending = false; }
 }
 async function tickPersistedWorkshop() {
-  if (workshopTickPending || !state?.workshopJob || document.hidden || saveMaintenance || saveBlocked
-    || state.workshopJob.nextAttemptAt > Date.now()) return;
+  if (workshopTickPending || !state?.workshopJob || document.hidden || saveMaintenance || saveBlocked) return;
   workshopTickPending = true;
   try { await performAction({ action: 'workshop-tick', silent: true }, null, null, { background: true }); }
   finally { workshopTickPending = false; }

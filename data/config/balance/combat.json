@@ -173,6 +173,7 @@
     "combat": {
       "tickMilliseconds": 300,
       "attackSpeedCapPercent": 200,
+      "extraAttackChanceCapPercent": 1000,
       "attackSpeedTiers": [
         {
           "minimumPercent": 200,
@@ -200,13 +201,12 @@
       "cooldownReductionCapPercent": 75,
       "damageReductionCapPercent": 75,
       "defenseForDamageReductionCap": 200000,
-      "towerHealthMultiplier": 50,
-      "towerDamageBase": 150,
-      "towerDamagePerLevel": 25,
-      "towerEarlyScaling": {
-        "fullScalingLevel": 100,
-        "startHealth": 800,
-        "startDamage": 10
+      "towerScaling": {
+        "referenceRound": 1000,
+        "startArea": "dornwacht",
+        "startDeepTier": 0,
+        "targetArea": "mondbruch",
+        "targetDeepTier": 4
       },
       "towerSkillAttackInterval": 3,
       "towerSkillMultiplier": 1.5,

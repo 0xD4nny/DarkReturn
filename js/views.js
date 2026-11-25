@@ -180,6 +180,16 @@ function renderView({ background = false } = {}) {
   syncMobileView({ background });
 }
 function setView(view, anchorId = null, { preserveForgeSelection = false } = {}) {
+  if (typeof isMobileLayout === 'function' && isMobileLayout() && ['blacksmith', 'sockets', 'enchant'].includes(view)) {
+    const itemId = view === 'blacksmith' ? [...selectedForForge][0] : view === 'sockets' ? selectedSocketTargetId : selectedEnchantTargetId;
+    const item = findInventoryOrEquippedItem(state, itemId) || partyPets(state).find(pet => pet.id === itemId);
+    if (item) {
+      if (['blacksmith', 'sockets', 'enchant'].includes(currentView)) { currentView = 'inventory'; renderView(); }
+      openMobileItemWorkshop(item.id, view === 'blacksmith' ? selectedForgeMode === 'mythic' ? 'mythic' : 'upgrade' : view === 'sockets' ? 'sockets' : 'affix');
+    }
+    else setView('inventory');
+    return;
+  }
   const enteringShop = view === 'shop' && currentView !== 'shop';
   currentView = view;
   if (!autoUpgradeRunning && !preserveForgeSelection) {

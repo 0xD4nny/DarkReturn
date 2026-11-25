@@ -275,12 +275,10 @@ function renderMobileItem(item = mobileCurrentItem()) {
   }
   if (slotEntry) {
     actions += mobileButton('unequip', 'ABLEGEN', `data-mobile-slot="${slotEntry.slot}" data-mobile-owner="${slotEntry.owner}"`);
-    if (AFFIX_POOLS[item.slot] || item.slot === 'glyph') actions += mobileButton('forge', isMythicWeapon(item) ? 'MYSTISCH AUFWERTEN' : 'AUFWERTEN');
-    if (socketCapacityForSlot(item.slot, item)) actions += mobileButton('sockets', 'SOCKEL VERWALTEN');
   }
   const enchantable = ['weapons', 'armor', 'jewelry'].some(category => INVENTORY_CATEGORIES[category].slots.includes(item.slot));
-  if (!preview && (slotEntry && enchantable || item.slot === 'pet')) actions += mobileButton('enchant', 'VERZAUBERN');
-  const petDetails = item.slot === 'pet' ? `<p>Stufe ${number(item.level)} · fest an ${ownerClass === state.mainClass ? 'deinen Main' : 'deinen Gefährten'} gebunden.</p><p>+${number(item.level * PET_RULES.attributePerLevel)} ${escapeHtml(petDefinition(item).stat)}. Tierstufen am Altar erhöhen; Affixe über Verzauberung umprägen.</p>` : '';
+  if (!preview && (slotEntry && (enchantable || item.slot === 'glyph') || item.slot === 'pet')) actions += mobileButton('workshop', 'BEARBEITEN');
+  const petDetails = item.slot === 'pet' ? `<p>Stufe ${number(item.level)} · fest an ${ownerClass === state.mainClass ? 'deinen Main' : 'deinen Gefährten'} gebunden.</p><p>+${number(item.level * PET_RULES.attributePerLevel)} ${escapeHtml(petDefinition(item).stat)}. Tierstufen am Altar erhöhen; Affixe unter Bearbeiten umprägen.</p>` : '';
   const content = `${ownerPicker}${mobileItemIconMarkup(item)}${renderItemTooltipContent(item, { ownerClass, milestoneDescription: description })}${petDetails}${inventoryItem && compatibleSlots(ownerClass).length ? '<p class="mobile-detail-note">Aufwertung und Sockel gehören zum Ausrüstungsplatz. Für die Werkstatt zuerst anlegen.</p>' : ''}`;
   showMobileSheet(item.name, content, actions);
 }
@@ -601,24 +599,8 @@ function syncMobileBattle({ focus = true } = {}) {
   if (focus) title.focus({ preventScroll: true });
 }
 function openMobileWorkshop(action, item) {
-  if (['forge', 'sockets', 'gem-workshop', 'glyph-fusion'].includes(action)) {
-    openMobileItemWorkshop(item.id, action === 'forge' ? 'upgrade' : action === 'gem-workshop' ? 'gem' : action === 'glyph-fusion' ? 'fusion' : 'sockets');
-    return;
-  }
-  if (activeWorkshopJob || forgeAnimationInProgress || glyphFusionPending) {
-    toastMessageFor('Werkstatt beschäftigt', 'Beende den laufenden Vorgang über den Werkstattstatus, bevor du einen anderen Gegenstand bearbeitest.');
-    return;
-  }
-  if (!mobileWorkshopReturn || !['blacksmith', 'sockets', 'enchant'].includes(currentView)) {
-    mobileWorkshopReturn = { view: currentView, scroll: window.scrollY, itemId: item.id };
-  }
-  const view = action === 'forge' ? 'blacksmith' : action === 'enchant' ? 'enchant' : 'sockets';
-  if (view === 'blacksmith') { selectedForgeMode = isMythicWeapon(item) ? 'mythic' : 'upgrade'; selectedForForge.clear(); selectedForForge.add(item.id); }
-  if (view === 'sockets') { selectedSocketMode = 'gems'; if (action !== 'gem-workshop') selectedSocketTargetId = item.id; }
-  if (view === 'enchant') { selectedEnchantMode = item.slot === 'pet' ? 'pet' : 'affix'; selectedEnchantTargetId = item.id; }
-  mobileWorkshopPanes[view] = action === 'gem-workshop' ? 'selection' : 'workbench';
-  mobileSheet.close();
-  setView(view, null, { preserveForgeSelection: true });
+  const modes = { forge: 'upgrade', sockets: 'sockets', 'gem-workshop': 'gem', 'glyph-fusion': 'fusion', enchant: 'affix', workshop: 'upgrade' };
+  openMobileItemWorkshop(item.id, modes[action] || 'upgrade');
 }
 function syncMobileWorkshop(root = viewContainer) {
   const layout = root.querySelector('.smith-layout, .socket-layout, .enchant-layout');
@@ -674,7 +656,7 @@ async function runMobileItemAction(button) {
   if (!item || mobileActionPending || mobileItemContext.preview) return;
   const ownerClass = mobileItemContext.ownerClass;
   const action = button.dataset.mobileAction;
-  if (['forge', 'sockets', 'enchant', 'gem-workshop', 'glyph-fusion'].includes(action)) {
+  if (['workshop', 'forge', 'sockets', 'enchant', 'gem-workshop', 'glyph-fusion'].includes(action)) {
     openMobileWorkshop(action, item);
     return;
   }

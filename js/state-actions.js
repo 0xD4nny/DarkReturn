@@ -67,7 +67,7 @@ function resolveBattleRewards(save, body) {
   } else if (body.mode === 'tower') {
     towerRound = Number(body.round);
     if (!Number.isSafeInteger(towerRound) || towerRound < 1) throw new Error('Ungültige Turmrunde.');
-    const towerStats = towerEncounterStats(save);
+    const towerStats = towerEncounterStats(save, towerRound);
     reward = randomInt(towerStats.soulsMinimum, towerStats.soulsMaximum);
     save.statistics.towerRoundsWon += 1;
     save.questBook.counters.towerRounds += 1;
@@ -236,7 +236,7 @@ function applyWorkshopAttempt(save, body) {
     if (mythic && !isMythicWeapon(target)) throw new Error('Mystische Aufwertung ist nur für mystische Waffen verfügbar.');
     const levelKey = mythic ? 'mythicUpgradeLevel' : 'upgradeLevel';
     const stoneSlot = mythic ? 'mythicUpgradeStone' : 'upgradeStone';
-    const maxLevel = mythic ? MYTHIC_ITEMS.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
+    const maxLevel = mythic ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
     if (!AFFIX_POOLS[target.slot] && target.slot !== 'glyph') throw new Error('Wähle zuerst eine Ausrüstung als Ziel.');
     if ((target[levelKey] || 0) >= maxLevel) throw new Error(`Dieser Ausrüstungsplatz ist bereits auf +${maxLevel}.`);
     const stoneIds = body.auto
@@ -255,7 +255,7 @@ function applyWorkshopAttempt(save, body) {
       if (stoneIndex < 0 || save.inventory[stoneIndex].slot !== stoneSlot) break;
       consumeInventoryItem(save, stoneId, stoneSlot);
       const attemptedLevel = target[levelKey] || 0;
-      lastChance = workshopSuccessChance(BALANCE.items.upgradeSuccessChanceByLevel[attemptedLevel] || 0, save);
+      lastChance = workshopSuccessChance((mythic ? MYTHIC_UPGRADES.successChanceByLevel : BALANCE.items.upgradeSuccessChanceByLevel)[attemptedLevel] || 0, save);
       if (Math.random() * 100 < lastChance) {
         target[levelKey] = (target[levelKey] || 0) + 1;
         if (!mythic) {
@@ -334,11 +334,14 @@ async function localAction(body) {
   if (save.workshopJob && ['upgrade', 'socket-slot', 'fuse-glyphs', 'enchant-rarity', 'upgrade-gems'].includes(action)) throw new Error('Beende zuerst den laufenden Werkstattauftrag.');
   if (action === 'enchant-affix') await settleWorkshopThrough(save, Date.now());
   if (action === 'workshop-start') {
-    await settleWorkshopJob(save);
+    await settleWorkshopThrough(save, Date.now());
     createWorkshopJob(save, body);
-    response = { state: save };
+    const job = save.workshopJob;
+    const result = await settleWorkshopThrough(save, Date.now());
+    response = { ...result, attempts: job.attempts, successes: job.successes, failures: job.failures,
+      headless: job.headless, state: save };
   } else if (action === 'workshop-tick' || action === 'workshop-stop') {
-    await settleWorkshopJob(save);
+    await settleWorkshopThrough(save, Date.now());
     if (action === 'workshop-stop' && save.workshopJob?.id === body.jobId) finishWorkshopJob(save, 'Manuell gestoppt.', Date.now());
     response = { state: save };
   } else if (action.startsWith('offline-')) {
@@ -816,7 +819,8 @@ async function localAction(body) {
       }
       const next = enchantAffixQuote(save, target, index);
       const stopReason = matched() ? 'Ziel erreicht.' : next.available < next.cost ? 'Nicht genug Umprägungssteine für den nächsten Versuch.' : !next.candidates.length ? 'Keine möglichen Affixtypen.' : null;
-      response = { kind: 'enchant-affix', state: save, item: target, affix: target.affixes[index], attempts, cost, matched: matched(), stopReason };
+      response = { kind: 'enchant-affix', state: save, item: target, affix: target.affixes[index], previousStat: initial.current,
+        outcomes: attempts ? [{ success: true }] : [], attempts, cost, matched: matched(), stopReason };
     }
   } else if (action === 'upgrade-gems') {
     const quote = gemUpgradeQuote(save, body.itemId);
@@ -997,7 +1001,7 @@ async function localAction(body) {
       }
       if (isMythicWeapon(item)) {
         const level = Number(body.mythicUpgradeLevel ?? 0);
-        if (!Number.isInteger(level) || level < 0 || level > MYTHIC_ITEMS.maxUpgradeLevel) throw new Error('Mystische Stufe muss zwischen 0 und 10 liegen.');
+        if (!Number.isInteger(level) || level < 0 || level > MYTHIC_UPGRADES.maxUpgradeLevel) throw new Error(`Mystische Stufe muss zwischen 0 und ${MYTHIC_UPGRADES.maxUpgradeLevel} liegen.`);
         item.mythicUpgradeLevel = level;
       }
       const customName = String(body.name || '').trim().slice(0, 40);

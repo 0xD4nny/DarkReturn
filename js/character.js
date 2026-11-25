@@ -16,7 +16,7 @@ function normalizeGearItem(item) {
   normalizeWeaponProgress(item);
   if (isMythicWeapon(item)) {
     delete item.enchantAffixIndex;
-    item.mythicUpgradeLevel = Math.max(0, Math.min(MYTHIC_ITEMS.maxUpgradeLevel, Math.floor(Number(item.mythicUpgradeLevel) || 0)));
+    item.mythicUpgradeLevel = Math.max(0, Math.min(MYTHIC_UPGRADES.maxUpgradeLevel, Math.floor(Number(item.mythicUpgradeLevel) || 0)));
   }
   item.upgradeLevel = Math.max(0, Math.min(BALANCE.items.maxUpgradeLevel, Number(item.upgradeLevel) || 0));
   if (item.tier !== undefined) {
@@ -152,11 +152,23 @@ function dodgeChanceFor(className, sourceState = state) {
     + (activeArmorSetEffects(sourceState, className).dodgeChance || 0)
     + passiveEffectTotal('dodge-chance', className, sourceState));
 }
-function extraAttackChanceFor(className, sourceState = state) {
-  return Math.max(0, (getStats(className, sourceState).Doppeltrefferchance || 0)
+function extraAttackChanceFor(className, sourceState = state, { uncapped = false } = {}) {
+  const chance = Math.max(0, (getStats(className, sourceState).Doppeltrefferchance || 0)
     + (activeArmorSetEffects(sourceState, className).extraAttackChance || 0)
     + powerupBonusForStat('Chance auf zweiten Treffer', sourceState)
     + skillTreeSpecialValue('extra-attack-chance', className, sourceState));
+  return uncapped ? chance : Math.min(BALANCE.combat.extraAttackChanceCapPercent ?? 1000, chance);
+}
+function multiHitDamageMultiplier(hitCount, bonusPercentPerHit = 0) {
+  return 1 + Math.max(0, hitCount) * Math.max(0, bonusPercentPerHit) / 100;
+}
+function expectedMultiHitDamage(chancePercent, bonusPercentPerHit = 0) {
+  const extraHits = Math.min(BALANCE.combat.extraAttackChanceCapPercent ?? 1000, Math.max(0, chancePercent)) / 100;
+  const lowerCount = 1 + Math.floor(extraHits);
+  const remainder = extraHits % 1;
+  const lowerDamage = lowerCount * multiHitDamageMultiplier(lowerCount, bonusPercentPerHit);
+  const upperDamage = (lowerCount + 1) * multiHitDamageMultiplier(lowerCount + 1, bonusPercentPerHit);
+  return lowerDamage * (1 - remainder) + upperDamage * remainder;
 }
 // Ordinary attack bonuses share one additive bucket, independent of equipment order.
 function getAttackModifiers(className = state.mainClass, sourceState = state, convertedDotBonus = 0) {
@@ -280,6 +292,7 @@ function calculateCharacterStats(className = state.mainClass, sourceState = stat
   stats['Kritischer Schaden'] += (setEffects.upgradeCriticalDamagePercent || 0) + (setEffects.criticalDamagePercent || 0);
   stats['Schaden gegen verwundbare Ziele'] += (setEffects.upgradeVulnerableDamagePercent || 0) + (setEffects.vulnerableDamagePercent || 0);
   if (setEffects.soulFind) stats['Seelenfund'] += setEffects.soulFind;
+  stats['Schaden über Zeit'] += setEffects.damageOverTimePercent || 0;
   stats['Lebenskraft'] = Math.round(stats['Lebenskraft'] * (1 + worldEvent.healthPercent / 100));
   ['Lebenskraft', 'Verteidigung'].forEach((stat) => {
     const bonus = powerupBonusForStat(stat, sourceState);
@@ -329,6 +342,7 @@ function formatCharacterStatValue(key, value, percent = STAT_PERCENT_STATS.has(k
     Trefferchance: 100,
     Angriffsgeschwindigkeit: BALANCE.combat.attackSpeedCapPercent || 200,
     Abklingzeitreduktion: BALANCE.combat.cooldownReductionCapPercent || 75,
+    Doppeltrefferchance: BALANCE.combat.extraAttackChanceCapPercent ?? 1000,
     Schadensminderung: damageReductionCapPercent(className, state),
   };
   const cap = caps[key];
@@ -527,7 +541,7 @@ function characterDamageMultiplier(className, sourceState = state, setEffects = 
 function renderInventoryValues(className) {
   const stats = getStats(className, state, { uncapped: true });
   const setEffects = activeArmorSetEffects(state, className);
-  const extraAttackChance = extraAttackChanceFor(className, state);
+  const extraAttackChance = extraAttackChanceFor(className, state, { uncapped: true });
   const groups = [
     { title: 'GRUNDWERTE', keys: ['Lebenskraft', 'Angriff', 'Verteidigung', 'Stärke', 'Geschicklichkeit', 'Intelligenz', 'Ausdauer', 'Glaube'] },
     { title: 'OFFENSIVE', keys: ['Multiplikativer Schaden', 'Trefferchance', 'Kritische Chance', 'Kritischer Schaden', 'Doppeltrefferchance', 'Schaden gegen verwundbare Ziele', 'Schaden über Zeit'] },

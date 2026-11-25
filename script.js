@@ -67,7 +67,7 @@
     const boxRules = config.boxRules;
     const glyphDefinitions = config.glyphDefinitions;
     if (!Array.isArray(glyphDefinitions) || !glyphDefinitions.length || new Set(glyphDefinitions.map(glyph => glyph.id)).size !== glyphDefinitions.length || glyphDefinitions.some(glyph => !glyph.id || !glyph.name || !(glyph.stat in config.baseStats) || !['Angriff', 'Lebenskraft'].includes(glyph.bonusStat || 'Angriff'))) throw new Error('Die Glyphen sind unvollständig konfiguriert.');
-    if (!Number.isFinite(boxRules?.vipBox?.ticketChance) || boxRules.vipBox.ticketChance < 0 || boxRules.vipBox.ticketChance > 100 || !Number.isFinite(config.vip?.durationDays) || config.vip.durationDays <= 0 || !Number.isFinite(config.vip?.workshopSpeedMultiplier) || config.vip.workshopSpeedMultiplier < 1) throw new Error('Die VIP-Regeln sind unvollständig konfiguriert.');
+    if (!Number.isFinite(boxRules?.vipBox?.ticketChance) || boxRules.vipBox.ticketChance < 0 || boxRules.vipBox.ticketChance > 100 || !Number.isFinite(config.vip?.durationDays) || config.vip.durationDays <= 0) throw new Error('Die VIP-Regeln sind unvollständig konfiguriert.');
     if (['dropRatePercent', 'soulBonusPercent', 'upgradeChancePercent'].some(key => !Number.isFinite(config.vip?.[key]) || config.vip[key] < 0)) throw new Error('Die VIP-Beuteboni sind unvollständig konfiguriert.');
     if (!Number.isInteger(config.equipmentShop?.offerCount) || config.equipmentShop.offerCount < 1 || !Number.isSafeInteger(config.equipmentShop.refreshIntervalSeconds) || config.equipmentShop.refreshIntervalSeconds < 1 || ['common', 'uncommon', 'rare', 'epic', 'legendary', 'legendaryGreater'].some(key => !Number.isSafeInteger(config.equipmentShop?.prices?.[key]) || config.equipmentShop.prices[key] <= 0)) throw new Error('Die Ausrüstungsangebote sind unvollständig konfiguriert.');
     if (!Array.isArray(boxRules?.consolationPool) || !boxRules.consolationPool.length || !(Number(boxRules.glyphBox?.chancePerGlyph) > 0) || boxRules.glyphBox.chancePerGlyph * glyphDefinitions.length > 100) {
@@ -100,11 +100,12 @@
     }
     const towerLootChoices = config.balance.loot?.towerLootChoices;
     if (!Number.isFinite(config.balance.loot?.towerLootChancePerBoss) || config.balance.loot.towerLootChancePerBoss < 0) throw new Error('Der Turmboss-Beutebonus ist ungültig.');
-    const towerEarlyScaling = config.balance.combat?.towerEarlyScaling;
-    if (!Number.isInteger(towerEarlyScaling?.fullScalingLevel) || towerEarlyScaling.fullScalingLevel <= 1
-      || !Number.isFinite(towerEarlyScaling.startHealth) || towerEarlyScaling.startHealth <= 0
-      || !Number.isFinite(towerEarlyScaling.startDamage) || towerEarlyScaling.startDamage <= 0) {
-      throw new Error('Die Einstiegsskalierung des Turms ist unvollständig konfiguriert.');
+    const towerScaling = config.balance.combat?.towerScaling;
+    if (!Number.isSafeInteger(towerScaling?.referenceRound) || towerScaling.referenceRound <= 1
+      || ['start', 'target'].some(anchor => !config.areas.some(area => area.id === towerScaling[`${anchor}Area`])
+        || !Number.isInteger(towerScaling[`${anchor}DeepTier`]) || towerScaling[`${anchor}DeepTier`] < 0
+        || towerScaling[`${anchor}DeepTier`] > config.balance.deepOfDark.maxTier)) {
+      throw new Error('Die Rundenskalierung des Turms ist unvollständig konfiguriert.');
     }
     const towerLootIds = ['upgradeStone', 'socketStone', 'affixStone', 'gems', 'powerup'];
     if (!Array.isArray(towerLootChoices) || towerLootChoices.length !== towerLootIds.length || towerLootIds.some(id => towerLootChoices.filter(choice => choice.id === id).length !== 1) || towerLootChoices.some(choice => !choice.label || !Number.isFinite(choice.chance) || choice.chance < 0 || choice.chance > 100)) throw new Error('Die Turmbeute ist unvollständig konfiguriert.');
@@ -137,14 +138,17 @@
       || !Number.isSafeInteger(weaponLevels.experiencePerKill) || weaponLevels.experiencePerKill < 1
       || !Number.isSafeInteger(weaponLevels.experienceStep) || weaponLevels.experienceStep < 1) throw new Error('Waffenlevel sind unvollständig konfiguriert.');
     const mythic = config.mythicItems;
+    const mythicUpgrades = config.balance.items.mythicUpgrades;
     const mythicLoot = config.balance.loot.mythicWeapons;
     if (!Array.isArray(mythic?.weaponSlots) || !mythic.weaponSlots.length
       || mythic.weaponSlots.some(slot => !['bow', 'sword', 'staff', 'bell'].includes(slot))
-      || !Number.isInteger(mythic.maxUpgradeLevel) || mythic.maxUpgradeLevel !== 10
+      || !Number.isSafeInteger(mythicUpgrades?.maxUpgradeLevel) || mythicUpgrades.maxUpgradeLevel < 1 || mythicUpgrades.maxUpgradeLevel > 100
       || !Number.isInteger(mythic.saleStones) || mythic.saleStones < 1 || !config.slots.mythicUpgradeStone
       || !Array.isArray(mythic.weaponBaseDamageRange) || mythic.weaponBaseDamageRange.length !== 2
       || mythic.weaponBaseDamageRange.some(value => !Number.isSafeInteger(value) || value < 1) || mythic.weaponBaseDamageRange[0] > mythic.weaponBaseDamageRange[1]
-      || !Number.isFinite(mythic.damagePercent) || mythic.damagePercent < 0
+      || !Number.isFinite(mythicUpgrades.damagePercentPerLevel) || mythicUpgrades.damagePercentPerLevel < 0
+      || !Array.isArray(mythicUpgrades.successChanceByLevel) || mythicUpgrades.successChanceByLevel.length !== mythicUpgrades.maxUpgradeLevel
+      || mythicUpgrades.successChanceByLevel.some(chance => !Number.isFinite(chance) || chance < 0 || chance > 100)
       || !config.rarities.some(rarity => rarity.color === 'mythic') || config.balance.items.affixCountByRarity.mythic !== 4
       || !Number.isInteger(mythicLoot?.minimumDeepTier) || mythicLoot.minimumDeepTier < 1 || mythicLoot.minimumDeepTier > config.balance.deepOfDark.maxTier
       || !Array.isArray(mythicLoot.dropChanceByArea) || mythicLoot.dropChanceByArea.length !== config.areas.length

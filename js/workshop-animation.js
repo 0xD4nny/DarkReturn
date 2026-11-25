@@ -41,12 +41,6 @@ function syncWorkshopAnimation() {
   if (!ritual || !status) return;
   const visual = { workbench, status, statusMarkup: status.innerHTML, animations: [], frame: 0 };
   activeWorkshopVisuals = visual;
-  const single = workbench.querySelector('[data-forge], [data-fuse-glyphs], [data-socket], [data-enchant-attempt]');
-  const target = workbench.querySelector('[data-forge-target-level], [data-socket-target-count]');
-  const auto = workbench.querySelector('[data-forge-auto], [data-socket-auto]');
-  if (single) single.disabled = true;
-  if (target) target.disabled = true;
-  if (auto) auto.disabled = Boolean(activeWorkshopJob?.stopRequested) || !(attempt.socketMode ? autoSocketRunning : autoUpgradeRunning);
   const { result, outcome, socketMode, enchantMode } = attempt;
   const enabled = workshopAnimationsEnabled(attempt.view);
   if (attempt.phase === 'charging') {
@@ -61,7 +55,7 @@ function syncWorkshopAnimation() {
       if (activeWorkshopVisuals !== visual) return;
       if (!workbench.isConnected || document.hidden || currentView !== attempt.view) { stopWorkshopVisuals(); return; }
       const progress = Math.min(1, (now - attempt.phaseStartedAt) / attempt.animationDuration);
-      visual.animations.forEach(animation => { animation.playbackRate = (12 - 11 * progress) * attempt.speed; });
+      visual.animations.forEach(animation => { animation.playbackRate = 12 - 11 * progress; });
       if (progress < 1) visual.frame = requestAnimationFrame(frame);
     };
     visual.frame = requestAnimationFrame(frame);
@@ -77,38 +71,30 @@ function syncWorkshopAnimation() {
     status.querySelector('strong').textContent = outcome.success ? 'GELUNGEN' : 'FEHLGESCHLAGEN';
   }
 }
-async function playForgeAnimation(result) {
-  if (forgeAnimationInProgress || saveMaintenance || saveBlocked) return;
-  if (result.kind === 'enchant-affix') return;
-  if (result.kind === 'glyph-fusion' && isMobileLayout()) return;
-  const generation = stateGeneration;
+// Visual feedback never delays the saved result or the next action.
+function playForgeAnimation(result) {
+  cancelWorkshopAnimation();
+  if (saveMaintenance || saveBlocked || result.headless || isMobileLayout()) return;
   const socketMode = result.kind === 'socket';
   const enchantMode = result.kind === 'enchant-rarity' || result.kind === 'enchant-affix';
-  const speed = vipWorkshopSpeedMultiplier();
-  const duration = 2000 / speed;
-  const resultDuration = 300 / speed;
-  const attempt = { generation, result, socketMode, enchantMode, speed,
-    view: socketMode ? 'sockets' : enchantMode ? 'enchant' : 'blacksmith', headless: Boolean(activeWorkshopJob?.headless), animationDuration: duration - resultDuration };
+  const view = socketMode ? 'sockets' : enchantMode ? 'enchant' : 'blacksmith';
+  if (!workshopAnimationsEnabled(view)) return;
+  const outcome = result.outcomes?.at(-1);
+  if (!outcome) return;
+  const attempt = { generation: stateGeneration, result, outcome, socketMode, enchantMode,
+    view, animationDuration: 160, phase: 'charging', phaseStartedAt: performance.now() };
   activeWorkshopAttempt = attempt;
-  forgeAnimationInProgress = true;
-  const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
-  try {
-    for (const outcome of result.outcomes || []) {
-      if (generation !== stateGeneration || saveMaintenance || saveBlocked || activeWorkshopAttempt !== attempt) break;
-      Object.assign(attempt, { outcome, phase: 'charging', phaseStartedAt: performance.now() });
-      syncWorkshopAnimation();
-      await wait(attempt.animationDuration);
-      if (generation !== stateGeneration || saveMaintenance || saveBlocked || activeWorkshopAttempt !== attempt) break;
-      attempt.phase = 'result';
-      syncWorkshopAnimation();
-      await wait(resultDuration);
-    }
-  } finally {
-    if (activeWorkshopAttempt === attempt) {
-      activeWorkshopAttempt = null;
-      stopWorkshopVisuals();
-    }
-    if (generation === stateGeneration) forgeAnimationInProgress = false;
-  }
+  syncWorkshopAnimation();
+  window.setTimeout(() => {
+    if (activeWorkshopAttempt !== attempt || attempt.generation !== stateGeneration) return;
+    attempt.phase = 'result';
+    syncWorkshopAnimation();
+  }, 160);
+  window.setTimeout(() => {
+    if (activeWorkshopAttempt !== attempt) return;
+    activeWorkshopAttempt = null;
+    stopWorkshopVisuals();
+  }, 480);
 }
+
 document.addEventListener('visibilitychange', syncWorkshopAnimation);

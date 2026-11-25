@@ -12,7 +12,7 @@ function offlineFingerprint(value) {
   for (let index = 0; index < text.length; index++) hash = Math.imul(hash ^ text.charCodeAt(index), 16777619);
   return (hash >>> 0).toString(16);
 }
-const OFFLINE_CONFIG_SIGNATURE = offlineFingerprint({ config: GAME_CONFIG, damageModel: 2 });
+const OFFLINE_CONFIG_SIGNATURE = offlineFingerprint({ config: GAME_CONFIG, damageModel: 8 });
 
 function rewardTime(sourceState) {
   return sourceState?.offlineContext?.now ?? Date.now();
@@ -49,9 +49,13 @@ function normalizeOfflineFarm(save) {
   farm.samples = (Array.isArray(farm.samples) ? farm.samples : []).filter(sample => sample
     && typeof sample.won === 'boolean' && typeof sample.elite === 'boolean'
     && Number.isFinite(sample.damageRate) && sample.damageRate >= 1
+    && (sample.fixedDamageFraction == null || (Number.isFinite(sample.fixedDamageFraction) && sample.fixedDamageFraction >= 0 && sample.fixedDamageFraction <= 1))
     && Number.isFinite(sample.milliseconds) && sample.milliseconds >= BALANCE.combat.tickMilliseconds
     && sample.milliseconds <= 86400000
-    && (farm.mode !== 'tower' || (['normal', 'champion', 'boss'].includes(sample.kind) && validHealth(sample)))).slice(-OFFLINE_RULES.sampleLimit);
+    && (farm.mode !== 'tower' || (['normal', 'champion', 'boss'].includes(sample.kind) && Number.isSafeInteger(sample.round) && sample.round >= 1
+      && Number.isSafeInteger(sample.enemyAttackCount) && sample.enemyAttackCount >= 0
+      && sample.damageTaken && [save.mainClass, save.activeCompanion].filter(Boolean).every(owner => Number.isFinite(sample.damageTaken[owner]) && sample.damageTaken[owner] >= 0)
+      && validHealth(sample)))).slice(-OFFLINE_RULES.sampleLimit);
   farm.cursor = Number.isSafeInteger(farm.cursor) && farm.cursor >= 0 ? farm.cursor : 0;
   farm.carry = Number.isFinite(farm.carry) && farm.carry >= 0 ? Math.min(farm.carry, 86400000) : 0;
 }
@@ -67,8 +71,12 @@ function offlineDamageRate(save) {
     const critical = Math.min(100, stats['Kritische Chance']) / 100;
     const criticalFactor = 1 + critical * Math.max(0, stats['Kritischer Schaden'] / 100 - 1);
     const cadence = Math.max(stats['Angriffsgeschwindigkeit'] / 100, 1 / (1 - stats['Abklingzeitreduktion'] / 100));
+    const setEffects = activeArmorSetEffects(save, owner);
+    // Round samples capture actual echo delays and lost damage on enemy deaths.
+    // This factor adjusts the measured rate when temporary DoT bonuses change.
+    const echoMultiplier = 1 + (setEffects.shadowEchoPercent || 0) / 100 * Math.max(0, 1 + (stats['Schaden über Zeit'] || 0) / 100);
     return sum + Math.max(1, stats.Angriff) * criticalFactor * cadence * characterDamageMultiplier(owner, save)
-      * (1 + extraAttackChanceFor(owner, save) / 100);
+      * expectedMultiHitDamage(extraAttackChanceFor(owner, save), setEffects.multiHitDamagePercentPerHit || 0) * echoMultiplier;
   }, 0)));
 }
 function checkpointOnlineFarm(save) {
@@ -93,6 +101,28 @@ function checkpointOnlineFarm(save) {
 function offlineTowerKind(round) {
   return round % 10 === 0 ? 'boss' : round % 10 === 5 ? 'champion' : 'normal';
 }
+function offlineTowerRoundScaling(save, sample, round) {
+  const previous = towerEncounterStats(save, sample.round);
+  const current = towerEncounterStats(save, round);
+  return { health: current.health / previous.health, damage: current.damage / previous.damage };
+}
+function offlineCombatDuration(sample, damageRate, healthScale = 1, pause = 0) {
+  // Max-health damage scales with enemy HP; ordinary damage scales with the build's rate.
+  const fixed = sample.fixedDamageFraction || 0;
+  const damageRatio = fixed * healthScale + (1 - fixed) * damageRate / sample.damageRate;
+  return Math.max(BALANCE.combat.tickMilliseconds,
+    Math.max(BALANCE.combat.tickMilliseconds, sample.milliseconds - pause) * (healthScale / damageRatio));
+}
+function offlineTowerPartyHealth(save, farm, sample, scaling, combatMilliseconds) {
+  const pause = sample.won ? 1300 : 0;
+  const durationRatio = combatMilliseconds / Math.max(BALANCE.combat.tickMilliseconds, sample.milliseconds - pause);
+  return Object.fromEntries([save.mainClass, save.activeCompanion].filter(Boolean).map(owner => {
+    const taken = sample.damageTaken[owner];
+    const healed = Math.max(0, sample.endHealth[owner] - sample.startHealth[owner] + taken);
+    const remaining = (farm.partyHealth[owner] ?? 1) - taken * scaling.damage * durationRatio + healed * durationRatio;
+    return [owner, Math.max(0, Math.min(1, remaining))];
+  }));
+}
 function offlineRoundSample(session, won) {
   if (!['area', 'tower'].includes(session.mode) || !session.offlineWave) return null;
   const qualified = !session.offlineWave.manual && session.partyClasses.every(owner => session.autoSkills[owner]);
@@ -105,6 +135,10 @@ function offlineRoundSample(session, won) {
     startHealth: session.offlineWave.partyHealth,
     endHealth: Object.fromEntries(Object.entries(session.partyHealth).map(([owner, hero]) => [owner, Math.max(0, hero.hp / hero.max)])),
     restoration, damageRate: session.offlineWave.damageRate,
+    ...(session.mode === 'tower' ? { round: session.towerRound, enemyAttackCount: session.enemyAttackCount || 0,
+      damageTaken: Object.fromEntries(session.partyClasses.map(owner => [owner, session.roundDamageTakenByClass?.[owner] || 0])) } : {}),
+    fixedDamageFraction: Math.min(1, Math.max(0, (session.roundHeartfallDamage || 0)
+      / Math.max(1, Object.values(session.roundDamageByClass || {}).reduce((sum, damage) => sum + damage, 0)))),
     milliseconds: Math.max(BALANCE.combat.tickMilliseconds, performance.now() - session.offlineWave.startedAt)
       + (won ? 1300 : session.mode === 'tower' ? 0 : BALANCE.combat.defeatRecoveryMilliseconds) };
 }
@@ -127,8 +161,9 @@ function recordOfflineFarmSample(save, body) {
   }
   if (!sample || sample.qualified === false || sample.signature !== signature || !Number.isFinite(sample.milliseconds) || !Number.isFinite(sample.damageRate)) return;
   farm.samples.push({ won: sample.won, elite: sample.elite, milliseconds: sample.milliseconds,
-    damageRate: sample.damageRate, kind: sample.kind,
-    ...(farm.mode === 'tower' ? { startHealth: sample.startHealth, endHealth: sample.endHealth, restoration: sample.restoration } : {}) });
+    damageRate: sample.damageRate, kind: sample.kind, fixedDamageFraction: sample.fixedDamageFraction || 0,
+    ...(farm.mode === 'tower' ? { round: sample.round, enemyAttackCount: sample.enemyAttackCount || 0, damageTaken: sample.damageTaken,
+      startHealth: sample.startHealth, endHealth: sample.endHealth, restoration: sample.restoration } : {}) });
   farm.samples = farm.samples.slice(-OFFLINE_RULES.sampleLimit);
 }
 function armOfflineFarm(save, mode, area = null, deepTier = 0) {
@@ -204,9 +239,15 @@ async function settleOfflineFarm(save, now = Date.now()) {
         save.offlineContext = { now: roundStartedAt, worldEvent: event };
         if (save.workshopJob) await settleWorkshopThrough(save, roundStartedAt);
         const pause = sample.won ? 1300 : farm.mode === 'tower' ? 0 : BALANCE.combat.defeatRecoveryMilliseconds;
-        const milliseconds = pause + Math.max(BALANCE.combat.tickMilliseconds,
-          Math.max(BALANCE.combat.tickMilliseconds, sample.milliseconds - pause)
-          * sample.damageRate / offlineDamageRate(save));
+        const scaling = farm.mode === 'tower' ? offlineTowerRoundScaling(save, sample, farm.round) : { health: 1, damage: 1 };
+        const combatMilliseconds = offlineCombatDuration(sample, offlineDamageRate(save), scaling.health, pause);
+        const milliseconds = pause + combatMilliseconds;
+        if (farm.mode === 'tower' && !sample.enemyAttackCount && scaling.health > 1
+          && combatMilliseconds >= BALANCE.combat.enemyAttackIntervalTicks * BALANCE.combat.tickMilliseconds) {
+          report.note = 'Die stärkeren Turmgegner brauchen eine neue Kampfmessung mit Gegnerangriffen. Der Lauf wird bei deiner Rückkehr in dieser Runde fortgesetzt.';
+          budget = 0;
+          break;
+        }
         if (budget < milliseconds) break;
         budget -= milliseconds;
         consumed += milliseconds;
@@ -221,8 +262,7 @@ async function settleOfflineFarm(save, now = Date.now()) {
         if (save.workshopJob) await settleWorkshopThrough(save, at);
         let won = sample.won;
         if (farm.mode === 'tower') {
-          const health = Object.fromEntries(owners.map(owner => [owner, Math.max(0, Math.min(1,
-            (farm.partyHealth[owner] ?? 1) + sample.endHealth[owner] - sample.startHealth[owner]))]));
+          const health = offlineTowerPartyHealth(save, farm, sample, scaling, combatMilliseconds);
           won = won && owners.some(owner => health[owner] > 0);
           farm.partyHealth = Object.fromEntries(owners.map(owner => [owner, won ? Math.min(1, health[owner] + sample.restoration[owner]) : 0]));
         }
