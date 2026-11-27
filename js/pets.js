@@ -11,8 +11,15 @@ function partyPets(save = state) {
 function selectedAltarPet() {
   return partyPets().find(pet => pet.ownerClass === selectedAltarPetOwner) || mainPet();
 }
+function petRarityIndex(level) {
+  const milestone = Math.floor(Math.max(1, Number(level) || 1) / PET_RULES.affixEveryLevels);
+  return Math.min(RARITIES.findIndex(rarity => rarity.color === 'mythic'), milestone);
+}
+function petRarityAtLevel(level) {
+  return RARITIES[petRarityIndex(level)];
+}
 function petAffixCount(level) {
-  return 1 + Math.floor(level / PET_RULES.affixEveryLevels);
+  return 1 + petRarityIndex(level);
 }
 function petAffixValueAtLevel(baseValue, level) {
   return Math.round(baseValue * (1 + level * PET_RULES.affixPercentPerLevel / 100) * 100) / 100;
@@ -36,11 +43,12 @@ function normalizePet(save) {
     pet.id ||= createItemId();
     pet.slot = 'pet';
     pet.name = definition.name;
-    pet.rarity = 'Legendär';
-    pet.rarityColor = 'legendary';
     pet.icon = SLOT_DATA.pet.icon;
     pet.upgradeLevel = 0;
     pet.level = Math.max(1, Math.floor(Number(pet.level) || 1));
+    const rarity = petRarityAtLevel(pet.level);
+    pet.rarity = rarity.name;
+    pet.rarityColor = rarity.color;
     const count = petAffixCount(pet.level);
     pet.affixes = (pet.affixes || []).filter(affix => PET_RULES.affixPool.includes(affix.stat)).slice(0, count).map(affix => {
       const [min, max] = AFFIX_RANGES[affix.stat];

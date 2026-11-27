@@ -17,6 +17,7 @@
     --ui-panel-border: #393036;
     --ui-panel-gradient: radial-gradient(ellipse at 85% 0%, color-mix(in srgb, var(--ui-accent) 10%, transparent), transparent 58%), linear-gradient(145deg, #15161a, #111216);
     --gold: #c6a46b;
+    --rarity-mythic: #ed5a56;
     --serif: Georgia, 'Times New Roman', serif;
     --sans: 'Segoe UI', Tahoma, Arial, sans-serif;
 }

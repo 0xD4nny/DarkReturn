@@ -1,6 +1,7 @@
 // Shared data-driven handbook markup; cell values are always escaped.
 function codexTable(headings, rows) {
-  return `<div class="codex-table-wrap"><table class="codex-table"><thead><tr>${headings.map((heading) => `<th scope="col">${escapeHtml(heading)}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((value, index) => index === 0 ? `<th scope="row">${escapeHtml(value)}</th>` : `<td>${escapeHtml(value)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const rarityClass = value => /^(Mystisch|Mythisch)$/.test(String(value)) ? ' class="rarity-mythic"' : '';
+  return `<div class="codex-table-wrap"><table class="codex-table"><thead><tr>${headings.map((heading) => `<th scope="col"${rarityClass(heading)}>${escapeHtml(heading)}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((value, index) => index === 0 ? `<th scope="row"${rarityClass(value)}>${escapeHtml(value)}</th>` : `<td${rarityClass(value)}>${escapeHtml(value)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 function renderCodexMarket() {
   const glyphChance = BOX_RULES.glyphBox.chancePerGlyph;

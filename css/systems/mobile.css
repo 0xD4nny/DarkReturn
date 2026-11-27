@@ -123,7 +123,7 @@
     .inventory-character-panel .glyph-slot-grid .gear-slot { min-height: 54px; }
     .inventory-stat-groups { grid-template-columns: minmax(0, 1fr); gap: 18px; }
     .inventory-stat-row { font-size: 14px; padding-block: 9px; }
-    .inventory-expansion-controls { flex-wrap: wrap; }
+    .inventory-actions { flex-wrap: wrap; }
     .inventory-hint { font-size: 14px; line-height: 1.5; }
     .ui-control.mobile-workshop-back { display: inline-flex; margin-block: 0 12px; }
     .mobile-socket-target { display: grid; margin-block: 12px; }
@@ -667,14 +667,12 @@
     /* This overrides the old, more specific .companion-items aspect ratio. */
     .inventory-grid > .inventory-item { box-sizing: border-box; display: grid; place-items: center; align-self: start; width: 100%; min-width: 0; height: auto; min-height: 0; max-height: none; aspect-ratio: 1 / 1; padding: 0; }
     .inventory-grid > .inventory-item > .item-icon { width: 58%; height: 58%; aspect-ratio: 1; margin: 0; padding: 0; }
-    .inventory-view .inventory-main > .inventory-expansion-controls { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 10px; margin-top: 20px; padding-top: 14px; border-top: 1px solid #393036; }
-    .inventory-view .inventory-expansion-controls > .filter-label { grid-column: 1 / -1; width: auto; margin: 0; font-size: 13px; letter-spacing: 0; }
-    .inventory-view .inventory-expansion-controls > input { width: 76px; min-height: 44px; }
-    .inventory-view .inventory-expansion-controls > button { min-width: 0; min-height: 44px; padding-inline: 10px; font-size: 13px; white-space: normal; }
-    .inventory-view .inventory-main > .inventory-expansion-controls:has(> [data-mobile-sell-category]) { grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
-    .inventory-view .inventory-expansion-controls:has(> [data-mobile-sell-category]) > input { width: 48px; }
-    .inventory-view .inventory-expansion-controls:has(> [data-mobile-sell-category]) > button { padding-inline: 6px; font-size: 12px; letter-spacing: 0; }
-    .inventory-view .inventory-expansion-controls > .mobile-inventory-sell-filter { display: inline-flex; }
+    .inventory-view .inventory-main > .inventory-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 20px; padding-top: 14px; border-top: 1px solid #393036; }
+    .inventory-view .inventory-actions > .filter-label { grid-column: 1 / -1; width: auto; margin: 0; font-size: 13px; letter-spacing: 0; }
+    .inventory-view .inventory-actions > button { min-width: 0; min-height: 44px; padding-inline: 10px; font-size: 13px; white-space: normal; }
+    .inventory-view .inventory-main > .inventory-actions:has(> [data-mobile-sell-category]) { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .inventory-view .inventory-actions:has(> [data-mobile-sell-category]) > button { padding-inline: 6px; font-size: 12px; letter-spacing: 0; }
+    .inventory-view .inventory-actions > .mobile-inventory-sell-filter { display: inline-flex; }
     .inventory-view .inventory-hint,
     .inventory-view:not(.equipment-view) > .view-heading .welcome-sub { display: none; }
     body:has(.content-wrap > .inventory-view:not(.equipment-view)) { overflow: hidden; }
@@ -686,7 +684,7 @@
     .inventory-view:not(.equipment-view) .inventory-main { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; }
     /* Intrinsic row heights keep square cards from overflowing compressed auto rows. */
     .inventory-view:not(.equipment-view) .inventory-main > .inventory-grid { flex: 1 1 0; height: 0; min-height: 0; grid-auto-rows: max-content; overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: thin; scrollbar-color: #51464a transparent; }
-    .inventory-view:not(.equipment-view) .inventory-main > .inventory-expansion-controls { flex: 0 0 auto; margin-top: 12px; padding-top: 10px; }
+    .inventory-view:not(.equipment-view) .inventory-main > .inventory-actions { flex: 0 0 auto; margin-top: 12px; padding-top: 10px; }
     .inventory-view .inventory-character-panel { height: auto; max-height: none; }
     .inventory-view .inventory-detail-content { height: auto; max-height: none; overflow: visible; }
     :is(.inventory-view, .skill-tree-view, .abilities-view, .altar-ritual-view) .mobile-inventory-owners { position: fixed; z-index: 30; left: max(16px, env(safe-area-inset-left, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: nowrap; gap: 6px; width: max-content; margin: 0; padding: 6px; border: 1px solid #44383d; border-radius: var(--mobile-radius-panel); background: #18171bf5; box-shadow: 0 6px 24px #0008; }

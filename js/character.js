@@ -14,7 +14,7 @@ function normalizeGearItem(item) {
   if (!item || typeof item !== 'object') return item;
   if (['weaponGem', 'armorGem'].includes(item.slot)) return normalizeGemItem(item);
   normalizeWeaponProgress(item);
-  if (isMythicWeapon(item)) {
+  if (isMythicEquipment(item)) {
     delete item.enchantAffixIndex;
     item.mythicUpgradeLevel = Math.max(0, Math.min(MYTHIC_UPGRADES.maxUpgradeLevel, Math.floor(Number(item.mythicUpgradeLevel) || 0)));
   }
@@ -51,7 +51,7 @@ function normalizeGearItem(item) {
     if (affix.fixed) return { ...affix, fixed: true, baseValue: affix.baseValue ?? (affix.greater ? Math.round(Number(affix.value) / upgradeMultiplier * 100) / 100 : Math.round(Number(affix.value) / upgradeMultiplier)) };
     const [min, max] = ranges[affix.stat] || [1, 1];
     if (affix.greater) {
-      const baseValue = isMythicWeapon(item) ? affix.baseValue ?? Number(affix.value) / affixUpgradeMultiplier(item.upgradeLevel) : greaterAffixBaseValue(affix.stat);
+      const baseValue = isMythicEquipment(item) ? affix.baseValue ?? Number(affix.value) / affixUpgradeMultiplier(item.upgradeLevel) : greaterAffixBaseValue(affix.stat);
       return { ...affix, baseValue, value: affixValueAtUpgrade({ ...affix, baseValue }, item.upgradeLevel) };
     }
     const rolledValue = Number(affix.baseValue ?? Number(affix.value) / upgradeMultiplier) || min;
@@ -65,7 +65,7 @@ function affixRangeFor(item, stat, affix = null) {
   const [min, max] = AFFIX_RANGES?.[stat] || [1, 1];
   if (item?.slot === 'pet') return [min, max].map(value => petAffixValueAtLevel(value, item.level));
   const multiplier = affixUpgradeMultiplier(item?.upgradeLevel || 0);
-  if (isMythicWeapon(item) && affix?.greater) return [min, max].map(value => Math.round(value * BALANCE.loot.greaterAffixMaxMultiplier * multiplier * 100) / 100);
+  if (isMythicEquipment(item) && affix?.greater) return [min, max].map(value => Math.round(value * BALANCE.loot.greaterAffixMaxMultiplier * multiplier * 100) / 100);
   return [Math.round(min * multiplier), Math.round(max * multiplier)];
 }
 function normalizeGearSave(save) {
@@ -103,7 +103,7 @@ function activeArmorSetEffects(sourceState = state, ownerClass = sourceState?.ma
         Object.entries(bonusEffects).forEach(([effect, value]) => {
           if (['multiplicativeDamagePercent', 'partyDamagePercent'].includes(effect)) {
             const key = effect === 'partyDamagePercent' ? 'partyDamageMultiplier' : 'damageMultiplier';
-            active[key] = (active[key] || 1) * (1 + value / 100);
+            active[key] = (active[key] ?? 1) + value / 100;
           } else active[effect] = (active[effect] || 0) + value;
         });
       });
@@ -131,7 +131,7 @@ function partySetEffects(sourceState = state) {
   return [...new Set([sourceState.mainClass, sourceState.activeCompanion].filter(Boolean))]
     .reduce((party, owner) => {
       const effects = activeArmorSetEffects(sourceState, owner);
-      party.damageMultiplier *= effects.partyDamageMultiplier || 1;
+      party.damageMultiplier += (effects.partyDamageMultiplier ?? 1) - 1;
       party.healthPercent += effects.partyHealthPercent || 0;
       return party;
     }, { damageMultiplier: 1, healthPercent: 0 });
@@ -139,7 +139,7 @@ function partySetEffects(sourceState = state) {
 function skillTreeEffectsFor(className, sourceState = state) {
   const tree = sourceState?.skillTree?.[className]?.nodes || {};
   return SKILL_TREE_NODES.flatMap((node) => {
-    const ranks = Math.max(0, Number(tree[node.id]) || 0);
+    const ranks = effectiveSkillTreeNodeRank(node, className, sourceState);
     if (!ranks || !node.effect || (node.class && node.class !== className)) return [];
     const effect = node.effect.type === 'primary-attribute-flat'
       ? { ...node.effect, type: 'attribute-flat', stat: CLASS_ATTRIBUTE_SCALING[className].damageAttribute }
@@ -162,12 +162,12 @@ function extraAttackChanceFor(className, sourceState = state, { uncapped = false
 function multiHitDamageMultiplier(hitCount, bonusPercentPerHit = 0) {
   return 1 + Math.max(0, hitCount) * Math.max(0, bonusPercentPerHit) / 100;
 }
-function expectedMultiHitDamage(chancePercent, bonusPercentPerHit = 0) {
+function expectedMultiHitDamage(chancePercent, bonusPercentPerHit = 0, baseDamageMultiplier = 1) {
   const extraHits = Math.min(BALANCE.combat.extraAttackChanceCapPercent ?? 1000, Math.max(0, chancePercent)) / 100;
   const lowerCount = 1 + Math.floor(extraHits);
   const remainder = extraHits % 1;
-  const lowerDamage = lowerCount * multiHitDamageMultiplier(lowerCount, bonusPercentPerHit);
-  const upperDamage = (lowerCount + 1) * multiHitDamageMultiplier(lowerCount + 1, bonusPercentPerHit);
+  const lowerDamage = lowerCount * (baseDamageMultiplier + multiHitDamageMultiplier(lowerCount, bonusPercentPerHit) - 1);
+  const upperDamage = (lowerCount + 1) * (baseDamageMultiplier + multiHitDamageMultiplier(lowerCount + 1, bonusPercentPerHit) - 1);
   return lowerDamage * (1 - remainder) + upperDamage * remainder;
 }
 // Ordinary attack bonuses share one additive bucket, independent of equipment order.
@@ -315,7 +315,7 @@ function calculateCharacterStats(className = state.mainClass, sourceState = stat
   });
   // Convert only this hunter's fully calculated critical chance, including temporary bonuses.
   const criticalOverflow = className === 'hunter'
-    ? skillTreeSpecialValue('hunter-critical-overflow', className, sourceState) : 0;
+    ? passiveEffectTotal('critical-overflow', className, sourceState) : 0;
   if (criticalOverflow > 0) {
     stats['Kritischer Schaden'] += Math.max(0, stats['Kritische Chance'] - 100) * criticalOverflow;
   }
@@ -385,13 +385,13 @@ const SPECIAL_ITEM_APPEARANCE = {
 function itemVisualStyle(item) {
   const special = SPECIAL_ITEM_APPEARANCE[item?.slot];
   const rarity = special?.rarity || item?.rarityColor || 'common';
-  return { rarity, special: Boolean(special), greater: special?.greater ?? false };
+  return { rarity, special: Boolean(special), greater: item?.slot === 'pet' || (special?.greater ?? false) };
 }
 function itemVisualClasses(item) {
   const visual = itemVisualStyle(item);
-  return [visual.rarity, isSellableEquipment(item) ? 'equipment-item' : '', visual.special ? 'special-item' : '',
+  return [visual.rarity, isSellableEquipment(item) || item?.slot === 'pet' ? 'equipment-item' : '', visual.special ? 'special-item' : '',
     (item?.affixes || []).some(affix => affix.greater) ? 'has-greater-affix' : '',
-    visual.special && visual.greater ? 'has-greater-effect' : ''].filter(Boolean).join(' ');
+    visual.greater ? 'has-greater-effect' : ''].filter(Boolean).join(' ');
 }
 function equipmentEmbersMarkup(item) {
   return item && (isSellableEquipment(item) || ['pet', 'weaponGem', 'armorGem'].includes(item.slot) || itemVisualStyle(item).greater)
@@ -440,7 +440,7 @@ function itemCard(item, index, options = {}) {
   const upgradeLabel = isMaterial ? '' : (item.upgradeLevel || 0) > 0 ? `Aufwertung +${item.upgradeLevel}` : '';
   const itemIndex = options.shopOffer ? `data-shop-offer-preview="${item.id}"` : options.socketTarget || options.enchantTarget || options.forge ? '' : `data-item-index="${index}"`;
   const saleAction = options.sell && sellable ? `data-sell-item="${item.id}"` : '';
-  const saleLabel = options.sell ? sellable ? `<span class="item-sell">VERKAUFEN · ${isMythicWeapon(item) ? MYTHIC_ITEMS.saleStones + ' mystische Steine' : number(sellValue(item)) + ' ✧'}</span>` : '<span class="item-sell item-unsellable-label">NICHT VERKÄUFLICH</span>' : '';
+  const saleLabel = options.sell ? sellable ? `<span class="item-sell">VERKAUFEN · ${isMythicEquipment(item) ? MYTHIC_ITEMS.saleStones + ' mystische Steine' : number(sellValue(item)) + ' ✧'}</span>` : '<span class="item-sell item-unsellable-label">NICHT VERKÄUFLICH</span>' : '';
   return `<button class="ui-control ui-graphic ${classes}" type="button" data-item-key="${item.id}" draggable="${canDrag}" ${itemIndex} ${options.socketTarget ? `data-socket-target-item="${item.id}"` : ''} ${options.enchantTarget ? `data-enchant-target-item="${item.id}"` : ''} ${forgeAttrs} ${saleAction} ${options.sell && !sellable ? 'aria-disabled="true"' : ''} aria-label="${escapeHtml(item.name)}${isSellableEquipment(item) ? `, ${escapeHtml(item.rarity)}` : ''}${item.set ? `, Set ${escapeHtml(item.set)}` : ''}${upgradeLabel ? `, ${upgradeLabel}` : ''}${openedSockets ? `, ${socketLabel}` : ''}${options.sell && !sellable ? ', nicht verkäuflich' : ''}">${equipmentEmbersMarkup(item)}${itemIconMarkup(item, 'item-icon')}${itemMarkersMarkup(item)}${openedSockets ? `<span class="item-socket-count" title="${socketLabel}" aria-label="${socketLabel}">${filledSockets}/${openedSockets}</span>` : ''}${quantity > 1 ? `<span class="item-stack-count">${number(quantity)}</span>` : ''}${!isMaterial && item.upgradeLevel ? `<span class="item-upgrade-level">+${item.upgradeLevel}</span>` : ''}<span class="item-name">${escapeHtml(item.name)}</span><span class="item-type">${escapeHtml(slotName)}</span>${saleLabel}</button>`;
 }
 
@@ -450,8 +450,8 @@ function renderItemGridControls(items, gridKey, category, sort, { includeAll = f
       const count = items.filter((item) => entry.slots.includes(item.slot)).length;
       return `<option value="${key}" ${category === key ? 'selected' : ''}>${escapeHtml(entry.label)} (${count})</option>`;
     }).join('');
-  const expansionControls = gridKey === 'inventory' ? renderInventoryExpansionControls() : '';
-  return `<div class="item-grid-controls"><label class="filter-label">FILTER <select class="ui-control ui-select" data-item-grid-category="${gridKey}" aria-label="Inventar filtern">${categories}</select></label><label class="filter-label">SORTIEREN <select class="ui-control ui-select" data-item-grid-sort="${gridKey}" aria-label="Inventar sortieren"><option value="rarity" ${sort === 'rarity' ? 'selected' : ''}>Seltenheit</option><option value="slot" ${sort === 'slot' ? 'selected' : ''}>Ausrüstungstyp</option><option value="upgrade" ${sort === 'upgrade' ? 'selected' : ''}>Aufwertung</option></select></label>${expansionControls}</div>`;
+  const inventoryActions = gridKey === 'inventory' ? '<div class="inventory-actions" role="group" aria-label="Inventaraktionen"></div>' : '';
+  return `<div class="item-grid-controls"><label class="filter-label">FILTER <select class="ui-control ui-select" data-item-grid-category="${gridKey}" aria-label="Inventar filtern">${categories}</select></label><label class="filter-label">SORTIEREN <select class="ui-control ui-select" data-item-grid-sort="${gridKey}" aria-label="Inventar sortieren"><option value="rarity" ${sort === 'rarity' ? 'selected' : ''}>Seltenheit</option><option value="slot" ${sort === 'slot' ? 'selected' : ''}>Ausrüstungstyp</option><option value="upgrade" ${sort === 'upgrade' ? 'selected' : ''}>Aufwertung</option></select></label>${inventoryActions}</div>`;
 }
 
 function renderItemGrid(items, options = {}) {
@@ -498,7 +498,7 @@ function gearSlot(key, label, item, opts = {}) {
   }
   const icon = item?.slot === 'pet' ? itemIconMarkup(item, 'gear-icon-image') : equipmentIconMarkup(iconSlot, item?.icon || opts.icon, 'gear-icon-image');
   const text = item ? `${item.name}${item.slot === 'pet' ? ` · Stufe ${item.level}` : item.upgradeLevel ? ` · +${item.upgradeLevel}` : ''}` : opts.empty || 'Leer';
-  const classNames = ['gear-slot', 'compact-gear-slot', item ? 'filled' : 'empty', item?.rarityColor || '', (item?.affixes || []).some(affix => affix.greater) ? 'has-greater-affix' : '', item?.set ? 'set-item' : '', opts.wide ? 'wide' : '', opts.disabled ? 'locked' : ''].filter(Boolean).join(' ');
+  const classNames = ['gear-slot', 'compact-gear-slot', item ? 'filled' : 'empty', item?.rarityColor || '', (item?.affixes || []).some(affix => affix.greater) ? 'has-greater-affix' : '', item && itemVisualStyle(item).greater ? 'has-greater-effect' : '', item?.set ? 'set-item' : '', opts.wide ? 'wide' : '', opts.disabled ? 'locked' : ''].filter(Boolean).join(' ');
   const dataAttr = `data-gear-owner="${ownerClass === state.mainClass ? 'main' : 'companion'}" data-gear-class="${ownerClass}" data-gear-slot="${key}"`;
   return `<button class="ui-control ui-graphic ${classNames}" type="button" ${dataAttr} ${opts.disabled ? 'disabled' : ''} aria-label="${escapeHtml(label)}: ${escapeHtml(text)}${item?.set ? `, Set ${escapeHtml(item.set)}` : ''}">${equipmentEmbersMarkup(item)}<span class="gear-icon">${icon}</span>${itemMarkersMarkup(item)}</button>`;
 }
@@ -526,16 +526,21 @@ function renderEquipment(className = state.mainClass) {
   return `<section class="equipment-panel character-panel-surface equipment-paperdoll"><div class="panel-heading"><div><p class="eyebrow">${isMain ? 'DEIN LOADOUT' : 'GEF&Auml;HRTEN-LOADOUT'}</p><h3>${isMain ? 'Ausr&uuml;stung' : escapeHtml(CLASSES[className].label)}</h3></div><span class="equipment-count">${Object.values(gear).filter(Boolean).length + (petForClass(className) ? 1 : 0)} / 15</span></div><div class="loadout-paperdoll" aria-label="Ausrüstungsplätze um den Charakter"><div class="loadout-side loadout-armor">${leftSlots.join('')}</div><div class="loadout-figure" aria-hidden="true"><img src="Assets/Art/battle/runtime/${className}/${className}-idle.png" alt="" draggable="false"></div><div class="loadout-side loadout-jewelry">${rightSlots.join('')}</div><div class="loadout-footer" role="group" aria-label="Waffe, Glyphen und Nebenhand"><div class="loadout-weapon">${weapon}</div><div class="loadout-glyphs" role="group" aria-label="Glyphenplätze">${glyphSlots.join('')}</div><div class="loadout-offhand">${offHand}</div></div></div></section>`;
 }
 
-// Shared by combat and the character sheet: only unconditional total-damage factors.
-function characterDamageMultiplier(className, sourceState = state, setEffects = activeArmorSetEffects(sourceState, className)) {
+// Sum final-damage bonuses once, then apply the resulting factor to attack damage.
+// Conditional bonuses belong to the same sum, but are omitted from the static stat display.
+function characterDamageMultiplier(className, sourceState = state, setEffects = activeArmorSetEffects(sourceState, className), conditionalDamagePercent = 0) {
   const treeDamage = skillTreeEffectsFor(className, sourceState).filter(effect => effect.type === 'final-damage-percent')
     .reduce((sum, effect) => sum + effect.value, 0);
   const weapon = equipmentForClass(className, sourceState).mainHand;
-  return (1 + treeDamage / 100)
-    * (1 + skillTreeSpecialValue('healer-final-damage-percent', className, sourceState) / 100)
-    * passiveEffectMultiplier('multiplicative-damage-percent', className, sourceState)
-    * (setEffects.damageMultiplier || 1) * partySetEffects(sourceState).damageMultiplier
-    * (1 + mythicDamagePercent(weapon) / 100) * weaponCompletionDamageMultiplier(weapon);
+  const percent = treeDamage
+    + skillTreeSpecialValue('healer-final-damage-percent', className, sourceState)
+    + passiveEffectTotal('multiplicative-damage-percent', className, sourceState)
+    + mythicDamagePercent(weapon)
+    + conditionalDamagePercent;
+  return 1 + percent / 100
+    + ((setEffects.damageMultiplier ?? 1) - 1)
+    + (partySetEffects(sourceState).damageMultiplier - 1)
+    + (weaponCompletionDamageMultiplier(weapon) - 1);
 }
 
 function renderInventoryValues(className) {
@@ -561,7 +566,7 @@ function renderInventoryValues(className) {
   return `<div class="inventory-stat-groups">${groups.map(group => `<section class="inventory-stat-group"><h3>${escapeHtml(group.title)}</h3><dl>${group.keys.map(key => {
     const value = derived[key] ?? stats[key] ?? 0;
     const percent = STAT_PERCENT_STATS.has(key) || Object.hasOwn(derived, key);
-    const explanation = key === 'Multiplikativer Schaden' ? 'Gemeinsamer Gesamtschadensbonus aus Talenten, ausgerüsteten Passiven, eigenen und Gruppen-Setboni, Mythischem Effekt und Waffenlevel-100-Bonus. +100 % entspricht ×2. Angriff, Waffenschadensbonus, Attribute, Krit, Verwundbarkeit, DoT- und fähigkeitsspezifische Boni sind getrennt.' : key === 'Schadensminderung' ? 'Schadensminderung durch Verteidigung, ohne zeitweilige Schutzfähigkeiten oder bedingte Seteffekte.' : key;
+    const explanation = key === 'Multiplikativer Schaden' ? 'Summe der Schadensboni aus Talenten, ausgerüsteten Passiven, eigenen und Gruppen-Setboni, Mythischem Effekt und Waffenlevel-100-Bonus. Diese Boni werden addiert. Bedingte Boni wie Zwillingszorn kommen nur beim passenden Angriff hinzu. +100 % entspricht ×2. Angriff, Waffenschadensbonus, Attribute, Krit, Verwundbarkeit, DoT- und fähigkeitsspezifische Boni sind getrennt.' : key === 'Schadensminderung' ? 'Schadensminderung durch Verteidigung, ohne zeitweilige Schutzfähigkeiten oder bedingte Seteffekte.' : key;
     return `<div class="inventory-stat-row"><dt title="${escapeHtml(explanation)}">${escapeHtml(labels[key] || key)}</dt><dd>${formatCharacterStatValue(key, value, percent, className)}${key === 'Multiplikativer Schaden' ? ` (×${formatRuleNumber(damageMultiplier)})` : ''}</dd></div>`;
   }).join('')}</dl></section>`).join('')}</div>`;
 }
@@ -573,35 +578,11 @@ function renderInventoryCharacterPanel(className) {
   return `<section class="inventory-character-panel"><header class="inventory-character-heading"><p class="eyebrow">DEIN CHARAKTER</p><h2>${escapeHtml(name)} · Stufe ${number(characterLevel(className))}</h2></header><div class="inventory-detail-tabs" role="tablist" aria-label="Charakteransicht">${tabs}</div><div class="inventory-detail-content" id="inventory-detail-content" role="tabpanel" aria-labelledby="inventory-tab-${tab}">${tab === 'equipment' ? renderEquipment(className) : renderInventoryValues(className)}</div>${tab === 'stats' ? '<p class="inventory-values-note">Gesamtwerte vor Begrenzung; erreichte Caps stehen in Klammern.</p>' : ''}</section>`;
 }
 
-function inventoryExpansionButtonLabel(quote) {
-  return quote.atCapacity ? 'MAXIMUM ERREICHT' : !quote.max ? 'NICHT BEZAHLBAR' : `KAUFEN · ${number(quote.cost)} ✧`;
-}
 function renderEquipmentPage() {
   const companion = state.activeCompanion;
   if (selectedInventoryOwner !== 'main' && selectedInventoryOwner !== companion) selectedInventoryOwner = 'main';
   const className = selectedInventoryOwner === 'main' ? state.mainClass : companion;
   return `<section class="inventory-view equipment-view"><div class="view-heading"><div><p class="eyebrow"><span></span> DEINE KAMPFGRUPPE</p><h1>Ausrüstung <em>& Werte</em></h1></div><div class="inventory-summary">${renderPartyOwnerButtons(selectedInventoryOwner, 'inventory')}</div></div><div class="inventory-layout inventory-owner-${className}" data-inventory-owner="${className}">${renderInventoryCharacterPanel(className)}</div></section>`;
-}
-function renderInventoryExpansionControls() {
-  const quote = inventoryExpansionQuote(state, selectedInventoryExpansionQuantity);
-  selectedInventoryExpansionQuantity = quote.amount || 1;
-  return `<div class="inventory-expansion-controls" role="group" aria-label="Inventarplätze kaufen"><label class="filter-label" for="inventory-expansion-quantity">Inventarplätze</label><input id="inventory-expansion-quantity" class="ui-control ui-field" type="number" inputmode="numeric" min="${quote.max ? 1 : 0}" max="${quote.max}" step="1" value="${quote.amount}" data-inventory-expansion-quantity aria-label="Anzahl zusätzlicher Inventarplätze" ${quote.max ? '' : 'disabled'}><button class="ui-control ui-button" type="button" data-expand ${quote.max ? '' : 'disabled'}>${inventoryExpansionButtonLabel(quote)}</button></div>`;
-}
-function syncInventoryExpansionControls(input = document.querySelector('[data-inventory-expansion-quantity]')) {
-  if (!input || !state) return;
-  const quote = inventoryExpansionQuote(state, input.value);
-  input.max = String(quote.max);
-  input.min = quote.max ? '1' : '0';
-  input.disabled = !quote.max;
-  input.value = String(quote.amount);
-  selectedInventoryExpansionQuantity = quote.amount || 1;
-  const button = input.closest('.inventory-expansion-controls')?.querySelector('[data-expand]');
-  if (button) {
-    button.disabled = !quote.max;
-    button.textContent = inventoryExpansionButtonLabel(quote);
-    delete button.dataset.mobileActionCopy;
-    syncMobilePageLabels(button);
-  }
 }
 function renderInventory() {
   const capacity = state.inventoryCapacity;
@@ -658,7 +639,7 @@ function renderSockets() {
   const canAttempt = Boolean(target && opened < capacity && socketStone && !activeWorkshopJob);
   const canAuto = canAttempt && opened < targetCount && state.inventory.some((item) => item.slot === 'socketStone');
   const targetGrid = renderItemGrid(targets, {
-    gridKey: 'socketTargets', filters: true, categories: ['weapons', 'armor', 'jewelry', 'glyphs'],
+    gridKey: 'socketTargets', filters: true, categories: ['weapons', 'armor'],
     gridClass: 'socket-target-grid', cardOptions: (item) => ({ socketTarget: true, selected: item.id === selectedSocketTargetId }),
     emptyHtml: '<div class="forge-placeholder">Lege zuerst Ausr&uuml;stung bei Main oder Begleiter an.</div>',
   });
@@ -715,8 +696,13 @@ function rarityUpgradePreview(item) {
   });
 }
 
+function renderEnchantModeButtons() {
+  const modes = [['rarity', 'Seltenheit erhöhen'], ['ascension', 'Zu Mystisch'], ['affix', 'Affix umprägen'], ['pet', 'Begleittier']];
+  return `<div class="party-owner-switch socket-mode-buttons" role="group" aria-label="Ansicht der Verzauberung">${modes.map(([mode, label]) => `<button class="party-owner-button ui-control ui-choice ${selectedEnchantMode === mode ? 'is-selected' : ''}" type="button" data-enchant-mode="${mode}" aria-pressed="${selectedEnchantMode === mode}" ${forgeAnimationInProgress ? 'disabled' : ''}>${escapeHtml(label)}</button>`).join('')}</div>`;
+}
 function renderEnchantments() {
-  if (!['rarity', 'affix', 'pet'].includes(selectedEnchantMode)) selectedEnchantMode = 'rarity';
+  if (!['rarity', 'ascension', 'affix', 'pet'].includes(selectedEnchantMode)) selectedEnchantMode = 'rarity';
+  if (selectedEnchantMode === 'ascension') return renderMythicAscension();
   const petMode = selectedEnchantMode === 'pet';
   const enchantableSlots = ['weapons', 'armor', 'jewelry'].flatMap((category) => INVENTORY_CATEGORIES[category].slots);
   const targets = petMode ? partyPets() : workshopEquipmentItems(state)
@@ -729,7 +715,7 @@ function renderEnchantments() {
   const legendaryUpgrade = target?.rarityColor === 'legendary';
   const rarityMaxed = legendaryUpgrade ? !canUpgradeLegendaryAffix(target) : rarityIndex < 0 || rarityIndex >= RARITY_ENCHANT_ORDER.length - 1;
   const affixes = target?.affixes || [];
-  const freeAffixChoice = petMode || isMythicWeapon(target);
+  const freeAffixChoice = petMode || isMythicEquipment(target);
   if (target) {
     if (!freeAffixChoice && Number.isInteger(target.enchantAffixIndex)) selectedEnchantAffixIndex = target.enchantAffixIndex;
     else if (selectedEnchantAffixIndex >= affixes.length) selectedEnchantAffixIndex = 0;
@@ -754,8 +740,7 @@ function renderEnchantments() {
     ? canUpgradeLegendaryAffix(target) ? 'Zuf&auml;lliger Greater Affix &middot; 1 Seltenheitsstein' : target.greaterUpgradeUsed ? 'Einmalige Greater-Aufwertung bereits genutzt.' : 'Greater-Aufwertung nicht m&ouml;glich.'
     : rarityMaxed ? 'H&ouml;chste Seltenheit erreicht.' : `${escapeHtml(target.rarity)} &#x2192; ${escapeHtml(nextRarity?.name || '')}` : affixes.length ? 'W&auml;hle ein Affix zum Umpr&auml;gen.' : 'Dieser Gegenstand hat noch keine Affixe.';
   const modeLabel = isRarityMode ? 'Seltenheit erh&ouml;hen' : 'Affix umpr&auml;gen';
-  const modes = [['rarity', 'Seltenheit erhöhen'], ['affix', 'Affix umprägen'], ['pet', 'Begleittier']];
-  const modeButtons = `<div class="party-owner-switch socket-mode-buttons" role="group" aria-label="Ansicht der Verzauberung">${modes.map(([mode, label]) => `<button class="party-owner-button ui-control ui-choice ${selectedEnchantMode === mode ? 'is-selected' : ''}" type="button" data-enchant-mode="${mode}" aria-pressed="${selectedEnchantMode === mode}" ${forgeAnimationInProgress ? 'disabled' : ''}>${mode === 'rarity' ? assetIconMarkup('Assets/Icons/000000/transparent/1x1/delapouite/upgrade.svg', '', 'workshop-mode-icon') : ''}${escapeHtml(label)}</button>`).join('')}</div>`;
+  const modeButtons = renderEnchantModeButtons();
   const actionLabel = isRarityMode ? legendaryUpgrade ? 'GREATER AFFIX ERZEUGEN' : 'SELTENHEIT ERH&Ouml;HEN' : 'AFFIX UMPR&Auml;GEN';
   const stoneQuantity = stone ? inventoryQuantityForSlot(state, stone.slot) : 0;
   const preview = isRarityMode ? rarityUpgradePreview(target).map((entry) => `<p><strong>${escapeHtml(entry.label)}:</strong> ${formatRuleNumber(entry.current)} → ${formatRuleNumber(entry.minimum)}${entry.maximum !== entry.minimum ? `–${formatRuleNumber(entry.maximum)}` : ''}${entry.minimum < entry.current ? ' · Kann sinken' : ''}</p>`).join('') : '';

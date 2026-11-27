@@ -56,9 +56,9 @@ function syncAdminBuilderFields(refreshAffixes = false) {
   const gear = Boolean(AFFIX_POOLS[slot]) || isGlyph;
   Array.from(form.elements.rarity.options).forEach(option => {
     const entry = RARITIES.find(rarity => rarity.name === option.value);
-    option.disabled = (isGlyph && entry?.color !== 'legendary') || (entry?.color === 'mythic' && !MYTHIC_ITEMS.weaponSlots.includes(slot));
+    option.disabled = (isGlyph && !['legendary', 'mythic'].includes(entry?.color)) || (entry?.color === 'mythic' && !MYTHIC_ITEMS.equipmentSlots.includes(slot));
   });
-  if (isGlyph) form.elements.rarity.value = RARITIES.find(entry => entry.color === 'legendary').name;
+  if (isGlyph && !['legendary', 'mythic'].includes(rarity.color)) form.elements.rarity.value = RARITIES.find(entry => entry.color === 'legendary').name;
   else if (form.elements.rarity.selectedOptions[0]?.disabled) form.elements.rarity.value = RARITIES.find(entry => entry.color === 'legendary').name;
   rarity = RARITIES.find(entry => entry.name === form.elements.rarity.value) || RARITIES[0];
   const setSelect = form.elements.set;
@@ -66,10 +66,10 @@ function syncAdminBuilderFields(refreshAffixes = false) {
   Array.from(setSelect.options).forEach((option) => { option.disabled = Boolean(option.dataset.setKind && option.dataset.setKind !== setKind); });
   if (setSelect.selectedOptions[0]?.disabled) setSelect.value = '';
   form.elements.weaponLevel.disabled = !WEAPON_PROGRESSION.weaponSlots.includes(slot);
-  form.elements.mythicUpgradeLevel.disabled = rarity.color !== 'mythic' || !MYTHIC_ITEMS.weaponSlots.includes(slot);
+  form.elements.mythicUpgradeLevel.disabled = rarity.color !== 'mythic' || !MYTHIC_ITEMS.equipmentSlots.includes(slot);
   form.elements.maxAffixRolls.disabled = !gear || isGlyph;
   form.elements.greaterAffixes.disabled = !gear;
-  form.elements.rarity.disabled = isGlyph;
+  form.elements.rarity.disabled = false;
   form.elements.set.disabled = !gear || isGlyph;
 
   const implicitOnly = rarity.color === 'common' && ['bow', 'sword', 'staff', 'bell', 'shield', 'helmet', 'chest', 'gloves', 'boots'].includes(slot);
@@ -213,7 +213,7 @@ document.addEventListener('click', (event) => {
   }
   const adminAction = event.target.closest('[data-admin-action]');
   if (adminAction) {
-    if (adminAction.dataset.adminAction === 'admin-simulate-offline-hour') { simulateAdminFarmHour(); return; }
+    if (adminAction.dataset.adminAction === 'admin-simulate-offline-time') { simulateAdminFarmTime(); return; }
     performAction({ action: adminAction.dataset.adminAction });
     return;
   }
@@ -251,6 +251,11 @@ document.addEventListener('click', (event) => {
   const allocateSkillNode = event.target.closest('[data-allocate-skill-node]');
   if (allocateSkillNode && !allocateSkillNode.disabled) {
     performAction({ action: 'skill-tree-allocate', class: allocateSkillNode.dataset.skillOwner, nodeId: allocateSkillNode.dataset.allocateSkillNode, points: allocateSkillNode.dataset.skillPoints || 1 });
+    return;
+  }
+  const respecSkillNode = event.target.closest('[data-skill-tree-node-respec]');
+  if (respecSkillNode && !respecSkillNode.disabled) {
+    performAction({ action: 'skill-tree-node-respec', class: respecSkillNode.dataset.skillOwner, nodeId: respecSkillNode.dataset.skillTreeNodeRespec });
     return;
   }
   const respecSkillTree = event.target.closest('[data-skill-tree-respec]');
@@ -302,9 +307,14 @@ document.addEventListener('click', (event) => {
     });
     return;
   }
+  const mythicAscend = event.target.closest('[data-enchant-mythic]');
+  if (mythicAscend && !mythicAscend.disabled) {
+    performAction({ action: 'enchant-mythic', itemId: selectedEnchantTargetId });
+    return;
+  }
   const enchantMode = event.target.closest('[data-enchant-mode]');
   if (enchantMode && currentView === 'enchant' && !forgeAnimationInProgress) {
-    if (!['rarity', 'affix', 'pet'].includes(enchantMode.dataset.enchantMode)) return;
+    if (!['rarity', 'ascension', 'affix', 'pet'].includes(enchantMode.dataset.enchantMode)) return;
     selectedEnchantMode = enchantMode.dataset.enchantMode;
     renderView();
     viewContainer.querySelector(`[data-enchant-mode="${selectedEnchantMode}"]`)?.focus();
@@ -455,16 +465,7 @@ document.addEventListener('click', (event) => {
     return;
   }
   if (levelUp) { const className = levelUp.dataset.levelUp; const amount = Math.max(1, Math.floor(Number(document.querySelector(`[data-altar-quantity="${CSS.escape(className)}"]`)?.value) || 1)); performAction({ action: 'level-up', class: className, amount }, 'Charakter aufgestiegen', (response) => `${CLASSES[className].label} ist jetzt auf Stufe ${response.level}.`); return; }
-  const expandInventory = event.target.closest('[data-expand]');
-  if (expandInventory && !expandInventory.disabled) {
-    const input = expandInventory.closest('.inventory-expansion-controls')?.querySelector('[data-inventory-expansion-quantity]');
-    const quantity = Number(input?.value ?? 1);
-    if (!Number.isSafeInteger(quantity) || quantity < 1) return;
-    expandInventory.disabled = true;
-    performAction({ action: 'expand-inventory', quantity }, 'Inventar erweitert')
-      .finally(() => syncInventoryExpansionControls());
-    return;
-  }
+
   const gear = event.target.closest('[data-gear-owner="main"][data-gear-slot]');
   if (gear && state.equipment.main[gear.dataset.gearSlot]) { unequip(gear.dataset.gearSlot); return; }
   const companionGear = event.target.closest('[data-gear-owner="companion"]');
@@ -651,7 +652,6 @@ document.addEventListener('change', (event) => {
   renderView();
 });
 document.addEventListener('input', (event) => {
-  if (event.target.matches('[data-inventory-expansion-quantity]')) syncInventoryExpansionControls(event.target);
   if (event.target.id === 'player-name') onboardingPlayerName = event.target.value;
 });
 document.addEventListener('input', (event) => {
@@ -844,7 +844,7 @@ function renderItemTooltipContent(item, { card = null, gear = null, questPreview
     ? `<div class="tooltip-weapon-damage"><span>GRUNDVERTEIDIGUNG</span><strong>${number(item.armorDefense)}${baseStatRangeLabel('armorDefense')}</strong></div>`
     : '';
   const setBonus = setProgressTooltip(item, card, gear, ownerClass);
-  const mythicEffect = isMythicWeapon(item) ? `<div class="tooltip-special tooltip-mythic-effect"><span>MYTHISCHER EFFEKT &middot; ${item.mythicUpgradeLevel || 0}/${MYTHIC_UPGRADES.maxUpgradeLevel}</span><p>+${formatRuleNumber(mythicDamagePercent(item))} % multiplikativer Schaden f&uuml;r den Tr&auml;ger (&times;${formatRuleNumber(1 + mythicDamagePercent(item) / 100)}). Wirkt auf Angriffe, Schadensf&auml;higkeiten und Schaden &uuml;ber Zeit.</p></div>` : '';
+  const mythicEffect = isMythicWeapon(item) ? `<div class="tooltip-special tooltip-mythic-effect"><span>MYTHISCHER EFFEKT &middot; ${item.mythicUpgradeLevel || 0}/${MYTHIC_UPGRADES.maxUpgradeLevel}</span><p>+${formatRuleNumber(mythicDamagePercent(item))} % multiplikativer Schaden f&uuml;r den Tr&auml;ger (&times;${formatRuleNumber(1 + mythicDamagePercent(item) / 100)}). Wirkt auf Angriffe, Schadensf&auml;higkeiten und Schaden &uuml;ber Zeit.</p></div>` : isMythicEquipment(item) ? `<div class="tooltip-special tooltip-mythic-effect"><span>MYTHISCHER EFFEKT &middot; ${item.mythicUpgradeLevel || 0}/${MYTHIC_UPGRADES.maxUpgradeLevel}</span><p>${(item.mythicUpgradeLevel || 0) >= MYTHIC_ITEMS.treeBonusUnlockLevel ? `+${MYTHIC_ITEMS.treeBonusRanks} Rang auf alle Tree-Knoten des Trägers mit mindestens einem investierten Punkt.` : `Noch nicht aktiv. Ab mystisch +${MYTHIC_ITEMS.treeBonusUnlockLevel}: +${MYTHIC_ITEMS.treeBonusRanks} Rang auf alle bereits investierten Tree-Knoten.`} Mehrere angelegte Teile addieren sich. Investitionskosten und Freischaltbedingungen bleiben unverändert.</p></div>` : '';
   const baseAffixes = item.affixes || [];
   const socketTotals = new Map();
   (item.sockets || []).filter(Boolean).flatMap((gem) => gem.affixes || []).forEach((affix) => {
@@ -855,11 +855,11 @@ function renderItemTooltipContent(item, { card = null, gear = null, questPreview
   const affixes = allAffixes.map((affix, index) => {
     const [min, max] = affixRangeFor(item, affix.stat, affix);
     const unit = AFFIX_PERCENT_STATS.has(affix.stat) ? '%' : '';
-    const range = affix.fromSocket || (affix.greater && !isMythicWeapon(item)) ? '' : affix.fixed ? ' · fest' : ` (${formatRuleNumber(min)}–${formatRuleNumber(max)}${unit})`;
+    const range = affix.fromSocket || (affix.greater && !isMythicEquipment(item)) ? '' : affix.fixed ? ' · fest' : ` (${formatRuleNumber(min)}–${formatRuleNumber(max)}${unit})`;
     const socketDivider = index === baseAffixCount && allAffixes.length > baseAffixCount ? '<span class="tooltip-socket-heading"><br>SOCKELBONI<br></span>' : '';
     return `${socketDivider}<span${affix.greater ? ' class="greater-affix"' : ''}>${affix.greater ? '✦ ' : ''}+${escapeHtml(formatRuleNumber(affix.value))}${unit} ${escapeHtml(affix.stat)}${range}</span>`;
   }).join('');
-  const itemRank = [isSellableEquipment(item) ? `${escapeHtml(item.rarity)}${item.upgradeLevel ? ` · +${item.upgradeLevel}` : ''}` : '', Number(item.quantity) > 1 ? `×${number(item.quantity)}` : ''].filter(Boolean).join(' · ');
+  const itemRank = [isSellableEquipment(item) || item.slot === 'pet' ? `${escapeHtml(item.rarity)}${item.upgradeLevel ? ` · +${item.upgradeLevel}` : ''}` : '', Number(item.quantity) > 1 ? `×${number(item.quantity)}` : ''].filter(Boolean).join(' · ');
   const vipInfo = item.slot === 'vipTicket' ? `<div class="tooltip-special"><span>${VIP_RULES.durationDays} TAGE VIP</span>${[
     `+${BALANCE.dailyAttempts.vipBonus} freier Versuch pro Tag für Bossprüfung und Turm`,
     `+${VIP_RULES.upgradeChancePercent} % relative Upgradechance für normale und mystische Aufwertung sowie Sockelöffnen.`,
@@ -874,7 +874,7 @@ function renderItemTooltipContent(item, { card = null, gear = null, questPreview
   const farmBoxInfo = item.slot === 'farmBox' ? `<div class="tooltip-special"><span>FARMBEUTE</span><p>${formatRuleNumber(BOX_RULES.farmBox.dropChance * 100)} % Basis-Dropchance pro gewonnenem Gebiets- oder Turmkampf; Dropratenboni erhöhen sie relativ. Enthält genau einen Gewinn: Seelen, Materialien, ein Powerup, einen Boss-Zeitstein, Turm-Zeitstein oder eine Glyphen-/VIP-Luckybox. Alle Chancen stehen im Kodex unter Schwarzmarkt und Luckyboxen.</p></div>` : '';
   const luckyBoxInfo = BOX_GROUPS.includes(item.slot) ? (questPreview ? '<div class="tooltip-special"><span>VERSIEGELT</span><p>Nach dem Abholen im Inventar öffnen.</p></div>' : `<div class="tooltip-special"><span>VERSIEGELT</span><p>Einfach anklicken, um die Box zu öffnen. Der Inhalt wird im Aktivitätslog festgehalten.</p></div>`) : '';
   const socketInfo = item.sockets?.length ? `<div class="tooltip-special"><span>SOCKEL · ${item.sockets.filter(Boolean).length}/${item.sockets.length}</span><p>Sockel aktiv</p></div>` : '';
-  return `${itemRank ? `<div class="tooltip-rarity ${visual.rarity}">${itemRank}</div>` : ''}<strong class="tooltip-name">${escapeHtml(item.name)}</strong><small class="tooltip-type">${escapeHtml(SLOT_DATA[item.slot]?.label || item.slot)}${item.set ? ` · Set ${escapeHtml(item.set)}` : ''}</small>${weaponDamage}${weaponLevelInfo}${armorDefense}${mythicEffect}${affixes ? `<div class="tooltip-affixes">${affixes}</div>` : ''}${materialInfo}${vipInfo}${powerupInfo}${bossResetInfo}${luckyBoxInfo}${farmBoxInfo}${socketInfo}${setBonus}${milestoneDescription}${milestoneRollNote}${item.passives ? `<div class="tooltip-special"><span>PASSIVE EFFEKTE</span>${item.passives.map((passive) => `<p>${escapeHtml(passive)}</p>`).join('')}</div>` : ''}${card?.hasAttribute('data-sell-item') ? `<div class="tooltip-sale-value">VERKAUFSWERT <strong>✧ ${isMythicWeapon(item) ? MYTHIC_ITEMS.saleStones + ' MYSTISCHE AUFWERTUNGSSTEINE' : number(sellValue(item)) + ' SEELEN'}</strong></div>` : ''}${card?.classList.contains('not-for-sale') ? '<div class="tooltip-sale-unavailable">Materialien, Verbrauchsgegenstände und Luckyboxen sind unverkäuflich.</div>' : ''}`;
+  return `${itemRank ? `<div class="tooltip-rarity ${visual.rarity}">${itemRank}</div>` : ''}<strong class="tooltip-name">${escapeHtml(item.name)}</strong><small class="tooltip-type">${escapeHtml(SLOT_DATA[item.slot]?.label || item.slot)}${item.set ? ` · Set ${escapeHtml(item.set)}` : ''}</small>${weaponDamage}${weaponLevelInfo}${armorDefense}${mythicEffect}${affixes ? `<div class="tooltip-affixes">${affixes}</div>` : ''}${materialInfo}${vipInfo}${powerupInfo}${bossResetInfo}${luckyBoxInfo}${farmBoxInfo}${socketInfo}${setBonus}${milestoneDescription}${milestoneRollNote}${item.passives ? `<div class="tooltip-special"><span>PASSIVE EFFEKTE</span>${item.passives.map((passive) => `<p>${escapeHtml(passive)}</p>`).join('')}</div>` : ''}${card?.hasAttribute('data-sell-item') ? `<div class="tooltip-sale-value">VERKAUFSWERT <strong>✧ ${isMythicEquipment(item) ? MYTHIC_ITEMS.saleStones + ' MYSTISCHE AUFWERTUNGSSTEINE' : number(sellValue(item)) + ' SEELEN'}</strong></div>` : ''}${card?.classList.contains('not-for-sale') ? '<div class="tooltip-sale-unavailable">Materialien, Verbrauchsgegenstände und Luckyboxen sind unverkäuflich.</div>' : ''}`;
 }
 
 let comparisonTooltipCloseTimer = null;
@@ -976,7 +976,7 @@ document.addEventListener('mouseover', (event) => {
         : state.equipment.main[gear.dataset.gearSlot];
   }
   if (!item) return;
-  if (item.slot === 'pet') milestoneDescription = `<div class="tooltip-special"><span>STUFE ${number(item.level)} · FEST GEBUNDEN</span><p>+${number(item.level * PET_RULES.attributePerLevel)} ${escapeHtml(petDefinition(item).stat)} für ${item.ownerClass === state.mainClass ? 'deinen Main' : 'deinen Gefährten'}. Alle Affixplätze sind einzeln umprägbar. Die Affixgrundwerte wachsen pro Tierstufe um ${formatRuleNumber(PET_RULES.affixPercentPerLevel)} % linear. Tieraffixe sind keine Greater Affixe.</p></div>`;
+  if (item.slot === 'pet') milestoneDescription = `<div class="tooltip-special"><span>STUFE ${number(item.level)} · FEST GEBUNDEN</span><p>+${number(item.level * PET_RULES.attributePerLevel)} ${escapeHtml(petDefinition(item).stat)} für ${item.ownerClass === state.mainClass ? 'deinen Main' : 'deinen Gefährten'}. Alle ${number(PET_RULES.affixEveryLevels)} Stufen steigt die Seltenheit mit einem zusätzlichen Affix, bis Mystisch mit ${petAffixCount(Number.MAX_SAFE_INTEGER)} Affixen erreicht ist. Danach wachsen nur noch Attribute und Affixwerte. Alle Affixplätze sind einzeln umprägbar. Die Affixgrundwerte wachsen pro Tierstufe um ${formatRuleNumber(PET_RULES.affixPercentPerLevel)} % linear. Tieraffixe sind keine Greater Affixe.</p></div>`;
   const ownerClass = itemComparisonOwner(item, event.target, gear, questPreview);
   const content = renderItemTooltipContent(item, { card, gear, questPreview, milestoneDescription, milestoneRollNote, ownerClass });
   const comparisons = equippedItemComparisons(item, ownerClass);

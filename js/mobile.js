@@ -263,7 +263,7 @@ function renderMobileItem(item = mobileCurrentItem()) {
     if (useActions[item.slot]) actions += mobileButton('use', item.slot === 'vipTicket' ? 'VIP AKTIVIEREN' : ['powerup', 'towerLootBoost'].includes(item.slot) ? 'AKTIVIEREN · 1 STÜCK' : 'ZEITSTEIN VERWENDEN', `data-use-action="${useActions[item.slot]}"`);
     if (BOX_GROUPS.includes(item.slot)) actions += mobileButton('box', 'EINE BOX ÖFFNEN');
     if (item.slot === 'glyph') actions += mobileButton('glyph-fusion', 'GLYPHEN KOMBINIEREN');
-    if (isSellableEquipment(item)) actions += mobileButton('sell', `VERKAUFEN · ${isMythicWeapon(item) ? `${MYTHIC_ITEMS.saleStones} MYSTISCHE STEINE` : `${number(sellValue(item))} SEELEN`}`);
+    if (isSellableEquipment(item)) actions += mobileButton('sell', `VERKAUFEN · ${isMythicEquipment(item) ? `${MYTHIC_ITEMS.saleStones} MYSTISCHE STEINE` : `${number(sellValue(item))} SEELEN`}`);
     if (['weaponGem', 'armorGem'].includes(item.slot)) {
       if (currentView === 'sockets' && selectedSocketMode === 'gems') {
         const target = findInventoryOrEquippedItem(state, selectedSocketTargetId);
@@ -379,8 +379,8 @@ function syncMobilePageLabels(root = viewContainer) {
   });
 }
 function syncMobileInventory(inventory) {
-  const owners = inventory.querySelector('.inventory-summary .party-owner-switch, .skill-tree-toolbar .party-owner-switch, .party-owner-switch[data-party-context="abilities"], .mobile-inventory-owners');
-  const expansion = inventory.querySelector('.inventory-expansion-controls');
+  const owners = inventory.querySelector('.inventory-summary .party-owner-switch, .party-owner-switch[data-party-context="skilltree"], .party-owner-switch[data-party-context="abilities"], .mobile-inventory-owners');
+  const actions = inventory.querySelector('.inventory-actions');
   if (isMobileLayout()) {
     if (owners && !owners.classList.contains('mobile-inventory-owners')) {
       owners.classList.add('mobile-inventory-owners');
@@ -395,14 +395,14 @@ function syncMobileInventory(inventory) {
       inventory.append(owners);
     }
     const grid = inventory.querySelector('.inventory-main > .inventory-grid');
-    if (grid && expansion) grid.after(expansion);
-    if (grid && expansion) {
-      let sell = expansion.querySelector('[data-mobile-sell-category]');
+    if (grid && actions) grid.after(actions);
+    if (grid && actions) {
+      let sell = actions.querySelector('[data-mobile-sell-category]');
       if (!sell) {
         sell = document.createElement('button');
         sell.type = 'button'; sell.className = 'mobile-inventory-sell-filter ui-control ui-button';
         sell.dataset.mobileSellCategory = '';
-        expansion.append(sell);
+        actions.append(sell);
       }
       const ownerClass = inventory.querySelector('[data-inventory-owner]')?.dataset.inventoryOwner;
       const category = itemGridPreferences.inventory.category;
@@ -410,11 +410,11 @@ function syncMobileInventory(inventory) {
       sell.textContent = `Alle verkaufen (${items.length})`;
       sell.disabled = !items.length;
       sell.setAttribute('aria-label', `${items.length} Gegenstände aus ${INVENTORY_CATEGORIES[category]?.label || 'dieser Kategorie'} verkaufen`);
-      expansion.setAttribute('aria-label', 'Inventar verwalten');
+      actions.setAttribute('aria-label', 'Inventar verwalten');
     }
   } else {
-    expansion?.querySelector('[data-mobile-sell-category]')?.remove();
-    expansion?.setAttribute('aria-label', 'Inventarplätze kaufen');
+    actions?.querySelector('[data-mobile-sell-category]')?.remove();
+    actions?.setAttribute('aria-label', 'Inventaraktionen');
     if (owners?.classList.contains('mobile-inventory-owners')) {
       owners.classList.remove('mobile-inventory-owners');
       owners.setAttribute('aria-label', 'Charakter auswählen');
@@ -426,7 +426,7 @@ function syncMobileInventory(inventory) {
       });
       (inventory.querySelector('.inventory-summary, .skill-tree-toolbar') || inventory.querySelector('.view-heading > .page-heading-aside') || inventory.querySelector(':scope > .view-heading')).append(owners);
     }
-    if (expansion) inventory.querySelector('.inventory-main > .item-grid-controls')?.append(expansion);
+    if (actions) inventory.querySelector('.inventory-main > .item-grid-controls')?.append(actions);
   }
 }
 function showMobilePowerups() {
@@ -451,8 +451,9 @@ function syncMobileSkillTree(root = viewContainer) {
     board.querySelector('.mobile-skill-controls')?.remove();
     return;
   }
-  if (mobileSkillView.owner !== selectedSkillTreeOwner) {
-    mobileSkillView.owner = selectedSkillTreeOwner; mobileSkillView.left = 0; mobileSkillView.top = 0;
+  const treeOwner = selectedSkillTreeOwner === 'main' ? state.mainClass : state.activeCompanion;
+  if (mobileSkillView.owner !== treeOwner) {
+    mobileSkillView.owner = treeOwner; mobileSkillView.left = null; mobileSkillView.top = null;
   }
   if (!viewport) {
     viewport = document.createElement('div');
@@ -462,6 +463,11 @@ function syncMobileSkillTree(root = viewContainer) {
     svg.before(viewport); viewport.append(svg);
   }
   viewport.style.setProperty('--mobile-tree-zoom', MOBILE_SKILL_TREE_SCALE);
+  if (mobileSkillView.left === null && viewport.clientWidth > 0) {
+    const [x, y] = SKILL_TREE_NODES.find(node => node.id === 'origin').position;
+    mobileSkillView.left = Math.max(0, x * MOBILE_SKILL_TREE_SCALE - viewport.clientWidth / 2);
+    mobileSkillView.top = Math.max(0, y * MOBILE_SKILL_TREE_SCALE - viewport.clientHeight / 2);
+  }
   viewport.scrollLeft = mobileSkillView.left; viewport.scrollTop = mobileSkillView.top;
 }
 function openMobileSkillDetails(nodeId) {
@@ -727,16 +733,18 @@ document.addEventListener('click', event => {
       });
     return;
   }
-  const skillAction = event.target.closest('[data-allocate-skill-node], [data-skill-tree-respec]');
+  const skillAction = event.target.closest('[data-allocate-skill-node], [data-skill-tree-respec], [data-skill-tree-node-respec]');
   if (skillAction && mobileSheet.contains(skillAction) && mobileSheet.dataset.skillDetails) {
     stop();
     if (skillAction.disabled || mobileActionPending) return;
     const nodeId = mobileSheet.dataset.skillDetails;
     const payload = skillAction.hasAttribute('data-allocate-skill-node')
       ? { action: 'skill-tree-allocate', class: skillAction.dataset.skillOwner, nodeId: skillAction.dataset.allocateSkillNode, points: skillAction.dataset.skillPoints || 1 }
-      : { action: 'skill-tree-respec', class: skillAction.dataset.skillTreeRespec };
+      : skillAction.hasAttribute('data-skill-tree-node-respec')
+        ? { action: 'skill-tree-node-respec', class: skillAction.dataset.skillOwner, nodeId: skillAction.dataset.skillTreeNodeRespec }
+        : { action: 'skill-tree-respec', class: skillAction.dataset.skillTreeRespec };
     mobileActionPending = true;
-    mobileSheet.querySelectorAll('[data-allocate-skill-node], [data-skill-tree-respec]').forEach(button => button.disabled = true);
+    mobileSheet.querySelectorAll('[data-allocate-skill-node], [data-skill-tree-respec], [data-skill-tree-node-respec]').forEach(button => button.disabled = true);
     performAction(payload).finally(() => {
       mobileActionPending = false;
       if (mobileSheet.open && mobileSheet.dataset.skillDetails === nodeId) openMobileSkillDetails(nodeId);

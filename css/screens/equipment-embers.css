@@ -1,7 +1,7 @@
 @charset "UTF-8";
 /* Glut & Funken. Equipment follows actual affixes; selected consumables reuse
    the decoration through has-greater-effect without gaining real affixes. */
-.tooltip-rarity.mythic { color: #dd83e9; }
+.tooltip-rarity.mythic { color: var(--rarity-mythic); }
 .mailbox-item-icon-wrap.inventory-item { display: grid; place-items: center; width: 48px; height: 48px; min-width: 0; min-height: 0; padding: 8px; }
 .mobile-item-icon.inventory-item { min-width: 0; min-height: 0; padding: 8px; }
 .inventory-item:is(.equipment-item, .special-item),
@@ -15,7 +15,7 @@
 .inventory-item:is(.equipment-item, .special-item).legendary,
 .gear-slot.filled.legendary { --equipment-color: #e8b060; }
 .inventory-item:is(.equipment-item, .special-item).mythic,
-.gear-slot.filled.mythic { --equipment-color: #dd83e9; --equipment-surface: #26131e; }
+.gear-slot.filled.mythic { --equipment-color: var(--rarity-mythic); --equipment-surface: #261315; }
 
 .inventory-item:is(.equipment-item, .special-item),
 .gear-slot.filled {

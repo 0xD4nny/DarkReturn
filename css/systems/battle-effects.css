@@ -1,0 +1,94 @@
+/* Local combat effects: no screen shake, page tint or interactive overlays. */
+.battle-skill-effect { position: absolute; inset: 0; z-index: 20; overflow: hidden; pointer-events: none; contain: layout paint; --fx-color: #e4c590; }
+.battle-fx-part { display: block; position: absolute; pointer-events: none; }
+.battle-fx-flight { animation: battle-fx-flight var(--flight, 350ms) cubic-bezier(.2,.55,.35,1) var(--delay, 0ms) both; transform-origin: center; }
+@keyframes battle-fx-flight {
+  0% { transform: translate(0,0) rotate(var(--angle, 0deg)) scale(.2); opacity: 0; }
+  16% { opacity: .9; }
+  82% { opacity: .9; }
+  100% { transform: translate(var(--dx),var(--dy)) rotate(var(--angle, 0deg)) scale(var(--end-scale, 1)); opacity: 0; }
+}
+.fx-enemy-ambush { --fx-color: #e3d1b2; }
+.fx-enemy-embers { --fx-color: #ef8a3d; }
+.fx-enemy-swamp { --fx-color: #91ad6c; }
+.fx-enemy-rift { --fx-color: #b693df; }
+.fx-enemy-shards { --fx-color: #a3d9e5; }
+.fx-enemy-moon { --fx-color: #bfc7df; }
+.fx-enemy-chains { --fx-color: #d7a471; }
+.battle-skill-effect.is-dodged { opacity: .5; }
+.battle-fx-charge { width: 86px; height: 86px; margin: -43px; border: 1px solid var(--fx-color); border-radius: 50%; background: radial-gradient(circle, transparent 30%, color-mix(in srgb, var(--fx-color) 14%, transparent) 65%, transparent 72%); animation: battle-fx-charge .28s ease-out both; }
+@keyframes battle-fx-charge { from { opacity: 0; transform: scale(1.1); } 60% { opacity: .85; } to { opacity: 0; transform: scale(.3); } }
+.fx-enemy-ambush .battle-fx-charge { background: #08090ba8; border: 0; filter: blur(10px); }
+.battle-scene.has-front-enemies .enemy-skill-ambush .enemy-art-sprite[data-pose="attack"] { animation: enemy-ambush-lunge .46s ease-out both; }
+@keyframes enemy-ambush-lunge { 0% { filter: brightness(.35); scale: .96; } 35% { filter: brightness(.5); scale: .98; } 65% { filter: brightness(1.1); scale: 1.16; translate: 0 5px; } 100% { filter: none; scale: 1; translate: 0 0; } }
+.enemy-embers-particle { width: 20px; height: 6px; margin: -3px -10px; border-radius: 80% 25% 25% 80%; background: linear-gradient(90deg, transparent, #ed722f 50%, #ffe5ab); box-shadow: 5px 0 9px #d7763855; }
+.enemy-shards-particle { width: 32px; height: 9px; margin: -4px -16px; background: linear-gradient(170deg, #f1ffff, #81bfcf 55%, #3a657c); clip-path: polygon(0 30%, 68% 0, 100% 50%, 64% 100%, 10% 70%); }
+.enemy-rift-blade { width: 76px; height: 4px; margin: -2px -38px; background: #d9c4f0; box-shadow: 0 0 8px #aa7fd9, 0 0 20px #7039a7; clip-path: polygon(0 50%, 18% 0, 47% 40%, 70% 0, 100% 50%, 70% 100%, 45% 70%, 15% 100%); }
+.enemy-moon-collapse, .enemy-moon-wave { width: 90px; height: 66px; margin: -33px -45px; border: 2px solid #bfc7df88; border-radius: 50%; box-shadow: inset 0 0 14px #11121aaa, 0 0 12px #a5a9cc22; }
+.enemy-moon-collapse { animation: battle-moon-collapse .25s ease-in both; }
+@keyframes battle-moon-collapse { from { transform: scale(1.4) rotate(-20deg); opacity: .1; } 65% { opacity: .9; } to { transform: scale(.15) rotate(15deg); opacity: 0; } }
+.enemy-moon-wave { background: #10111b77; }
+.enemy-claw { width: 7px; height: clamp(75px, 16vh, 135px); background: linear-gradient(0deg, transparent, #e2d2b3aa 24%, #fff1d1 74%, transparent); clip-path: polygon(55% 0, 100% 13%, 45% 100%, 0 85%); transform-origin: center; animation: enemy-camera-claw .36s ease-out var(--delay) both; }
+@keyframes enemy-camera-claw { from { transform: translate(-50%,-90%) rotate(26deg) scaleY(.1); opacity: 0; } 30% { opacity: .9; } to { transform: translate(-50%,-40%) rotate(26deg) scaleY(1.15); opacity: 0; } }
+.enemy-camera-impact { width: min(70%, 380px); height: 100px; border-radius: 50%; background: radial-gradient(ellipse, color-mix(in srgb, var(--fx-color) 20%, transparent), transparent 68%); animation: enemy-camera-impact .45s ease-out both; }
+@keyframes enemy-camera-impact { from { transform: translate(-50%,-50%) scale(.3); opacity: 0; } 25% { opacity: .8; } to { transform: translate(-50%,-50%) scale(1.4); opacity: 0; } }
+.impact-rift { width: 65%; height: 3px; border-radius: 0; background: #c6a5e5; box-shadow: 0 0 12px #9868b7; }
+.impact-moon { background: #0a0b1366; border: 1px solid #c7cfe199; }
+.impact-chains { height: 10px; background: radial-gradient(ellipse, #d7a47166, transparent 70%); }
+.enemy-swamp-haze { width: 95%; height: 120px; border-radius: 50%; background: radial-gradient(ellipse, #72884e44, #303c2d30 45%, transparent 72%); filter: blur(10px); animation: enemy-swamp-spread .8s ease-out both; }
+@keyframes enemy-swamp-spread { from { transform: translate(-50%,-40%) scale(.5); opacity: 0; } 35% { opacity: .8; } to { transform: translate(-50%,-65%) scale(1.3); opacity: 0; } }
+.enemy-chain { top: -12%; left: calc(50% + var(--side) * 34%); width: 20px; height: 110%; display: flex; flex-direction: column; align-items: center; justify-content: space-around; transform-origin: top; rotate: calc(var(--side) * -11deg); animation: enemy-chain-cast .36s cubic-bezier(.15,.75,.35,1) var(--delay) both; }
+.enemy-chain > i { display: block; flex: 0 1 28px; width: 15px; min-height: 12px; border: 2px solid #bd936b; border-radius: 8px; box-shadow: inset 1px 0 #ead3ac66, 1px 1px 2px #0008; }
+.enemy-chain > i:nth-child(even) { width: 7px; border-color: #8b735d; }
+@keyframes enemy-chain-cast { from { transform: translateY(-100%); opacity: 0; } 35% { opacity: .9; } 65% { transform: translateY(0); opacity: .9; } 80% { transform: translateY(-4%); } to { transform: translateY(-18%); opacity: 0; } }
+/* Target feedback follows the hero card even though no hero model is displayed. */
+.battle-fx-target { --target-color: #d8c3a3; display: block; position: absolute; z-index: 5; inset: 1px; border: 1px solid var(--target-color); border-radius: inherit; box-shadow: inset 0 -9px 18px -12px var(--target-color); pointer-events: none; animation: enemy-target-mark .8s ease-out both; }
+.battle-fx-target.target-embers { --target-color: #ed8a49; }
+.battle-fx-target.target-swamp { --target-color: #8d9e68; border-radius: 12px 2px 15px 3px; border-width: 1px 3px 2px; }
+.battle-fx-target.target-swamp::before, .battle-fx-target.target-swamp::after { content: ''; position: absolute; inset: 5px -2px; border: solid #7d915077; border-width: 0 2px; border-radius: 45%; transform: rotate(4deg); }
+.battle-fx-target.target-swamp::after { inset: -2px 10px; transform: rotate(-5deg); }
+.battle-fx-target.target-rift { --target-color: #b693df; }
+.battle-fx-target.target-shards { --target-color: #a3d9e5; }
+.battle-fx-target.target-moon { --target-color: #bfc7df; }
+.battle-fx-target.target-chains { --target-color: #bd936b; border-style: dashed; border-width: 2px; }
+.battle-fx-target.is-dodged { border-style: dashed; box-shadow: none; animation-name: enemy-target-dodge; }
+@keyframes enemy-target-mark { 0% { opacity: 0; } 18% { opacity: .8; } 45% { opacity: .55; } 100% { opacity: 0; } }
+@keyframes enemy-target-dodge { from { opacity: .3; } to { opacity: 0; } }
+/* Distinct player skill silhouettes, independent of poison and basic projectiles. */
+.fx-fire-arrow { --fx-color: #f0a45b; }
+.hero-fire-arrow { width: 65px; height: 11px; margin: -5px -32px; background: linear-gradient(90deg, transparent, #d65824 38%, #ffbe66 70%, #fff1c7); clip-path: polygon(0 36%, 72% 36%, 70% 0, 100% 50%, 70% 100%, 72% 64%, 0 64%); filter: drop-shadow(0 0 5px #f88538); }
+.battle-fx-burst { width: 76px; height: 76px; margin: -38px; border-radius: 50%; border: 2px solid var(--fx-color); box-shadow: inset 0 0 18px color-mix(in srgb, var(--fx-color) 25%, transparent); animation: battle-fx-burst .45s ease-out both; }
+@keyframes battle-fx-burst { from { transform: scale(.25); opacity: .9; } to { transform: scale(1.3); opacity: 0; } }
+.battle-fx-spark { width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: var(--fx-color); animation: battle-fx-spark .4s ease-out both; }
+@keyframes battle-fx-spark { from { transform: translate(0,0); opacity: .9; } to { transform: translate(var(--dx),var(--dy)); opacity: 0; } }
+.fx-frost-wave { --fx-color: #acdfe9; }
+.hero-frost-wave { width: 150%; height: 175%; border: 2px solid #acdfe999; border-radius: 50%; background: radial-gradient(ellipse, transparent 55%, #9cdef017 65%, #cceff533 69%, transparent 72%); animation: hero-frost-sweep var(--flight) ease-out both; }
+@keyframes hero-frost-sweep { from { transform: translate(-50%,-50%) scale(.05); opacity: .8; } to { transform: translate(-50%,-50%) scale(1); opacity: 0; } }
+.hero-frost-shard { width: 34px; height: 8px; margin: -4px -17px; background: linear-gradient(90deg, #6298ba55, #e9ffff); clip-path: polygon(0 50%, 55% 0, 100% 50%, 55% 100%); }
+.fx-frost-wave .battle-fx-burst { border-radius: 25%; rotate: 45deg; border-color: #cdf3ff99; }
+.fx-execution-cleave { --fx-color: #e5c18a; }
+.hero-cleave-windup { width: 48px; height: 110px; margin: -80px -24px; background: linear-gradient(0deg, #e5c18a33, transparent); clip-path: polygon(45% 0, 60% 0, 85% 100%, 5% 100%); animation: cleave-windup .3s ease-out both; }
+@keyframes cleave-windup { from { opacity: 0; transform: translateY(-25px); } 65% { opacity: .7; } to { opacity: 0; transform: translateY(0); } }
+.hero-execution-cleave { width: clamp(100px, 19vw, 250px); height: clamp(60px, 10vw, 135px); border-top: 5px solid #f4dfbb; border-right: 2px solid #dca56b77; border-radius: 50%; filter: drop-shadow(0 0 5px #c9955b88); animation: execution-cleave .36s ease-out both; }
+@keyframes execution-cleave { from { transform: translate(-50%,-85%) rotate(-55deg) scale(.6); opacity: 0; } 30% { opacity: .9; } to { transform: translate(-50%,-20%) rotate(30deg) scale(1.1); opacity: 0; } }
+.fx-soul-harvest { --fx-color: #b5d5ad; }
+.fx-soul-harvest.is-damage-only { --fx-color: #ab9ac8; }
+.hero-soul-seal { width: 68px; height: 80px; margin: -40px -34px; border: 1px solid var(--fx-color); border-radius: 50%; box-shadow: inset 0 0 20px color-mix(in srgb, var(--fx-color) 20%, transparent); animation: soul-seal .65s ease-out both; }
+@keyframes soul-seal { from { transform: scale(.9, .2); opacity: 0; } 30% { opacity: .7; } to { transform: scale(.3, 1.3) translateY(-10px); opacity: 0; } }
+.hero-soul-wisp { width: 35px; height: 8px; margin: -4px -17px; border-radius: 100% 40% 40% 100%; background: linear-gradient(90deg, transparent, var(--fx-color)); box-shadow: 6px 0 8px color-mix(in srgb, var(--fx-color) 35%, transparent); }
+.hero-soul-gather { width: 140px; height: 45px; border: 1px solid var(--fx-color); border-radius: 50%; animation: soul-gather .45s ease-out both; }
+@keyframes soul-gather { from { transform: translate(-50%,-50%) scale(1.1); opacity: .7; } to { transform: translate(-50%,-50%) scale(.2); opacity: 0; } }
+@media (max-width: 600px) {
+  .battle-fx-charge { width: 60px; height: 60px; margin: -30px; }
+  .enemy-chain { width: 14px; }
+  .enemy-chain > i { width: 11px; border-width: 1px; }
+  .enemy-chain > i:nth-child(even) { width: 5px; }
+  .battle-fx-target { box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .battle-skill-effect .battle-fx-part { animation: battle-fx-reduced .25s ease-out var(--delay, 0ms) both; }
+  .battle-skill-effect .battle-fx-flight, .battle-skill-effect .enemy-chain { display: none; }
+  .battle-skill-effect :is(.hero-frost-wave, .enemy-claw, .enemy-swamp-haze) { display: none; }
+  .battle-fx-target { animation-duration: .3s; }
+  @keyframes battle-fx-reduced { from { opacity: .35; } to { opacity: 0; } }
+}

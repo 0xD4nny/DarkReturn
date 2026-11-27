@@ -58,6 +58,30 @@ function detailLinesMarkup(value) { return detailTextLines(value).map(escapeHtml
 function isMythicWeapon(item) {
   return item?.rarityColor === 'mythic' && MYTHIC_ITEMS.weaponSlots.includes(item.slot);
 }
+function isMythicEquipment(item) {
+  return item?.rarityColor === 'mythic' && MYTHIC_ITEMS.equipmentSlots.includes(item.slot);
+}
+function mythicTreeBonusRanks(className, sourceState = state) {
+  return Object.values(equipmentForClass(className, sourceState)).filter(item =>
+    isMythicEquipment(item) && !isMythicWeapon(item)
+    && (item.mythicUpgradeLevel || 0) >= MYTHIC_ITEMS.treeBonusUnlockLevel).length * MYTHIC_ITEMS.treeBonusRanks;
+}
+function effectiveSkillTreeNodeRank(node, className, sourceState = state) {
+  if (!node || (node.class && node.class !== className)) return 0;
+  const invested = Math.max(0, Number(sourceState?.skillTree?.[className]?.nodes?.[node.id]) || 0);
+  return invested > 0 ? invested + mythicTreeBonusRanks(className, sourceState) : 0;
+}
+function mythicAscensionQuote(save, item) {
+  const rules = MYTHIC_ITEMS.ascension;
+  const equipped = item && equipmentSlotEntries(save, true).find(entry => entry.item.id === item.id);
+  const slotLevel = equipped ? save.equipmentSlotProgress?.[equipped.owner]?.[equipped.slot]?.upgradeLevel ?? item.upgradeLevel ?? 0 : 0;
+  const eligible = Boolean(equipped && item.rarityColor === 'legendary' && MYTHIC_ITEMS.equipmentSlots.includes(item.slot));
+  const levelReady = eligible && slotLevel >= rules.requiredSlotLevel;
+  const rarityStones = inventoryQuantityForSlot(save, 'rarityStone');
+  const mythicStones = inventoryQuantityForSlot(save, 'mythicUpgradeStone');
+  return { ...rules, eligible, levelReady, slotLevel, rarityStones, mythicStones,
+    possible: Boolean(levelReady && rarityStones >= rules.rarityStoneCost && mythicStones >= rules.mythicStoneCost) };
+}
 
 function lootRuleSlots() {
   return Object.keys(SLOT_DATA).filter(slot => AFFIX_POOLS[slot] || slot === 'glyph');
@@ -122,51 +146,18 @@ function mythicDamagePercent(item) {
 function skillTreeSpecialValue(type, className, sourceState = state) {
   const ranks = sourceState?.skillTree?.[className]?.nodes || {};
   return SKILL_TREE_NODES.reduce((sum, node) => sum + (node.effect?.type === type && (!node.class || node.class === className)
-    ? (Number(ranks[node.id]) || 0) * node.effect.perPoint : 0), 0);
+    ? effectiveSkillTreeNodeRank(node, className, sourceState) * node.effect.perPoint : 0), 0);
 }
 function empoweredClassSkill(skill, className, sourceState = state) {
-  if (!skill) return skill;
-  const skillBonus = SKILL_TREE_NODES.reduce((sum, node) => sum + (node.effect?.type === 'skill-damage-flat-percent'
-    && node.class === className && node.effect.skillId === skill.id
-    ? (Number(sourceState?.skillTree?.[className]?.nodes?.[node.id]) || 0) * node.effect.perPoint : 0), 0);
-  if (skillBonus) {
-    const baseSkill = COMPANION_SKILLS[className]?.active?.find(entry => entry.id === skill.id);
-    if (typeof baseSkill?.damageMultiplier === 'number') skill = { ...skill, damageMultiplier: baseSkill.damageMultiplier + skillBonus / 100 };
-  }
-  if (className === 'warrior' && skill.id === 'stampfen') {
-    return { ...skill, areaEffect: skillTreeSpecialValue('warrior-stomp-area', className, sourceState) > 0, damageMultiplier: skill.damageMultiplier };
-  }
-  if (className === 'warrior' && skill.id === 'henkerschlag') {
-    const penalty = skillTreeSpecialValue('warrior-execution-area-penalty', className, sourceState);
-    if (penalty > 0) {
-      const baseSkill = COMPANION_SKILLS.warrior.active.find(entry => entry.id === 'henkerschlag');
-      return { ...skill, effect: 'area-damage', areaEffect: true, damageMultiplier: Math.max(0, baseSkill.damageMultiplier + skillBonus / 100 - penalty / 100) };
-    }
-  }
-  if (className === 'mage' && skill.effect === 'burn-hit' && skillTreeSpecialValue('mage-instant-fireball', className, sourceState) > 0) {
-    return { ...skill, effect: 'damage', cooldown: skill.cooldown / 2, projectileType: 'fire', instantFireball: true };
-  }
-  if (className === 'hunter' && skill.effect?.type === 'bow-poison') {
-    const chancePercent = skillTreeSpecialValue('hunter-poison-chance', className, sourceState);
-    if (chancePercent) return { ...skill, effect: { ...skill.effect, chancePercent } };
-  }
-  return skill;
+  return empowerTreeSkill(skill, className, sourceState);
 }
 function damageReductionCapPercent(className, sourceState = state) {
   const base = BALANCE.combat.damageReductionCapPercent ?? 75;
   return className === 'healer' ? Math.max(base, Math.min(95, skillTreeSpecialValue('healer-damage-reduction-cap', className, sourceState))) : base;
 }
-function passiveSkillSlotCount(className, sourceState = state) {
-  return skillTreeSpecialValue('additional-passive-slot', className, sourceState) > 0 ? 2 : 1;
-}
+function passiveSkillSlotCount() { return GAME_CONFIG.classSkillRules.maxPassives; }
 function selectedPassiveSkillIndices(className, sourceState = state) {
-  const member = sourceState?.companions?.[className];
-  const skills = COMPANION_SKILLS[className]?.passive || [];
-  const primary = member?.passiveSkillIndex ?? 0;
-  const indices = skills[primary] ? [primary] : [];
-  const secondary = member?.secondPassiveSkillIndex;
-  if (passiveSkillSlotCount(className, sourceState) > 1 && Number.isInteger(secondary) && skills[secondary] && !indices.includes(secondary)) indices.push(secondary);
-  return indices;
+  return COMPANION_SKILLS[className].passive.flatMap((skill, index) => classSkillUnlocked(className, skill.id, sourceState) ? [index] : []);
 }
 function selectedPassiveSkills(className, sourceState = state) {
   return selectedPassiveSkillIndices(className, sourceState).map(index => empoweredClassSkill(COMPANION_SKILLS[className].passive[index], className, sourceState));
@@ -198,14 +189,16 @@ function skillDescription(skill, className = null) {
     const descriptions = {
       damage: skill.instantFireball ? `Verursacht den gesamten Feuerballschaden (${damage} % Grundschaden) sofort. Keine Brandticks; die Grundabklingzeit ist halbiert. Der Bonus auf Schaden über Zeit wirkt auf diesen Direkttreffer nicht.` : `Ein Angriff mit ${damage} % Grundschaden.`,
       'multi-hit': `${skill.hitCount} Treffer auf ein Ziel mit je ${damage} % Grundschaden; endet, sobald das Ziel besiegt ist.`,
-      'area-damage': `Verursacht jedem lebenden Gegner ${damage} % Grundschaden.`,
+      'area-damage': `Verursacht jedem lebenden Gegner ${damage} % Grundschaden.${skill.repeatHits ? ` Insgesamt ${skill.repeatHits} Treffer je Ziel.` : ''}${skill.additionalRingMultipliers ? ` Zwei weitere Ringe im selben Frame: ${skill.additionalRingMultipliers.map(value => formatRuleNumber(value * 100) + ' %').join(' und ')} Grundschaden.` : ''}${skill.castHealingPercent ? ` ${formatRuleNumber(skill.castHealingPercent)} % des tatsächlich verursachten Schadens heilen die Gruppe.` : ''}`,
+      'fire-area': `${damage} % direkter Flächenschaden${skill.burnMultiplier ? ` und ${formatRuleNumber(skill.burnMultiplier * 100)} % Brandschaden über ${seconds(skill.burnDuration)}` : ', ohne Brand'}.${skill.burnVulnerabilitySeconds ? ` Brennende Ziele werden ${seconds(skill.burnVulnerabilitySeconds)} verwundbar.` : ''}`,
+      'heal-over-time': `Heilt ${skill.healScope === 'self' ? 'den Anwender' : 'jedes lebende Gruppenmitglied'} ${seconds(skill.durationSeconds)} lang jede Sekunde um ${formatRuleNumber(skill.healPercent)} % des maximalen Lebens. Wiederholtes Wirken erneuert die Dauer; die Heilungen stapeln sich nicht.`,
       'vulnerable-hit': `${damage} % Grundschaden; macht überlebende Gegner ${seconds(skill.vulnerableDuration)} verwundbar.`,
       'stun-hit': `${damage} % Grundschaden; betäubt ${skill.areaEffect ? 'alle lebenden Gegner' : 'ein Ziel'} für ${seconds(Math.ceil(skill.stunDuration * 1000 / BALANCE.combat.tickMilliseconds) * BALANCE.combat.tickMilliseconds / 1000)} Kampftaktzeit.`,
-      'freeze-hit': `${damage} % Grundschaden; friert das überlebende Ziel ${seconds(skill.freezeDuration)} ein. Der Boss kann nicht eingefroren werden.`,
+      'freeze-hit': `${damage} % Grundschaden; friert ${skill.areaEffect ? 'alle überlebenden Ziele' : 'das überlebende Ziel'} ${seconds(skill.freezeDuration)} ein.${skill.frozenDamagePercent ? ' Eingefrorene Ziele erleiden doppelten Schaden.' : ''} Der Boss kann nicht eingefroren werden.`,
       'burn-hit': `Verursacht über ${seconds(skill.burnDuration)} insgesamt ${damage} % Grundschaden: ein sofortiger und weitere regelmäßige Brandschadenstreffer.`,
       heal: `Heilt jedes lebende Gruppenmitglied um bis zu ${formatRuleNumber(skill.healPercent)} % seiner maximalen Lebenskraft, verstärkt durch Glaube und Heileffektivität.`,
-      guard: `Verringert erlittenen Gruppenschaden ${seconds(skill.guardDuration)} lang um ${formatRuleNumber(skill.guardPercent)} %. Die gesamte Schadensminderung bleibt normalerweise auf ${formatRuleNumber(BALANCE.combat.damageReductionCapPercent ?? 75)} % begrenzt; beim Heiler mit Lichtschutz sind bis zu 95 % möglich.`,
-      unkillable: `Der Anwender wird ${seconds(skill.durationSeconds)} unverwundbar.`,
+      guard: `Verringert erlittenen Gruppenschaden ${seconds(skill.guardDuration)} lang um ${formatRuleNumber(skill.guardPercent)} %. Die gesamte Schadensminderung bleibt normalerweise auf ${formatRuleNumber(BALANCE.combat.damageReductionCapPercent ?? 75)} % begrenzt.`,
+      'current-health-drain': `Entzieht allen lebenden Gegnern ${formatRuleNumber(skill.currentHealthPercent)} % ihres aktuellen Lebens, ohne Krits, Doppeltreffer oder zusätzliche Schadensboni. ${formatRuleNumber(skill.drainHealingPercent)} % des tatsächlich entzogenen Lebens heilen gleichmäßig die lebenden Gruppenmitglieder; Überheilung verfällt. In der Bossprüfung stattdessen ${damage} % angriffsabhängiger Grundschaden mit normalen Schadensregeln.`,
     };
     const description = descriptions[skill.effect] || skill.description;
     return description;
@@ -215,7 +208,11 @@ function skillDescription(skill, className = null) {
     const value = formatRuleNumber(effect.value);
     const recipient = effect.scope === 'party' ? 'jedes Gruppenmitglied' : 'den Anwender';
     if (effect.type === 'damage-percent') return `+${value} % verursachter Schaden für ${recipient}`;
-    if (effect.type === 'multiplicative-damage-percent') return `+${value} % verursachter Schaden für ${recipient} als eigener Multiplikator (×${formatRuleNumber(1 + effect.value / 100)})`;
+    if (effect.type === 'multiplicative-damage-percent') return `+${value} % multiplikativer Schaden für ${recipient}; wird mit anderen Boni auf multiplikativen Schaden addiert`;
+    if (effect.type === 'critical-overflow') return 'Kritische Chance über 100 % wird 1:1 zu kritischem Schaden.';
+    if (effect.type === 'life-steal-percent') return `${value} % des tatsächlich verursachten Schadens heilen ${recipient} selbst.`;
+    if (effect.type === 'soul-drop-percent') return `+${value} % Kampf-Seelen für die Gruppe (einmal angewendet).`;
+    if (effect.type === 'drop-rate-percent') return `+${value} % relative Droprate für die Gruppe.`;
     if (effect.type === 'dodge-chance') return '+' + value + ' % Ausweichchance für den Anwender';
     if (effect.type === 'taunt') return 'Zieht alle Gegnerangriffe auf den Heiler, solange er lebt. Der andere Held wird erst nach seinem Tod zum Ziel';
     if (effect.type === 'stat-percent') return `+${value} % ${effect.stat} für ${recipient}`;
@@ -242,9 +239,35 @@ function skillTreeRequiredParentPoints(node) {
 }
 function skillTreeNodeUnlocked(node, ranks = {}, className = null) {
   if (node?.class && className && node.class !== className) return false;
+  if (classSkillChoiceBlockedReason(node, ranks, className)) return false;
   return !node?.parent || node.parent === 'origin' || Number(ranks[node.parent] || 0) >= skillTreeRequiredParentPoints(node);
 }
+function skillTreeNodeRespecQuote(className, nodeId, sourceState = state) {
+  const ranks = sourceState.skillTree?.[className]?.nodes || {};
+  const node = SKILL_TREE_NODES.find(entry => entry.id === nodeId && entry.class === className);
+  const removed = new Set();
+  if (node && node.id !== 'origin' && Number(ranks[node.id]) > 0) {
+    removed.add(node.id);
+    let changed;
+    do {
+      changed = false;
+      SKILL_TREE_NODES.forEach(entry => {
+        if (entry.class === className && Number(ranks[entry.id]) > 0 && removed.has(entry.parent) && !removed.has(entry.id)) {
+          removed.add(entry.id);
+          changed = true;
+        }
+      });
+    } while (changed);
+  }
+  const nodes = SKILL_TREE_NODES.filter(entry => removed.has(entry.id));
+  return {
+    nodes,
+    refundedPoints: nodes.reduce((sum, entry) => sum + Number(ranks[entry.id]), 0),
+    cost: BALANCE.skillTree.nodeRespecCost,
+  };
+}
 function skillTreeDescription(node, className = null) {
+  if (node?.ability) return node.description || '';
   if (!node?.effect) return node?.description || '';
   const { type, stat, perPoint } = node.effect;
   const value = formatRuleNumber(perPoint);
@@ -260,7 +283,7 @@ function skillTreeDescription(node, className = null) {
   if (type === 'mage-instant-fireball') return 'Nur Magier: Feuerball hat die halbe Grundabklingzeit und verursacht seinen gesamten Schaden sofort statt über Zeit. Keine Brandticks und kein zusätzlicher Schadensbonus. Abklingzeitreduktion wirkt anschließend; Boni auf Schaden über Zeit gelten nicht mehr für Feuerball.';
   if (type === 'hunter-poison-chance') return 'Nur Jäger: Giftpfeile haben 40 % statt 25 % Giftchance. Die passive Fähigkeit muss ausgerüstet sein.';
   if (type === 'healer-damage-reduction-cap') return 'Nur Heiler: Erhöht die Obergrenze der gesamten eigenen Schadensminderung auf 95 %. Gewährt nicht automatisch 95 % Schadensminderung; Verteidigung, Schutzfähigkeiten und Setboni müssen sie weiterhin aufbauen. Die Verteidigungskurve bleibt unverändert. Benötigt keine bestimmte passive Fähigkeit und erhöht nicht das Cap anderer Gruppenmitglieder.';
-  if (type === 'healer-final-damage-percent') return `Nur Heiler: +${value} % multiplikativer eigener Schaden (×${formatRuleNumber(1 + perPoint / 100)}) auf normale Angriffe, Schadensfähigkeiten und Schaden über Zeit. Wirkt als eigener Multiplikator, nicht auf andere Gruppenmitglieder oder Heilungen.`;
+  if (type === 'healer-final-damage-percent') return `Nur Heiler: +${value} % multiplikativer eigener Schaden auf normale Angriffe, Schadensfähigkeiten und Schaden über Zeit. Wird mit anderen Boni auf multiplikativen Schaden addiert. Gilt nicht für andere Gruppenmitglieder oder Heilungen.`;
   if (type === 'hunter-critical-overflow') return 'Nur Jäger: Kritische Chance über 100 % gewährt im Verhältnis 1:1 zusätzlichen kritischen Schaden. Beispiel: 120 % Kritische Chance geben +20 % Kritischer Schaden. Funktioniert mit jeder passiven Fähigkeit.';
   if (type === 'warrior-stomp-area') return 'Nur Krieger: Stampfen trifft und betäubt alle lebenden Gegner statt eines einzelnen Ziels.';
   if (type === 'self-life-steal-percent') return 'Heilt ausschließlich den Anwender um 0,1 % seines tatsächlich verursachten Schadens pro Rang (maximal 3 % bei 30 Punkten), auch bei Schaden über Zeit.';
@@ -318,10 +341,10 @@ function allowsRepeatedAffixes(slot) {
   return slot !== 'glyph' && Array.isArray(AFFIX_POOLS[slot]);
 }
 function enchantmentRulesText(mode, target = null) {
-  if (mode === 'affix' && isMythicWeapon(target)) return 'Bei mystischen Waffen kannst du alle vier Affixplätze beliebig oft umprägen. Ohne zusätzliche Ausschlüsse kostet jeder Versuch einen Umprägungsstein und würfelt einen anderen Typ sowie einen neuen Wert. Alle vier Affixe sind immer Greater Affixe, auch nach dem Umprägen: 150 % eines normalen Zufallswurfs statt eines garantierten Maximalwurfs. Gleiche Affixtypen auf mehreren Plätzen bleiben erlaubt. Der Mythische Effekt wird nicht verändert.';
+  if (mode === 'affix' && isMythicEquipment(target)) return 'Bei mystischer Ausrüstung kannst du alle vier Affixplätze beliebig oft umprägen. Ohne zusätzliche Ausschlüsse kostet jeder Versuch einen Umprägungsstein und würfelt einen anderen Typ sowie einen neuen Wert. Alle vier Affixe sind immer Greater Affixe, auch nach dem Umprägen: 150 % eines normalen Zufallswurfs statt eines garantierten Maximalwurfs. Gleiche Affixtypen auf mehreren Plätzen bleiben erlaubt. Der Mythische Effekt wird nicht verändert.';
   if (mode === 'affix') return (Number.isInteger(target?.enchantAffixIndex)
     ? 'Dieser Gegenstand ist bereits auf einen Affixplatz festgelegt. Ohne zusätzliche Ausschlüsse verbraucht jeder weitere Versuch einen Umprägungsstein und ersetzt dort den Affixtyp samt Wurf. Andere Plätze sind dauerhaft gesperrt.'
-    : 'Der erste Versuch legt dauerhaft fest, welchen Affixplatz du umprägen kannst. Ohne zusätzliche Ausschlüsse wird ein Umprägungsstein verbraucht; der bisherige Typ wird durch einen anderen Typ samt neuem Wurf ersetzt. Ein bereits auf einem anderen Platz vorhandener Affixtyp kann erneut entstehen.') + ' Wird ein Greater Affix umgeprägt, geht sein Greater-Status dauerhaft verloren. Bei gewöhnlicher bis legendärer Ausrüstung ist der Ersatz immer ein normaler Affix; andere Greater Affixe bleiben erhalten. Begleittiere haben eigene Regeln: Alle Plätze bleiben umprägbar; ihre normalen Affixwürfe werden durch die Tierstufe verstärkt. Tieraffixe können keine Greater Affixe sein. Mystische Waffen bilden eine Ausnahme: Alle vier Plätze bleiben beliebig oft umprägbar. Alle vier Affixe sind immer Greater Affixe; Typ und Wert werden neu gewürfelt, mit 150 % eines normalen Zufallswurfs.';
+    : 'Der erste Versuch legt dauerhaft fest, welchen Affixplatz du umprägen kannst. Ohne zusätzliche Ausschlüsse wird ein Umprägungsstein verbraucht; der bisherige Typ wird durch einen anderen Typ samt neuem Wurf ersetzt. Ein bereits auf einem anderen Platz vorhandener Affixtyp kann erneut entstehen.') + ' Wird ein Greater Affix umgeprägt, geht sein Greater-Status dauerhaft verloren. Bei gewöhnlicher bis legendärer Ausrüstung ist der Ersatz immer ein normaler Affix; andere Greater Affixe bleiben erhalten. Begleittiere haben eigene Regeln: Alle Plätze bleiben umprägbar; ihre normalen Affixwürfe werden durch die Tierstufe verstärkt. Tieraffixe können keine Greater Affixe sein. Mystische Ausrüstung bildet eine Ausnahme: Alle vier Plätze bleiben beliebig oft umprägbar. Alle vier Affixe sind immer Greater Affixe; Typ und Wert werden neu gewürfelt, mit 150 % eines normalen Zufallswurfs.';
   return 'Ein Seltenheitsstein wird verbraucht und erhöht die Seltenheit um eine Stufe. Vorhandene Affixtypen bleiben erhalten; ihre Würfe werden innerhalb der gemeinsamen Affixbereiche übernommen und gerundet. Zusätzliche Affixe werden neu gewürfelt. Grundschaden und Grundverteidigung werden in den höheren Seltenheitsbereich übertragen; bei einem festen bisherigen Grundwert wird neu gewürfelt. Die Grundwertspannen steigen mit jeder Seltenheit ohne Überschneidung. Vorhandene Greater Affixe behalten ihren Greater-Status und den maximalen Greater-Grundwert; zusätzlich entstehende Affixe sind normal. Bei legendärer Ausrüstung ohne Greater Affix kann stattdessen einmalig ein Seltenheitsstein verwendet werden: Ein zufälliger vorhandener normaler Affix erhält garantiert den Greater-Grundwert. Der Affixtyp bleibt erhalten. Die einmalige Nutzung bleibt am Gegenstand gespeichert, auch wenn der Greater Affix später umgeprägt wird. Glyphen und Begleittiere sind hiervon ausgeschlossen.';
 }
 
@@ -342,5 +365,5 @@ function bossRankProgress(damage) {
   return { currentIndex, currentRank, nextRank, progress, remaining: nextRank ? Math.max(0, nextRank.minimumDamage - total) : 0 };
 }
 function bossRankColor(rank) {
-  return ({ Bronze: '#cd945e', Silber: '#c6d2dc', Gold: '#f1c65b', Platin: '#7cddca', Diamant: '#95d8ff', Mythisch: '#dc8dff' })[rank?.tier] || '#aaa0a8';
+  return ({ Bronze: '#cd945e', Silber: '#c6d2dc', Gold: '#f1c65b', Platin: '#7cddca', Diamant: '#95d8ff', Mythisch: 'var(--rarity-mythic)' })[rank?.tier] || '#aaa0a8';
 }

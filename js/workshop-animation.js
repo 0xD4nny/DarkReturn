@@ -45,7 +45,7 @@ function syncWorkshopAnimation() {
   const enabled = workshopAnimationsEnabled(attempt.view);
   if (attempt.phase === 'charging') {
     if (enabled) workbench.classList.add('is-forging');
-    status.querySelector('span').textContent = result.kind === 'glyph-fusion' ? 'Drei Glyphen werden neu geschmiedet' : enchantMode
+    status.querySelector('span').textContent = result.mythicAscension ? 'Legendär → Mystisch' : result.kind === 'glyph-fusion' ? 'Drei Glyphen werden neu geschmiedet' : enchantMode
       ? result.greaterUpgrade ? `${result.affix.stat} wird zum Greater Affix` : result.kind === 'enchant-rarity' ? `${result.previousRarity} wird zu ${result.item.rarity}` : `${result.previousStat} wird neu geprägt`
       : socketMode ? `Sockel ${outcome.level + 1} / ${outcome.capacity}` : `Aufwertung auf +${outcome.level + 1}`;
     status.querySelector('strong').textContent = 'VERSUCH LÄUFT';
@@ -67,7 +67,7 @@ function syncWorkshopAnimation() {
     status.querySelector('span').textContent = result.kind === 'glyph-fusion' ? result.item.name : outcome.success
       ? enchantMode ? result.greaterUpgrade ? `Greater Affix: ${result.affix.stat}` : result.kind === 'enchant-rarity' ? `${result.item.name} ist jetzt ${result.item.rarity}.` : `${result.previousStat} wurde zu ${result.affix.stat}.`
         : socketMode ? `${outcome.resultingLevel} Sockel geöffnet` : `Aufwertung +${outcome.resultingLevel}`
-      : socketMode ? 'Sockel bleibt geschlossen' : `Aufwertung bleibt +${outcome.level}`;
+      : result.mythicAscension ? 'Gegenstand bleibt legendär' : socketMode ? 'Sockel bleibt geschlossen' : `Aufwertung bleibt +${outcome.level}`;
     status.querySelector('strong').textContent = outcome.success ? 'GELUNGEN' : 'FEHLGESCHLAGEN';
   }
 }

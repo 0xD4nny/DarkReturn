@@ -554,7 +554,7 @@ function launchFireball(actor, target, impactDelay = 300) {
   launchBattleProjectile('mage', actor, target, impactDelay, 'fire');
 }
 
-function launchHealerShockwave(targets, duration = 640) {
+function launchHealerShockwave(targets, duration = 640, extraRingCount = 0) {
   const scene = battleSceneElement();
   if (!scene || !targets.length) return;
 
@@ -584,6 +584,27 @@ function launchHealerShockwave(targets, duration = 640) {
     { transform: 'translate(-50%, -50%) scale(.35)', opacity: 0.92, offset: 0.2 },
     { transform: 'translate(-50%, -50%) scale(1)', opacity: 0 },
   ], { duration, easing: 'cubic-bezier(.16,.72,.24,1)', fill: 'forwards' }).onfinish = () => wave.remove();
+
+  // Keep the extra rings outside the visible artwork at every point of the pulse.
+  const visibleRadius = radius * .84;
+  const gap = 36;
+  for (let index = 1; index <= Math.min(2, extraRingCount); index++) {
+    const outerRadius = visibleRadius + gap * index;
+    const ring = document.createElement('span');
+    ring.className = 'battle-healer-outer-ring';
+    ring.setAttribute('aria-hidden', 'true');
+    ring.style.width = `${outerRadius * 2}px`;
+    ring.style.height = `${outerRadius * 2}px`;
+    ring.style.left = `${origin.x}px`;
+    ring.style.top = `${origin.y}px`;
+    scene.append(ring);
+    const frames = [.025, .35, 1].map((scale, frame) => ({
+      transform: `translate(-50%, -50%) scale(${(visibleRadius * scale + gap * index) / outerRadius})`,
+      opacity: frame === 1 ? .78 - index * .12 : 0,
+      ...(frame === 1 ? { offset: .2 } : {}),
+    }));
+    ring.animate(frames, { duration, easing: 'cubic-bezier(.16,.72,.24,1)', fill: 'forwards' }).onfinish = () => ring.remove();
+  }
 
   targetPoints.forEach(({ target, point }) => {
     const distance = Math.hypot(point.x - origin.x, point.y - origin.y);
@@ -715,12 +736,18 @@ function playBattleAttack(className, damage, targetIndexes = null, areaEffect = 
   const targets = indexes.map((index) => document.querySelector(`#battle-overlay .battle-enemy[data-enemy="${index}"]`)).filter(Boolean);
   const target = targets[0] || (current.mode === 'boss' ? closestBattleEnemy(actor) : null);
   const healerShockwave = areaEffect && className === 'healer';
-  const mageLightning = areaEffect && className === 'mage';
-  const mageFireball = damageOverTime && className === 'mage';
-  const dedicatedSkillEffect = healerShockwave || mageLightning || mageFireball || projectileType === 'stones';
+  const frostWave = projectileType === 'frost-wave';
+  const fireArrow = projectileType === 'fire-arrow';
+  const executionCleave = projectileType === 'cleave';
+  const mageFireball = className === 'mage' && (damageOverTime || projectileType === 'fire');
+  const mageLightning = areaEffect && className === 'mage' && !frostWave && !mageFireball;
+  const dedicatedSkillEffect = healerShockwave || mageLightning || mageFireball || frostWave || fireArrow || executionCleave || projectileType === 'stones';
   const impactDelay = battleAttackImpactDelay(className, areaEffect, damageOverTime, projectileType);
   if (projectileType === 'stones' && target) launchBattleProjectile(className, actor, target, impactDelay, projectileType, strikeIndex);
   if (actor && isBattleClassAlive(className)) {
+    if (frostWave) launchFrostWave(targets, impactDelay);
+    else if (fireArrow) launchFireArrow(targets, impactDelay);
+    else if (executionCleave) launchExecutionCleave(targets, impactDelay);
     const lethalHit = current.mode !== 'boss' && indexes.some((index) => (current.enemyHealths?.[index]?.hp ?? 1) <= 0);
     const frontFacingScene = Boolean(battleSceneElement()?.matches('.has-front-enemies, .has-front-boss'));
     if (!frontFacingScene) {
@@ -740,8 +767,8 @@ function playBattleAttack(className, damage, targetIndexes = null, areaEffect = 
     else if (className === 'mage') setHeroBattlePose(className, 'attack', 400);
     } else {
       const ranged = ['hunter', 'mage', 'healer'].includes(className);
-      if (projectileType === 'stones') {
-        // The ground burst replaces the ordinary melee slash for these skills.
+      if (projectileType === 'stones' || frostWave || fireArrow || executionCleave) {
+        // Dedicated effects replace ordinary projectiles and melee slashes.
       } else if (ranged) {
         // Skills with a dedicated effect must not also launch the basic projectile.
         if (!dedicatedSkillEffect) launchBattleProjectile(className, actor, target, impactDelay, projectileType, strikeIndex);
@@ -777,7 +804,8 @@ function playBattleAttack(className, damage, targetIndexes = null, areaEffect = 
     }
     if (mageLightning) launchChainLightning(actor, targets, impactDelay);
     else if (healerShockwave) {
-      launchHealerShockwave(targets, impactDelay);
+      const extraRings = activeClassSkill(className, battleStatsState())?.additionalRingMultipliers?.length || 0;
+      launchHealerShockwave(targets, impactDelay, extraRings);
     }
     else if (mageFireball) launchFireball(actor, target, impactDelay);
   }

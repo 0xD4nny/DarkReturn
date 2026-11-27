@@ -10,21 +10,20 @@ function renderPartyOwnerButtons(selectedOwner, context) {
 function abilityPresentation(skill, type) {
   const icons = {
     'poison-arrow': 'chemical-arrow', 'predator-eye': 'beast-eye', 'soul-scent': 'aura',
-    jagdstoss: 'target-arrows', pfeilsalve: 'arrow-cluster', 'verwundender-schuss': 'barbed-arrow',
+    jagdstoss: 'target-arrows', 'verwundender-schuss': 'barbed-arrow',
     kampfrausch: 'crossed-swords', unbeugsam: 'heart-tower', wachtwall: 'bordered-shield',
-    stampfen: 'earth-crack', henkerschlag: 'broadsword', schildwall: 'shield-echoes',
+    stampfen: 'earth-crack', henkerschlag: 'broadsword',
     'arkanes-echo': 'magic-swirl', aetherblick: 'crystal-eye', 'fast-caster': 'hourglass',
     erfrieren: 'snowflake-1', feuerball: 'fireball', funken: 'lightning-branches',
-    lebenssegen: 'shining-heart', kampfsegen: 'rally-the-troops', lichtwacht: 'eye-shield',
-    erneuerung: 'holy-grail', 'holy-circle': 'sunbeams', unkillable: 'magic-shield',
+    lebenssegen: 'shining-heart', kampfsegen: 'rally-the-troops',
+    erneuerung: 'holy-grail', 'holy-circle': 'sunbeams', seelenernte: 'bleeding-heart', feuerschuss: 'fireball', 'zweiter-wind': 'heart-tower', seelenquell: 'shining-heart',
   };
   const effects = Array.isArray(skill.effect) ? skill.effect : [skill.effect];
   const party = effects.some((effect) => effect?.scope === 'party');
-  const kinds = { damage: 'Angriff', 'multi-hit': 'Mehrfachtreffer', 'vulnerable-hit': 'Verwundbarkeit', 'stun-hit': 'Betäubung', guard: 'Schutz', 'freeze-hit': 'Frost', 'burn-hit': 'Brand', 'area-damage': 'Flächenschaden', heal: 'Heilung', unkillable: 'Schutz' };
+  const kinds = { damage: 'Angriff', 'multi-hit': 'Mehrfachtreffer', 'vulnerable-hit': 'Verwundbarkeit', 'stun-hit': 'Betäubung', guard: 'Schutz', 'freeze-hit': 'Frost', 'burn-hit': 'Brand', 'area-damage': 'Flächenschaden', heal: 'Heilung', 'current-health-drain': 'Lebensentzug', 'heal-over-time': 'Regeneration', 'fire-area': 'Feuerschaden' };
   const target = type === 'passive' ? party ? 'Die ganze Gruppe' : 'Der Anwender'
-    : ['guard', 'heal'].includes(skill.effect) ? 'Die ganze Gruppe'
-      : skill.effect === 'unkillable' ? 'Der Anwender'
-        : (skill.effect === 'area-damage' || skill.areaEffect) ? 'Alle lebenden Gegner' : 'Ein Gegner';
+    : (['guard', 'heal'].includes(skill.effect) || (skill.effect === 'heal-over-time' && skill.healScope === 'party')) ? 'Die ganze Gruppe'
+        : skill.effect === 'heal-over-time' ? 'Der Anwender' : (skill.effect === 'area-damage' || skill.areaEffect) ? 'Alle lebenden Gegner' : 'Ein Gegner';
   return { icon: `Assets/Icons/000000/transparent/1x1/lorc/${icons[skill.id] || 'magic-swirl'}.svg`, target, kind: type === 'passive' ? 'Dauerhafter Effekt' : kinds[skill.effect] || 'Aktive Fähigkeit' };
 }
 function effectiveAbilityCooldown(className, skill) {
@@ -33,61 +32,21 @@ function effectiveAbilityCooldown(className, skill) {
 }
 function abilityViewSelection() {
   const className = selectedAbilityOwner === state.activeCompanion ? state.activeCompanion : state.mainClass;
-  const type = selectedAbilityType === 'passive' ? 'passive' : 'active';
-  const skills = COMPANION_SKILLS[className][type];
-  const passiveSlot = selectedPassiveAbilitySlot === 1 && passiveSkillSlotCount(className) > 1 ? 1 : 0;
-  const member = state.companions[className];
-  const equippedIndex = type === 'passive' ? member[passiveSlot === 1 ? 'secondPassiveSkillIndex' : 'passiveSkillIndex'] : member.activeSkillIndex;
-  const inspectionKey = `${className}:${type}${type === 'passive' ? ':' + passiveSlot : ''}`;
-  const candidate = inspectedAbilities[inspectionKey];
-  const fallback = Number.isInteger(equippedIndex) ? equippedIndex : skills.findIndex((_, index) => index !== member.passiveSkillIndex);
-  const index = Number.isInteger(candidate) && skills[candidate] ? candidate : Math.max(0, fallback);
-  return { className, type, skills, equippedIndex, index, passiveSlot };
-
+  const skills = COMPANION_SKILLS[className].active;
+  const equippedIndex = state.companions[className].activeSkillIndex;
+  const candidate = inspectedAbilities[className + ':active'];
+  const index = Number.isInteger(candidate) && skills[candidate] ? candidate : Math.max(0, equippedIndex || 0);
+  return { className, type: 'active', skills, equippedIndex, index, passiveSlot: 0 };
 }
 function inspectAbility(type, index) {
-  if (!['active', 'passive'].includes(type)) return false;
+  if (type !== 'active') return false;
   const { className } = abilityViewSelection();
-  if (index !== undefined && (!Number.isInteger(index) || !COMPANION_SKILLS[className][type][index])) return false;
-  selectedAbilityType = type;
-  if (index !== undefined) {
-    const slot = selectedPassiveAbilitySlot === 1 && passiveSkillSlotCount(className) > 1 ? 1 : 0;
-    inspectedAbilities[`${className}:${type}${type === 'passive' ? ':' + slot : ''}`] = index;
-  }
+  if (!Number.isInteger(index) || !COMPANION_SKILLS[className].active[index]) return false;
+  selectedAbilityType = 'active';
+  inspectedAbilities[className + ':active'] = index;
   return true;
 }
-function renderCompanions() {
-  const { className, type, skills, equippedIndex, index, passiveSlot } = abilityViewSelection();
-  const info = CLASSES[className];
-  const member = state.companions[className];
-  const skill = empoweredClassSkill(skills[index], className);
-  const presentation = abilityPresentation(skill, type);
-  const equipped = index === equippedIndex;
-  const passiveCount = passiveSkillSlotCount(className);
-  const passiveIndices = selectedPassiveSkillIndices(className);
-  const otherPassiveIndex = passiveSlot === 0 ? member.secondPassiveSkillIndex : member.passiveSkillIndex;
-  const blockedByOtherPassive = type === 'passive' && passiveCount > 1 && index === otherPassiveIndex;
-  const seconds = (value) => `${Number(value).toLocaleString('de-DE', { maximumFractionDigits: 1 })} s`;
-  const summary = [
-    ['AKTIV', COMPANION_SKILLS[className].active[member.activeSkillIndex]?.name],
-    [passiveCount > 1 ? 'PASSIV 1' : 'PASSIV', COMPANION_SKILLS[className].passive[member.passiveSkillIndex]?.name],
-    ...(passiveCount > 1 ? [['PASSIV 2', COMPANION_SKILLS[className].passive[member.secondPassiveSkillIndex]?.name || 'Nicht gewählt']] : []),
-  ].map(([label, name]) => `<div><small>${label}</small><strong>${escapeHtml(name || '')}</strong></div>`).join('');
-  const passiveSlotButtons = type === 'passive' && passiveCount > 1 ? `<div class="abilities-category-switch" role="group" aria-label="Passiven Fähigkeitsslot wählen">${[0, 1].map(slot => `<button class="ui-control ui-choice ${slot === passiveSlot ? 'is-selected' : ''}" type="button" data-passive-slot="${slot}" aria-pressed="${slot === passiveSlot}">Passive ${slot + 1}</button>`).join('')}</div>` : '';
-  const tabs = ['active', 'passive'].map((key) => `<button type="button" data-ability-category="${key}" class="ui-control ui-choice ${key === type ? 'is-selected' : ''}" aria-pressed="${key === type}">${key === 'active' ? 'Aktive Fähigkeiten' : 'Passive Fähigkeiten'}<small>${COMPANION_SKILLS[className][key].length}</small></button>`).join('');
-  const rows = skills.map((choice, choiceIndex) => {
-    const meta = abilityPresentation(empoweredClassSkill(choice, className), type);
-    return `<button type="button" class="ability-choice-row ui-control ui-card-choice ${choiceIndex === index ? 'is-inspected' : ''}" data-inspect-ability="${choiceIndex}" data-ability-category="${type}" aria-pressed="${choiceIndex === index}"><span class="ability-icon-box">${assetIconMarkup(meta.icon, '✦', 'ability-glyph')}</span><span class="ability-choice-copy"><strong>${escapeHtml(choice.name)}</strong><small>${meta.kind} · ${meta.target}</small></span><span class="ability-choice-state">${type === 'active' ? `<span>${seconds(effectiveAbilityCooldown(className, choice))}</span>` : ''}${(type === 'passive' ? passiveIndices.includes(choiceIndex) : choiceIndex === equippedIndex) ? `<small>✓ ${type === 'passive' && passiveCount > 1 ? 'Passive ' + (choiceIndex === member.passiveSkillIndex ? 1 : 2) : 'Ausgerüstet'}</small>` : ''}</span></button>`;
-  }).join('');
-  const facts = type === 'active' ? `<div><small>ABKLINGZEIT</small><strong>${seconds(effectiveAbilityCooldown(className, skill))}</strong><span>Grundwert: ${seconds(skill.cooldown)}</span></div><div><small>ZIEL</small><strong>${presentation.target}</strong></div>`
-    : `<div><small>WIRKUNG</small><strong>Dauerhaft aktiv</strong></div><div><small>GILT FÜR</small><strong>${presentation.target}</strong></div>`;
-  return `<section class="abilities-view ${className}"><div class="view-heading"><div><p class="eyebrow"><span></span> DEINE KAMPFGRUPPE</p><h1>Deine <em>Fähigkeiten</em></h1><p class="welcome-sub">Eine aktive und ${passiveCount > 1 ? 'zwei passive Fähigkeiten' : 'eine passive Fähigkeit'} formen deinen Spielstil.</p></div>${renderPartyOwnerButtons(className === state.mainClass ? 'main' : className, 'abilities')}</div>
-    <div class="abilities-workspace"><section class="abilities-selection" aria-label="Fähigkeiten auswählen">
-      <header class="abilities-profile"><span class="ability-icon-box">${assetIconMarkup(info.asset, info.icon, 'ability-glyph')}</span><div><h2>${escapeHtml(info.label)}</h2><small>${className === state.mainClass ? 'Hauptklasse' : 'Gefährte'} · ${escapeHtml(info.role)}</small></div></header>
-      <div class="abilities-equipped-summary ${passiveCount > 1 ? 'has-second-passive' : ''}">${summary}</div><div class="abilities-category-switch" role="group" aria-label="Fähigkeitsart">${tabs}</div>${passiveSlotButtons}
-      <div class="abilities-choice-list">${rows}</div><p class="abilities-selection-note">Wähle eine Fähigkeit aus, um ihre Wirkung anzusehen.</p>
-    </section><aside class="ability-inspector" aria-label="Fähigkeitsdetails"><p class="eyebrow">${type === 'active' ? 'AKTIVE FÄHIGKEIT' : 'PASSIVE FÄHIGKEIT'} · ${presentation.kind}</p><div class="ability-detail-symbol">${assetIconMarkup(presentation.icon, '✦', 'ability-glyph')}</div><h2>${escapeHtml(skill.name)}</h2><p class="ability-description">${escapeHtml(skillDescription(skills[index], className))}</p><div class="ability-facts">${facts}</div><button class="primary-button ui-control ui-button ability-equip-button" type="button" data-skill-class="${className}" data-skill-type="${type}" data-skill-index="${index}" data-passive-slot-index="${passiveSlot}" ${equipped || blockedByOtherPassive ? 'disabled' : ''}>${equipped ? '✓ BEREITS AUSGERÜSTET' : blockedByOtherPassive ? 'IM ANDEREN PASSIVEN SLOT' : type === 'passive' && passiveCount > 1 ? 'ALS PASSIVE ' + (passiveSlot + 1) + ' AUSRÜSTEN' : 'FÄHIGKEIT AUSRÜSTEN'}</button></aside></div></section>`;
-}
+function renderCompanions() { return renderActiveClassAbilities(); }
 
 // Owner selection and branch layout for the data-driven talent tree.
 const SKILL_TREE_THEMES = [
@@ -97,17 +56,6 @@ const SKILL_TREE_THEMES = [
   { id: 'yellow', classId: 'healer', label: 'Heiler' },
 ];
 // Coordinates describe presentation only; prerequisites come from SKILL_TREE_NODES.
-const SKILL_TREE_NODE_LAYOUT = SKILL_TREE_NODES.map(node => {
-  if (node.id === 'origin') return ['origin', 450, 40];
-  const center = 75 + GAME_CONFIG.skillTreeBranches.findIndex(branch => branch.id === node.branch) * 150;
-  if (node.rarity === 'legendary') {
-    const choices = SKILL_TREE_NODES.filter(entry => entry.branch === node.branch && entry.rarity === 'legendary');
-    return [node.id, center + (choices.findIndex(entry => entry.id === node.id) === 0 ? -36 : 36), 730];
-  }
-  const branchNodes = SKILL_TREE_NODES.filter(entry => entry.branch === node.branch && entry.rarity !== 'legendary');
-  return [node.id, center, 170 + (node.tier - 1) * 440 / Math.max(1, branchNodes.length - 1)];
-});
-
 function skillTreeConnectorPath(from, to) {
   if (to.legendary) return `M ${from.x + 30} ${from.y} H ${from.x + 68} V ${to.y - 35} H ${to.x} V ${to.y - 28}`;
   if (from.y === 40) return `M ${from.x} ${from.y + 30} V 85 H ${to.x} V 95 M ${to.x} 135 V ${to.y - 30}`;
@@ -124,7 +72,7 @@ function skillTreeEffectLabel(node, rank, className) {
   if (effect.type === 'primary-attribute-flat') return `+${formatRuleNumber(value)} ${CLASS_ATTRIBUTE_SCALING[className].damageAttribute}`;
   if (effect.type === 'all-attributes-flat') return `+${formatRuleNumber(value)} auf alle fünf Attribute`;
   if (effect.type === 'soul-drop-percent') return `+${formatRuleNumber(value)} % Seelen aus Kämpfen`;
-  if (effect.type === 'final-damage-percent') return `×${formatRuleNumber(1 + value / 100)} Schaden`;
+  if (effect.type === 'final-damage-percent') return `+${formatRuleNumber(value)} % multiplikativer Schaden`;
   if (effect.type === 'additional-passive-slot') return 'Zwei passive Fähigkeiten gleichzeitig';
   if (effect.type === 'dodge-chance') return '+25 % eigene Ausweichchance';
   if (effect.type === 'extra-attack-chance') return '+20 % Chance auf zweiten Treffer';
@@ -133,7 +81,7 @@ function skillTreeEffectLabel(node, rank, className) {
   if (effect.type === 'mage-instant-fireball') return 'Feuerball: halbe Abklingzeit, voller Sofortschaden';
   if (effect.type === 'hunter-poison-chance') return 'Giftpfeile: 40 % Giftchance';
   if (effect.type === 'healer-damage-reduction-cap') return 'Eigenes Schadensminderungs-Cap: 95 %';
-  if (effect.type === 'healer-final-damage-percent') return `×${formatRuleNumber(1 + value / 100)} eigener Schaden`;
+  if (effect.type === 'healer-final-damage-percent') return `+${formatRuleNumber(value)} % eigener multiplikativer Schaden`;
   if (effect.type === 'hunter-critical-overflow') return 'Überschüssige Kritchance → Kritischer Schaden (1:1)';
   if (effect.type === 'warrior-stomp-area') return 'Stampfen: Flächenschaden und Betäubung';
   if (effect.type === 'self-life-steal-percent') return '+' + formatRuleNumber(value) + ' % eigener Lebensraub';
@@ -151,62 +99,7 @@ function skillTreeNameLines(name, maximumLength = 18) {
   return lines;
 }
 
-function renderSkillTree() {
-  const ownerClass = selectedSkillTreeOwner === 'main' ? state.mainClass : state.activeCompanion;
-  const theme = SKILL_TREE_THEMES.find((entry) => entry.classId === ownerClass) || SKILL_TREE_THEMES[0];
-  const selectedId = SKILL_TREE_NODES.some((node) => node.id === selectedSkillTreeNodeId) ? selectedSkillTreeNodeId : 'origin';
-  const nodeData = new Map(SKILL_TREE_NODES.map((node) => [node.id, node]));
-  const treeProgress = state.skillTree?.[ownerClass]?.nodes || {};
-  const earnedPoints = earnedSkillTreePoints(ownerClass);
-  const spentPoints = spentSkillTreePoints(ownerClass);
-  const availablePoints = Math.max(0, earnedPoints - spentPoints);
-  const legendaryNodes = SKILL_TREE_NODES.filter((node) => node.rarity === 'legendary');
-  const legendaryIsBlocked = (node) => node.rarity === 'legendary' && legendaryNodes.some(other => other.branch === node.branch && other.id !== node.id && Number(treeProgress[other.id]) > 0);
-  const nodeIsUnlocked = node => skillTreeNodeUnlocked(node, treeProgress, ownerClass);
-  const nodeMap = new Map(SKILL_TREE_NODE_LAYOUT.map(([id, x, y]) => [id, { x, y, legendary: nodeData.get(id)?.rarity === 'legendary' }]));
-  const edges = SKILL_TREE_NODES.filter((node) => node.parent && nodeMap.has(node.id) && nodeMap.has(node.parent)).map((node) => {
-    const from = nodeMap.get(node.parent);
-    const to = nodeMap.get(node.id);
-    const unlocked = nodeIsUnlocked(node) && !legendaryIsBlocked(node);
-    const invested = (Number(treeProgress[node.id]) || 0) > 0;
-    return `<path class="skill-tree-edge ${unlocked ? 'is-unlocked' : ''} ${invested ? 'is-invested' : ''} ${node.rarity === 'legendary' ? 'is-legendary' : ''}" d="${skillTreeConnectorPath(from, to)}" />`;
-  }).join('');
-  const nodes = SKILL_TREE_NODE_LAYOUT.map(([id, x, y]) => {
-    const selected = id === selectedId;
-    const node = nodeData.get(id);
-    const root = id === 'origin';
-    const rank = Number(treeProgress[id]) || 0;
-    const unlocked = root || (nodeIsUnlocked(node) && !legendaryIsBlocked(node));
-    const iconInk = node.rarity === 'legendary' ? 'legendary' : unlocked ? 'normal' : 'muted';
-    const icon = `<image class="node-icon-wrap" x="-16" y="-16" width="32" height="32" href="${escapeHtml(node.iconAsset)}" xlink:href="${escapeHtml(node.iconAsset)}" preserveAspectRatio="xMidYMid meet" filter="url(#skill-tree-icon-${iconInk})" aria-hidden="true"/>`;
-    const nameLines = skillTreeNameLines(node.name, node.rarity === 'legendary' ? 10 : 18);
-    const name = nameLines.map((line, index) => `<tspan x="0" dy="${index ? 15 : 0}">${escapeHtml(line)}</tspan>`).join('');
-    return `<g class="skill-tree-node rarity-${node.rarity || 'common'} ${selected ? 'is-selected' : ''} ${root ? 'is-origin' : ''} ${rank ? 'is-invested' : ''} ${unlocked ? 'is-unlocked' : 'is-locked'}" transform="translate(${x} ${y})" role="button" tabindex="0" data-skill-node="${id}" aria-label="${escapeHtml(node.name)} · ${root ? 'Ausgangspunkt' : `${rank}/${node.maxPoints}`}" aria-pressed="${selected}"><polygon class="node-frame" points="-22,-28 22,-28 28,-22 28,22 22,28 -22,28 -28,22 -28,-22"/>${icon}${root ? '<text class="node-rank" x="58" y="4">START</text>' : `<text class="node-rank" x="0" y="45">${rank}/${node.maxPoints}</text><text class="node-name" x="0" y="64">${name}</text>`}</g>`;
-  }).join('');
-  const selectedNode = nodeData.get(selectedId) || nodeData.get('origin');
-  const selectedRank = Number(treeProgress[selectedNode.id]) || 0;
-  const unlocked = nodeIsUnlocked(selectedNode);
-  const isLegendary = selectedNode.rarity === 'legendary';
-  const legendaryBlocked = legendaryIsBlocked(selectedNode);
-  const canInvest = selectedNode.id !== 'origin' && unlocked && !legendaryBlocked && availablePoints > 0 && selectedRank < selectedNode.maxPoints;
-  const rarityLabels = { origin: 'STARTKNOTEN', common: 'GEWÖHNLICH', rare: 'SELTEN', legendary: 'LEGENDÄR' };
-  const effectLabel = skillTreeEffectLabel(selectedNode, selectedRank, ownerClass);
-  const maximumLabel = selectedNode.effect ? skillTreeEffectLabel(selectedNode, selectedNode.maxPoints, ownerClass) : 'Wähle einen Pfad';
-  const branchLabels = GAME_CONFIG.skillTreeBranches.map((branch, index) => `<text class="skill-tree-branch-label" x="${75 + index * 150}" y="115">${escapeHtml(branch.label)}</text>`).join('');
-  const themeButtons = renderPartyOwnerButtons(selectedSkillTreeOwner, 'skilltree');
-  const investLabel = selectedNode.id === 'origin' ? 'AUSGANGSPUNKT'
-    : selectedRank >= selectedNode.maxPoints ? 'MAXIMALER RANG'
-      : legendaryBlocked ? 'ALTERNATIVE IM STRANG GEWÄHLT'
-        : !unlocked ? 'KNOTEN GESPERRT'
-          : availablePoints > 0 ? 'SKILLPUNKT INVESTIEREN' : 'KEIN SKILLPUNKT VERFÜGBAR';
-  const investmentButtons = [1, 5, 10, 'max'].map(amount => {
-    const enabled = canInvest && (amount === 'max' || (availablePoints >= amount && selectedNode.maxPoints - selectedRank >= amount));
-    return `<button class="primary-button ui-control ui-button skill-tree-invest" type="button" data-allocate-skill-node="${selectedNode.id}" data-skill-owner="${ownerClass}" data-skill-points="${amount}" title="${escapeHtml(enabled ? 'Punkte in ' + selectedNode.name + ' investieren' : investLabel)}" aria-label="${amount === 'max' ? 'Maximal mögliche Punkte' : amount + ' Punkte'} investieren" ${enabled ? '' : 'disabled'}>${amount === 'max' ? 'MAX' : '+' + amount}</button>`;
-  }).join('');
-  const resetCost = Math.max(0, Number(BALANCE.skillTree.respecCost) || 1000000);
-  const canRespec = spentPoints > 0 && state.souls >= resetCost;
-  return `<div class="skill-tree-view" data-skill-tree-theme="${theme.id}"><div class="view-heading"><div><p class="eyebrow"><span></span> DEINE KAMPFGRUPPE</p><h1>Der <em>Skilltree</em></h1><p class="welcome-sub">Jede Stufe gibt einen Punkt, ohne Punkte-Limit. Startknoten haben 200 Ränge; maximal 10 Punkte im Vorgänger öffnen den nächsten Knoten.</p></div><div class="skill-tree-toolbar">${themeButtons}</div></div><div class="skill-tree-layout"><section class="skill-tree-board" aria-label="Talentbaum"><div class="skill-tree-board-points" aria-label="Verfügbare Skillpunkte"><div class="skill-tree-points"><strong>${availablePoints}</strong><span>VERF&Uuml;GBARE PUNKTE</span></div></div><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="skill-tree-svg" viewBox="0 0 900 840" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Talente und ihre Voraussetzungen"><defs>${[['normal', '#e6d3b4'], ['muted', '#817b78'], ['legendary', '#d9b66e']].map(([id, color]) => `<filter id="skill-tree-icon-${id}" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feFlood flood-color="${color}"/><feComposite in2="SourceAlpha" operator="in"/></filter>`).join('')}</defs>${branchLabels}<g class="skill-tree-connections">${edges}</g><g class="skill-tree-nodes">${nodes}</g></svg><div class="skill-tree-legend"><span><i class="legend-muted"></i> GESPERRT</span><span><i class="legend-lit"></i> VERFÜGBAR</span><span><i class="legend-invested"></i> INVESTIERT</span><span><i class="legend-legendary"></i> LEGENDÄR · 1 PRO STRANG</span></div></section><aside class="skill-tree-detail character-panel-surface ${isLegendary ? 'is-legendary' : ''}"><p class="eyebrow">${rarityLabels[selectedNode.rarity] || 'TALENT'}</p><div class="skill-tree-detail-icon">${assetIconMarkup(selectedNode.iconAsset, '✦', 'skill-tree-detail-glyph')}</div><h2>${escapeHtml(selectedNode.name)}</h2><p>${escapeHtml(skillTreeDescription(selectedNode, ownerClass))}</p><div class="skill-tree-effect"><span>AKTUELLE WIRKUNG</span><strong>${escapeHtml(effectLabel)}</strong><small>Maximal: ${escapeHtml(maximumLabel)}</small></div><div class="skill-tree-detail-state"><span>RANG</span><strong>${selectedRank} / ${selectedNode.maxPoints}</strong><span>PUNKTE</span><strong>${availablePoints} frei · ${spentPoints} investiert</strong><span>VORAUSSETZUNG</span><strong>${selectedNode.class && selectedNode.class !== ownerClass ? 'NUR ' + escapeHtml(CLASSES[selectedNode.class].label).toUpperCase() : legendaryBlocked ? 'MAXIMAL EIN LEGEND&Auml;RER KNOTEN PRO STRANG' : unlocked ? 'FREIGESCHALTET' : `RANG ${skillTreeRequiredParentPoints(selectedNode)} IN „${escapeHtml(nodeData.get(selectedNode.parent)?.name || 'VORHERIGER KNOTEN')}“`}</strong></div><div class="skill-tree-invest-actions">${investmentButtons}</div><button class="primary-button ui-control ui-button skill-tree-respec" type="button" data-skill-tree-respec="${ownerClass}" ${canRespec ? '' : 'disabled'}>ALLE PUNKTE ZURÜCKSETZEN · ${number(resetCost)} SEELEN</button></aside></div></div>`;
-}
+function renderSkillTree() { return renderOwnClassSkillTree(); }
 
 function compactQuestCopy(quest) {
   const target = number(quest.target);

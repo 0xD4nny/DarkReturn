@@ -405,7 +405,18 @@
         "rare": 13,
         "epic": 1.9,
         "legendary": 0.1
-      }
+      },
+      "socketableSlots": [
+        "bow",
+        "sword",
+        "staff",
+        "bell",
+        "shield",
+        "helmet",
+        "chest",
+        "gloves",
+        "boots"
+      ]
     }
   }
 }

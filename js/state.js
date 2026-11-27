@@ -28,7 +28,6 @@ let selectedDeepTier = null;
 let selectedForForge = new Set();
 let selectedInventoryOwner = 'main';
 let selectedInventoryTab = 'equipment';
-let selectedInventoryExpansionQuantity = 1;
 let selectedAbilityOwner = 'main';
 let selectedAbilityType = 'active';
 let selectedPassiveAbilitySlot = 0;
@@ -292,6 +291,7 @@ function dailyAttemptLabel(mode) {
 function normalizeSaveState(save) {
   normalizeLegacyWeapons(save);
   if (!save) return save;
+  save.inventoryCapacity = BALANCE.inventory.maxCapacity;
   normalizeDailyAttempts(save);
   normalizeOfflineFarm(save);
   migrateRemovedMaterials(save);
@@ -375,6 +375,13 @@ function normalizeSaveState(save) {
       const count = node ? Math.min(node.maxPoints, Math.floor(Number(points) || 0)) : 0;
       return count > 0 ? [[id, count]] : [];
     }));
+    const passiveNodes = SKILL_TREE_NODES.filter(node => node.class === className && node.effect?.type === 'class-skill' && node.effect.kind === 'passive' && nodes[node.id] > 0);
+    passiveNodes.slice(GAME_CONFIG.classSkillRules.maxPassives).forEach(node => delete nodes[node.id]);
+    const exclusiveGroups = new Set();
+    SKILL_TREE_NODES.filter(node => node.exclusiveGroup && nodes[node.id] > 0).forEach(node => {
+      if (exclusiveGroups.has(node.exclusiveGroup)) delete nodes[node.id];
+      else exclusiveGroups.add(node.exclusiveGroup);
+    });
     const legendaryBranches = new Set();
     SKILL_TREE_NODES.filter(node => node.rarity === 'legendary' && nodes[node.id] > 0).forEach(node => {
       if (legendaryBranches.has(node.branch)) delete nodes[node.id];
@@ -410,10 +417,11 @@ function normalizeSaveState(save) {
   Object.keys(CLASSES).forEach((className) => {
     save.companions[className] ||= {};
     const companion = save.companions[className];
-    companion.passiveSkillIndex = Math.max(0, Math.min(2, Number(companion.passiveSkillIndex) || 0));
-    if (!Number.isInteger(companion.secondPassiveSkillIndex) || !COMPANION_SKILLS[className].passive[companion.secondPassiveSkillIndex]
-      || companion.secondPassiveSkillIndex === companion.passiveSkillIndex || passiveSkillSlotCount(className, save) < 2) delete companion.secondPassiveSkillIndex;
-    companion.activeSkillIndex = Math.max(0, Math.min(2, Number(companion.activeSkillIndex) || 0));
+    delete companion.passiveSkillIndex;
+    delete companion.secondPassiveSkillIndex;
+    const actives = COMPANION_SKILLS[className].active;
+    const selected = Math.max(0, Math.min(actives.length - 1, Number(companion.activeSkillIndex) || 0));
+    companion.activeSkillIndex = selected;
     companion.skills = COMPANION_SKILLS[className];
   });
   if (Array.isArray(save.activityLog)) {
@@ -586,7 +594,7 @@ function defaultState() {
     settings: { forgeAnimations: true, socketAnimations: true, enchantAnimations: true, autoSkillsDefault: true, compactDamageNumbers: false, autoSellRarities: [], autoSellNonSet: false, towerLoot: 'upgradeStone' },
     bossChallenge: { lastAttemptAt: 0, lastClaimedAt: 0, highestRank: -1, bestDamage: 0 },
     activeCompanion: null, activePowerups: [], equipment: { main: {}, companions: {} }, equipmentSlotProgress: {},
-    companions: Object.fromEntries(Object.keys(CLASSES).map((className) => [className, { passiveSkillIndex: 0, activeSkillIndex: 0, weapon: null, skills: COMPANION_SKILLS[className] }])),
+    companions: Object.fromEntries(Object.keys(CLASSES).map((className) => [className, { activeSkillIndex: 0, weapon: null, skills: COMPANION_SKILLS[className] }])),
   };
 }
 async function readSavedState() {
@@ -662,7 +670,7 @@ function characterLevel(className, sourceState = state) {
 function earnedSkillTreePoints(className, sourceState = state) {
   const rules = BALANCE.skillTree || {};
   const levelsPerPoint = Math.max(1, Math.floor(Number(rules.pointsEveryLevels) || 1));
-  return Math.floor(characterLevel(className, sourceState) / levelsPerPoint);
+  return Math.min(rules.maxPoints, Math.floor(characterLevel(className, sourceState) / levelsPerPoint));
 }
 function spentSkillTreePoints(className, sourceState = state) {
   const nodes = sourceState?.skillTree?.[className]?.nodes || {};
@@ -674,7 +682,7 @@ function partySkillTreeEffectValue(type, sourceState = state) {
     const nodes = sourceState?.skillTree?.[className]?.nodes || {};
     const value = SKILL_TREE_NODES.reduce((sum, node) => {
       if (node.effect?.type !== type) return sum;
-      return sum + Math.max(0, Number(nodes[node.id]) || 0) * Number(node.effect.perPoint || 0);
+      return sum + effectiveSkillTreeNodeRank(node, className, sourceState) * Number(node.effect.perPoint || 0);
     }, 0);
     return Math.max(maximum, value);
   }, 0);
@@ -744,7 +752,14 @@ function areaEnemyBaseDamage(areaId, deepTier = 0) {
   const target = Math.max(baseline, Number(rules.enemyDamageAtFinalArea) || baseline);
   const step = (tier - 1) * AREAS.length + areaIndex + 1;
   const scalingTier = rules.enemyDamageScalingTier || maximumTier;
-  return Math.round(baseline * (target / baseline) ** (step / (scalingTier * AREAS.length)));
+  let progress = step / (scalingTier * AREAS.length);
+  if (tier < maximumTier) {
+    // Redistribute early damage up to the unchanged first area of the final tier.
+    const finalTierStart = (maximumTier - 1) * AREAS.length + 1;
+    const power = rules.enemyDamageEarlyCurvePower ?? 1;
+    progress = finalTierStart / (scalingTier * AREAS.length) * (step / finalTierStart) ** power;
+  }
+  return Math.round(baseline * (target / baseline) ** progress);
 }
 function towerEncounterStats(sourceState = state, round = 1) {
   const rules = BALANCE.combat;
@@ -767,23 +782,6 @@ function towerEncounterStats(sourceState = state, round = 1) {
     soulsMinimum: Math.round(rules.towerSoulsMinimumBase + level * rules.towerSoulsMinimumPerLevel),
     soulsMaximum: Math.round(rules.towerSoulsMaximumBase + level * rules.towerSoulsMaximumPerLevel),
   };
-}
-function inventoryExpansionCost(capacity) {
-  const rules = BALANCE.inventory;
-  const expandedSlots = capacity - BALANCE.startingInventoryCapacity;
-  return Math.round(rules.expansionCostBase + expandedSlots * rules.expansionCostPerSlot + expandedSlots ** 2 * rules.expansionCostQuadratic);
-}
-function inventoryExpansionQuote(sourceState = state, requested = 1) {
-  const remaining = Math.max(0, BALANCE.inventory.maxCapacity - sourceState.inventoryCapacity);
-  const totals = [0];
-  for (let count = 0; count < remaining; count++) {
-    const total = totals[count] + inventoryExpansionCost(sourceState.inventoryCapacity + count);
-    if (total > sourceState.souls) break;
-    totals.push(total);
-  }
-  const max = totals.length - 1;
-  const amount = max ? Math.max(1, Math.min(max, Math.floor(Number(requested) || 1))) : 0;
-  return { max, amount, cost: totals[amount], atCapacity: remaining === 0 };
 }
 function rarityWeightsForAreaIndex(areaIndex, sourceState = state) {
   const tables = BALANCE.items.rarityWeightsByArea || [];
@@ -820,8 +818,11 @@ function chooseWeightedRarity(save = state) {
 }
 function baseItemStatRange(slot, rarityColor, type) {
   if (rarityColor === 'mythic') {
-    if (!MYTHIC_ITEMS.weaponSlots.includes(slot)) return null;
-    return type === 'weaponDamage' ? MYTHIC_ITEMS.weaponBaseDamageRange : null;
+    if (!MYTHIC_ITEMS.equipmentSlots.includes(slot)) return null;
+    if (MYTHIC_ITEMS.weaponSlots.includes(slot)) return type === 'weaponDamage' ? MYTHIC_ITEMS.weaponBaseDamageRange : null;
+    const legendary = baseItemStatRange(slot, 'legendary', type);
+    return legendary ? [Math.max(legendary[1] + 1, Math.round(legendary[0] * MYTHIC_ITEMS.nonWeaponBaseStatMultiplier)),
+      Math.max(legendary[1] + 1, Math.round(legendary[1] * MYTHIC_ITEMS.nonWeaponBaseStatMultiplier))] : null;
   }
   const isWeapon = type === 'weaponDamage';
   const rangeKey = isWeapon ? 'weaponBaseDamageRangesByRarity' : 'armorBaseDefenseRangesByRarity';
@@ -854,7 +855,13 @@ function rollBaseItemStat(slot, rarityColor, type) {
 }
 function makeItem(slot, rarityName) {
   const rarity = RARITIES.find((entry) => rarityName === entry.name || rarityName === entry.color) || chooseWeightedRarity();
-  if (rarity.color === 'mythic' && !MYTHIC_ITEMS.weaponSlots.includes(slot)) throw new Error('Mystische Gegenstände sind derzeit nur als Klassenwaffen verfügbar.');
+  if (rarity.color === 'mythic' && !MYTHIC_ITEMS.equipmentSlots.includes(slot)) throw new Error('Diese Gegenstandsart kann nicht mystisch sein.');
+  if (slot === 'glyph' && rarity.color === 'mythic') {
+    const glyph = makeGlyph(choose(GLYPH_DEFINITIONS));
+    glyph.rarity = rarity.name; glyph.rarityColor = rarity.color; glyph.mythicUpgradeLevel = 0; glyph.affixVersion = 6;
+    glyph.socketSlots = 0; glyph.sockets = [];
+    return normalizeAffixUpgrades(glyph);
+  }
   const weaponBaseDamage = rollBaseItemStat(slot, rarity.color, 'weaponDamage');
   const armorBaseDefense = rollBaseItemStat(slot, rarity.color, 'armorDefense');
   const implicitOnly = rarity.color === 'common' && (weaponBaseDamage || armorBaseDefense);
@@ -871,7 +878,7 @@ function makeItem(slot, rarityName) {
     affixes, socketSlots: 0, sockets: [],
   };
   normalizeWeaponProgress(item);
-  if (isMythicWeapon(item)) item.mythicUpgradeLevel = 0;
+  if (isMythicEquipment(item)) item.mythicUpgradeLevel = 0;
   if (weaponBaseDamage) {
     item.baseWeaponDamage = weaponBaseDamage;
     item.weaponDamage = weaponBaseDamage;
@@ -880,7 +887,7 @@ function makeItem(slot, rarityName) {
     item.baseArmorDefense = armorBaseDefense;
     item.armorDefense = armorBaseDefense;
   }
-  return isMythicWeapon(item) ? normalizeAffixUpgrades(item) : item;
+  return isMythicEquipment(item) ? normalizeAffixUpgrades(item) : item;
 }
 
 function dropPartyClasses(save = state) {
@@ -890,7 +897,7 @@ function partyCanEquipDrop(item, save = state) {
   return dropPartyClasses(save).some(owner => {
     const slot = CLASS_WEAPONS[owner]?.includes(item.slot) ? 'mainHand'
       : item.slot === 'shield' ? 'offHand' : item.slot === 'ring' ? 'ring1'
-        : item.slot === 'earring' ? 'earring1' : item.slot;
+        : item.slot === 'earring' ? 'earring1' : item.slot === 'glyph' ? 'glyph1' : item.slot;
     return validateEquipmentForClass(save, item, slot, owner);
   });
 }
@@ -916,18 +923,44 @@ function makeAreaEquipmentDrop(areaId, save = state) {
   else if (['ring', 'amulet', 'earring'].includes(slot) && jewelrySets.length && Math.random() < setChance) item.set = choose(jewelrySets);
   return rollGreaterAffixes(item, save);
 }
-function mythicWeaponDropChance(areaId, deepTier) {
-  const rules = BALANCE.loot.mythicWeapons;
+function mythicEquipmentDropChance(areaId, deepTier) {
+  const rules = BALANCE.loot.mythicEquipment;
   if ((Number(deepTier) || 0) < rules.minimumDeepTier) return 0;
   return rules.dropChanceByArea[AREAS.findIndex(area => area.id === areaId)] || 0;
 }
-function makeMythicWeaponDrop(save = state) {
-  const slots = MYTHIC_ITEMS.weaponSlots.filter(slot => partyCanEquipDrop({ slot }, save));
-  if (!slots.length) throw new Error('Für diese Kampfgruppe ist keine passende mystische Waffe verfügbar.');
-  return rollGreaterAffixes(makeItem(choose(slots), 'mythic'), save);
+function makeMythicEquipmentDrop(save = state) {
+  const slots = MYTHIC_ITEMS.equipmentSlots.filter(slot => partyCanEquipDrop({ slot }, save));
+  if (!slots.length) throw new Error('Für diese Kampfgruppe ist keine passende mystische Ausrüstung verfügbar.');
+  const item = makeItem(choose(slots), 'mythic');
+  const definitions = ['helmet', 'chest', 'gloves', 'boots'].includes(item.slot) ? ARMOR_SETS
+    : ['ring', 'amulet', 'earring'].includes(item.slot) ? JEWELRY_SETS : null;
+  if (definitions && Math.random() < (BALANCE.loot.areaSetDropChance || 0)) {
+    const names = setNamesForDrops(definitions, save);
+    if (names.length) item.set = choose(names);
+  }
+  return rollGreaterAffixes(item, save);
+}
+function ascendEquipmentToMythic(item) {
+  const previous = item.rarityColor;
+  const multiplier = BALANCE.items.upgradeBaseStatMultiplier ** (item.upgradeLevel || 0);
+  for (const [type, baseKey, finalKey] of [['weaponDamage', 'baseWeaponDamage', 'weaponDamage'], ['armorDefense', 'baseArmorDefense', 'armorDefense']]) {
+    const oldRange = baseItemStatRange(item.slot, previous, type);
+    const range = baseItemStatRange(item.slot, 'mythic', type);
+    if (!range || !oldRange) continue;
+    const base = item[baseKey] ?? item[finalKey] / multiplier;
+    const position = oldRange[1] > oldRange[0] ? Math.max(0, Math.min(1, (base - oldRange[0]) / (oldRange[1] - oldRange[0]))) : .5;
+    item[baseKey] = Math.round(range[0] + position * (range[1] - range[0]));
+    item[finalKey] = Math.round(item[baseKey] * multiplier);
+  }
+  item.rarityColor = 'mythic';
+  item.rarity = RARITIES.find(rarity => rarity.color === 'mythic').name;
+  item.mythicUpgradeLevel = 0;
+  item.affixVersion = 6;
+  delete item.enchantAffixIndex;
+  return normalizeAffixUpgrades(item);
 }
 function equipmentShopPrice(item) {
-  if (isMythicWeapon(item)) return EQUIPMENT_SHOP.prices[(item.affixes || []).some(affix => affix.greater) ? 'legendaryGreater' : 'legendary'];
+  if (isMythicEquipment(item)) return EQUIPMENT_SHOP.prices[(item.affixes || []).some(affix => affix.greater) ? 'legendaryGreater' : 'legendary'];
   const greater = item.rarityColor === 'legendary' && (item.affixes || []).some(affix => affix.greater);
   return EQUIPMENT_SHOP.prices[greater ? 'legendaryGreater' : item.rarityColor];
 }
@@ -967,13 +1000,13 @@ function canUpgradeLegendaryAffix(item) {
     && (item.affixes || []).some(affix => !affix.fixed && AFFIX_RANGES[affix.stat]));
 }
 function rollGreaterAffixes(item, save = state, { includeFixed = false, ignoreDeepRequirement = false } = {}) {
-  if (isMythicWeapon(item)) return normalizeAffixUpgrades(item);
+  if (isMythicEquipment(item)) return normalizeAffixUpgrades(item);
   if (!ignoreDeepRequirement && (Number(save?.deepOfDark?.tier) || 0) < BALANCE.loot.greaterAffixMinimumDeepTier) return item;
   (item.affixes || []).forEach((affix) => {
     if (affix.greater || (affix.fixed && !includeFixed) || Math.random() >= BALANCE.loot.greaterAffixChance) return;
     const baseValue = affix.fixed
       ? (affix.baseValue ?? affix.value) * BALANCE.loot.greaterAffixMaxMultiplier
-      : isMythicWeapon(item) ? (affix.baseValue ?? affix.value) * BALANCE.loot.greaterAffixMaxMultiplier : greaterAffixBaseValue(affix.stat);
+      : isMythicEquipment(item) ? (affix.baseValue ?? affix.value) * BALANCE.loot.greaterAffixMaxMultiplier : greaterAffixBaseValue(affix.stat);
     affix.greater = true;
     affix.baseValue = baseValue;
     affix.value = affixValueAtUpgrade(affix, item.upgradeLevel);
@@ -996,10 +1029,10 @@ function normalizeAffixUpgrades(item) {
   // Existing saves normally store baseValue. Infer it once for older items.
   const legacyMultiplier = Math.pow(BALANCE.items.upgradeBaseStatMultiplier, item.upgradeLevel || 0);
   item.affixes = (item.affixes || []).map(affix => {
-    const inferred = Number(affix.value) / (isMythicWeapon(item) ? affixUpgradeMultiplier(item.upgradeLevel) : legacyMultiplier);
-    let baseValue = affix.baseValue ?? (affix.greater && !affix.fixed && !isMythicWeapon(item) ? greaterAffixBaseValue(affix.stat)
+    const inferred = Number(affix.value) / (isMythicEquipment(item) ? affixUpgradeMultiplier(item.upgradeLevel) : legacyMultiplier);
+    let baseValue = affix.baseValue ?? (affix.greater && !affix.fixed && !isMythicEquipment(item) ? greaterAffixBaseValue(affix.stat)
       : affix.greater ? Math.round(inferred * 100) / 100 : Math.round(inferred));
-    if (isMythicWeapon(item) && !affix.greater) {
+    if (isMythicEquipment(item) && !affix.greater) {
       baseValue *= BALANCE.loot.greaterAffixMaxMultiplier;
       affix = { ...affix, greater: true };
     }
@@ -1078,7 +1111,10 @@ function inventoryQuantityForSlot(save, slot) {
   return save.inventory.filter((item) => item.slot === slot).reduce((total, item) => total + Math.max(1, Math.floor(Number(item.quantity) || 1)), 0);
 }
 function socketCapacityForSlot(slot, item = null) {
-  return AFFIX_POOLS[slot] || slot === 'glyph' ? BALANCE.items.socketCounts.equipment : 0;
+  return BALANCE.items.socketableSlots.includes(slot) ? BALANCE.items.socketCounts.equipment : 0;
+}
+function socketCapacityForEquipmentSlot(slot) {
+  return ['mainHand', 'offHand', 'helmet', 'chest', 'gloves', 'boots'].includes(slot) ? BALANCE.items.socketCounts.equipment : 0;
 }
 function itemAffixes(item) {
   return [...(item?.affixes || []), ...(item?.sockets || []).filter(Boolean).flatMap((gem) => (gem.affixes || []).map(affix => ({ ...affix, fromSocket: true })))];
@@ -1197,7 +1233,7 @@ function towerLootProgressLabel(sourceState = state) {
   return `${number(sourceState.statistics.towerBossesKilled || 0)} Turmbosse · +${formatRuleNumber(BALANCE.loot.towerLootChancePerBoss)} % je Sieg`;
 }
 function applyLootDropBonus(baseChance, sourceState = state, { cap = 1 } = {}) {
-  const bonus = powerupBonusForStat('Droprate', sourceState) + (getWorldEvent(sourceState).dropRatePercent || 0)
+  const bonus = passiveEffectTotal('drop-rate-percent', sourceState.mainClass, sourceState) + powerupBonusForStat('Droprate', sourceState) + (getWorldEvent(sourceState).dropRatePercent || 0)
     + (vipIsActive(sourceState) ? VIP_RULES.dropRatePercent : 0);
   return Math.min(cap, Math.max(0, baseChance * (1 + bonus / 100)));
 }
@@ -1575,7 +1611,7 @@ function normalizeEquipmentSlotProgress(save) {
     Object.entries(slots).forEach(([slot, progress]) => {
       if (!EQUIPMENT_PROGRESS_SLOTS.includes(slot)) { delete slots[slot]; return; }
       progress.upgradeLevel = Math.max(0, Math.min(BALANCE.items.maxUpgradeLevel, Math.floor(Number(progress.upgradeLevel) || 0)));
-      const capacity = BALANCE.items.socketCounts.equipment;
+      const capacity = socketCapacityForEquipmentSlot(slot);
       progress.socketSlots = Math.max(0, Math.min(capacity, Math.floor(Number(progress.socketSlots) || 0)));
       progress.sockets = Array.from({ length: progress.socketSlots }, (_, index) => progress.sockets?.[index] ? normalizeGearItem(progress.sockets[index]) : null);
     });
@@ -1592,18 +1628,18 @@ function normalizeEquipmentSlotProgress(save) {
   });
 }
 function recoverOverflowSocketGems(save) {
-  const capacity = BALANCE.items.socketCounts.equipment;
   const mirroredIds = new Set();
   equipmentSlotEntries(save).forEach(({ owner, slot, item }) => {
     if (save.equipmentSlotProgress?.[owner]?.[slot]) mirroredIds.add(item.id);
   });
   const containers = [
-    ...Object.values(save.equipmentSlotProgress || {}).flatMap(slots => Object.values(slots)),
-    ...(save.inventory || []), ...(save.mailbox || []).map(entry => entry.item),
-    ...equipmentSlotEntries(save).map(entry => entry.item),
+    ...Object.values(save.equipmentSlotProgress || {}).flatMap(slots => Object.entries(slots)
+      .map(([slot, container]) => ({ container, capacity: socketCapacityForEquipmentSlot(slot) }))),
+    ...[...(save.inventory || []), ...(save.mailbox || []).map(entry => entry.item), ...equipmentSlotEntries(save).map(entry => entry.item)]
+      .map(container => ({ container, capacity: socketCapacityForSlot(container?.slot) })),
   ];
   save.inventory ||= [];
-  containers.forEach(container => {
+  containers.forEach(({ container, capacity }) => {
     if (!container || mirroredIds.has(container.id) || !Array.isArray(container.sockets) || container.sockets.length <= capacity) return;
     save.inventory.push(...container.sockets.slice(capacity).filter(Boolean));
     container.sockets = container.sockets.slice(0, capacity);
@@ -1710,12 +1746,12 @@ async function performAction(payload, successTitle, successText, { background = 
     });
     const result = await task;
     if (saveMaintenance || saveBlocked || generation !== stateGeneration) return null;
-    if (['workshop-start', 'upgrade', 'fuse-glyphs', 'socket-slot', 'enchant-rarity', 'enchant-affix'].includes(payload.action) && result.outcomes?.length) playForgeAnimation(result);
+    if (['workshop-start', 'upgrade', 'fuse-glyphs', 'socket-slot', 'enchant-rarity', 'enchant-mythic', 'enchant-affix'].includes(payload.action) && result.outcomes?.length) playForgeAnimation(result);
     if (saveMaintenance || saveBlocked || generation !== stateGeneration) return null;
     if (['upgrade', 'upgrade-auto'].includes(payload.action) && currentView !== 'blacksmith' && !autoUpgradeRunning) {
       selectedForForge.clear();
     }
-    const workshopView = ({ upgrade: 'blacksmith', 'fuse-glyphs': 'blacksmith', 'socket-slot': 'sockets', 'enchant-rarity': 'enchant', 'enchant-affix': 'enchant' })[payload.action];
+    const workshopView = ({ upgrade: 'blacksmith', 'fuse-glyphs': 'blacksmith', 'socket-slot': 'sockets', 'enchant-rarity': 'enchant', 'enchant-mythic': 'enchant', 'enchant-affix': 'enchant' })[payload.action];
     const preserveView = background || ['battle', 'record-combat-stats', 'boss-complete', 'boss-cancel'].includes(payload.action) || payload.action.startsWith('offline-')
       || Boolean(workshopView && currentView !== workshopView);
     render({ background: preserveView });

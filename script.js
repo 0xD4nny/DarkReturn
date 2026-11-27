@@ -38,7 +38,7 @@
     if (missing.length) throw new Error("Spieldaten fehlen: " + missing.join(", ") + ".");
     const skillNodes = config.skillTreeNodes;
     const skillNodeIds = new Set(skillNodes.map((node) => node.id));
-    const validSkillEffectTypes = new Set(['stat-flat', 'attribute-flat', 'primary-attribute-flat', 'all-attributes-flat', 'final-percent', 'soul-drop-percent', 'legendary-drop-chance', 'final-damage-percent', 'warrior-stomp-area', 'hunter-critical-overflow', 'healer-final-damage-percent', 'self-life-steal-percent', 'warrior-execution-area-penalty', 'mage-instant-fireball', 'hunter-poison-chance', 'healer-damage-reduction-cap', 'dodge-chance', 'extra-attack-chance', 'dot-to-attack-percent', 'skill-damage-flat-percent', 'additional-passive-slot']);
+    const validSkillEffectTypes = new Set(['stat-flat', 'attribute-flat', 'primary-attribute-flat', 'all-attributes-flat', 'final-percent', 'soul-drop-percent', 'legendary-drop-chance', 'final-damage-percent', 'warrior-stomp-area', 'hunter-critical-overflow', 'healer-final-damage-percent', 'self-life-steal-percent', 'warrior-execution-area-penalty', 'mage-instant-fireball', 'hunter-poison-chance', 'healer-damage-reduction-cap', 'dodge-chance', 'extra-attack-chance', 'dot-to-attack-percent', 'skill-damage-flat-percent', 'additional-passive-slot', 'class-skill', 'skill-variant']);
     const statSkillEffectTypes = new Set(['stat-flat', 'attribute-flat', 'final-percent']);
     const invalidSkillNode = (node) => !node || typeof node.id !== 'string' || !node.id || (node.class && !Object.hasOwn(config.classes, node.class)) || !Number.isInteger(node.maxPoints) || node.maxPoints < 0 || !node.name || !node.iconAsset || (node.parent && !skillNodeIds.has(node.parent)) || (node.effect && (!validSkillEffectTypes.has(node.effect.type) || !Number.isFinite(node.effect.perPoint) || (statSkillEffectTypes.has(node.effect.type) && (typeof node.effect.stat !== 'string' || !config.baseStats || !(node.effect.stat in config.baseStats)))));
     if (skillNodeIds.size !== skillNodes.length || skillNodes.filter((node) => node.id === 'origin' && node.rarity === 'origin' && node.parent === null && !node.effect).length !== 1 || skillNodes.some(invalidSkillNode) || !skillNodes.some(node => node.rarity === 'legendary')) {
@@ -48,13 +48,14 @@
     const skillBranches = config.skillTreeBranches;
     if (!Array.isArray(skillBranches) || !skillBranches.length || new Set(skillBranches.map(branch => branch.id)).size !== skillBranches.length || skillBranches.some(branch => !branch.id || !branch.label)) throw new Error('Die Talentpfade sind unvollständig konfiguriert.');
     if (skillNodes.some(node => node.id !== 'origin' && (!skillBranches.some(branch => branch.id === node.branch) || !Number.isInteger(node.tier) || node.tier < 1 || !Number.isInteger(node.requiredParentPoints) || node.requiredParentPoints < 0 || node.requiredParentPoints > (skillNodes.find(parent => parent.id === node.parent)?.maxPoints ?? 0)))) throw new Error('Die Talentvoraussetzungen sind ungültig.');
-    if (['Kritische Chance', 'Angriffsgeschwindigkeit', 'Abklingzeitreduktion'].some(stat => skillNodes.filter(node => node.effect?.stat === stat).reduce((sum, node) => sum + node.effect.perPoint * node.maxPoints, 0) > 20)) throw new Error('Kritchance, Angriffstempo und Abklingzeitreduktion dürfen im Talentbaum jeweils höchstens 20 % geben.');
+    if (Object.keys(config.classes).some(owner => ['Kritische Chance', 'Angriffsgeschwindigkeit', 'Abklingzeitreduktion'].some(stat => skillNodes.filter(node => !node.ability && node.class === owner && node.effect?.stat === stat).reduce((sum, node) => sum + node.effect.perPoint * node.maxPoints, 0) > 20))) throw new Error('Kritchance, Angriffstempo und Abklingzeitreduktion dürfen im Talentbaum jeweils höchstens 20 % geben.');
     const isValidPassiveEffect = (effect) => {
       if (!effect) return false;
       if (['stat-percent', 'stat-flat'].includes(effect.type)) return typeof effect.stat === 'string' && ['party', 'self'].includes(effect.scope) && Number.isFinite(effect.value);
       if (effect.type === 'damage-percent') return ['party', 'self'].includes(effect.scope) && Number.isFinite(effect.value);
       if (effect.type === 'multiplicative-damage-percent') return ['party', 'self'].includes(effect.scope) && Number.isFinite(effect.value);
       if (effect.type === 'taunt') return effect.scope === 'self';
+      if (['life-steal-percent', 'soul-drop-percent', 'drop-rate-percent', 'critical-overflow'].includes(effect.type)) return ['party', 'self'].includes(effect.scope) && Number.isFinite(effect.value) && effect.value >= 0;
       if (effect.type === 'rest-healing-percent') return ['party', 'self'].includes(effect.scope) && Number.isFinite(effect.value);
       if (effect.type === 'bow-poison') return Number.isFinite(effect.chancePercent) && Number.isFinite(effect.durationSeconds) && effect.durationSeconds > 0 && Number.isFinite(effect.damagePercent);
       return false;
@@ -64,6 +65,22 @@
       return !effects.length || effects.some((effect) => !isValidPassiveEffect(effect));
     }));
     if (invalidPassiveEffects) throw new Error('Passive Fähigkeiten benötigen gültige Effektdaten.');
+    if (config.classSkillRules?.maxPassives !== 1) throw new Error('Pro Klasse ist genau eine passive Klassenfähigkeit erlaubt.');
+    for (const [owner, skills] of Object.entries(config.companionSkills)) {
+      for (const kind of ['active', 'passive']) {
+        for (const skill of skills[kind]) {
+          const base = skillNodes.find(node => node.class === owner && node.effect?.type === 'class-skill' && node.effect.skillId === skill.id && node.effect.kind === kind);
+          if (!base || base.maxPoints !== skill.maxRanks || skill.maxRanks !== 10
+            || !Array.isArray(skill.variants) || skill.variants.length !== 2
+            || new Set(skill.variants.map(variant => variant.id)).size !== 2) throw new Error('Eine Klassenfähigkeit hat keine gültigen zehn Ränge und zwei Spezialisierungen.');
+          for (const variant of skill.variants) {
+            const node = skillNodes.find(node => node.parent === base.id && node.effect?.variantId === variant.id);
+            if (!node || node.class !== owner || node.exclusiveGroup !== base.id || node.maxPoints !== 1
+              || node.requiredParentPoints !== base.maxPoints || !variant.overrides || typeof variant.overrides !== 'object') throw new Error('Ungültige gegenseitige Spezialisierung einer Klassenfähigkeit.');
+          }
+        }
+      }
+    }
     const boxRules = config.boxRules;
     const glyphDefinitions = config.glyphDefinitions;
     if (!Array.isArray(glyphDefinitions) || !glyphDefinitions.length || new Set(glyphDefinitions.map(glyph => glyph.id)).size !== glyphDefinitions.length || glyphDefinitions.some(glyph => !glyph.id || !glyph.name || !(glyph.stat in config.baseStats) || !['Angriff', 'Lebenskraft'].includes(glyph.bonusStat || 'Angriff'))) throw new Error('Die Glyphen sind unvollständig konfiguriert.');
@@ -85,6 +102,8 @@
         || Object.entries(values.bonuses).some(([stat, value]) => !(stat in config.baseStats) || gemAttributes.includes(stat) || !Number.isFinite(value) || value < 0);
     })) throw new Error('Die Edelsteinwerte sind unvollständig konfiguriert.');
     const socketLimit = config.balance.items.socketCounts?.equipment;
+    const socketableSlots = config.balance.items.socketableSlots;
+    if (!Array.isArray(socketableSlots) || !socketableSlots.length || socketableSlots.some(slot => !['bow', 'sword', 'staff', 'bell', 'shield', 'helmet', 'chest', 'gloves', 'boots'].includes(slot))) throw new Error('Sockel sind nur für Waffen, Schilde und Rüstung konfigurierbar.');
     const socketChances = config.balance.items.socketSuccessChanceByTarget?.equipment;
     if (!Number.isSafeInteger(socketLimit) || socketLimit < 1 || socketLimit > 100 || !Array.isArray(socketChances) || socketChances.length !== socketLimit || socketChances.some(chance => !Number.isFinite(chance) || chance < 0 || chance > 100)) throw new Error('Die Sockelgrenze und Erfolgschancen sind unvollständig konfiguriert.');
     const farmBox = boxRules?.farmBox;
@@ -100,6 +119,8 @@
     }
     const towerLootChoices = config.balance.loot?.towerLootChoices;
     if (!Number.isFinite(config.balance.loot?.towerLootChancePerBoss) || config.balance.loot.towerLootChancePerBoss < 0) throw new Error('Der Turmboss-Beutebonus ist ungültig.');
+    const earlyDamagePower = config.balance.deepOfDark?.enemyDamageEarlyCurvePower ?? 1;
+    if (!Number.isFinite(earlyDamagePower) || earlyDamagePower <= 0 || earlyDamagePower > 1) throw new Error('Die frühe Deep-of-Dark-Schadenskurve muss zwischen 0 und 1 liegen.');
     const towerScaling = config.balance.combat?.towerScaling;
     if (!Number.isSafeInteger(towerScaling?.referenceRound) || towerScaling.referenceRound <= 1
       || ['start', 'target'].some(anchor => !config.areas.some(area => area.id === towerScaling[`${anchor}Area`])
@@ -139,9 +160,17 @@
       || !Number.isSafeInteger(weaponLevels.experienceStep) || weaponLevels.experienceStep < 1) throw new Error('Waffenlevel sind unvollständig konfiguriert.');
     const mythic = config.mythicItems;
     const mythicUpgrades = config.balance.items.mythicUpgrades;
-    const mythicLoot = config.balance.loot.mythicWeapons;
+    const mythicLoot = config.balance.loot.mythicEquipment;
     if (!Array.isArray(mythic?.weaponSlots) || !mythic.weaponSlots.length
       || mythic.weaponSlots.some(slot => !['bow', 'sword', 'staff', 'bell'].includes(slot))
+      || !Array.isArray(mythic.equipmentSlots) || mythic.equipmentSlots.some(slot => !config.slots[slot] || (!config.affixPools[slot] && slot !== 'glyph'))
+      || !mythic.weaponSlots.every(slot => mythic.equipmentSlots.includes(slot))
+      || !Number.isFinite(mythic.nonWeaponBaseStatMultiplier) || mythic.nonWeaponBaseStatMultiplier <= 1
+      || !Number.isSafeInteger(mythic.treeBonusUnlockLevel) || mythic.treeBonusUnlockLevel !== mythicUpgrades.maxUpgradeLevel
+      || !Number.isSafeInteger(mythic.treeBonusRanks) || mythic.treeBonusRanks < 1
+      || !Number.isSafeInteger(mythic.ascension?.requiredSlotLevel) || mythic.ascension.requiredSlotLevel < 1 || mythic.ascension.requiredSlotLevel > config.balance.items.maxUpgradeLevel
+      || ![mythic.ascension.rarityStoneCost, mythic.ascension.mythicStoneCost].every(value => Number.isSafeInteger(value) && value > 0)
+      || !Number.isFinite(mythic.ascension.successChance) || mythic.ascension.successChance <= 0 || mythic.ascension.successChance > 1
       || !Number.isSafeInteger(mythicUpgrades?.maxUpgradeLevel) || mythicUpgrades.maxUpgradeLevel < 1 || mythicUpgrades.maxUpgradeLevel > 100
       || !Number.isInteger(mythic.saleStones) || mythic.saleStones < 1 || !config.slots.mythicUpgradeStone
       || !Array.isArray(mythic.weaponBaseDamageRange) || mythic.weaponBaseDamageRange.length !== 2
@@ -158,6 +187,7 @@
     const offline = config.balance.offlineProgress;
     if (!Number.isFinite(offline?.efficiency) || offline.efficiency <= 0 || offline.efficiency > 1
       || !Number.isFinite(offline.maximumHours) || offline.maximumHours <= 0 || offline.maximumHours > 168
+      || !Number.isFinite(offline.adminSimulationHours) || offline.adminSimulationHours <= 0 || offline.adminSimulationHours > offline.maximumHours
       || !Number.isSafeInteger(offline.sampleLimit) || offline.sampleLimit < 1 || offline.sampleLimit > 100
       || !Number.isSafeInteger(offline.minimumSamples) || offline.minimumSamples < 1 || offline.minimumSamples > offline.sampleLimit
       || !Number.isFinite(offline.checkpointSeconds) || offline.checkpointSeconds < 1) throw new Error('Der Offline-Fortschritt ist unvollst\u00e4ndig konfiguriert.');
@@ -185,7 +215,7 @@
     }
     window.DARK_RETURN_CONFIG = config;
 
-    const scripts = ['config', 'world-events', 'state', 'hunting-events', 'pets', 'activity-log', 'state-actions', 'character', 'offline-progress', 'save-validation', 'views-world', 'views-workshop', 'views-progression', 'views-admin', 'views-handbook', 'views-settings', 'views-codex', 'views', 'actions', 'workshop-animation', 'workshop-jobs', 'battle-scene', 'combat', 'mobile', 'mobile-workshop', 'interactions'];
+    const scripts = ['config', 'class-skills', 'world-events', 'state', 'hunting-events', 'pets', 'activity-log', 'state-actions', 'character', 'offline-progress', 'save-validation', 'views-world', 'views-workshop', 'views-progression', 'views-class-tree', 'views-admin', 'views-handbook', 'views-settings', 'views-codex', 'views', 'actions', 'workshop-animation', 'workshop-jobs', 'battle-scene', 'battle-effects', 'combat-class-skills', 'combat', 'mobile', 'mobile-workshop', 'interactions'];
     const moduleVersion = `20261113-combat-finish-2-${Date.now().toString(36)}`;
     for (const name of scripts) {
       await new Promise((resolve, reject) => {

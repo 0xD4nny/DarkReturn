@@ -733,6 +733,18 @@
     filter: drop-shadow(0 0 7px #ffe46e) drop-shadow(0 0 18px #f7bc45aa);
     transform: translate(-50%, -50%) scale(.025);
 }
+.battle-healer-outer-ring {
+    box-sizing: border-box;
+    position: absolute;
+    z-index: 5;
+    display: block;
+    max-width: none;
+    border: 2px solid #ffe9a4bb;
+    border-radius: 50%;
+    box-shadow: 0 0 9px #efc75d88, inset 0 0 7px #ffe69744;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+}
 .battle-hero.is-attacking { animation: hero-lunge .4s ease-out; }
 .battle-hero[data-hero="hunter"].is-attacking,
 .battle-hero[data-hero="mage"].is-attacking { animation: none; }

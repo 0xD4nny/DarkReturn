@@ -5,6 +5,7 @@ let offlineFarmSuspended = false;
 let offlineFarmTransition = Promise.resolve();
 let offlineFarmSettling = false;
 let adminFarmSimulationPending = false;
+let adminFarmSimulationQueue = 0;
 
 function offlineFingerprint(value) {
   const text = JSON.stringify(value);
@@ -12,18 +13,19 @@ function offlineFingerprint(value) {
   for (let index = 0; index < text.length; index++) hash = Math.imul(hash ^ text.charCodeAt(index), 16777619);
   return (hash >>> 0).toString(16);
 }
-const OFFLINE_CONFIG_SIGNATURE = offlineFingerprint({ config: GAME_CONFIG, damageModel: 8 });
+const OFFLINE_CONFIG_SIGNATURE = offlineFingerprint({ config: JSON.parse(JSON.stringify(GAME_CONFIG,
+  (key, value) => ['icon', 'iconAsset', 'asset', 'portrait', 'portraitFrame', 'name', 'label', 'description', 'position', 'projectileType'].includes(key) ? undefined : value)), damageModel: 13 });
 
 function rewardTime(sourceState) {
   return sourceState?.offlineContext?.now ?? Date.now();
 }
 function offlineFarmSignature(save) {
   const gear = JSON.parse(JSON.stringify(save.equipment, (key, value) =>
-    ['weaponExperience', 'id'].includes(key) ? undefined : value));
+    ['weaponExperience', 'weaponLevel', 'id'].includes(key) ? undefined : value));
   return offlineFingerprint({ config: OFFLINE_CONFIG_SIGNATURE, main: save.mainClass,
     companion: save.activeCompanion, levels: save.characterLevels, gear, pets: save.pets,
     tree: save.skillTree, skills: Object.fromEntries(Object.entries(save.companions || {})
-      .map(([owner, member]) => [owner, [member.activeSkillIndex, member.passiveSkillIndex, member.secondPassiveSkillIndex]])) });
+      .map(([owner, member]) => [owner, [member.activeSkillIndex]])) });
 }
 function normalizeOfflineFarm(save) {
   const farm = save.offlineFarm;
@@ -36,6 +38,8 @@ function normalizeOfflineFarm(save) {
   farm.active = farm.active === true;
   farm.round = Number.isSafeInteger(farm.round) && farm.round >= 1 ? farm.round : 1;
   farm.partyHealth ||= {};
+  farm.autoSkills = Object.fromEntries([save.mainClass, save.activeCompanion].filter(Boolean)
+    .map(owner => [owner, typeof farm.autoSkills?.[owner] === 'boolean' ? farm.autoSkills[owner] : save.settings?.autoSkillsDefault !== false]));
   for (const owner of Object.keys(CLASSES)) {
     farm.partyHealth[owner] = Number.isFinite(farm.partyHealth[owner]) ? Math.max(0, Math.min(1, farm.partyHealth[owner])) : 1;
   }
@@ -60,14 +64,17 @@ function normalizeOfflineFarm(save) {
   farm.carry = Number.isFinite(farm.carry) && farm.carry >= 0 ? Math.min(farm.carry, 86400000) : 0;
 }
 function offlineFarmCalibrated(farm) {
-  return farm?.samples?.length >= OFFLINE_RULES.minimumSamples
-    && (farm.mode !== 'tower' || ['normal', 'champion', 'boss'].every(kind => farm.samples.some(sample => sample.kind === kind)));
+  return farm?.samples?.length >= OFFLINE_RULES.minimumSamples;
 }
 // Temporary damage bonuses change estimated combat time, not the fixed pauses.
 // Survival and win/loss frequency remain empirical, rather than a second combat engine.
 function offlineDamageRate(save) {
   return Math.min(Number.MAX_SAFE_INTEGER, Math.max(1, [save.mainClass, save.activeCompanion].filter(Boolean).reduce((sum, owner) => {
-    const stats = getStats(owner, save);
+    const { stats, attack } = calculateCharacterStats(owner, save);
+    const weapon = equipmentForClass(owner, save).mainHand;
+    const base = (CLASS_DAMAGE[owner] + Math.max(0, characterLevel(owner, save) - 1) * 2
+      + effectiveWeaponDamage(weapon) + Math.floor(attack.base / 5))
+      * damageAttributeMultiplier(owner, stats) * (1 + attack.percent / 100);
     const critical = Math.min(100, stats['Kritische Chance']) / 100;
     const criticalFactor = 1 + critical * Math.max(0, stats['Kritischer Schaden'] / 100 - 1);
     const cadence = Math.max(stats['Angriffsgeschwindigkeit'] / 100, 1 / (1 - stats['Abklingzeitreduktion'] / 100));
@@ -75,8 +82,8 @@ function offlineDamageRate(save) {
     // Round samples capture actual echo delays and lost damage on enemy deaths.
     // This factor adjusts the measured rate when temporary DoT bonuses change.
     const echoMultiplier = 1 + (setEffects.shadowEchoPercent || 0) / 100 * Math.max(0, 1 + (stats['Schaden über Zeit'] || 0) / 100);
-    return sum + Math.max(1, stats.Angriff) * criticalFactor * cadence * characterDamageMultiplier(owner, save)
-      * expectedMultiHitDamage(extraAttackChanceFor(owner, save), setEffects.multiHitDamagePercentPerHit || 0) * echoMultiplier;
+    return sum + Math.max(1, base) * criticalFactor * cadence
+      * expectedMultiHitDamage(extraAttackChanceFor(owner, save), setEffects.multiHitDamagePercentPerHit || 0, characterDamageMultiplier(owner, save)) * echoMultiplier;
   }, 0)));
 }
 function checkpointOnlineFarm(save) {
@@ -89,21 +96,33 @@ function checkpointOnlineFarm(save) {
     farm.samples = [];
     farm.carry = farm.cursor = 0;
   }
-  if (!battle.partyClasses.every(owner => battle.autoSkills[owner])) {
-    farm.samples = [];
-    farm.carry = farm.cursor = 0;
-  }
   farm.checkpointAt = Date.now();
   farm.powerups = cloneState(save.activePowerups || []);
+  farm.autoSkills = { ...battle.autoSkills };
   farm.worldEvent = cloneState(getWorldEvent());
   farm.worldEventUntil = worldEventDeadline;
 }
 function offlineTowerKind(round) {
   return round % 10 === 0 ? 'boss' : round % 10 === 5 ? 'champion' : 'normal';
 }
+function offlineTowerEncounterProfile(save, round) {
+  const base = towerEncounterStats(save, round);
+  const kind = offlineTowerKind(round);
+  return {
+    health: base.health * 3 * (kind === 'boss' ? 10 : kind === 'champion' ? BALANCE.loot.eliteHealthMultiplier : 1),
+    damage: kind === 'champion' ? Math.ceil(base.damage * BALANCE.loot.eliteDamageMultiplier) : base.damage,
+  };
+}
+function offlineTowerSample(farm) {
+  const matching = farm.samples.filter(entry => entry.kind === offlineTowerKind(farm.round));
+  // Missing encounter types use nearby measured rounds, scaled by full encounter HP.
+  const candidates = (matching.length ? matching : farm.samples).slice()
+    .sort((a, b) => Math.abs(a.round - farm.round) - Math.abs(b.round - farm.round)).slice(0, 3);
+  return candidates[farm.cursor % candidates.length];
+}
 function offlineTowerRoundScaling(save, sample, round) {
-  const previous = towerEncounterStats(save, sample.round);
-  const current = towerEncounterStats(save, round);
+  const previous = offlineTowerEncounterProfile(save, sample.round);
+  const current = offlineTowerEncounterProfile(save, round);
   return { health: current.health / previous.health, damage: current.damage / previous.damage };
 }
 function offlineCombatDuration(sample, damageRate, healthScale = 1, pause = 0) {
@@ -113,31 +132,70 @@ function offlineCombatDuration(sample, damageRate, healthScale = 1, pause = 0) {
   return Math.max(BALANCE.combat.tickMilliseconds,
     Math.max(BALANCE.combat.tickMilliseconds, sample.milliseconds - pause) * (healthScale / damageRatio));
 }
+function offlineTowerUnmeasuredDamage(save, farm, combatMilliseconds) {
+  const owners = [save.mainClass, save.activeCompanion].filter(owner => owner && (farm.partyHealth[owner] ?? 1) > 0);
+  const frontliners = owners.filter(owner => ['warrior', 'healer'].includes(owner));
+  const targets = frontliners.length ? frontliners : owners;
+  const interval = BALANCE.combat.enemyAttackIntervalTicks * BALANCE.combat.tickMilliseconds;
+  const attacks = Math.floor(combatMilliseconds / interval);
+  const profile = offlineTowerEncounterProfile(save, farm.round);
+  const skillFactor = 1 + (BALANCE.combat.towerSkillMultiplier - 1) / BALANCE.combat.towerSkillAttackInterval;
+  return Object.fromEntries(owners.map(owner => {
+    if (!targets.includes(owner) || !attacks) return [owner, { damage: 0, lethal: false }];
+    const stats = getStats(owner, save);
+    const reduction = battleDamageReduction(stats.Verteidigung, [], 0, 0, { className: owner, sourceState: save });
+    const dodge = Math.min(1, dodgeChanceFor(owner, save) / 100);
+    const hit = Math.max(BALANCE.combat.enemyMinimumHitDamage, profile.damage * skillFactor * (1 - reduction));
+    const fraction = hit / Math.max(1, stats.Lebenskraft);
+    return [owner, { damage: attacks / targets.length * fraction * (1 - dodge), lethal: dodge < 1 && fraction >= 1 }];
+  }));
+}
+function offlineTowerHealingRate(save, farm, target) {
+  return [save.mainClass, save.activeCompanion].filter(Boolean).reduce((total, owner) => {
+    if (farm.autoSkills?.[owner] === false || (farm.partyHealth[owner] ?? 1) <= 0) return total;
+    const skill = activeClassSkill(owner, save);
+    if (!skill || !['heal', 'heal-over-time'].includes(skill.effect)
+      || (skill.effect === 'heal-over-time' && skill.healScope === 'self' && owner !== target)) return total;
+    const stats = getStats(owner, save);
+    const cooldown = Math.max(.25, skill.cooldown * (1 - Math.max(0, Math.min(75, stats['Abklingzeitreduktion'] || 0)) / 100));
+    const multiplier = (1 + (owner === 'healer' ? healerFaithScaling(stats) : 0) / 100)
+      * (1 + (activeArmorSetEffects(save, owner).healingPercent || 0) / 100);
+    const rate = skill.effect === 'heal' ? skill.healPercent / cooldown
+      : skill.healPercent * Math.min(1, skill.durationSeconds / cooldown);
+    return total + rate * multiplier / 100;
+  }, 0);
+}
 function offlineTowerPartyHealth(save, farm, sample, scaling, combatMilliseconds) {
   const pause = sample.won ? 1300 : 0;
   const durationRatio = combatMilliseconds / Math.max(BALANCE.combat.tickMilliseconds, sample.milliseconds - pause);
+  const estimated = !sample.enemyAttackCount ? offlineTowerUnmeasuredDamage(save, farm, combatMilliseconds) : null;
   return Object.fromEntries([save.mainClass, save.activeCompanion].filter(Boolean).map(owner => {
+    if ((farm.partyHealth[owner] ?? 1) <= 0) return [owner, 0];
+    if (estimated?.[owner]?.lethal) return [owner, 0];
     const taken = sample.damageTaken[owner];
     const healed = Math.max(0, sample.endHealth[owner] - sample.startHealth[owner] + taken);
-    const remaining = (farm.partyHealth[owner] ?? 1) - taken * scaling.damage * durationRatio + healed * durationRatio;
+    const incoming = estimated ? estimated[owner]?.damage || 0 : taken * scaling.damage * durationRatio;
+    const healing = estimated ? Math.max(healed * durationRatio, offlineTowerHealingRate(save, farm, owner) * combatMilliseconds / 1000) : healed * durationRatio;
+    const remaining = (farm.partyHealth[owner] ?? 1) - incoming + healing;
     return [owner, Math.max(0, Math.min(1, remaining))];
   }));
 }
 function offlineRoundSample(session, won) {
   if (!['area', 'tower'].includes(session.mode) || !session.offlineWave) return null;
-  const qualified = !session.offlineWave.manual && session.partyClasses.every(owner => session.autoSkills[owner]);
+  const qualified = !session.offlineWave.manual;
   if (session.mode === 'area' && !qualified) return null;
-  const healerRest = session.partyClasses.includes('healer') ? 2 + passiveEffectTotal('rest-healing-percent', 'healer', state) : 0;
+  const healerRest = session.partyClasses.includes('healer') ? 2 : 0;
   const restoration = Object.fromEntries(session.partyClasses.map(owner => [owner,
-    won ? (20 + healerRest) / 100 * (1 + (activeArmorSetEffects(state, owner).restHealingPercent || 0) / 100) : 0]));
+    won ? (20 + healerRest + passiveEffectTotal('rest-healing-percent', owner, state)) / 100 * (1 + (activeArmorSetEffects(state, owner).restHealingPercent || 0) / 100) : 0]));
   return { signature: session.offlineWave.signature, qualified, won, elite: Boolean(session.elite),
+    autoSkills: { ...session.autoSkills },
     kind: session.mode === 'tower' ? offlineTowerKind(session.towerRound) : 'normal',
     startHealth: session.offlineWave.partyHealth,
     endHealth: Object.fromEntries(Object.entries(session.partyHealth).map(([owner, hero]) => [owner, Math.max(0, hero.hp / hero.max)])),
     restoration, damageRate: session.offlineWave.damageRate,
     ...(session.mode === 'tower' ? { round: session.towerRound, enemyAttackCount: session.enemyAttackCount || 0,
       damageTaken: Object.fromEntries(session.partyClasses.map(owner => [owner, session.roundDamageTakenByClass?.[owner] || 0])) } : {}),
-    fixedDamageFraction: Math.min(1, Math.max(0, (session.roundHeartfallDamage || 0)
+    fixedDamageFraction: Math.min(1, Math.max(0, (session.roundHealthBasedDamage || 0)
       / Math.max(1, Object.values(session.roundDamageByClass || {}).reduce((sum, damage) => sum + damage, 0)))),
     milliseconds: Math.max(BALANCE.combat.tickMilliseconds, performance.now() - session.offlineWave.startedAt)
       + (won ? 1300 : session.mode === 'tower' ? 0 : BALANCE.combat.defeatRecoveryMilliseconds) };
@@ -148,9 +206,10 @@ function recordOfflineFarmSample(save, body) {
   if (!farm?.active || body.mode !== farm.mode
     || (farm.mode === 'area' && (farm.area !== body.area || farm.deepTier !== body.deepTier))) return;
   if (farm.mode === 'tower' && sample) {
+    if (sample.autoSkills) farm.autoSkills = Object.fromEntries([save.mainClass, save.activeCompanion].filter(Boolean).map(owner => [owner, sample.autoSkills[owner] === true]));
     if (sample.won) {
       farm.round = Math.max(farm.round, Number(body.round) + 1);
-      farm.partyHealth = Object.fromEntries(Object.entries(sample.endHealth).map(([owner, value]) => [owner, Math.min(1, value + sample.restoration[owner])]));
+      farm.partyHealth = Object.fromEntries(Object.entries(sample.endHealth).map(([owner, value]) => [owner, value > 0 ? Math.min(1, value + sample.restoration[owner]) : 0]));
     } else farm.active = false;
   }
   const signature = offlineFarmSignature(save);
@@ -171,6 +230,7 @@ function armOfflineFarm(save, mode, area = null, deepTier = 0) {
   const previous = save.offlineFarm;
   const keep = previous?.mode === mode && previous.area === area && previous.deepTier === deepTier && previous.signature === signature;
   save.offlineFarm = { active: true, mode, area, deepTier, signature, checkpointAt: Date.now(),
+    autoSkills: Object.fromEntries([save.mainClass, save.activeCompanion].filter(Boolean).map(owner => [owner, save.settings?.autoSkillsDefault !== false])),
     round: 1, partyHealth: Object.fromEntries([save.mainClass, save.activeCompanion].filter(Boolean).map(owner => [owner, 1])),
     samples: keep ? previous.samples : [], carry: keep && mode === 'area' && previous.active ? previous.carry : 0, cursor: keep && mode === 'area' && previous.active ? previous.cursor : 0,
     powerups: cloneState(save.activePowerups), worldEvent: cloneState(getWorldEvent()), worldEventUntil: worldEventDeadline,
@@ -185,7 +245,7 @@ function offlineFarmStatus() {
   if (!farm?.active) return '';
   return offlineFarmCalibrated(farm)
     ? `AFK bereit · ${OFFLINE_RULES.efficiency * 100} % · maximal ${OFFLINE_RULES.maximumHours} Std.`
-    : `AFK-Messung: ${farm.samples.length}/${OFFLINE_RULES.minimumSamples} Runden${farm.mode === 'tower' ? ' + Normal/Champion/Boss' : ''} \u00b7 Auto-F\u00e4higkeiten erforderlich`;
+    : `AFK-Messung: ${farm.samples.length}/${OFFLINE_RULES.minimumSamples} Runden`;
 }
 function addOfflineLoot(report, item, destination) {
   if (!item) return;
@@ -213,7 +273,7 @@ async function settleOfflineFarm(save, now = Date.now()) {
     farm.carry = farm.cursor = 0;
     report.note = 'Der Build oder die Spielregeln haben sich geändert. Sammle zuerst neue Runden für die AFK-Messung.';
   } else if (!offlineFarmCalibrated(farm)) {
-    report.note = `${farm.mode === 'tower' ? 'Im Turm muss auch mindestens ein Champion und ein Archont mit diesem Build gemessen werden. ' : ''}Für eine verlässliche Messung fehlen noch Runden. Spiele mindestens ${OFFLINE_RULES.minimumSamples} vollständige Runden mit Auto-Fähigkeiten und ohne manuelle Fähigkeitseinsätze.`;
+    report.note = `Für die Messung fehlen noch Runden. Spiele mindestens ${OFFLINE_RULES.minimumSamples} vollständige Runden ohne manuelle Fähigkeitseinsätze. Champion- und Bossmessungen sind nicht erforderlich.`;
   } else {
     const currentPowerups = save.activePowerups;
     const previousContext = save.offlineContext;
@@ -229,8 +289,7 @@ async function settleOfflineFarm(save, now = Date.now()) {
     save.activePowerups = farm.powerups || [];
     try {
       while (budget > 0) {
-        const candidates = farm.mode === 'tower' ? farm.samples.filter(entry => entry.kind === offlineTowerKind(farm.round)) : farm.samples;
-        const sample = candidates[farm.cursor % candidates.length];
+        const sample = farm.mode === 'tower' ? offlineTowerSample(farm) : farm.samples[farm.cursor % farm.samples.length];
         const roundStartedAt = Math.min(now, start + consumed / OFFLINE_RULES.efficiency);
         while (eventUntil <= roundStartedAt) {
           event = chooseWorldEvent();
@@ -242,12 +301,6 @@ async function settleOfflineFarm(save, now = Date.now()) {
         const scaling = farm.mode === 'tower' ? offlineTowerRoundScaling(save, sample, farm.round) : { health: 1, damage: 1 };
         const combatMilliseconds = offlineCombatDuration(sample, offlineDamageRate(save), scaling.health, pause);
         const milliseconds = pause + combatMilliseconds;
-        if (farm.mode === 'tower' && !sample.enemyAttackCount && scaling.health > 1
-          && combatMilliseconds >= BALANCE.combat.enemyAttackIntervalTicks * BALANCE.combat.tickMilliseconds) {
-          report.note = 'Die stärkeren Turmgegner brauchen eine neue Kampfmessung mit Gegnerangriffen. Der Lauf wird bei deiner Rückkehr in dieser Runde fortgesetzt.';
-          budget = 0;
-          break;
-        }
         if (budget < milliseconds) break;
         budget -= milliseconds;
         consumed += milliseconds;
@@ -264,12 +317,12 @@ async function settleOfflineFarm(save, now = Date.now()) {
         if (farm.mode === 'tower') {
           const health = offlineTowerPartyHealth(save, farm, sample, scaling, combatMilliseconds);
           won = won && owners.some(owner => health[owner] > 0);
-          farm.partyHealth = Object.fromEntries(owners.map(owner => [owner, won ? Math.min(1, health[owner] + sample.restoration[owner]) : 0]));
+          farm.partyHealth = Object.fromEntries(owners.map(owner => [owner, won && health[owner] > 0 ? Math.min(1, health[owner] + sample.restoration[owner]) : 0]));
         }
         if (won) {
           const towerKills = farm.mode === 'tower' ? towerEnemyCount(farm.round) : 3;
           const result = resolveBattleRewards(save, { mode: farm.mode, area: farm.area, deepTier: farm.deepTier, round: farm.round,
-            elite: sample.elite, partyClasses: owners, huntingEventId: at >= save.huntingEvent?.startedAt && at < save.huntingEvent?.nextAvailableAt ? save.huntingEvent.id : null,
+            elite: farm.mode === 'tower' ? offlineTowerKind(farm.round) === 'champion' : sample.elite, partyClasses: owners, huntingEventId: at >= save.huntingEvent?.startedAt && at < save.huntingEvent?.nextAvailableAt ? save.huntingEvent.id : null,
             statistics: { monstersKilled: towerKills, weaponKills: towerKills, weaponIds, huntingKills: farm.mode === 'area' ? 3 : 0 } });
           report.wins += 1;
           if (farm.mode === 'tower') { report.lastRound = farm.round; farm.round += 1; }
@@ -312,24 +365,21 @@ async function offlineFarmAction(save, body) {
   } else if (body.action === 'offline-stop') {
     if (save.offlineFarm) save.offlineFarm.active = false;
   } else if (body.action === 'offline-checkpoint') {
-    if (['area', 'tower'].includes(battle?.mode) && !battle.partyClasses.every(owner => battle.autoSkills[owner]) && save.offlineFarm) {
-      save.offlineFarm.samples = [];
-      save.offlineFarm.carry = save.offlineFarm.cursor = 0;
-    }
     if (save.offlineFarm?.active) save.offlineFarm.checkpointAt = Math.max(save.offlineFarm.checkpointAt, Number(body.at) || Date.now());
-  } else if (body.action === 'offline-settle' || body.action === 'offline-simulate-hour') {
+  } else if (body.action === 'offline-settle' || body.action === 'offline-simulate-time') {
     const settleAt = Date.now();
-    if (body.action === 'offline-simulate-hour') {
+    if (body.action === 'offline-simulate-time') {
       if (!save.offlineFarm?.active) throw new Error('Starte zuerst einen Gebietskampf oder Turmlauf als AFK-Farmziel.');
       if (save.offlineFarm.signature !== offlineFarmSignature(save) || !offlineFarmCalibrated(save.offlineFarm)) {
-        throw new Error('Die AFK-Messung ist noch nicht bereit. Sammle zuerst passende Runden mit Auto-Fähigkeiten.');
+        throw new Error(`Die AFK-Messung ist noch nicht bereit. Sammle zuerst ${OFFLINE_RULES.minimumSamples} vollständige Runden.`);
       }
       // Use the real clock and reward resolver; only the farm checkpoint is backdated.
-      save.offlineFarm.checkpointAt = settleAt - 3600000;
+      save.offlineFarm.checkpointAt = settleAt - OFFLINE_RULES.adminSimulationHours * 3600000;
     }
     offlineFarmSettling = true;
     try { report = await settleOfflineFarm(save, settleAt); }
     finally { offlineFarmSettling = false; }
+    if (body.action === 'offline-simulate-time' && report) report.pending = false;
   } else if (body.action === 'offline-dismiss') {
     if (save.offlineFarm?.report?.id === body.reportId) save.offlineFarm.report.pending = false;
   } else throw new Error('Unbekannte AFK-Aktion.');
@@ -368,8 +418,21 @@ function showOfflineFarmReport() {
 async function resumeOfflineFarm() {
   return settleAndResumeOfflineFarm('offline-settle');
 }
-async function simulateAdminFarmHour() {
-  if (adminFarmSimulationPending || document.hidden || saveMaintenance || saveBlocked) return;
+function adminFarmSimulationLabel() {
+  return adminFarmSimulationPending
+    ? `+${OFFLINE_RULES.adminSimulationHours} Std.${adminFarmSimulationQueue ? ` (${adminFarmSimulationQueue} wartend)` : ' hinzufügen'}`
+    : `${OFFLINE_RULES.adminSimulationHours} Std. simulieren`;
+}
+function updateAdminFarmSimulationButton() {
+  const button = document.querySelector('[data-admin-action="admin-simulate-offline-time"]');
+  if (button) {
+    button.disabled = false;
+    button.textContent = adminFarmSimulationLabel();
+    button.setAttribute('aria-label', `${OFFLINE_RULES.adminSimulationHours} Stunden AFK-Farmzeit simulieren${adminFarmSimulationQueue ? `; ${adminFarmSimulationQueue} Simulationen warten` : ''}`);
+  }
+}
+async function simulateAdminFarmTime() {
+  if (document.hidden || saveMaintenance || saveBlocked) return;
   if (!state?.offlineFarm?.active) {
     toastMessageFor('Keine aktive AFK-Farm', 'Starte zuerst einen Gebietskampf oder Turmlauf.');
     return;
@@ -378,25 +441,52 @@ async function simulateAdminFarmHour() {
     toastMessageFor('AFK-Simulation nicht möglich', 'Beende zuerst den laufenden Bosskampf.');
     return;
   }
+  adminFarmSimulationQueue++;
+  updateAdminFarmSimulationButton();
+  if (adminFarmSimulationPending) return;
   adminFarmSimulationPending = true;
-  const button = document.querySelector('[data-admin-action="admin-simulate-offline-hour"]');
-  if (button) button.disabled = true;
+  let completed = 0;
   try {
-    suspendOfflineFarm();
-    offlineFarmTransition = offlineFarmTransition.then(() => settleAndResumeOfflineFarm('admin-simulate-offline-hour'));
-    await offlineFarmTransition;
+    do {
+      suspendOfflineFarm();
+      while (adminFarmSimulationQueue > 0 && !document.hidden && state.offlineFarm?.active) {
+        adminFarmSimulationQueue--;
+        updateAdminFarmSimulationButton();
+        offlineFarmTransition = offlineFarmTransition.catch(() => {}).then(() =>
+          settleAndResumeOfflineFarm('admin-simulate-offline-time', { resume: false, showReport: false }));
+        const result = await offlineFarmTransition;
+        if (!result) { adminFarmSimulationQueue = 0; break; }
+        completed++;
+      }
+      if (offlineFarmSuspended && !document.hidden) await settleAndResumeOfflineFarm('offline-settle', { showReport: false });
+    } while (adminFarmSimulationQueue > 0 && !document.hidden && state.offlineFarm?.active);
+    if (completed) toastMessageFor('AFK-Zeit simuliert', `${completed * OFFLINE_RULES.adminSimulationHours} Stunden berechnet. Ergebnisse stehen im Aktivitätsprotokoll.${state.offlineFarm?.active ? '' : ' Der Turmlauf ist beendet.'}`);
+  } catch (error) {
+    offlineFarmTransition = offlineFarmTransition.catch(() => {});
+    toastMessageFor('AFK-Simulation fehlgeschlagen', error.message || 'Die Simulation konnte nicht abgeschlossen werden.');
   } finally {
-    // A rejected simulation must not leave the live battle paused.
-    if (offlineFarmSuspended && !document.hidden) await resumeOfflineFarm();
+    adminFarmSimulationQueue = 0;
     adminFarmSimulationPending = false;
-    const currentButton = document.querySelector('[data-admin-action="admin-simulate-offline-hour"]');
-    if (currentButton) currentButton.disabled = false;
+    updateAdminFarmSimulationButton();
+    // A rejected simulation must not leave the live battle paused.
+    if (offlineFarmSuspended && !document.hidden) await settleAndResumeOfflineFarm('offline-settle', { showReport: false });
   }
 }
-async function settleAndResumeOfflineFarm(action) {
+async function settleAndResumeOfflineFarm(action, { resume = true, showReport = true } = {}) {
   if (document.hidden) { offlineFarmSuspended = Boolean(state?.offlineFarm?.active); return; }
   if (saveMaintenance || saveBlocked || !state?.mainClass) return;
-  if (!state.offlineFarm?.active) { showOfflineFarmReport(); return; }
+  if (!state.offlineFarm?.active) {
+    offlineFarmSuspended = false;
+    if (battle && ['area', 'tower'].includes(battle.mode)) {
+      window.clearTimeout(battle.timer);
+      window.clearTimeout(battle.victoryTimer);
+      battle = null;
+      document.querySelector('#battle-overlay')?.remove();
+      updateBattleDock();
+    }
+    if (showReport) showOfflineFarmReport();
+    return;
+  }
   if (battle && !['area', 'tower'].includes(battle.mode)) return;
   const current = ['area', 'tower'].includes(battle?.mode) ? battle : null;
   const loading = document.createElement('div');
@@ -407,7 +497,8 @@ async function settleAndResumeOfflineFarm(action) {
   let result;
   try { result = await performAction({ action }); }
   finally { loading.remove(); }
-  if (!result || document.hidden) return;
+  if (!result || document.hidden) return result;
+  if (!resume) return result;
   offlineFarmSuspended = false;
   if (current && battle === current && !state.offlineFarm?.active) {
     window.clearTimeout(current.timer);
@@ -424,7 +515,8 @@ async function settleAndResumeOfflineFarm(action) {
   } else if (!battle && state.offlineFarm?.active) {
     await startBattle(state.offlineFarm.mode, state.offlineFarm.area, { deepTier: state.offlineFarm.deepTier, visible: false, resume: state.offlineFarm.mode === 'tower' });
   }
-  showOfflineFarmReport();
+  if (showReport) showOfflineFarmReport();
+  return result;
 }
 function suspendOfflineFarm() {
   if (!state?.offlineFarm?.active || !['area', 'tower'].includes(battle?.mode) || offlineFarmSuspended || saveBlocked || saveMaintenance) return;
@@ -433,7 +525,7 @@ function suspendOfflineFarm() {
   window.clearTimeout(battle.timer);
   window.clearTimeout(battle.victoryTimer);
   battle.timer = battle.victoryTimer = null;
-  offlineFarmTransition = offlineFarmTransition.then(() => performAction({ action: 'offline-checkpoint', at, silent: true }));
+  offlineFarmTransition = offlineFarmTransition.catch(() => {}).then(() => performAction({ action: 'offline-checkpoint', at, silent: true }));
 }
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) suspendOfflineFarm();

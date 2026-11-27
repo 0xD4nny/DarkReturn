@@ -21,30 +21,30 @@
         {
           "id": "upgradeStone",
           "label": "Aufwertungssteine",
-          "chance": 1
+          "chance": 25
         },
         {
           "id": "socketStone",
           "label": "Sockelsteine",
-          "chance": 1
+          "chance": 25
         },
         {
           "id": "affixStone",
           "label": "Umprägungssteine",
-          "chance": 1
+          "chance": 25
         },
         {
           "id": "gems",
           "label": "Edelsteine",
-          "chance": 1
+          "chance": 25
         },
         {
           "id": "powerup",
           "label": "Powerups",
-          "chance": 1
+          "chance": 25
         }
       ],
-      "mythicWeapons": {
+      "mythicEquipment": {
         "minimumDeepTier": 4,
         "dropChanceByArea": [
           0.002,
@@ -167,6 +167,31 @@
           "name": "Mythisch V",
           "tier": "Mythisch",
           "minimumDamage": 100000000000000
+        },
+        {
+          "name": "Mythisch VI",
+          "tier": "Mythisch",
+          "minimumDamage": 1000000000000000
+        },
+        {
+          "name": "Mythisch VII",
+          "tier": "Mythisch",
+          "minimumDamage": 10000000000000000
+        },
+        {
+          "name": "Mythisch VIII",
+          "tier": "Mythisch",
+          "minimumDamage": 100000000000000000
+        },
+        {
+          "name": "Mythisch IX",
+          "tier": "Mythisch",
+          "minimumDamage": 1000000000000000000
+        },
+        {
+          "name": "Mythisch X",
+          "tier": "Mythisch",
+          "minimumDamage": 10000000000000000000
         }
       ]
     },

@@ -28,14 +28,14 @@
     min-height: 0;
     overflow: hidden;
 }
-.inventory-expansion-controls {
+.inventory-actions {
     display: flex;
     flex: 0 0 auto;
     align-items: center;
     gap: 8px;
 }
-.inventory-expansion-controls > input { width: 64px; text-align: center; }
-.inventory-expansion-controls > button { white-space: nowrap; }
+.inventory-actions:empty { display: none; }
+.inventory-actions > button { white-space: nowrap; }
 .inventory-view .inventory-main > .inventory-toolbar,
 .inventory-view .inventory-main > .item-grid-controls,
 .inventory-view .inventory-hint { flex-shrink: 0; }

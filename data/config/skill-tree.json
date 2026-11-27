@@ -1,6 +1,10 @@
 {
   "skillTreeBranches": [
     {
+      "id": "hunter",
+      "label": "Jäger"
+    },
+    {
       "id": "warrior",
       "label": "Krieger"
     },
@@ -9,20 +13,8 @@
       "label": "Magier"
     },
     {
-      "id": "hunter",
-      "label": "Jäger"
-    },
-    {
       "id": "healer",
       "label": "Heiler"
-    },
-    {
-      "id": "attack",
-      "label": "Angriff"
-    },
-    {
-      "id": "health",
-      "label": "Leben"
     }
   ],
   "skillTreeNodes": [
@@ -33,422 +25,348 @@
       "maxPoints": 0,
       "parent": null,
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
-      "description": "Wähle deine Schwerpunkte. Jeder Charakter besitzt einen eigenen Vorrat von bis zu 300 Punkten."
+      "description": "Dein Klassenbaum: eine passive Klassenfähigkeit, eine Subnode je Fähigkeit und ein gemeinsamer Punktevorrat.",
+      "position": [
+        450,
+        420
+      ]
     },
     {
-      "id": "warrior_1",
-      "name": "Stärke",
-      "rarity": "common",
-      "maxPoints": 200,
-      "parent": "origin",
-      "requiredParentPoints": 0,
-      "branch": "warrior",
-      "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/muscle-up.svg",
-      "effect": {
-        "type": "attribute-flat",
-        "perPoint": 5,
-        "stat": "Stärke"
-      }
-    },
-    {
-      "id": "warrior_2",
-      "name": "Standfestigkeit",
-      "rarity": "common",
-      "maxPoints": 30,
-      "parent": "warrior_1",
-      "requiredParentPoints": 10,
-      "branch": "warrior",
-      "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
-      "effect": {
-        "type": "attribute-flat",
-        "perPoint": 3,
-        "stat": "Ausdauer"
-      }
-    },
-    {
-      "id": "warrior_4",
-      "name": "Klassenmeisterschaft",
-      "rarity": "rare",
-      "maxPoints": 50,
-      "parent": "warrior_2",
-      "requiredParentPoints": 10,
-      "branch": "warrior",
-      "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
-      "effect": {
-        "type": "final-percent",
-        "perPoint": 1,
-        "stat": "Angriff"
-      }
-    },
-    {
-      "id": "warrior_skill_damage",
-      "name": "Henkerschlag meistern",
-      "rarity": "rare",
-      "maxPoints": 20,
-      "parent": "warrior_4",
-      "requiredParentPoints": 10,
-      "branch": "warrior",
-      "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
-      "effect": {
-        "type": "skill-damage-flat-percent",
-        "perPoint": 5,
-        "skillId": "henkerschlag"
-      },
-      "class": "warrior"
-    },
-    {
-      "id": "warrior_legend",
-      "name": "Erderschütterung",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "warrior_skill_damage",
-      "requiredParentPoints": 10,
-      "branch": "warrior",
-      "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/earth-crack.svg",
-      "effect": {
-        "type": "warrior-stomp-area",
-        "perPoint": 1
-      },
-      "class": "warrior"
-    },
-    {
-      "id": "warrior_legend_alt",
-      "name": "Wucht",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "warrior_skill_damage",
-      "requiredParentPoints": 10,
-      "branch": "warrior",
-      "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
-      "effect": {
-        "type": "warrior-execution-area-penalty",
-        "perPoint": 50
-      },
-      "class": "warrior"
-    },
-    {
-      "id": "mage_1",
-      "name": "Intelligenz",
-      "rarity": "common",
-      "maxPoints": 200,
-      "parent": "origin",
-      "requiredParentPoints": 0,
-      "branch": "mage",
-      "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
-      "effect": {
-        "type": "attribute-flat",
-        "perPoint": 5,
-        "stat": "Intelligenz"
-      }
-    },
-    {
-      "id": "mage_2",
-      "name": "Standfestigkeit",
-      "rarity": "common",
-      "maxPoints": 30,
-      "parent": "mage_1",
-      "requiredParentPoints": 10,
-      "branch": "mage",
-      "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
-      "effect": {
-        "type": "attribute-flat",
-        "perPoint": 3,
-        "stat": "Ausdauer"
-      }
-    },
-    {
-      "id": "mage_4",
-      "name": "Klassenmeisterschaft",
-      "rarity": "rare",
-      "maxPoints": 50,
-      "parent": "mage_2",
-      "requiredParentPoints": 10,
-      "branch": "mage",
-      "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
-      "effect": {
-        "type": "final-percent",
-        "perPoint": 1,
-        "stat": "Angriff"
-      }
-    },
-    {
-      "id": "mage_skill_damage",
-      "name": "Funken meistern",
-      "rarity": "rare",
-      "maxPoints": 20,
-      "parent": "mage_4",
-      "requiredParentPoints": 10,
-      "branch": "mage",
-      "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
-      "effect": {
-        "type": "skill-damage-flat-percent",
-        "perPoint": 5,
-        "skillId": "funken"
-      },
-      "class": "mage"
-    },
-    {
-      "id": "mage_legend",
-      "name": "Arkaner Doppelschlag",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "mage_skill_damage",
-      "requiredParentPoints": 10,
-      "branch": "mage",
-      "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
-      "effect": {
-        "type": "extra-attack-chance",
-        "perPoint": 20
-      },
-      "class": "mage"
-    },
-    {
-      "id": "mage_legend_alt",
-      "name": "Brandmeister",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "mage_skill_damage",
-      "requiredParentPoints": 10,
-      "branch": "mage",
-      "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
-      "effect": {
-        "type": "mage-instant-fireball",
-        "perPoint": 1
-      },
-      "class": "mage"
-    },
-    {
-      "id": "hunter_1",
+      "id": "hunter_talent_0_0",
       "name": "Geschicklichkeit",
       "rarity": "common",
-      "maxPoints": 200,
+      "maxPoints": 100,
       "parent": "origin",
       "requiredParentPoints": 0,
       "branch": "hunter",
       "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/bow-arrow.svg",
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/target-arrows.svg",
+      "position": [
+        450,
+        320
+      ],
       "effect": {
         "type": "attribute-flat",
-        "perPoint": 5,
+        "perPoint": 1.5,
         "stat": "Geschicklichkeit"
       }
     },
     {
-      "id": "hunter_2",
-      "name": "Standfestigkeit",
+      "id": "hunter_talent_0_1",
+      "name": "Lebenspolster",
       "rarity": "common",
-      "maxPoints": 30,
-      "parent": "hunter_1",
-      "requiredParentPoints": 10,
+      "maxPoints": 20,
+      "parent": "hunter_talent_0_0",
+      "requiredParentPoints": 1,
       "branch": "hunter",
       "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
-      "effect": {
-        "type": "attribute-flat",
-        "perPoint": 3,
-        "stat": "Ausdauer"
-      }
-    },
-    {
-      "id": "hunter_4",
-      "name": "Klassenmeisterschaft",
-      "rarity": "rare",
-      "maxPoints": 50,
-      "parent": "hunter_2",
-      "requiredParentPoints": 10,
-      "branch": "hunter",
-      "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        505,
+        270
+      ],
       "effect": {
         "type": "final-percent",
-        "perPoint": 1,
-        "stat": "Angriff"
+        "perPoint": 1.0,
+        "stat": "Lebenskraft"
       }
     },
     {
-      "id": "hunter_skill_damage",
-      "name": "Jagdstoß meistern",
-      "rarity": "rare",
-      "maxPoints": 20,
-      "parent": "hunter_4",
-      "requiredParentPoints": 10,
-      "branch": "hunter",
-      "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/target-arrows.svg",
-      "effect": {
-        "type": "skill-damage-flat-percent",
-        "perPoint": 5,
-        "skillId": "jagdstoss"
-      },
-      "class": "hunter"
-    },
-    {
-      "id": "hunter_legend",
-      "name": "Tödliche Präzision",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "hunter_skill_damage",
-      "requiredParentPoints": 10,
-      "branch": "hunter",
-      "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
-      "effect": {
-        "type": "hunter-critical-overflow",
-        "perPoint": 1
-      },
-      "class": "hunter"
-    },
-    {
-      "id": "hunter_legend_alt",
-      "name": "Giftmeister",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "hunter_skill_damage",
-      "requiredParentPoints": 10,
-      "branch": "hunter",
-      "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/chemical-arrow.svg",
-      "effect": {
-        "type": "hunter-poison-chance",
-        "perPoint": 50
-      },
-      "class": "hunter"
-    },
-    {
-      "id": "healer_1",
-      "name": "Glaube",
-      "rarity": "common",
-      "maxPoints": 200,
-      "parent": "origin",
-      "requiredParentPoints": 0,
-      "branch": "healer",
-      "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
-      "effect": {
-        "type": "attribute-flat",
-        "perPoint": 5,
-        "stat": "Glaube"
-      }
-    },
-    {
-      "id": "healer_2",
-      "name": "Standfestigkeit",
-      "rarity": "common",
-      "maxPoints": 30,
-      "parent": "healer_1",
-      "requiredParentPoints": 10,
-      "branch": "healer",
-      "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
-      "effect": {
-        "type": "attribute-flat",
-        "perPoint": 3,
-        "stat": "Ausdauer"
-      }
-    },
-    {
-      "id": "healer_4",
-      "name": "Klassenmeisterschaft",
+      "id": "hunter_talent_0_2",
+      "name": "Meisterschaft",
       "rarity": "rare",
       "maxPoints": 50,
-      "parent": "healer_2",
-      "requiredParentPoints": 10,
-      "branch": "healer",
+      "parent": "hunter_talent_0_1",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
       "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crown.svg",
-      "effect": {
-        "type": "final-percent",
-        "perPoint": 1,
-        "stat": "Angriff"
-      }
-    },
-    {
-      "id": "healer_skill_damage",
-      "name": "Heiliger Kreis meistern",
-      "rarity": "rare",
-      "maxPoints": 20,
-      "parent": "healer_4",
-      "requiredParentPoints": 10,
-      "branch": "healer",
-      "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/sunbeams.svg",
-      "effect": {
-        "type": "skill-damage-flat-percent",
-        "perPoint": 5,
-        "skillId": "holy-circle"
-      },
-      "class": "healer"
-    },
-    {
-      "id": "healer_legend",
-      "name": "Zorn des Lichts",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "healer_skill_damage",
-      "requiredParentPoints": 10,
-      "branch": "healer",
-      "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/rally-the-troops.svg",
-      "effect": {
-        "type": "healer-final-damage-percent",
-        "perPoint": 50
-      },
-      "class": "healer"
-    },
-    {
-      "id": "healer_legend_alt",
-      "name": "Lichtschutz",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "healer_skill_damage",
-      "requiredParentPoints": 10,
-      "branch": "healer",
-      "tier": 5,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-shield.svg",
-      "effect": {
-        "type": "healer-damage-reduction-cap",
-        "perPoint": 95
-      },
-      "class": "healer"
-    },
-    {
-      "id": "attack_1",
-      "name": "Waffentraining",
-      "rarity": "common",
-      "maxPoints": 200,
-      "parent": "origin",
-      "requiredParentPoints": 0,
-      "branch": "attack",
-      "tier": 1,
+      "class": "hunter",
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        546,
+        239
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 1.0,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "ability_hunter_poison-arrow",
+      "name": "Giftpfeil",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "hunter_talent_0_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/chemical-arrow.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "poison-arrow"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "poison-arrow",
+        "kind": "passive"
+      },
+      "description": "Pfeiltreffer haben eine Chance von {chancePercent} %, das Ziel zu vergiften. Das Gift verursacht über {durationSeconds} Sekunden insgesamt {damagePercent} % Schaden.",
+      "position": [
+        450,
+        180
+      ]
+    },
+    {
+      "id": "ability_hunter_poison-arrow_concentrated",
+      "name": "Konzentriertes Gift",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_poison-arrow",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/chemical-arrow.svg",
+      "exclusiveGroup": "ability_hunter_poison-arrow",
+      "ability": {
+        "kind": "passive",
+        "skillId": "poison-arrow",
+        "variantId": "concentrated"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "poison-arrow",
+        "variantId": "concentrated",
+        "kind": "passive"
+      },
+      "description": "250 % Giftschaden in einer statt drei Sekunden.",
+      "position": [
+        397,
+        84
+      ]
+    },
+    {
+      "id": "ability_hunter_poison-arrow_certain",
+      "name": "Sicherer Giftpfeil",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_poison-arrow",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/chemical-arrow.svg",
+      "exclusiveGroup": "ability_hunter_poison-arrow",
+      "ability": {
+        "kind": "passive",
+        "skillId": "poison-arrow",
+        "variantId": "certain"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "poison-arrow",
+        "variantId": "certain",
+        "kind": "passive"
+      },
+      "description": "100 % Giftchance.",
+      "position": [
+        503,
+        84
+      ]
+    },
+    {
+      "id": "hunter_talent_1_0",
+      "name": "Vitalität",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
+      "position": [
+        537,
+        370
+      ],
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 1.5,
+        "stat": "Ausdauer"
+      }
+    },
+    {
+      "id": "hunter_talent_1_1",
+      "name": "Schnelle Hände",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "hunter_talent_1_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
+      "position": [
+        608,
+        392
+      ],
       "effect": {
         "type": "stat-flat",
-        "perPoint": 5,
+        "perPoint": 0.5,
+        "stat": "Angriffsgeschwindigkeit"
+      }
+    },
+    {
+      "id": "hunter_talent_1_2",
+      "name": "Gesunde Konstitution",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "hunter_talent_1_1",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 3,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        655,
+        413
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.8,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "ability_hunter_predator-eye",
+      "name": "Raubtierauge",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "hunter_talent_1_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "predator-eye"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "predator-eye",
+        "kind": "passive"
+      },
+      "description": "Erhöht die kritische Trefferchance des Jägers um {value} %.",
+      "position": [
+        658,
+        300
+      ]
+    },
+    {
+      "id": "ability_hunter_predator-eye_overflow",
+      "name": "Tödliche Präzision",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_predator-eye",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "exclusiveGroup": "ability_hunter_predator-eye",
+      "ability": {
+        "kind": "passive",
+        "skillId": "predator-eye",
+        "variantId": "overflow"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "predator-eye",
+        "variantId": "overflow",
+        "kind": "passive"
+      },
+      "description": "Kritische Chance über 100 % wird 1:1 zu kritischem Schaden.",
+      "position": [
+        714,
+        206
+      ]
+    },
+    {
+      "id": "ability_hunter_predator-eye_keen",
+      "name": "Scharfer Blick",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_predator-eye",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "exclusiveGroup": "ability_hunter_predator-eye",
+      "ability": {
+        "kind": "passive",
+        "skillId": "predator-eye",
+        "variantId": "keen"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "predator-eye",
+        "variantId": "keen",
+        "kind": "passive"
+      },
+      "description": "50 % kritische Chance.",
+      "position": [
+        767,
+        298
+      ]
+    },
+    {
+      "id": "hunter_talent_2_0",
+      "name": "Kampfkraft",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        537,
+        470
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 3.0,
         "stat": "Angriff"
       }
     },
     {
-      "id": "attack_2",
-      "name": "Kampfkraft",
+      "id": "hunter_talent_2_1",
+      "name": "Entschlossenheit",
       "rarity": "common",
-      "maxPoints": 30,
-      "parent": "attack_1",
-      "requiredParentPoints": 10,
-      "branch": "attack",
+      "maxPoints": 40,
+      "parent": "hunter_talent_2_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
       "tier": 2,
+      "class": "hunter",
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        553,
+        543
+      ],
       "effect": {
         "type": "final-percent",
         "perPoint": 0.5,
@@ -456,191 +374,3422 @@
       }
     },
     {
-      "id": "attack_3",
-      "name": "Kritische Chance",
-      "rarity": "rare",
-      "maxPoints": 20,
-      "parent": "attack_2",
-      "requiredParentPoints": 10,
-      "branch": "attack",
-      "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/delapouite/crosshair.svg",
-      "effect": {
-        "type": "stat-flat",
-        "perPoint": 1,
-        "stat": "Kritische Chance"
-      }
-    },
-    {
-      "id": "attack_4",
-      "name": "Angriffstempo",
-      "rarity": "rare",
-      "maxPoints": 20,
-      "parent": "attack_3",
-      "requiredParentPoints": 10,
-      "branch": "attack",
-      "tier": 4,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/quick-slash.svg",
-      "effect": {
-        "type": "stat-flat",
-        "perPoint": 1,
-        "stat": "Angriffsgeschwindigkeit"
-      }
-    },
-    {
-      "id": "attack_5",
+      "id": "hunter_talent_2_2",
       "name": "Kritische Wucht",
       "rarity": "rare",
-      "maxPoints": 30,
-      "parent": "attack_4",
-      "requiredParentPoints": 10,
-      "branch": "attack",
-      "tier": 5,
+      "maxPoints": 50,
+      "parent": "hunter_talent_2_1",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 3,
+      "class": "hunter",
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "position": [
+        559,
+        594
+      ],
       "effect": {
         "type": "stat-flat",
-        "perPoint": 1,
+        "perPoint": 0.8,
         "stat": "Kritischer Schaden"
       }
     },
     {
-      "id": "attack_legend",
-      "name": "Vernichtung",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "attack_5",
-      "requiredParentPoints": 10,
-      "branch": "attack",
-      "tier": 6,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
-      "effect": {
-        "type": "final-damage-percent",
-        "perPoint": 50
-      }
-    },
-    {
-      "id": "attack_legend_alt",
-      "name": "Zehrende Kraft",
-      "rarity": "legendary",
-      "maxPoints": 1,
-      "parent": "attack_5",
-      "requiredParentPoints": 10,
-      "branch": "attack",
-      "tier": 6,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/sword-clash.svg",
-      "effect": {
-        "type": "dot-to-attack-percent",
-        "perPoint": 1
-      }
-    },
-    {
-      "id": "health_1",
-      "name": "Vitalität",
+      "id": "ability_hunter_soul-scent",
+      "name": "Seelenwitterung",
       "rarity": "common",
-      "maxPoints": 200,
+      "maxPoints": 10,
+      "parent": "hunter_talent_2_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "soul-scent"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "soul-scent",
+        "kind": "passive"
+      },
+      "description": "Die Gruppe findet dauerhaft {value} % mehr Seelen.",
+      "position": [
+        658,
+        540
+      ]
+    },
+    {
+      "id": "ability_hunter_soul-scent_souls",
+      "name": "Seelenjagd",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_soul-scent",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "exclusiveGroup": "ability_hunter_soul-scent",
+      "ability": {
+        "kind": "passive",
+        "skillId": "soul-scent",
+        "variantId": "souls"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "soul-scent",
+        "variantId": "souls",
+        "kind": "passive"
+      },
+      "description": "100 % mehr Kampf-Seelen für das Team.",
+      "position": [
+        767,
+        542
+      ]
+    },
+    {
+      "id": "ability_hunter_soul-scent_loot",
+      "name": "Schatzwitterung",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_soul-scent",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "exclusiveGroup": "ability_hunter_soul-scent",
+      "ability": {
+        "kind": "passive",
+        "skillId": "soul-scent",
+        "variantId": "loot"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "soul-scent",
+        "variantId": "loot",
+        "kind": "passive"
+      },
+      "description": "Zusätzlich 25 % relative Droprate für das Team.",
+      "position": [
+        714,
+        634
+      ]
+    },
+    {
+      "id": "hunter_talent_3_0",
+      "name": "Standfestigkeit",
+      "rarity": "common",
+      "maxPoints": 100,
       "parent": "origin",
       "requiredParentPoints": 0,
-      "branch": "health",
+      "branch": "hunter",
       "tier": 1,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "position": [
+        450,
+        520
+      ],
       "effect": {
         "type": "stat-flat",
-        "perPoint": 25,
-        "stat": "Lebenskraft"
+        "perPoint": 6.0,
+        "stat": "Verteidigung"
       }
     },
     {
-      "id": "health_2",
-      "name": "Zähigkeit",
+      "id": "hunter_talent_3_1",
+      "name": "Tödlicher Blick",
       "rarity": "common",
-      "maxPoints": 30,
-      "parent": "health_1",
-      "requiredParentPoints": 10,
-      "branch": "health",
+      "maxPoints": 20,
+      "parent": "hunter_talent_3_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
       "tier": 2,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/mineral-heart.svg",
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "position": [
+        395,
+        570
+      ],
       "effect": {
-        "type": "attribute-flat",
-        "perPoint": 5,
-        "stat": "Ausdauer"
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Kritische Chance"
       }
     },
     {
-      "id": "health_3",
-      "name": "Abklingzeit",
+      "id": "hunter_talent_3_2",
+      "name": "Eiserne Haut",
       "rarity": "rare",
-      "maxPoints": 20,
-      "parent": "health_2",
-      "requiredParentPoints": 10,
-      "branch": "health",
+      "maxPoints": 50,
+      "parent": "hunter_talent_3_1",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
       "tier": 3,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "position": [
+        354,
+        601
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.8,
+        "stat": "Verteidigung"
+      }
+    },
+    {
+      "id": "ability_hunter_jagdstoss",
+      "name": "Jagdstoß",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "hunter_talent_3_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/target-arrows.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "jagdstoss"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "jagdstoss",
+        "kind": "active"
+      },
+      "description": "Ein gezielter Angriff mit 400 % Schaden.",
+      "position": [
+        450,
+        660
+      ]
+    },
+    {
+      "id": "ability_hunter_jagdstoss_power",
+      "name": "Durchschlag",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_jagdstoss",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/target-arrows.svg",
+      "exclusiveGroup": "ability_hunter_jagdstoss",
+      "ability": {
+        "kind": "active",
+        "skillId": "jagdstoss",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "jagdstoss",
+        "variantId": "power",
+        "kind": "active"
+      },
+      "description": "Doppelter Grundschaden.",
+      "position": [
+        503,
+        756
+      ]
+    },
+    {
+      "id": "ability_hunter_jagdstoss_area",
+      "name": "Streuschuss",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_jagdstoss",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/target-arrows.svg",
+      "exclusiveGroup": "ability_hunter_jagdstoss",
+      "ability": {
+        "kind": "active",
+        "skillId": "jagdstoss",
+        "variantId": "area"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "jagdstoss",
+        "variantId": "area",
+        "kind": "active"
+      },
+      "description": "Trifft alle lebenden Gegner.",
+      "position": [
+        397,
+        756
+      ]
+    },
+    {
+      "id": "hunter_talent_4_0",
+      "name": "Präzision",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "position": [
+        363,
+        470
+      ],
       "effect": {
         "type": "stat-flat",
-        "perPoint": 1,
+        "perPoint": 0.25,
+        "stat": "Trefferchance"
+      }
+    },
+    {
+      "id": "hunter_talent_4_1",
+      "name": "Konzentration",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "hunter_talent_4_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "position": [
+        292,
+        448
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
         "stat": "Abklingzeitreduktion"
       }
     },
     {
-      "id": "health_4",
-      "name": "Lebensreserve",
+      "id": "hunter_talent_4_2",
+      "name": "Zehrende Macht",
       "rarity": "rare",
-      "maxPoints": 30,
-      "parent": "health_3",
+      "maxPoints": 50,
+      "parent": "hunter_talent_4_1",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 3,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "position": [
+        245,
+        427
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.8,
+        "stat": "Schaden über Zeit"
+      }
+    },
+    {
+      "id": "ability_hunter_feuerschuss",
+      "name": "Feuerschuss",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "hunter_talent_4_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "feuerschuss"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "feuerschuss",
+        "kind": "active"
+      },
+      "description": "200 % Flächenschaden und 200 % Brandschaden über zwei Sekunden.",
+      "position": [
+        242,
+        540
+      ]
+    },
+    {
+      "id": "ability_hunter_feuerschuss_impact",
+      "name": "Explosiver Schuss",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_feuerschuss",
       "requiredParentPoints": 10,
-      "branch": "health",
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
+      "exclusiveGroup": "ability_hunter_feuerschuss",
+      "ability": {
+        "kind": "active",
+        "skillId": "feuerschuss",
+        "variantId": "impact"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "feuerschuss",
+        "variantId": "impact",
+        "kind": "active"
+      },
+      "description": "Kein Brand; 400 % direkter Grundschaden.",
+      "position": [
+        186,
+        634
+      ]
+    },
+    {
+      "id": "ability_hunter_feuerschuss_expose",
+      "name": "Brandmal",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_feuerschuss",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
+      "exclusiveGroup": "ability_hunter_feuerschuss",
+      "ability": {
+        "kind": "active",
+        "skillId": "feuerschuss",
+        "variantId": "expose"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "feuerschuss",
+        "variantId": "expose",
+        "kind": "active"
+      },
+      "description": "Brennende Ziele werden beim Treffer zwei Sekunden verwundbar.",
+      "position": [
+        133,
+        542
+      ]
+    },
+    {
+      "id": "hunter_talent_5_0",
+      "name": "Lebensquell",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        363,
+        370
+      ],
+      "effect": {
+        "type": "self-life-steal-percent",
+        "perPoint": 0.025
+      }
+    },
+    {
+      "id": "hunter_talent_5_1",
+      "name": "Doppelte Schneide",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "hunter_talent_5_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        347,
+        297
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1.0,
+        "stat": "Doppeltrefferchance"
+      }
+    },
+    {
+      "id": "hunter_talent_5_2",
+      "name": "Seelensuche",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "hunter_talent_5_1",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 3,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        341,
+        246
+      ],
+      "effect": {
+        "type": "soul-drop-percent",
+        "perPoint": 0.4
+      }
+    },
+    {
+      "id": "ability_hunter_verwundender-schuss",
+      "name": "Verwundender Schuss",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "hunter_talent_5_0",
+      "requiredParentPoints": 1,
+      "branch": "hunter",
+      "tier": 1,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/barbed-arrow.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "verwundender-schuss"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "verwundender-schuss",
+        "kind": "active"
+      },
+      "description": "Verursacht 1000 % Schaden und macht das Ziel 3 Sekunden verwundbar.",
+      "position": [
+        242,
+        300
+      ]
+    },
+    {
+      "id": "ability_hunter_verwundender-schuss_duration",
+      "name": "Tiefe Wunde",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_verwundender-schuss",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/barbed-arrow.svg",
+      "exclusiveGroup": "ability_hunter_verwundender-schuss",
+      "ability": {
+        "kind": "active",
+        "skillId": "verwundender-schuss",
+        "variantId": "duration"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "verwundender-schuss",
+        "variantId": "duration",
+        "kind": "active"
+      },
+      "description": "Doppelte Dauer der Verwundbarkeit.",
+      "position": [
+        133,
+        298
+      ]
+    },
+    {
+      "id": "ability_hunter_verwundender-schuss_area",
+      "name": "Offene Flanke",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_hunter_verwundender-schuss",
+      "requiredParentPoints": 10,
+      "branch": "hunter",
+      "tier": 2,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/barbed-arrow.svg",
+      "exclusiveGroup": "ability_hunter_verwundender-schuss",
+      "ability": {
+        "kind": "active",
+        "skillId": "verwundender-schuss",
+        "variantId": "area"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "verwundender-schuss",
+        "variantId": "area",
+        "kind": "active"
+      },
+      "description": "Trifft alle lebenden Gegner.",
+      "position": [
+        186,
+        206
+      ]
+    },
+    {
+      "id": "hunter_keystone_0",
+      "name": "Scharfschütze",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "hunter_talent_0_2",
+      "requiredParentPoints": 5,
+      "branch": "hunter",
       "tier": 4,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "position": [
+        650,
+        105
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 50,
+        "stat": "Kritischer Schaden"
+      }
+    },
+    {
+      "id": "hunter_keystone_1",
+      "name": "Schattenläufer",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "hunter_talent_3_2",
+      "requiredParentPoints": 5,
+      "branch": "hunter",
+      "tier": 4,
+      "class": "hunter",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        250,
+        735
+      ],
+      "effect": {
+        "type": "dodge-chance",
+        "perPoint": 25
+      }
+    },
+    {
+      "id": "warrior_talent_0_0",
+      "name": "Stärke",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/muscle-up.svg",
+      "position": [
+        450,
+        320
+      ],
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 1.5,
+        "stat": "Stärke"
+      }
+    },
+    {
+      "id": "warrior_talent_0_1",
+      "name": "Lebenspolster",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "warrior_talent_0_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        505,
+        270
+      ],
       "effect": {
         "type": "final-percent",
-        "perPoint": 1,
+        "perPoint": 1.0,
         "stat": "Lebenskraft"
       }
     },
     {
-      "id": "health_5",
-      "name": "Lebensraub",
+      "id": "warrior_talent_0_2",
+      "name": "Meisterschaft",
       "rarity": "rare",
-      "maxPoints": 30,
-      "parent": "health_4",
+      "maxPoints": 50,
+      "parent": "warrior_talent_0_1",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 3,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        546,
+        239
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 1.0,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "ability_warrior_kampfrausch",
+      "name": "Kampfrausch",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "warrior_talent_0_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "kampfrausch"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "kampfrausch",
+        "kind": "passive"
+      },
+      "description": "Erhöht den Gruppenangriff dauerhaft um {value} %.",
+      "position": [
+        450,
+        180
+      ]
+    },
+    {
+      "id": "ability_warrior_kampfrausch_party",
+      "name": "Gemeinsame Stärke",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_kampfrausch",
       "requiredParentPoints": 10,
-      "branch": "health",
-      "tier": 5,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "exclusiveGroup": "ability_warrior_kampfrausch",
+      "ability": {
+        "kind": "passive",
+        "skillId": "kampfrausch",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "kampfrausch",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "Der Bonus wirkt auf die ganze Gruppe.",
+      "position": [
+        397,
+        84
+      ]
+    },
+    {
+      "id": "ability_warrior_kampfrausch_power",
+      "name": "Innere Stärke",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_kampfrausch",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "exclusiveGroup": "ability_warrior_kampfrausch",
+      "ability": {
+        "kind": "passive",
+        "skillId": "kampfrausch",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "kampfrausch",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "Doppelter Bonus nur für den Krieger.",
+      "position": [
+        503,
+        84
+      ]
+    },
+    {
+      "id": "warrior_talent_1_0",
+      "name": "Vitalität",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
+      "position": [
+        537,
+        370
+      ],
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 1.5,
+        "stat": "Ausdauer"
+      }
+    },
+    {
+      "id": "warrior_talent_1_1",
+      "name": "Schnelle Hände",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "warrior_talent_1_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
+      "position": [
+        608,
+        392
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Angriffsgeschwindigkeit"
+      }
+    },
+    {
+      "id": "warrior_talent_1_2",
+      "name": "Gesunde Konstitution",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "warrior_talent_1_1",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 3,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        655,
+        413
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.8,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "ability_warrior_unbeugsam",
+      "name": "Unbeugsam",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "warrior_talent_1_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "unbeugsam"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "unbeugsam",
+        "kind": "passive"
+      },
+      "description": "Erhöht die Gruppenlebenskraft dauerhaft um {value} %.",
+      "position": [
+        658,
+        300
+      ]
+    },
+    {
+      "id": "ability_warrior_unbeugsam_party",
+      "name": "Gemeinsame Stärke",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_unbeugsam",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
+      "exclusiveGroup": "ability_warrior_unbeugsam",
+      "ability": {
+        "kind": "passive",
+        "skillId": "unbeugsam",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "unbeugsam",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "Der Bonus wirkt auf die ganze Gruppe.",
+      "position": [
+        714,
+        206
+      ]
+    },
+    {
+      "id": "ability_warrior_unbeugsam_power",
+      "name": "Innere Stärke",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_unbeugsam",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
+      "exclusiveGroup": "ability_warrior_unbeugsam",
+      "ability": {
+        "kind": "passive",
+        "skillId": "unbeugsam",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "unbeugsam",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "Doppelter Bonus nur für den Krieger.",
+      "position": [
+        767,
+        298
+      ]
+    },
+    {
+      "id": "warrior_talent_2_0",
+      "name": "Kampfkraft",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        537,
+        470
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 3.0,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "warrior_talent_2_1",
+      "name": "Entschlossenheit",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "warrior_talent_2_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        553,
+        543
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.5,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "warrior_talent_2_2",
+      "name": "Kritische Wucht",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "warrior_talent_2_1",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 3,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "position": [
+        559,
+        594
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.8,
+        "stat": "Kritischer Schaden"
+      }
+    },
+    {
+      "id": "ability_warrior_wachtwall",
+      "name": "Wachtwall",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "warrior_talent_2_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "wachtwall"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "wachtwall",
+        "kind": "passive"
+      },
+      "description": "Erhöht die Gruppenverteidigung dauerhaft um {value} %.",
+      "position": [
+        658,
+        540
+      ]
+    },
+    {
+      "id": "ability_warrior_wachtwall_party",
+      "name": "Gemeinsame Stärke",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_wachtwall",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "exclusiveGroup": "ability_warrior_wachtwall",
+      "ability": {
+        "kind": "passive",
+        "skillId": "wachtwall",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "wachtwall",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "Der Bonus wirkt auf die ganze Gruppe.",
+      "position": [
+        767,
+        542
+      ]
+    },
+    {
+      "id": "ability_warrior_wachtwall_power",
+      "name": "Innere Stärke",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_wachtwall",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "exclusiveGroup": "ability_warrior_wachtwall",
+      "ability": {
+        "kind": "passive",
+        "skillId": "wachtwall",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "wachtwall",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "Doppelter Bonus nur für den Krieger.",
+      "position": [
+        714,
+        634
+      ]
+    },
+    {
+      "id": "warrior_talent_3_0",
+      "name": "Standfestigkeit",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "position": [
+        450,
+        520
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 6.0,
+        "stat": "Verteidigung"
+      }
+    },
+    {
+      "id": "warrior_talent_3_1",
+      "name": "Tödlicher Blick",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "warrior_talent_3_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "position": [
+        395,
+        570
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Kritische Chance"
+      }
+    },
+    {
+      "id": "warrior_talent_3_2",
+      "name": "Eiserne Haut",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "warrior_talent_3_1",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 3,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "position": [
+        354,
+        601
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.8,
+        "stat": "Verteidigung"
+      }
+    },
+    {
+      "id": "ability_warrior_stampfen",
+      "name": "Stampfen",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "warrior_talent_3_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/earth-crack.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "stampfen"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "stampfen",
+        "kind": "active"
+      },
+      "description": "Verursacht 1000 % Schaden und setzt den Gegner 3 Sekunden außer Kraft.",
+      "position": [
+        450,
+        660
+      ]
+    },
+    {
+      "id": "ability_warrior_stampfen_stun",
+      "name": "Erschütterung",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_stampfen",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/earth-crack.svg",
+      "exclusiveGroup": "ability_warrior_stampfen",
+      "ability": {
+        "kind": "active",
+        "skillId": "stampfen",
+        "variantId": "stun"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "stampfen",
+        "variantId": "stun",
+        "kind": "active"
+      },
+      "description": "Betäubt das Ziel drei Sekunden.",
+      "position": [
+        503,
+        756
+      ]
+    },
+    {
+      "id": "ability_warrior_stampfen_power",
+      "name": "Zertrümmern",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_stampfen",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/earth-crack.svg",
+      "exclusiveGroup": "ability_warrior_stampfen",
+      "ability": {
+        "kind": "active",
+        "skillId": "stampfen",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "stampfen",
+        "variantId": "power",
+        "kind": "active"
+      },
+      "description": "Doppelter Grundschaden.",
+      "position": [
+        397,
+        756
+      ]
+    },
+    {
+      "id": "warrior_talent_4_0",
+      "name": "Präzision",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "position": [
+        363,
+        470
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.25,
+        "stat": "Trefferchance"
+      }
+    },
+    {
+      "id": "warrior_talent_4_1",
+      "name": "Konzentration",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "warrior_talent_4_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "position": [
+        292,
+        448
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Abklingzeitreduktion"
+      }
+    },
+    {
+      "id": "warrior_talent_4_2",
+      "name": "Zehrende Macht",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "warrior_talent_4_1",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 3,
+      "class": "warrior",
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "position": [
+        245,
+        427
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.8,
+        "stat": "Schaden über Zeit"
+      }
+    },
+    {
+      "id": "ability_warrior_henkerschlag",
+      "name": "Henkerschlag",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "warrior_talent_4_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "henkerschlag"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "henkerschlag",
+        "kind": "active"
+      },
+      "description": "Ein wuchtiger Schlag mit 300 % Schaden.",
+      "position": [
+        242,
+        540
+      ]
+    },
+    {
+      "id": "ability_warrior_henkerschlag_power",
+      "name": "Hinrichtung",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_henkerschlag",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "exclusiveGroup": "ability_warrior_henkerschlag",
+      "ability": {
+        "kind": "active",
+        "skillId": "henkerschlag",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "henkerschlag",
+        "variantId": "power",
+        "kind": "active"
+      },
+      "description": "400 % Flächen-Grundschaden.",
+      "position": [
+        186,
+        634
+      ]
+    },
+    {
+      "id": "ability_warrior_henkerschlag_expose",
+      "name": "Aufgebrochen",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_henkerschlag",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "exclusiveGroup": "ability_warrior_henkerschlag",
+      "ability": {
+        "kind": "active",
+        "skillId": "henkerschlag",
+        "variantId": "expose"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "henkerschlag",
+        "variantId": "expose",
+        "kind": "active"
+      },
+      "description": "Macht alle getroffenen Gegner vier Sekunden verwundbar.",
+      "position": [
+        133,
+        542
+      ]
+    },
+    {
+      "id": "warrior_talent_5_0",
+      "name": "Lebensquell",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        363,
+        370
+      ],
       "effect": {
         "type": "self-life-steal-percent",
-        "perPoint": 0.1
+        "perPoint": 0.025
       }
     },
     {
-      "id": "health_legend",
-      "name": "Ungebrochen",
+      "id": "warrior_talent_5_1",
+      "name": "Doppelte Schneide",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "warrior_talent_5_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        347,
+        297
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1.0,
+        "stat": "Doppeltrefferchance"
+      }
+    },
+    {
+      "id": "warrior_talent_5_2",
+      "name": "Seelensuche",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "warrior_talent_5_1",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 3,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        341,
+        246
+      ],
+      "effect": {
+        "type": "soul-drop-percent",
+        "perPoint": 0.4
+      }
+    },
+    {
+      "id": "ability_warrior_zweiter-wind",
+      "name": "Zweiter Wind",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "warrior_talent_5_0",
+      "requiredParentPoints": 1,
+      "branch": "warrior",
+      "tier": 1,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "zweiter-wind"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "zweiter-wind",
+        "kind": "active"
+      },
+      "description": "Heilt vier Sekunden lang jede Sekunde 10 % des eigenen maximalen Lebens.",
+      "position": [
+        242,
+        300
+      ]
+    },
+    {
+      "id": "ability_warrior_zweiter-wind_party",
+      "name": "Gemeinsamer Atem",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_zweiter-wind",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "exclusiveGroup": "ability_warrior_zweiter-wind",
+      "ability": {
+        "kind": "active",
+        "skillId": "zweiter-wind",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "zweiter-wind",
+        "variantId": "party",
+        "kind": "active"
+      },
+      "description": "Heilt die gesamte lebende Gruppe.",
+      "position": [
+        133,
+        298
+      ]
+    },
+    {
+      "id": "ability_warrior_zweiter-wind_power",
+      "name": "Lebenswille",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_warrior_zweiter-wind",
+      "requiredParentPoints": 10,
+      "branch": "warrior",
+      "tier": 2,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "exclusiveGroup": "ability_warrior_zweiter-wind",
+      "ability": {
+        "kind": "active",
+        "skillId": "zweiter-wind",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "zweiter-wind",
+        "variantId": "power",
+        "kind": "active"
+      },
+      "description": "25 % eigenes Leben pro Sekunde.",
+      "position": [
+        186,
+        206
+      ]
+    },
+    {
+      "id": "warrior_keystone_0",
+      "name": "Vollendung",
       "rarity": "legendary",
       "maxPoints": 1,
-      "parent": "health_5",
+      "parent": "warrior_talent_0_2",
+      "requiredParentPoints": 5,
+      "branch": "warrior",
+      "tier": 4,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        650,
+        105
+      ],
+      "effect": {
+        "type": "final-damage-percent",
+        "perPoint": 25
+      }
+    },
+    {
+      "id": "warrior_keystone_1",
+      "name": "Unverwüstlich",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "warrior_talent_3_2",
+      "requiredParentPoints": 5,
+      "branch": "warrior",
+      "tier": 4,
+      "class": "warrior",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        250,
+        735
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 50,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "mage_talent_0_0",
+      "name": "Intelligenz",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
+      "position": [
+        450,
+        320
+      ],
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 1.5,
+        "stat": "Intelligenz"
+      }
+    },
+    {
+      "id": "mage_talent_0_1",
+      "name": "Lebenspolster",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "mage_talent_0_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        505,
+        270
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 1.0,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "mage_talent_0_2",
+      "name": "Meisterschaft",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "mage_talent_0_1",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 3,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        546,
+        239
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 1.0,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "ability_mage_arkanes-echo",
+      "name": "Arkanes Echo",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "mage_talent_0_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "arkanes-echo"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "arkanes-echo",
+        "kind": "passive"
+      },
+      "description": "Erhöht den Schaden des Magiers dauerhaft um {value} %.",
+      "position": [
+        450,
+        180
+      ]
+    },
+    {
+      "id": "ability_mage_arkanes-echo_party",
+      "name": "Geteiltes Wissen",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_arkanes-echo",
       "requiredParentPoints": 10,
-      "branch": "health",
-      "tier": 6,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "exclusiveGroup": "ability_mage_arkanes-echo",
+      "ability": {
+        "kind": "passive",
+        "skillId": "arkanes-echo",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "arkanes-echo",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "Der Bonus wirkt auf die ganze Gruppe.",
+      "position": [
+        397,
+        84
+      ]
+    },
+    {
+      "id": "ability_mage_arkanes-echo_power",
+      "name": "Vertiefung",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_arkanes-echo",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/magic-swirl.svg",
+      "exclusiveGroup": "ability_mage_arkanes-echo",
+      "ability": {
+        "kind": "passive",
+        "skillId": "arkanes-echo",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "arkanes-echo",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "Stärkerer Bonus nur für den Magier.",
+      "position": [
+        503,
+        84
+      ]
+    },
+    {
+      "id": "mage_talent_1_0",
+      "name": "Vitalität",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
       "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
+      "position": [
+        537,
+        370
+      ],
       "effect": {
-        "type": "additional-passive-slot",
-        "perPoint": 1
+        "type": "attribute-flat",
+        "perPoint": 1.5,
+        "stat": "Ausdauer"
       }
     },
     {
-      "id": "health_legend_alt",
-      "name": "Schemen",
+      "id": "mage_talent_1_1",
+      "name": "Schnelle Hände",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "mage_talent_1_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
+      "position": [
+        608,
+        392
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Angriffsgeschwindigkeit"
+      }
+    },
+    {
+      "id": "mage_talent_1_2",
+      "name": "Gesunde Konstitution",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "mage_talent_1_1",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 3,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        655,
+        413
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.8,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "ability_mage_aetherblick",
+      "name": "Ätherblick",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "mage_talent_1_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "aetherblick"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "aetherblick",
+        "kind": "passive"
+      },
+      "description": "Erhöht die kritische Trefferchance der Gruppe um {value} %.",
+      "position": [
+        658,
+        300
+      ]
+    },
+    {
+      "id": "ability_mage_aetherblick_party",
+      "name": "Geteiltes Wissen",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_aetherblick",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
+      "exclusiveGroup": "ability_mage_aetherblick",
+      "ability": {
+        "kind": "passive",
+        "skillId": "aetherblick",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "aetherblick",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "Der Bonus wirkt auf die ganze Gruppe.",
+      "position": [
+        714,
+        206
+      ]
+    },
+    {
+      "id": "ability_mage_aetherblick_power",
+      "name": "Vertiefung",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_aetherblick",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
+      "exclusiveGroup": "ability_mage_aetherblick",
+      "ability": {
+        "kind": "passive",
+        "skillId": "aetherblick",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "aetherblick",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "Stärkerer Bonus nur für den Magier.",
+      "position": [
+        767,
+        298
+      ]
+    },
+    {
+      "id": "mage_talent_2_0",
+      "name": "Kampfkraft",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        537,
+        470
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 3.0,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "mage_talent_2_1",
+      "name": "Entschlossenheit",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "mage_talent_2_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        553,
+        543
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.5,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "mage_talent_2_2",
+      "name": "Kritische Wucht",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "mage_talent_2_1",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 3,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "position": [
+        559,
+        594
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.8,
+        "stat": "Kritischer Schaden"
+      }
+    },
+    {
+      "id": "ability_mage_fast-caster",
+      "name": "Schnellzauberer",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "mage_talent_2_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "fast-caster"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "fast-caster",
+        "kind": "passive"
+      },
+      "description": "Erhöht die Abklingzeitreduktion dauerhaft um {value} %.",
+      "position": [
+        658,
+        540
+      ]
+    },
+    {
+      "id": "ability_mage_fast-caster_party",
+      "name": "Geteiltes Wissen",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_fast-caster",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "exclusiveGroup": "ability_mage_fast-caster",
+      "ability": {
+        "kind": "passive",
+        "skillId": "fast-caster",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "fast-caster",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "Der Bonus wirkt auf die ganze Gruppe.",
+      "position": [
+        767,
+        542
+      ]
+    },
+    {
+      "id": "ability_mage_fast-caster_power",
+      "name": "Vertiefung",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_fast-caster",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "exclusiveGroup": "ability_mage_fast-caster",
+      "ability": {
+        "kind": "passive",
+        "skillId": "fast-caster",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "fast-caster",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "Stärkerer Bonus nur für den Magier.",
+      "position": [
+        714,
+        634
+      ]
+    },
+    {
+      "id": "mage_talent_3_0",
+      "name": "Standfestigkeit",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "position": [
+        450,
+        520
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 6.0,
+        "stat": "Verteidigung"
+      }
+    },
+    {
+      "id": "mage_talent_3_1",
+      "name": "Tödlicher Blick",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "mage_talent_3_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "position": [
+        395,
+        570
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Kritische Chance"
+      }
+    },
+    {
+      "id": "mage_talent_3_2",
+      "name": "Eiserne Haut",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "mage_talent_3_1",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 3,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "position": [
+        354,
+        601
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.8,
+        "stat": "Verteidigung"
+      }
+    },
+    {
+      "id": "ability_mage_erfrieren",
+      "name": "Erfrieren",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "mage_talent_3_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/snowflake-1.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "erfrieren"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "erfrieren",
+        "kind": "active"
+      },
+      "description": "Verursacht 300 % Einzelschaden und friert das Ziel 3 Sekunden lang ein.",
+      "position": [
+        450,
+        660
+      ]
+    },
+    {
+      "id": "ability_mage_erfrieren_area",
+      "name": "Frostwelle",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_erfrieren",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/snowflake-1.svg",
+      "exclusiveGroup": "ability_mage_erfrieren",
+      "ability": {
+        "kind": "active",
+        "skillId": "erfrieren",
+        "variantId": "area"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "erfrieren",
+        "variantId": "area",
+        "kind": "active"
+      },
+      "description": "Friert alle lebenden Gegner ein.",
+      "position": [
+        503,
+        756
+      ]
+    },
+    {
+      "id": "ability_mage_erfrieren_shatter",
+      "name": "Splitterfrost",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_erfrieren",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/snowflake-1.svg",
+      "exclusiveGroup": "ability_mage_erfrieren",
+      "ability": {
+        "kind": "active",
+        "skillId": "erfrieren",
+        "variantId": "shatter"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "erfrieren",
+        "variantId": "shatter",
+        "kind": "active"
+      },
+      "description": "Eingefrorene Ziele erhalten doppelten Schaden.",
+      "position": [
+        397,
+        756
+      ]
+    },
+    {
+      "id": "mage_talent_4_0",
+      "name": "Präzision",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "position": [
+        363,
+        470
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.25,
+        "stat": "Trefferchance"
+      }
+    },
+    {
+      "id": "mage_talent_4_1",
+      "name": "Konzentration",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "mage_talent_4_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "position": [
+        292,
+        448
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Abklingzeitreduktion"
+      }
+    },
+    {
+      "id": "mage_talent_4_2",
+      "name": "Zehrende Macht",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "mage_talent_4_1",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 3,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "position": [
+        245,
+        427
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.8,
+        "stat": "Schaden über Zeit"
+      }
+    },
+    {
+      "id": "ability_mage_feuerball",
+      "name": "Feuerball",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "mage_talent_4_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "feuerball"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "feuerball",
+        "kind": "active"
+      },
+      "description": "Verbrennt ein Ziel und verursacht über 4 Sekunden insgesamt 950 % Schaden.",
+      "position": [
+        242,
+        540
+      ]
+    },
+    {
+      "id": "ability_mage_feuerball_instant",
+      "name": "Sofortige Verbrennung",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_feuerball",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
+      "exclusiveGroup": "ability_mage_feuerball",
+      "ability": {
+        "kind": "active",
+        "skillId": "feuerball",
+        "variantId": "instant"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "feuerball",
+        "variantId": "instant",
+        "kind": "active"
+      },
+      "description": "Halbe Grundabklingzeit; der gesamte Schaden trifft sofort als Direktschaden.",
+      "position": [
+        186,
+        634
+      ]
+    },
+    {
+      "id": "ability_mage_feuerball_area",
+      "name": "Feuersturm",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_feuerball",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
+      "exclusiveGroup": "ability_mage_feuerball",
+      "ability": {
+        "kind": "active",
+        "skillId": "feuerball",
+        "variantId": "area"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "feuerball",
+        "variantId": "area",
+        "kind": "active"
+      },
+      "description": "Brand trifft alle lebenden Gegner.",
+      "position": [
+        133,
+        542
+      ]
+    },
+    {
+      "id": "mage_talent_5_0",
+      "name": "Lebensquell",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        363,
+        370
+      ],
+      "effect": {
+        "type": "self-life-steal-percent",
+        "perPoint": 0.025
+      }
+    },
+    {
+      "id": "mage_talent_5_1",
+      "name": "Doppelte Schneide",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "mage_talent_5_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        347,
+        297
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1.0,
+        "stat": "Doppeltrefferchance"
+      }
+    },
+    {
+      "id": "mage_talent_5_2",
+      "name": "Seelensuche",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "mage_talent_5_1",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 3,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        341,
+        246
+      ],
+      "effect": {
+        "type": "soul-drop-percent",
+        "perPoint": 0.4
+      }
+    },
+    {
+      "id": "ability_mage_funken",
+      "name": "Funken",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "mage_talent_5_0",
+      "requiredParentPoints": 1,
+      "branch": "mage",
+      "tier": 1,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "funken"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "funken",
+        "kind": "active"
+      },
+      "description": "Ein Blitz springt durch alle Gegner und verursacht jedem 200 % Schaden.",
+      "position": [
+        242,
+        300
+      ]
+    },
+    {
+      "id": "ability_mage_funken_chain",
+      "name": "Kettenblitz",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_funken",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
+      "exclusiveGroup": "ability_mage_funken",
+      "ability": {
+        "kind": "active",
+        "skillId": "funken",
+        "variantId": "chain"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "funken",
+        "variantId": "chain",
+        "kind": "active"
+      },
+      "description": "Zwei weitere Sprünge je Ziel im selben Angriffsmoment.",
+      "position": [
+        133,
+        298
+      ]
+    },
+    {
+      "id": "ability_mage_funken_stun",
+      "name": "Donnerschlag",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_mage_funken",
+      "requiredParentPoints": 10,
+      "branch": "mage",
+      "tier": 2,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
+      "exclusiveGroup": "ability_mage_funken",
+      "ability": {
+        "kind": "active",
+        "skillId": "funken",
+        "variantId": "stun"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "funken",
+        "variantId": "stun",
+        "kind": "active"
+      },
+      "description": "Betäubt alle getroffenen Gegner eine Sekunde.",
+      "position": [
+        186,
+        206
+      ]
+    },
+    {
+      "id": "mage_keystone_0",
+      "name": "Arkane Vollendung",
       "rarity": "legendary",
       "maxPoints": 1,
-      "parent": "health_5",
-      "requiredParentPoints": 10,
-      "branch": "health",
-      "tier": 6,
-      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/ghost.svg",
+      "parent": "mage_talent_0_2",
+      "requiredParentPoints": 5,
+      "branch": "mage",
+      "tier": 4,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        650,
+        105
+      ],
       "effect": {
-        "type": "dodge-chance",
-        "perPoint": 40
+        "type": "final-damage-percent",
+        "perPoint": 25
+      }
+    },
+    {
+      "id": "mage_keystone_1",
+      "name": "Überladung",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "mage_talent_3_2",
+      "requiredParentPoints": 5,
+      "branch": "mage",
+      "tier": 4,
+      "class": "mage",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "position": [
+        250,
+        735
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 50,
+        "stat": "Kritischer Schaden"
+      }
+    },
+    {
+      "id": "healer_talent_0_0",
+      "name": "Glaube",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
+      "position": [
+        450,
+        320
+      ],
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 1.5,
+        "stat": "Glaube"
+      }
+    },
+    {
+      "id": "healer_talent_0_1",
+      "name": "Lebenspolster",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "healer_talent_0_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        505,
+        270
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 1.0,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "healer_talent_0_2",
+      "name": "Meisterschaft",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "healer_talent_0_1",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 3,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        546,
+        239
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 1.0,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "ability_healer_lebenssegen",
+      "name": "Lebenssegen",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "healer_talent_0_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "lebenssegen"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "lebenssegen",
+        "kind": "passive"
+      },
+      "description": "Erhöht die Lebenskraft der gesamten Gruppe dauerhaft um {value} %. Rastplatzheilung: +{restHealingPercent} %.",
+      "position": [
+        450,
+        180
+      ]
+    },
+    {
+      "id": "ability_healer_lebenssegen_party",
+      "name": "Lebensbund",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_lebenssegen",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "exclusiveGroup": "ability_healer_lebenssegen",
+      "ability": {
+        "kind": "passive",
+        "skillId": "lebenssegen",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "lebenssegen",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "Leben und Rastheilung wirken für die ganze Gruppe.",
+      "position": [
+        397,
+        84
+      ]
+    },
+    {
+      "id": "ability_healer_lebenssegen_power",
+      "name": "Lebenskraft",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_lebenssegen",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "exclusiveGroup": "ability_healer_lebenssegen",
+      "ability": {
+        "kind": "passive",
+        "skillId": "lebenssegen",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "lebenssegen",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "50 % eigenes Leben und 25 % eigene Rastheilung.",
+      "position": [
+        503,
+        84
+      ]
+    },
+    {
+      "id": "healer_talent_1_0",
+      "name": "Vitalität",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/heart-tower.svg",
+      "position": [
+        537,
+        370
+      ],
+      "effect": {
+        "type": "attribute-flat",
+        "perPoint": 1.5,
+        "stat": "Ausdauer"
+      }
+    },
+    {
+      "id": "healer_talent_1_1",
+      "name": "Schnelle Hände",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "healer_talent_1_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/lightning-branches.svg",
+      "position": [
+        608,
+        392
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Angriffsgeschwindigkeit"
+      }
+    },
+    {
+      "id": "healer_talent_1_2",
+      "name": "Gesunde Konstitution",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "healer_talent_1_1",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 3,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/shining-heart.svg",
+      "position": [
+        655,
+        413
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.8,
+        "stat": "Lebenskraft"
+      }
+    },
+    {
+      "id": "ability_healer_kampfsegen",
+      "name": "Kampfsegen",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "healer_talent_1_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/rally-the-troops.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "kampfsegen"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "kampfsegen",
+        "kind": "passive"
+      },
+      "description": "Multipliziert den verursachten Schaden beider Gruppenmitglieder mit 1,5.",
+      "position": [
+        658,
+        300
+      ]
+    },
+    {
+      "id": "ability_healer_kampfsegen_party",
+      "name": "Gemeinsamer Segen",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_kampfsegen",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/rally-the-troops.svg",
+      "exclusiveGroup": "ability_healer_kampfsegen",
+      "ability": {
+        "kind": "passive",
+        "skillId": "kampfsegen",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "kampfsegen",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "25 % multiplikativer Schaden für die Gruppe.",
+      "position": [
+        714,
+        206
+      ]
+    },
+    {
+      "id": "ability_healer_kampfsegen_power",
+      "name": "Kampfgebet",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_kampfsegen",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/rally-the-troops.svg",
+      "exclusiveGroup": "ability_healer_kampfsegen",
+      "ability": {
+        "kind": "passive",
+        "skillId": "kampfsegen",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "kampfsegen",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "50 % multiplikativer Schaden für den Heiler.",
+      "position": [
+        767,
+        298
+      ]
+    },
+    {
+      "id": "healer_talent_2_0",
+      "name": "Kampfkraft",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        537,
+        470
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 3.0,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "healer_talent_2_1",
+      "name": "Entschlossenheit",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "healer_talent_2_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        553,
+        543
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.5,
+        "stat": "Angriff"
+      }
+    },
+    {
+      "id": "healer_talent_2_2",
+      "name": "Kritische Wucht",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "healer_talent_2_1",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 3,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/broadsword.svg",
+      "position": [
+        559,
+        594
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.8,
+        "stat": "Kritischer Schaden"
+      }
+    },
+    {
+      "id": "ability_healer_seelenquell",
+      "name": "Seelenquell",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "healer_talent_2_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
+      "ability": {
+        "kind": "passive",
+        "skillId": "seelenquell"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "seelenquell",
+        "kind": "passive"
+      },
+      "description": "Eigener Schaden heilt den Heiler um bis zu 3 % des tatsächlich verursachten Schadens.",
+      "position": [
+        658,
+        540
+      ]
+    },
+    {
+      "id": "ability_healer_seelenquell_party",
+      "name": "Seelenkreislauf",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_seelenquell",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
+      "exclusiveGroup": "ability_healer_seelenquell",
+      "ability": {
+        "kind": "passive",
+        "skillId": "seelenquell",
+        "variantId": "party"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "seelenquell",
+        "variantId": "party",
+        "kind": "passive"
+      },
+      "description": "Jedes Gruppenmitglied erhält 3 % eigenen Lebensraub.",
+      "position": [
+        767,
+        542
+      ]
+    },
+    {
+      "id": "ability_healer_seelenquell_power",
+      "name": "Tiefe Quelle",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_seelenquell",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
+      "exclusiveGroup": "ability_healer_seelenquell",
+      "ability": {
+        "kind": "passive",
+        "skillId": "seelenquell",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "seelenquell",
+        "variantId": "power",
+        "kind": "passive"
+      },
+      "description": "6 % eigener Lebensraub.",
+      "position": [
+        714,
+        634
+      ]
+    },
+    {
+      "id": "healer_talent_3_0",
+      "name": "Standfestigkeit",
+      "rarity": "common",
+      "maxPoints": 100,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "position": [
+        450,
+        520
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 6.0,
+        "stat": "Verteidigung"
+      }
+    },
+    {
+      "id": "healer_talent_3_1",
+      "name": "Tödlicher Blick",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "healer_talent_3_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "position": [
+        395,
+        570
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Kritische Chance"
+      }
+    },
+    {
+      "id": "healer_talent_3_2",
+      "name": "Eiserne Haut",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "healer_talent_3_1",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 3,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bordered-shield.svg",
+      "position": [
+        354,
+        601
+      ],
+      "effect": {
+        "type": "final-percent",
+        "perPoint": 0.8,
+        "stat": "Verteidigung"
+      }
+    },
+    {
+      "id": "ability_healer_erneuerung",
+      "name": "Erneuerung",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "healer_talent_3_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "erneuerung"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "erneuerung",
+        "kind": "active"
+      },
+      "description": "Stellt bis zu 25 % Gruppenleben wieder her.",
+      "position": [
+        450,
+        660
+      ]
+    },
+    {
+      "id": "ability_healer_erneuerung_power",
+      "name": "Erweckung",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_erneuerung",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
+      "exclusiveGroup": "ability_healer_erneuerung",
+      "ability": {
+        "kind": "active",
+        "skillId": "erneuerung",
+        "variantId": "power"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "erneuerung",
+        "variantId": "power",
+        "kind": "active"
+      },
+      "description": "40 % Gruppenheilung.",
+      "position": [
+        503,
+        756
+      ]
+    },
+    {
+      "id": "ability_healer_erneuerung_renewal",
+      "name": "Lebensstrom",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_erneuerung",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/holy-grail.svg",
+      "exclusiveGroup": "ability_healer_erneuerung",
+      "ability": {
+        "kind": "active",
+        "skillId": "erneuerung",
+        "variantId": "renewal"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "erneuerung",
+        "variantId": "renewal",
+        "kind": "active"
+      },
+      "description": "100 % Gruppenheilung verteilt auf fünf Sekunden.",
+      "position": [
+        397,
+        756
+      ]
+    },
+    {
+      "id": "healer_talent_4_0",
+      "name": "Präzision",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
+      "position": [
+        363,
+        470
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.25,
+        "stat": "Trefferchance"
+      }
+    },
+    {
+      "id": "healer_talent_4_1",
+      "name": "Konzentration",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "healer_talent_4_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/hourglass.svg",
+      "position": [
+        292,
+        448
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.5,
+        "stat": "Abklingzeitreduktion"
+      }
+    },
+    {
+      "id": "healer_talent_4_2",
+      "name": "Zehrende Macht",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "healer_talent_4_1",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 3,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "position": [
+        245,
+        427
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 0.8,
+        "stat": "Schaden über Zeit"
+      }
+    },
+    {
+      "id": "ability_healer_holy-circle",
+      "name": "Heiliger Kreis",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "healer_talent_4_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/sunbeams.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "holy-circle"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "holy-circle",
+        "kind": "active"
+      },
+      "description": "Verursacht in einem großen Radius 200 % Flächenschaden.",
+      "position": [
+        242,
+        540
+      ]
+    },
+    {
+      "id": "ability_healer_holy-circle_heal",
+      "name": "Lichtspende",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_holy-circle",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/sunbeams.svg",
+      "exclusiveGroup": "ability_healer_holy-circle",
+      "ability": {
+        "kind": "active",
+        "skillId": "holy-circle",
+        "variantId": "heal"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "holy-circle",
+        "variantId": "heal",
+        "kind": "active"
+      },
+      "description": "Jeder Einsatz heilt die Gruppe um insgesamt 5 % des tatsächlich verursachten Schadens.",
+      "position": [
+        186,
+        634
+      ]
+    },
+    {
+      "id": "ability_healer_holy-circle_rings",
+      "name": "Dreifacher Kreis",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_holy-circle",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/sunbeams.svg",
+      "exclusiveGroup": "ability_healer_holy-circle",
+      "ability": {
+        "kind": "active",
+        "skillId": "holy-circle",
+        "variantId": "rings"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "holy-circle",
+        "variantId": "rings",
+        "kind": "active"
+      },
+      "description": "Zwei weitere Ringe mit 150 % und 100 % Grundschaden im selben Frame.",
+      "position": [
+        133,
+        542
+      ]
+    },
+    {
+      "id": "healer_talent_5_0",
+      "name": "Lebensquell",
+      "rarity": "common",
+      "maxPoints": 40,
+      "parent": "origin",
+      "requiredParentPoints": 0,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        363,
+        370
+      ],
+      "effect": {
+        "type": "self-life-steal-percent",
+        "perPoint": 0.025
+      }
+    },
+    {
+      "id": "healer_talent_5_1",
+      "name": "Doppelte Schneide",
+      "rarity": "common",
+      "maxPoints": 20,
+      "parent": "healer_talent_5_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/crossed-swords.svg",
+      "position": [
+        347,
+        297
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 1.0,
+        "stat": "Doppeltrefferchance"
+      }
+    },
+    {
+      "id": "healer_talent_5_2",
+      "name": "Seelensuche",
+      "rarity": "rare",
+      "maxPoints": 50,
+      "parent": "healer_talent_5_1",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 3,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        341,
+        246
+      ],
+      "effect": {
+        "type": "soul-drop-percent",
+        "perPoint": 0.4
+      }
+    },
+    {
+      "id": "ability_healer_seelenernte",
+      "name": "Seelenernte",
+      "rarity": "common",
+      "maxPoints": 10,
+      "parent": "healer_talent_5_0",
+      "requiredParentPoints": 1,
+      "branch": "healer",
+      "tier": 1,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "ability": {
+        "kind": "active",
+        "skillId": "seelenernte"
+      },
+      "effect": {
+        "type": "class-skill",
+        "perPoint": 1,
+        "skillId": "seelenernte",
+        "kind": "active"
+      },
+      "description": "Entzieht allen lebenden Gegnern 20 % ihres aktuellen Lebens. 20 % des tatsächlich entzogenen Lebens heilen gleichmäßig die lebenden Gruppenmitglieder. In der Bossprüfung stattdessen 200 % Grundschaden.",
+      "position": [
+        242,
+        300
+      ]
+    },
+    {
+      "id": "ability_healer_seelenernte_heal",
+      "name": "Seelenspende",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_seelenernte",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "exclusiveGroup": "ability_healer_seelenernte",
+      "ability": {
+        "kind": "active",
+        "skillId": "seelenernte",
+        "variantId": "heal"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "seelenernte",
+        "variantId": "heal",
+        "kind": "active"
+      },
+      "description": "40 % des entzogenen Lebens werden als Gruppenheilung verteilt.",
+      "position": [
+        133,
+        298
+      ]
+    },
+    {
+      "id": "ability_healer_seelenernte_reap",
+      "name": "Nachlese",
+      "rarity": "rare",
+      "maxPoints": 1,
+      "parent": "ability_healer_seelenernte",
+      "requiredParentPoints": 10,
+      "branch": "healer",
+      "tier": 2,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/bleeding-heart.svg",
+      "exclusiveGroup": "ability_healer_seelenernte",
+      "ability": {
+        "kind": "active",
+        "skillId": "seelenernte",
+        "variantId": "reap"
+      },
+      "effect": {
+        "type": "skill-variant",
+        "perPoint": 1,
+        "skillId": "seelenernte",
+        "variantId": "reap",
+        "kind": "active"
+      },
+      "description": "30 % aktuelles Gegnerleben als Schaden; keine Gruppenheilung.",
+      "position": [
+        186,
+        206
+      ]
+    },
+    {
+      "id": "healer_keystone_0",
+      "name": "Gnadenstoß",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "healer_talent_0_2",
+      "requiredParentPoints": 5,
+      "branch": "healer",
+      "tier": 4,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        650,
+        105
+      ],
+      "effect": {
+        "type": "healer-final-damage-percent",
+        "perPoint": 25
+      }
+    },
+    {
+      "id": "healer_keystone_1",
+      "name": "Barmherzigkeit",
+      "rarity": "legendary",
+      "maxPoints": 1,
+      "parent": "healer_talent_3_2",
+      "requiredParentPoints": 5,
+      "branch": "healer",
+      "tier": 4,
+      "class": "healer",
+      "iconAsset": "Assets/Icons/000000/transparent/1x1/lorc/aura.svg",
+      "position": [
+        250,
+        735
+      ],
+      "effect": {
+        "type": "stat-flat",
+        "perPoint": 20,
+        "stat": "Buff- und Heileffektivität"
       }
     }
-  ]
+  ],
+  "classSkillRules": {
+    "maxPassives": 1,
+    "subnodesRequireMaxRank": true
+  }
 }

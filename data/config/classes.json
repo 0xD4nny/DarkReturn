@@ -46,19 +46,19 @@
   "classAttributeScaling": {
     "hunter": {
       "damageAttribute": "Geschicklichkeit",
-      "damagePercentPerPoint": 1.5,
-      "healthPerStamina": 14,
+      "damagePercentPerPoint": 1,
+      "healthPerStamina": 15,
       "healingPercentPerFaith": 0
     },
     "warrior": {
       "damageAttribute": "Stärke",
-      "damagePercentPerPoint": 0.55,
-      "healthPerStamina": 25,
+      "damagePercentPerPoint": 0.8,
+      "healthPerStamina": 20,
       "healingPercentPerFaith": 0
     },
     "mage": {
       "damageAttribute": "Intelligenz",
-      "damagePercentPerPoint": 0.9,
+      "damagePercentPerPoint": 1.2,
       "healthPerStamina": 12,
       "healingPercentPerFaith": 0
     },
@@ -75,20 +75,133 @@
         {
           "id": "poison-arrow",
           "name": "Giftpfeil",
-          "effect": { "type": "bow-poison", "chancePercent": 50, "durationSeconds": 3, "damagePercent": 500 },
-          "description": "Pfeiltreffer haben eine Chance von {chancePercent} %, das Ziel zu vergiften. Das Gift verursacht über {durationSeconds} Sekunden insgesamt {damagePercent} % Schaden."
+          "effect": {
+            "type": "bow-poison",
+            "chancePercent": 50,
+            "durationSeconds": 3,
+            "damagePercent": 500
+          },
+          "description": "Pfeiltreffer haben eine Chance von {chancePercent} %, das Ziel zu vergiften. Das Gift verursacht über {durationSeconds} Sekunden insgesamt {damagePercent} % Schaden.",
+          "variants": [
+            {
+              "id": "concentrated",
+              "name": "Konzentriertes Gift",
+              "description": "250 % Giftschaden in einer statt drei Sekunden.",
+              "overrides": {
+                "effect": {
+                  "type": "bow-poison",
+                  "chancePercent": 50,
+                  "durationSeconds": 1,
+                  "damagePercent": 250
+                }
+              }
+            },
+            {
+              "id": "certain",
+              "name": "Sicherer Giftpfeil",
+              "description": "100 % Giftchance.",
+              "overrides": {
+                "effect": {
+                  "type": "bow-poison",
+                  "chancePercent": 100,
+                  "durationSeconds": 3,
+                  "damagePercent": 500
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         },
         {
           "id": "predator-eye",
           "name": "Raubtierauge",
-          "effect": { "type": "stat-flat", "stat": "Kritische Chance", "scope": "self", "value": 100 },
-          "description": "Erhöht die kritische Trefferchance des Jägers um {value} %."
+          "effect": {
+            "type": "stat-flat",
+            "scope": "self",
+            "stat": "Kritische Chance",
+            "value": 25
+          },
+          "description": "Erhöht die kritische Trefferchance des Jägers um {value} %.",
+          "variants": [
+            {
+              "id": "overflow",
+              "name": "Tödliche Präzision",
+              "description": "Kritische Chance über 100 % wird 1:1 zu kritischem Schaden.",
+              "overrides": {
+                "effect": [
+                  {
+                    "type": "stat-flat",
+                    "scope": "self",
+                    "stat": "Kritische Chance",
+                    "value": 25
+                  },
+                  {
+                    "type": "critical-overflow",
+                    "scope": "self",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            {
+              "id": "keen",
+              "name": "Scharfer Blick",
+              "description": "50 % kritische Chance.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-flat",
+                  "scope": "self",
+                  "stat": "Kritische Chance",
+                  "value": 50
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         },
         {
           "id": "soul-scent",
           "name": "Seelenwitterung",
-          "effect": { "type": "stat-flat", "stat": "Seelenfund", "scope": "party", "value": 100 },
-          "description": "Die Gruppe findet dauerhaft {value} % mehr Seelen."
+          "effect": {
+            "type": "soul-drop-percent",
+            "scope": "party",
+            "value": 50
+          },
+          "description": "Die Gruppe findet dauerhaft {value} % mehr Seelen.",
+          "variants": [
+            {
+              "id": "souls",
+              "name": "Seelenjagd",
+              "description": "100 % mehr Kampf-Seelen für das Team.",
+              "overrides": {
+                "effect": {
+                  "type": "soul-drop-percent",
+                  "scope": "party",
+                  "value": 100
+                }
+              }
+            },
+            {
+              "id": "loot",
+              "name": "Schatzwitterung",
+              "description": "Zusätzlich 25 % relative Droprate für das Team.",
+              "overrides": {
+                "effect": [
+                  {
+                    "type": "soul-drop-percent",
+                    "scope": "party",
+                    "value": 50
+                  },
+                  {
+                    "type": "drop-rate-percent",
+                    "scope": "party",
+                    "value": 25
+                  }
+                ]
+              }
+            }
+          ],
+          "maxRanks": 10
         }
       ],
       "active": [
@@ -98,25 +211,98 @@
           "description": "Ein gezielter Angriff mit 400 % Schaden.",
           "cooldown": 1,
           "effect": "damage",
-          "damageMultiplier": 4
+          "damageMultiplier": 4,
+          "variants": [
+            {
+              "id": "power",
+              "name": "Durchschlag",
+              "description": "Doppelter Grundschaden.",
+              "overrides": {
+                "damageMultiplier": 8
+              }
+            },
+            {
+              "id": "area",
+              "name": "Streuschuss",
+              "description": "Trifft alle lebenden Gegner.",
+              "overrides": {
+                "effect": "area-damage",
+                "areaEffect": true
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         },
         {
-          "id": "pfeilsalve",
-          "name": "Pfeilsalve",
-          "description": "Drei schnelle Treffer mit je 100 % Schaden.",
-          "cooldown": 1,
-          "effect": "multi-hit",
-          "hitCount": 3,
-          "hitMultiplier": 1
+          "id": "feuerschuss",
+          "name": "Feuerschuss",
+          "description": "200 % Flächenschaden und 200 % Brandschaden über zwei Sekunden.",
+          "cooldown": 4,
+          "effect": "fire-area",
+          "damageMultiplier": 2,
+          "burnMultiplier": 2,
+          "burnDuration": 2,
+          "areaEffect": true,
+          "variants": [
+            {
+              "id": "impact",
+              "name": "Explosiver Schuss",
+              "description": "Kein Brand; 400 % direkter Grundschaden.",
+              "overrides": {
+                "burnMultiplier": 0,
+                "damageMultiplier": 4
+              }
+            },
+            {
+              "id": "expose",
+              "name": "Brandmal",
+              "description": "Brennende Ziele werden beim Treffer zwei Sekunden verwundbar.",
+              "overrides": {
+                "burnVulnerabilitySeconds": 2
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         },
         {
           "id": "verwundender-schuss",
           "name": "Verwundender Schuss",
           "description": "Verursacht 1000 % Schaden und macht das Ziel 3 Sekunden verwundbar.",
-          "cooldown": 8,
+          "cooldown": 4,
           "effect": "vulnerable-hit",
           "damageMultiplier": 10,
-          "vulnerableDuration": 3
+          "vulnerableDuration": 3,
+          "variants": [
+            {
+              "id": "duration",
+              "name": "Tiefe Wunde",
+              "description": "Doppelte Dauer der Verwundbarkeit.",
+              "overrides": {
+                "vulnerableDuration": 6
+              }
+            },
+            {
+              "id": "area",
+              "name": "Offene Flanke",
+              "description": "Trifft alle lebenden Gegner.",
+              "overrides": {
+                "areaEffect": true
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         }
       ]
     },
@@ -125,50 +311,222 @@
         {
           "id": "kampfrausch",
           "name": "Kampfrausch",
-          "effect": { "type": "damage-percent", "scope": "party", "value": 50 },
-          "description": "Erhöht den Gruppenangriff dauerhaft um {value} %."
+          "effect": {
+            "type": "damage-percent",
+            "scope": "self",
+            "value": 50
+          },
+          "description": "Erhöht den Gruppenangriff dauerhaft um {value} %.",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Gemeinsame Stärke",
+              "description": "Der Bonus wirkt auf die ganze Gruppe.",
+              "overrides": {
+                "effect": {
+                  "type": "damage-percent",
+                  "scope": "party",
+                  "value": 50
+                }
+              }
+            },
+            {
+              "id": "power",
+              "name": "Innere Stärke",
+              "description": "Doppelter Bonus nur für den Krieger.",
+              "overrides": {
+                "effect": {
+                  "type": "damage-percent",
+                  "scope": "self",
+                  "value": 100
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         },
         {
           "id": "unbeugsam",
           "name": "Unbeugsam",
-          "effect": { "type": "stat-percent", "stat": "Lebenskraft", "scope": "party", "value": 50 },
-          "description": "Erhöht die Gruppenlebenskraft dauerhaft um {value} %."
+          "effect": {
+            "type": "stat-percent",
+            "scope": "self",
+            "stat": "Lebenskraft",
+            "value": 50
+          },
+          "description": "Erhöht die Gruppenlebenskraft dauerhaft um {value} %.",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Gemeinsame Stärke",
+              "description": "Der Bonus wirkt auf die ganze Gruppe.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-percent",
+                  "scope": "party",
+                  "stat": "Lebenskraft",
+                  "value": 50
+                }
+              }
+            },
+            {
+              "id": "power",
+              "name": "Innere Stärke",
+              "description": "Doppelter Bonus nur für den Krieger.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-percent",
+                  "scope": "self",
+                  "stat": "Lebenskraft",
+                  "value": 100
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         },
         {
           "id": "wachtwall",
           "name": "Wachtwall",
-          "effect": { "type": "stat-percent", "stat": "Verteidigung", "scope": "party", "value": 100 },
-          "description": "Erhöht die Gruppenverteidigung dauerhaft um {value} %."
+          "effect": {
+            "type": "stat-percent",
+            "scope": "self",
+            "stat": "Verteidigung",
+            "value": 100
+          },
+          "description": "Erhöht die Gruppenverteidigung dauerhaft um {value} %.",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Gemeinsame Stärke",
+              "description": "Der Bonus wirkt auf die ganze Gruppe.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-percent",
+                  "scope": "party",
+                  "stat": "Verteidigung",
+                  "value": 100
+                }
+              }
+            },
+            {
+              "id": "power",
+              "name": "Innere Stärke",
+              "description": "Doppelter Bonus nur für den Krieger.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-percent",
+                  "scope": "self",
+                  "stat": "Verteidigung",
+                  "value": 200
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         }
       ],
       "active": [
         {
           "id": "stampfen",
           "name": "Stampfen",
-          "description": "Verursacht 1000 % Schaden und setzt den Gegner 3 Sekunden außer Kraft.",
-          "cooldown": 8,
-          "effect": "stun-hit",
-          "damageMultiplier": 10,
+          "description": "Verursacht 500 % Schaden und setzt den Gegner 3 Sekunden außer Kraft.",
+          "cooldown": 4,
+          "effect": "damage",
+          "damageMultiplier": 5,
           "stunDuration": 3,
-          "projectileType": "stones"
+          "projectileType": "stones",
+          "variants": [
+            {
+              "id": "stun",
+              "name": "Erschütterung",
+              "description": "Betäubt das Ziel drei Sekunden.",
+              "overrides": {
+                "effect": "stun-hit",
+                "stunDuration": 3
+              }
+            },
+            {
+              "id": "power",
+              "name": "Zertrümmern",
+              "description": "Doppelter Grundschaden.",
+              "overrides": {
+                "damageMultiplier": 20
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         },
         {
           "id": "henkerschlag",
           "name": "Henkerschlag",
           "description": "Ein wuchtiger Schlag mit 300 % Schaden.",
           "cooldown": 1,
-          "effect": "damage",
-          "damageMultiplier": 3,
-          "projectileType": "stones"
+          "effect": "area-damage",
+          "damageMultiplier": 2,
+          "projectileType": "cleave",
+          "areaEffect": true,
+          "variants": [
+            {
+              "id": "power",
+              "name": "Hinrichtung",
+              "description": "400 % Flächen-Grundschaden.",
+              "overrides": {
+                "damageMultiplier": 4
+              }
+            },
+            {
+              "id": "expose",
+              "name": "Aufgebrochen",
+              "description": "Macht alle getroffenen Gegner vier Sekunden verwundbar.",
+              "overrides": {
+                "effect": "vulnerable-hit",
+                "vulnerableDuration": 4
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         },
         {
-          "id": "schildwall",
-          "name": "Schildwall",
-          "description": "Verringert erlittenen Gruppenschaden 4 Sekunden lang um 95 %.",
-          "cooldown": 8,
-          "effect": "guard",
-          "guardPercent": 95,
-          "guardDuration": 4
+          "id": "zweiter-wind",
+          "name": "Zweiter Wind",
+          "description": "Heilt vier Sekunden lang jede Sekunde 10 % des eigenen maximalen Lebens.",
+          "cooldown": 16,
+          "effect": "heal-over-time",
+          "healPercent": 10,
+          "durationSeconds": 4,
+          "healScope": "self",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Gemeinsamer Atem",
+              "description": "Heilt die gesamte lebende Gruppe.",
+              "overrides": {
+                "healScope": "party"
+              }
+            },
+            {
+              "id": "power",
+              "name": "Lebenswille",
+              "description": "25 % eigenes Leben pro Sekunde.",
+              "overrides": {
+                "healPercent": 25
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         }
       ]
     },
@@ -177,40 +535,188 @@
         {
           "id": "arkanes-echo",
           "name": "Arkanes Echo",
-          "effect": { "type": "damage-percent", "scope": "self", "value": 50 },
-          "description": "Erhöht den Schaden des Magiers dauerhaft um {value} %."
+          "effect": {
+            "type": "damage-percent",
+            "scope": "self",
+            "value": 25
+          },
+          "description": "Erhöht den Schaden des Magiers dauerhaft um {value} %.",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Geteiltes Wissen",
+              "description": "Der Bonus wirkt auf die ganze Gruppe.",
+              "overrides": {
+                "effect": {
+                  "type": "damage-percent",
+                  "scope": "party",
+                  "value": 25
+                }
+              }
+            },
+            {
+              "id": "power",
+              "name": "Vertiefung",
+              "description": "Stärkerer Bonus nur für den Magier.",
+              "overrides": {
+                "effect": {
+                  "type": "damage-percent",
+                  "scope": "self",
+                  "value": 50
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         },
         {
           "id": "aetherblick",
           "name": "Ätherblick",
-          "effect": { "type": "stat-flat", "stat": "Kritische Chance", "scope": "party", "value": 25 },
-          "description": "Erhöht die kritische Trefferchance der Gruppe um {value} %."
+          "effect": {
+            "type": "stat-flat",
+            "scope": "self",
+            "stat": "Kritische Chance",
+            "value": 15
+          },
+          "description": "Erhöht die kritische Trefferchance der Gruppe um {value} %.",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Geteiltes Wissen",
+              "description": "Der Bonus wirkt auf die ganze Gruppe.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-flat",
+                  "scope": "party",
+                  "stat": "Kritische Chance",
+                  "value": 15
+                }
+              }
+            },
+            {
+              "id": "power",
+              "name": "Vertiefung",
+              "description": "Stärkerer Bonus nur für den Magier.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-flat",
+                  "scope": "self",
+                  "stat": "Kritische Chance",
+                  "value": 25
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         },
         {
           "id": "fast-caster",
           "name": "Schnellzauberer",
-          "effect": { "type": "stat-flat", "stat": "Abklingzeitreduktion", "scope": "self", "value": 25 },
-          "description": "Erhöht die Abklingzeitreduktion dauerhaft um {value} %."
+          "effect": {
+            "type": "stat-flat",
+            "scope": "self",
+            "stat": "Abklingzeitreduktion",
+            "value": 15
+          },
+          "description": "Erhöht die Abklingzeitreduktion dauerhaft um {value} %.",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Geteiltes Wissen",
+              "description": "Der Bonus wirkt auf die ganze Gruppe.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-flat",
+                  "scope": "party",
+                  "stat": "Abklingzeitreduktion",
+                  "value": 15
+                }
+              }
+            },
+            {
+              "id": "power",
+              "name": "Vertiefung",
+              "description": "Stärkerer Bonus nur für den Magier.",
+              "overrides": {
+                "effect": {
+                  "type": "stat-flat",
+                  "scope": "self",
+                  "stat": "Abklingzeitreduktion",
+                  "value": 25
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         }
       ],
       "active": [
         {
           "id": "erfrieren",
           "name": "Erfrieren",
-          "description": "Verursacht 300 % Einzelschaden und friert das Ziel 3 Sekunden lang ein.",
+          "description": "Verursacht 800 % Einzelschaden und friert das Ziel 3 Sekunden lang ein.",
           "cooldown": 4,
           "effect": "freeze-hit",
           "damageMultiplier": 3,
-          "freezeDuration": 3
+          "freezeDuration": 3,
+          "variants": [
+            {
+              "id": "area",
+              "name": "Frostwelle",
+              "description": "Friert alle lebenden Gegner ein.",
+              "overrides": {
+                "areaEffect": true
+              }
+            },
+            {
+              "id": "shatter",
+              "name": "Splitterfrost",
+              "description": "Eingefrorene Ziele erhalten doppelten Schaden.",
+              "overrides": {
+                "frozenDamagePercent": 100
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         },
         {
           "id": "feuerball",
           "name": "Feuerball",
-          "description": "Verbrennt ein Ziel und verursacht über 4 Sekunden insgesamt 950 % Schaden.",
+          "description": "Verbrennt ein Ziel und verursacht über 4 Sekunden insgesamt 800 % Schaden.",
           "cooldown": 4,
           "effect": "burn-hit",
-          "damageMultiplier": 9.5,
-          "burnDuration": 4
+          "damageMultiplier": 8,
+          "burnDuration": 4,
+          "variants": [
+            {
+              "id": "instant",
+              "name": "Sofortige Verbrennung",
+              "description": "Halbe Grundabklingzeit; der gesamte Schaden trifft sofort als Direktschaden.",
+              "overrides": {
+                "effect": "damage",
+                "cooldown": 2.0,
+                "instantFireball": true,
+                "projectileType": "fire"
+              }
+            },
+            {
+              "id": "area",
+              "name": "Feuersturm",
+              "description": "Brand trifft alle lebenden Gegner.",
+              "overrides": {
+                "areaEffect": true
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         },
         {
           "id": "funken",
@@ -218,7 +724,32 @@
           "description": "Ein Blitz springt durch alle Gegner und verursacht jedem 200 % Schaden.",
           "cooldown": 1,
           "effect": "area-damage",
-          "damageMultiplier": 2
+          "damageMultiplier": 2,
+          "variants": [
+            {
+              "id": "chain",
+              "name": "Kettenblitz",
+              "description": "Zwei weitere Sprünge je Ziel im selben Angriffsmoment.",
+              "overrides": {
+                "repeatHits": 3
+              }
+            },
+            {
+              "id": "stun",
+              "name": "Donnerschlag",
+              "description": "Betäubt alle getroffenen Gegner eine Sekunde.",
+              "overrides": {
+                "effect": "stun-hit",
+                "areaEffect": true,
+                "stunDuration": 1
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         }
       ]
     },
@@ -228,22 +759,136 @@
           "id": "lebenssegen",
           "name": "Lebenssegen",
           "effect": [
-            { "type": "stat-percent", "stat": "Lebenskraft", "scope": "party", "value": 50 },
-            { "type": "rest-healing-percent", "scope": "party", "value": 5 }
+            {
+              "type": "stat-percent",
+              "scope": "self",
+              "stat": "Lebenskraft",
+              "value": 25
+            },
+            {
+              "type": "rest-healing-percent",
+              "scope": "self",
+              "value": 10
+            }
           ],
-          "description": "Erhöht die Lebenskraft der gesamten Gruppe dauerhaft um {value} %. Rastplatzheilung: +{restHealingPercent} %."
+          "description": "Erhöht die Lebenskraft der gesamten Gruppe dauerhaft um {value} %. Rastplatzheilung: +{restHealingPercent} %.",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Lebensbund",
+              "description": "Leben und Rastheilung wirken für die ganze Gruppe.",
+              "overrides": {
+                "effect": [
+                  {
+                    "type": "stat-percent",
+                    "scope": "party",
+                    "stat": "Lebenskraft",
+                    "value": 25
+                  },
+                  {
+                    "type": "rest-healing-percent",
+                    "scope": "party",
+                    "value": 10
+                  }
+                ]
+              }
+            },
+            {
+              "id": "power",
+              "name": "Lebenskraft",
+              "description": "50 % eigenes Leben und 25 % eigene Rastheilung.",
+              "overrides": {
+                "effect": [
+                  {
+                    "type": "stat-percent",
+                    "scope": "self",
+                    "stat": "Lebenskraft",
+                    "value": 50
+                  },
+                  {
+                    "type": "rest-healing-percent",
+                    "scope": "self",
+                    "value": 25
+                  }
+                ]
+              }
+            }
+          ],
+          "maxRanks": 10
         },
         {
           "id": "kampfsegen",
           "name": "Kampfsegen",
-          "effect": { "type": "multiplicative-damage-percent", "scope": "party", "value": 50 },
-          "description": "Multipliziert den verursachten Schaden beider Gruppenmitglieder mit 1,5."
+          "effect": {
+            "type": "multiplicative-damage-percent",
+            "scope": "self",
+            "value": 25
+          },
+          "description": "Multipliziert den verursachten Schaden beider Gruppenmitglieder mit 1,5.",
+          "variants": [
+            {
+              "id": "party",
+              "name": "Gemeinsamer Segen",
+              "description": "25 % multiplikativer Schaden für die Gruppe.",
+              "overrides": {
+                "effect": {
+                  "type": "multiplicative-damage-percent",
+                  "scope": "party",
+                  "value": 25
+                }
+              }
+            },
+            {
+              "id": "power",
+              "name": "Kampfgebet",
+              "description": "50 % multiplikativer Schaden für den Heiler.",
+              "overrides": {
+                "effect": {
+                  "type": "multiplicative-damage-percent",
+                  "scope": "self",
+                  "value": 50
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         },
         {
-          "id": "lichtwacht",
-          "name": "Lichtwacht",
-          "effect": { "type": "taunt", "scope": "self" },
-          "description": "Zieht alle Gegnerangriffe auf den Heiler, solange er lebt. Der andere Held wird erst nach seinem Tod zum Ziel."
+          "id": "seelenquell",
+          "name": "Seelenquell",
+          "description": "Eigener Schaden heilt den Heiler um bis zu 3 % des tatsächlich verursachten Schadens.",
+          "effect": {
+            "type": "life-steal-percent",
+            "scope": "self",
+            "value": 3
+          },
+          "variants": [
+            {
+              "id": "party",
+              "name": "Seelenkreislauf",
+              "description": "Jedes Gruppenmitglied erhält 3 % eigenen Lebensraub.",
+              "overrides": {
+                "effect": {
+                  "type": "life-steal-percent",
+                  "scope": "party",
+                  "value": 3
+                }
+              }
+            },
+            {
+              "id": "power",
+              "name": "Tiefe Quelle",
+              "description": "6 % eigener Lebensraub.",
+              "overrides": {
+                "effect": {
+                  "type": "life-steal-percent",
+                  "scope": "self",
+                  "value": 6
+                }
+              }
+            }
+          ],
+          "maxRanks": 10
         }
       ],
       "active": [
@@ -253,7 +898,33 @@
           "description": "Stellt bis zu 25 % Gruppenleben wieder her.",
           "cooldown": 4,
           "effect": "heal",
-          "healPercent": 25
+          "healPercent": 25,
+          "variants": [
+            {
+              "id": "power",
+              "name": "Erweckung",
+              "description": "40 % Gruppenheilung.",
+              "overrides": {
+                "healPercent": 40
+              }
+            },
+            {
+              "id": "renewal",
+              "name": "Lebensstrom",
+              "description": "100 % Gruppenheilung verteilt auf fünf Sekunden.",
+              "overrides": {
+                "effect": "heal-over-time",
+                "healPercent": 20,
+                "durationSeconds": 5,
+                "healScope": "party"
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         },
         {
           "id": "holy-circle",
@@ -261,15 +932,68 @@
           "description": "Verursacht in einem großen Radius 200 % Flächenschaden.",
           "cooldown": 1,
           "effect": "area-damage",
-          "damageMultiplier": 2
+          "damageMultiplier": 2,
+          "variants": [
+            {
+              "id": "heal",
+              "name": "Lichtspende",
+              "description": "Jeder Einsatz heilt die Gruppe um insgesamt 5 % des tatsächlich verursachten Schadens.",
+              "overrides": {
+                "castHealingPercent": 5
+              }
+            },
+            {
+              "id": "rings",
+              "name": "Dreifacher Kreis",
+              "description": "Zwei weitere Ringe mit 150 % und 100 % Grundschaden im selben Frame.",
+              "overrides": {
+                "additionalRingMultipliers": [
+                  1.5,
+                  1
+                ]
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         },
         {
-          "id": "unkillable",
-          "name": "Unsterblichkeit",
-          "description": "Werde 4 Sekunden lang unverwundbar.",
-          "cooldown": 16,
-          "effect": "unkillable",
-          "durationSeconds": 4
+          "id": "seelenernte",
+          "name": "Seelenernte",
+          "description": "Entzieht allen lebenden Gegnern 20 % ihres aktuellen Lebens. 20 % des tatsächlich entzogenen Lebens heilen gleichmäßig die lebenden Gruppenmitglieder. In der Bossprüfung stattdessen 200 % Grundschaden.",
+          "cooldown": 8,
+          "effect": "current-health-drain",
+          "currentHealthPercent": 20,
+          "drainHealingPercent": 20,
+          "damageMultiplier": 2,
+          "areaEffect": true,
+          "variants": [
+            {
+              "id": "heal",
+              "name": "Seelenspende",
+              "description": "40 % des entzogenen Lebens werden als Gruppenheilung verteilt.",
+              "overrides": {
+                "drainHealingPercent": 40
+              }
+            },
+            {
+              "id": "reap",
+              "name": "Nachlese",
+              "description": "30 % aktuelles Gegnerleben als Schaden; keine Gruppenheilung.",
+              "overrides": {
+                "currentHealthPercent": 30,
+                "drainHealingPercent": 0
+              }
+            }
+          ],
+          "maxRanks": 10,
+          "rankScaling": {
+            "damagePercent": 10,
+            "healingPercent": 5
+          }
         }
       ]
     }
@@ -314,7 +1038,7 @@
     "Kritische Chance": 5,
     "Kritischer Schaden": 175,
     "Schaden gegen verwundbare Ziele": 0,
-    "Schaden \u00fcber Zeit": 0,
+    "Schaden über Zeit": 0,
     "Abklingzeitreduktion": 0,
     "Angriffsgeschwindigkeit": 100,
     "Seelenfund": 0,

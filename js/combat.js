@@ -34,6 +34,8 @@ function resetBattleEnemyPools(unitMaxHp, count = battle?.mode === 'tower' ? tow
   battle.enemyHealths = Array.from({ length: enemyCount }, () => ({ hp: maxHp, max: maxHp }));
   battle.displayEnemyHealths = Array.from({ length: enemyCount }, () => ({ hp: maxHp, max: maxHp }));
   battle.enemyFrozenUntil = [];
+  battle.enemyFrozenDamagePercent = [];
+  battle.enemyVulnerableUntil = [];
   battle.weaponWaveKillsRecorded = 0;
   battle.enemyBurns = [];
   battle.enemyPoisons = [];
@@ -298,7 +300,7 @@ function beginBattleWave() {
   if (!current) return;
   if (['area', 'tower'].includes(current.mode)) current.offlineWave = { signature: offlineFarmSignature(state), startedAt: performance.now(), damageRate: offlineDamageRate(state), manual: false, partyHealth: Object.fromEntries(Object.entries(current.partyHealth).map(([owner, hero]) => [owner, hero.hp / hero.max])) };
   current.roundDamageByClass = Object.fromEntries(activeBattleClasses().map((className) => [className, 0]));
-  current.roundHeartfallDamage = 0;
+  current.roundHealthBasedDamage = 0;
   current.roundDamageTakenByClass = {};
   current.heartfallCycles = [];
   current.enemyShadowEchoes = [];
@@ -394,9 +396,8 @@ function prepareBattleWave() {
   }
 }
 function renderBattleSkillControl(className) {
-  const skills = COMPANION_SKILLS[className]?.active;
-  if (!skills?.length) return '';
-  const skill = skills[state.companions[className].activeSkillIndex];
+  const skill = activeClassSkill(className, battleStatsState());
+  if (!skill) return '';
   const name = skill.name;
   const auto = Boolean(battle.autoSkills[className]);
   return `<div class="battle-hero-skill"><div class="battle-skill" data-battle-skill="${className}"><span class="battle-skill-mark">✦</span><div class="battle-skill-copy"><strong>${escapeHtml(name)}</strong><small data-skill-cooldown="${className}">Bereit</small></div><button type="button" class="battle-skill-cast ui-control ui-button ui-compact" data-cast-skill="${className}" aria-label="${escapeHtml(name)} jetzt einsetzen">EINSATZ</button><button type="button" class="battle-skill-auto ui-control ui-button ui-compact ${auto ? 'is-armed' : ''}" data-toggle-auto-skill="${className}" aria-pressed="${auto}" aria-label="Auto-Fähigkeit ${auto ? 'ausschalten' : 'einschalten'}" title="Auto-Fähigkeit ${auto ? 'ausschalten' : 'einschalten'}">Auto</button></div></div>`;
@@ -576,7 +577,7 @@ function updateBattleUI() {
   overlay.querySelectorAll('.battle-enemy[data-enemy]').forEach((actor) => {
     const index = Number(actor.dataset.enemy);
     const alive = isBoss ? !battle.bossFinished : (battle.enemyHealths?.[index]?.hp ?? 0) > 0;
-    actor.classList.toggle('is-vulnerable', alive && battle.vulnerableUntil > performance.now());
+    actor.classList.toggle('is-vulnerable', alive && Math.max(battle.vulnerableUntil || 0, battle.enemyVulnerableUntil?.[index] || 0) > performance.now());
     const burning = battle.enemyBurns?.some((burn) => burn.targetIndex === index && burn.expiresAt > performance.now() && isBattleClassAlive(burn.owner));
     const poisoned = battle.enemyPoisons?.some((poison) => poison.targetIndex === index && poison.expiresAt > performance.now() && isBattleClassAlive(poison.owner));
     const isBurning = alive && burning;
@@ -627,7 +628,8 @@ function updateBattleUI() {
 function updateSkillControls(overlay) {
   overlay.querySelectorAll('[data-battle-skill]').forEach((control) => {
     const className = control.dataset.battleSkill;
-    const skill = COMPANION_SKILLS[className].active[state.companions[className].activeSkillIndex];
+    const skill = activeClassSkill(className, battleStatsState());
+    if (!skill) { control.hidden = true; return; }
     const remaining = Math.max(0, (battle.skillReadyAt[skill.id] || 0) - performance.now());
     const cooldownLabel = remaining < 1000 ? `${Math.ceil(remaining)} ms` : `${formatRuleNumber(remaining / 1000)} s`;
     const needsHealing = Object.values(battle.partyHealth || {}).some((hero) => hero.hp > 0 && hero.hp < hero.max);
@@ -646,10 +648,37 @@ function updateSkillControls(overlay) {
     }
   });
 }
+function applySoulHarvest(className, skill) {
+  if (!battle || !isBattleClassAlive(className)) return;
+  const visualTargets = livingBattleEnemyIndexes().map(index => document.querySelector(`#battle-overlay .battle-enemy[data-enemy="${index}"]`)).filter(Boolean);
+  let damageDealt = 0;
+  if (battle.mode === 'boss') {
+    const before = battle.bossDamage;
+    applyHeroHit(className, skill.damageMultiplier, skill.name, true, null, false);
+    damageDealt = Math.max(0, battle.bossDamage - before);
+  } else {
+    setHeroBattlePose(className, 'attack', 760);
+    for (const index of livingBattleEnemyIndexes()) {
+      const currentHealth = battle.enemyHealths?.[index]?.hp || 0;
+      if (currentHealth <= 0) continue;
+      // One fixed health drain per target, without crits, double hits or damage bonuses.
+      const damage = Math.max(1, Math.round(currentHealth * skill.currentHealthPercent / 100));
+      damageDealt += dealHeroDamage(className, damage, [index]);
+      queueBattleHitImpact(damage, [index], 0, { hitCount: 1, critical: false, criticalCount: 0 });
+    }
+    battle.roundHealthBasedDamage = (battle.roundHealthBasedDamage || 0) + damageDealt;
+  }
+  if (damageDealt > 0) launchSoulHarvest(visualTargets, skill.drainHealingPercent > 0);
+  const recipients = livingBattleClasses();
+  if (damageDealt > 0 && recipients.length) {
+    const healing = damageDealt * skill.drainHealingPercent / 100 / recipients.length;
+    showBattleHealing(healBattlePartyAmount((hero, owner) => recipients.includes(owner) ? healing : 0), true);
+  }
+}
 function activateCompanionSkill(className, automatic = false) {
   if (!battle || battle.pending || battle.finishing || battle.between || !isBattleClassAlive(className)) return false;
   const companion = state.companions[className];
-  const skill = empoweredClassSkill(COMPANION_SKILLS[className]?.active?.[companion?.activeSkillIndex], className, battleStatsState());
+  const skill = activeClassSkill(className, battleStatsState());
   if (!companion || !skill) return false;
   const needsHealing = Object.values(battle.partyHealth || {}).some((hero) => hero.hp > 0 && hero.hp < hero.max);
   if (skill.effect === 'heal' && !needsHealing) return false;
@@ -659,54 +688,49 @@ function activateCompanionSkill(className, automatic = false) {
   battle.skillReadyAt[skill.id] = now + skill.cooldown * (1 - cooldownReduction / 100) * 1000;
   battle.basicAttackBlockedUntil ||= {};
   battle.basicAttackBlockedUntil[className] = now + BALANCE.combat.tickMilliseconds;
-  if (skill.effect === 'heal') {
+  if (castAdditionalClassSkill(className, skill, now)) {
+    // The class skill owns its direct effects and any non-stacking regeneration.
+  } else if (skill.effect === 'heal') {
     setHeroBattlePose(className, 'heal', 760);
     const faithBonus = healerFaithScaling(getStats(className, battleStatsState()));
     const healingMultiplier = 1 + (activeArmorSetEffects(battleStatsState(), className).healingPercent || 0) / 100;
     const restored = healBattleParty(skill.healPercent * (1 + faithBonus / 100) * healingMultiplier);
     showBattleHealing(restored, true);
-  } else if (skill.effect === 'unkillable') {
-    const battleAtCast = battle;
-    const duration = Math.max(0, Number(skill.durationSeconds) || 0);
-    battle.invulnerableUntil ||= {};
-    battle.invulnerableUntil[className] = now + duration * 1000;
-    const hero = document.querySelector(`#battle-overlay [data-hero="${className}"]`);
-    hero?.classList.add('is-invulnerable');
-    window.setTimeout(() => {
-      if (battle === battleAtCast && (battleAtCast.invulnerableUntil?.[className] || 0) <= performance.now()) {
-        hero?.classList.remove('is-invulnerable');
-      }
-    }, duration * 1000);
+  } else if (skill.effect === 'current-health-drain') {
+    applySoulHarvest(className, skill);
   } else if (skill.effect === 'guard') {
     battle.guardEffects = (battle.guardEffects || []).filter((guard) => guard.expiresAt > now);
     battle.guardEffects.push({ expiresAt: now + skill.guardDuration * 1000, percent: Math.min(BALANCE.combat.damageReductionCapPercent ?? 75, skill.guardPercent * (className === 'healer' ? 1 + healerFaithScaling(getStats(className, battleStatsState())) / 100 : 1)) });
   } else {
     if (skill.effect === 'freeze-hit') {
-      const [targetIndex] = chooseBattleEnemyIndexes(className);
-      if (targetIndex != null) {
-        const hitLanded = applyHeroHit(className, skill.damageMultiplier, skill.name, false, targetIndex, true, false, 'ice');
-        const targetSurvives = battle.mode === 'boss' ? !battle.bossFinished : battle.enemyHealths?.[targetIndex]?.hp > 0;
-        if (hitLanded && targetSurvives) {
-          const battleAtCast = battle;
-          window.setTimeout(() => {
-            if (battle !== battleAtCast || battleAtCast.mode === 'boss' || (battleAtCast.enemyHealths?.[targetIndex]?.hp || 0) <= 0) return;
-            battleAtCast.enemyFrozenUntil ||= [];
-            battleAtCast.enemyFrozenUntil[targetIndex] = performance.now() + skill.freezeDuration * 1000;
-            updateBattleUI();
-          }, 250);
-        }
+      const targets = chooseBattleEnemyIndexes(className, Boolean(skill.areaEffect));
+      const hit = applyHeroHit(className, skill.damageMultiplier, skill.name, Boolean(skill.areaEffect), null, true, false, skill.areaEffect ? 'frost-wave' : 'ice');
+      if (hit && battle.mode !== 'boss') {
+        const castBattle = battle;
+        const wave = battle.wave;
+        window.setTimeout(() => {
+          if (battle !== castBattle || battle.wave !== wave) return;
+          for (const index of targets) {
+            if (!(battle.enemyHealths?.[index]?.hp > 0)) continue;
+            battle.enemyFrozenUntil ||= [];
+            battle.enemyFrozenDamagePercent ||= [];
+            battle.enemyFrozenUntil[index] = performance.now() + skill.freezeDuration * 1000;
+            battle.enemyFrozenDamagePercent[index] = skill.frozenDamagePercent || 0;
+          }
+          updateBattleUI();
+        }, 250);
       }
     } else if (skill.effect === 'burn-hit') {
-      const [targetIndex] = chooseBattleEnemyIndexes(className);
-      if (targetIndex != null) {
+      const targets = chooseBattleEnemyIndexes(className, Boolean(skill.areaEffect));
+      targets.forEach((targetIndex, index) => {
         const tickMultiplier = skill.damageMultiplier / skill.burnDuration;
-        const hitLanded = applyHeroHit(className, tickMultiplier, skill.name, false, targetIndex, true, true);
+        const hitLanded = applyHeroHit(className, tickMultiplier, skill.name, false, targetIndex, index === 0, true);
         const targetSurvives = battle.mode === 'boss' ? !battle.bossFinished : battle.enemyHealths?.[targetIndex]?.hp > 0;
         if (hitLanded && targetSurvives) {
           battle.enemyBurns ||= [];
           refreshEnemyDamageOverTime(battle.enemyBurns, { owner: className, targetIndex, ticksRemaining: skill.burnDuration - 1, nextTickAt: now + 1000, expiresAt: now + skill.burnDuration * 1000, tickMultiplier, skillName: skill.name }, now, false);
         }
-      }
+      });
     } else if (skill.effect === 'stun-hit') {
       const targets = chooseBattleEnemyIndexes(className, Boolean(skill.areaEffect));
       const until = battle.cycle + Math.ceil(skill.stunDuration * 1000 / BALANCE.combat.tickMilliseconds);
@@ -722,9 +746,9 @@ function activateCompanionSkill(className, automatic = false) {
         applyHeroHit(className, skill.hitMultiplier, skill.name, false, targetIndex);
       }
     } else if (skill.effect === 'area-damage') {
-      applyHeroHit(className, skill.damageMultiplier, skill.name, true);
+      applyHeroHit(className, skill.damageMultiplier, skill.name, true, null, true, false, skill.projectileType || 'basic');
     } else {
-      applyHeroHit(className, skill.damageMultiplier, skill.name, false, null, true, false, skill.projectileType || 'basic');
+      applyHeroHit(className, skill.damageMultiplier, skill.name, Boolean(skill.areaEffect), null, true, false, skill.projectileType || 'basic');
     }
     if (skill.effect === 'vulnerable-hit' && battle.enemyHp > 0) {
       makeEnemyVulnerable(skill.vulnerableDuration, skill.name);
@@ -746,16 +770,17 @@ function damageNumber(className, amount, color = 'damage') {
   float.setAttribute('aria-hidden', 'true');
   window.setTimeout(() => float.remove(), color === 'heal' ? 1200 : 950);
 }
-function animateEnemyAttack(className, damage, enemyIndex, invulnerable = false, dodged = false) {
+function animateEnemyAttack(className, damage, enemyIndex, dodged = false, skillAttack = false) {
   const hero = document.querySelector(`#battle-overlay [data-hero="${className}"]`);
   const target = document.querySelector(`#battle-overlay .battle-enemy[data-enemy="${enemyIndex}"]`);
   if (!hero || !target) return;
+  if (skillAttack) playEnemySkillEffect(className, enemyIndex, dodged);
   const hasFrontImpact = (battle?.mode === 'area' && ['dornwacht', 'aschental', 'salzmoor', 'schwarze-kluft', 'glasforst', 'mondbruch'].includes(battle.areaId))
     || (battle?.mode === 'tower' && battle.towerGuardian);
   if (!hasFrontImpact) {
     setBattleSpritePose(target.querySelector('[data-battle-sprite]'), battleEnemySpriteActor(), 'attack', 460);
-    if (invulnerable || dodged) {
-      damageNumber(className, 0, dodged ? 'dodge' : 'immune');
+    if (dodged) {
+      damageNumber(className, 0, 'dodge');
       return;
     }
     hero.classList.remove('is-hit');
@@ -777,8 +802,8 @@ function animateEnemyAttack(className, damage, enemyIndex, invulnerable = false,
   setBattleSpritePose(enemySprite, battleEnemySpriteActor(), 'attack', 460);
   window.setTimeout(() => {
     if (!hero.isConnected || battle !== battleAtAttack || battleAtAttack.wave !== waveAtAttack || !isBattleClassAlive(className)) return;
-    if (invulnerable || dodged) {
-      damageNumber(className, 0, dodged ? 'dodge' : 'immune');
+    if (dodged) {
+      damageNumber(className, 0, 'dodge');
       return;
     }
     hero.classList.remove('is-hit');
@@ -790,6 +815,8 @@ function animateEnemyAttack(className, damage, enemyIndex, invulnerable = false,
   }, impactDelay);
 }
 function battleAttackImpactDelay(className, areaEffect = false, damageOverTime = false, projectileType = 'basic') {
+  if (projectileType === 'frost-wave') return 250;
+  if (projectileType === 'cleave') return 330;
   if (areaEffect && className === 'healer') return 640;
   if (projectileType === 'stones') return 430;
   if (className === 'hunter') return 420;
@@ -880,9 +907,13 @@ function enemyMissNumber(target = closestBattleEnemy(document.querySelector('#ba
   enemy.append(float);
   window.setTimeout(() => float.remove(), 950);
 }
-function makeEnemyVulnerable(durationSeconds, source) {
+function makeEnemyVulnerable(durationSeconds, source, targets = null) {
   if (!battle || battle.enemyHp <= 0) return;
-  battle.vulnerableUntil = Math.max(battle.vulnerableUntil || 0, performance.now() + durationSeconds * 1000);
+  const until = performance.now() + durationSeconds * 1000;
+  if (targets) {
+    battle.enemyVulnerableUntil ||= [];
+    targets.forEach(index => battle.enemyVulnerableUntil[index] = Math.max(battle.enemyVulnerableUntil[index] || 0, until));
+  } else battle.vulnerableUntil = Math.max(battle.vulnerableUntil || 0, until);
 }
 // Defense and active protection share one total cap; maximum HP is not resistance.
 function battleDamageReduction(defense, guards = [], setReduction = 0, now = performance.now(), { uncapped = false, className = null, sourceState = state } = {}) {
@@ -945,6 +976,10 @@ function dealHeroDamage(className, damage, targetIndexes, { storeTimeRift = true
   battle.roundDamageByClass ||= {};
   battle.roundDamageByClass[className] = (battle.roundDamageByClass[className] || 0) + damageDealt;
   if (storeTimeRift) {
+    battle.primaryDamageByClass ||= {};
+    battle.primaryDamageByClass[className] = (battle.primaryDamageByClass[className] || 0) + damageDealt;
+  }
+  if (storeTimeRift) {
     const effects = activeArmorSetEffects(battleStatsState(), className);
     if (effects.timeRiftStoredPercent > 0) {
       for (const targetIndex of targetIndexes) {
@@ -970,7 +1005,7 @@ function applyHeroLifeSteal(className, damageDealt, fightState, setEffects, dama
     const healing = damageDealt * setEffects.dotLifeStealPercent / 100;
     showBattleHealing(healBattlePartyAmount((hero, owner) => owner === className ? healing : 0));
   }
-  const selfLifeSteal = skillTreeSpecialValue('self-life-steal-percent', className, fightState);
+  const selfLifeSteal = skillTreeSpecialValue('self-life-steal-percent', className, fightState) + passiveEffectTotal('life-steal-percent', className, fightState);
   if (selfLifeSteal > 0 && damageDealt > 0) {
     const healing = damageDealt * selfLifeSteal / 100;
     showBattleHealing(healBattlePartyAmount((hero, owner) => owner === className ? healing : 0));
@@ -986,6 +1021,13 @@ function applyHeroSingleHit(className, skillMultiplier, skillName, areaEffect, t
   const living = livingBattleEnemyIndexes();
   const targetIndexes = targets.filter(index => living.includes(index));
   if (!targetIndexes.length) return;
+  const modifiers = index => [Math.max(battle.vulnerableUntil || 0, battle.enemyVulnerableUntil?.[index] || 0) > performance.now(),
+    (battle.enemyFrozenUntil?.[index] || 0) > performance.now() ? battle.enemyFrozenDamagePercent?.[index] || 0 : 0];
+  if (targetIndexes.length > 1 && new Set(targetIndexes.map(index => modifiers(index).join(':'))).size > 1) {
+    let landed = false;
+    for (const index of targetIndexes) landed = Boolean(applyHeroSingleHit(className, skillMultiplier, skillName, areaEffect, [index], showAttackAnimation, damageOverTime, projectileType, animateAttack && !landed, display, frameDamageMultiplier)) || landed;
+    return landed;
+  }
   const fightState = battleStatsState();
   const weapon = equipmentForClass(className, fightState).mainHand;
   const setEffects = activeArmorSetEffects(fightState, className);
@@ -1002,7 +1044,6 @@ function applyHeroSingleHit(className, skillMultiplier, skillName, areaEffect, t
   const hitNumber = (battle.hits[className] || 0) + 1;
   battle.hits[className] = hitNumber;
   let multiplier = 0.82 + Math.random() * 0.36;
-  multiplier *= frameDamageMultiplier;
   const baseCrit = stats['Kritische Chance'];
   const critical = Math.random() < Math.max(0, baseCrit) / 100;
   const criticalDamage = stats['Kritischer Schaden'];
@@ -1010,14 +1051,16 @@ function applyHeroSingleHit(className, skillMultiplier, skillName, areaEffect, t
     multiplier *= criticalDamage / 100;
   }
   if (skillMultiplier !== 1) multiplier *= skillMultiplier;
-  const vulnerable = battle.vulnerableUntil > performance.now();
+  const [vulnerable, frozenDamagePercent] = modifiers(targetIndexes[0]);
+  if (frozenDamagePercent) multiplier *= 1 + frozenDamagePercent / 100;
   if (vulnerable) {
     multiplier *= 1 + (BALANCE.combat.vulnerabilityBaseDamagePercent + stats['Schaden gegen verwundbare Ziele']) / 100;
   }
   if (damageOverTime) multiplier *= 1 + (stats['Schaden \u00fcber Zeit'] || 0) / 100;
-  multiplier *= characterDamageMultiplier(className, fightState, setEffects);
   const isActiveSkill = Boolean(skillName) && COMPANION_SKILLS[className]?.active?.some(skill => skill.name === skillName);
-  if ((isActiveSkill || damageOverTime) && setEffects.activeSkillDamagePercent) multiplier *= 1 + setEffects.activeSkillDamagePercent / 100;
+  const conditionalDamagePercent = (frameDamageMultiplier - 1) * 100
+    + ((isActiveSkill || damageOverTime) ? setEffects.activeSkillDamagePercent || 0 : 0);
+  multiplier *= characterDamageMultiplier(className, fightState, setEffects, conditionalDamagePercent);
   const damage = Math.max(1, Math.round(base * multiplier));
   const hunterPoison = passiveEffectsFor('hunter', fightState).find(effect => effect.type === 'bow-poison');
   const hunterPoisonTarget = !damageOverTime && className === 'hunter' && weapon?.slot === 'bow' && hunterPoison?.type === 'bow-poison'
@@ -1029,7 +1072,7 @@ function applyHeroSingleHit(className, skillMultiplier, skillName, areaEffect, t
   if (!damageOverTime && setEffects.shadowEchoPercent) {
     queueShadowEcho(className, targetIndexes, damage, setEffects.shadowEchoPercent, stats['Schaden über Zeit'] || 0, setEffects.shadowEchoSeconds || 3);
   }
-  const attackProjectile = hunterUsesPoisonArrow ? 'poison-arrow' : projectileType;
+  const attackProjectile = hunterUsesPoisonArrow && projectileType === 'basic' ? 'poison-arrow' : projectileType;
   const impactDelay = showAttackAnimation ? battleAttackImpactDelay(className, areaEffect, damageOverTime, attackProjectile) : 0;
   recordBattleHitDisplay(display, targetIndexes, damage, impactDelay, critical, vulnerable);
   if (showAttackAnimation && animateAttack) {
@@ -1168,7 +1211,7 @@ function processHeartfall(now = performance.now()) {
     battle.heartfallCycles[targetIndex] = battle.cycle;
     const damage = Math.max(1, Math.round(battle.enemyHealths[targetIndex].max * source.percent / 100));
     const dealt = dealHeroDamage(source.owner, damage, [targetIndex], { storeTimeRift: false });
-    battle.roundHeartfallDamage = (battle.roundHeartfallDamage || 0) + dealt;
+    battle.roundHealthBasedDamage = (battle.roundHealthBasedDamage || 0) + dealt;
     // Deliberately bypass hit processing: no crits, extra hits, healing or secondary effects.
     queueBattleHitImpact(damage, [targetIndex], 0, { hitCount: 1, critical: false, criticalCount: 0, heartfall: true });
   }
@@ -1219,6 +1262,7 @@ async function battleTick() {
   if (!battle || battle.pending || battle.finishing || battle.between) return;
   if (battle.mode === 'boss' && performance.now() >= battle.bossEndsAt) { await finishBossBattle(); return; }
   battle.cycle += 1;
+  processClassRegenerations();
   processEnemyTimeRifts();
   processHeartfall();
   processEnemyBurns();
@@ -1278,10 +1322,9 @@ async function battleTick() {
       const enemySkillInterval = Math.max(1, battle.enemySkill?.attackInterval || 1);
       const enemySkill = battle.enemySkill && battle.enemyAttackCount % enemySkillInterval === 0 && (!battle.enemySkill.once || !battle.enemySkillUsed);
       const skillPower = enemySkill ? battle.enemySkill.multiplier : 1;
-      const invulnerable = (battle.invulnerableUntil?.[target] || 0) > performance.now();
-      const dodged = !invulnerable && Math.random() * 100 < dodgeChanceFor(target, fightState);
+      const dodged = Math.random() * 100 < dodgeChanceFor(target, fightState);
       // Enemy damage is an absolute HP value. More maximum HP must increase survivability.
-      const incoming = invulnerable || dodged ? 0 : Math.max(BALANCE.combat.enemyMinimumHitDamage ?? 1,
+      const incoming = dodged ? 0 : Math.max(BALANCE.combat.enemyMinimumHitDamage ?? 1,
         Math.round(battle.enemyDamage * skillPower * (0.9 + Math.random() * 0.2) * (1 - damageReduction)));
       const damageTaken = Math.min(targetHealth.hp, incoming);
       battle.roundDamageTakenByClass ||= {};
@@ -1290,7 +1333,7 @@ async function battleTick() {
       targetHealth.hp = Math.max(0, targetHealth.hp - damageTaken);
       if (wasAlive && targetHealth.hp <= 0) battle.deaths = (battle.deaths || 0) + 1;
       if (enemySkill) battle.enemySkillUsed = true;
-      animateEnemyAttack(target, damageTaken, attackingEnemyIndex, invulnerable, dodged);
+      animateEnemyAttack(target, damageTaken, attackingEnemyIndex, dodged, Boolean(enemySkill));
       if (targetHealth.hp <= 0) {
         advanceEnemiesForRangedParty();
         battle.focusTarget = chooseEnemyFocusTarget() || null;
@@ -1342,7 +1385,7 @@ async function finishBattle(won) {
   if (won && ['dornwacht', 'aschental', 'salzmoor', 'schwarze-kluft', 'glasforst', 'mondbruch'].includes(battle.areaId) && battle.mode === 'area') {
     try {
       setEnemyBattlePose('defeated');
-      document.querySelectorAll('.battle-projectile, .battle-magic-projectile, .battle-magic-impact, .healer-attack-pulse').forEach((effect) => effect.remove());
+      document.querySelectorAll('.battle-projectile, .battle-magic-projectile, .battle-magic-impact, .healer-attack-pulse, .battle-skill-effect, .battle-fx-target').forEach((effect) => effect.remove());
       activeBattleClasses().forEach((className) => {
         const actor = document.querySelector(`#battle-overlay [data-hero="${className}"]`);
         actor?.classList.remove('is-attacking', 'is-hit');
@@ -1396,13 +1439,13 @@ async function finishBattle(won) {
   current.pendingRewards.add(result);
   result.then(() => current.pendingRewards.delete(result));
   if (current.mode === 'tower') current.towerRound += 1;
-  const healerRestBonus = activeBattleClasses().includes('healer') ? 2 + passiveEffectTotal('rest-healing-percent', 'healer', battleStatsState()) : 0;
+  const healerRestBonus = activeBattleClasses().includes('healer') ? 2 : 0;
   const recovery = 20 + healerRestBonus;
   const restoredByClass = {};
   Object.entries(current.partyHealth || {}).forEach(([className, hero]) => {
     const previousHp = hero.hp;
     const restMultiplier = 1 + (activeArmorSetEffects(battleStatsState(), className).restHealingPercent || 0) / 100;
-    const restored = hero.max * recovery / 100 * restMultiplier;
+    const restored = hero.max * (recovery + passiveEffectTotal('rest-healing-percent', className, battleStatsState())) / 100 * restMultiplier;
     hero.hp = Math.min(hero.max, Math.max(0, hero.hp) + restored);
     restoredByClass[className] = Math.round(hero.hp - previousHp);
   });

@@ -116,7 +116,7 @@ function createWorkshopJob(save, body, now = Date.now()) {
   const item = requireWorkshopItem(save, body.itemId);
   if (!['upgrade', 'socket'].includes(body.kind)) throw new Error('Unbekannter Werkstattauftrag.');
   const mythic = body.mythic === true;
-  if (mythic && !isMythicWeapon(item)) throw new Error('Wähle eine mystische Waffe.');
+  if (mythic && !isMythicEquipment(item)) throw new Error('Wähle mystische Ausrüstung.');
   const goal = Number(body.kind === 'upgrade' ? body.targetLevel : body.targetCount);
   const maximum = body.kind === 'upgrade' ? (mythic ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel) : socketCapacityForSlot(item.slot, item);
   if (!Number.isInteger(goal) || goal < 1 || goal > maximum || (body.kind === 'upgrade' && !AFFIX_POOLS[item.slot] && item.slot !== 'glyph')) throw new Error('Ungültiges Werkstattziel.');

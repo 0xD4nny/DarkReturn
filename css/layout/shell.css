@@ -36,8 +36,10 @@
     stroke-linejoin: round;
 }
 .nav-item-icon.icon-asset { display: block; flex: 0 0 19px; width: 19px; height: 19px; }
-.nav-item[data-view="tower"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/stone-tower.svg"); }
-.nav-item[data-view="boss"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/crowned-skull.svg"); }
+.nav-item[data-view="tower"] .nav-item-icon,
+.page-header-icon[data-page-view="tower"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/stone-tower.svg"); }
+.nav-item[data-view="boss"] .nav-item-icon,
+.page-header-icon[data-page-view="boss"] .nav-item-icon { --icon-asset: url("../../Assets/Icons/000000/transparent/1x1/lorc/crowned-skull.svg"); }
 .main-nav {
     display: grid;
     gap: 2px;
@@ -264,7 +266,7 @@
 .mailbox-item-icon-wrap.rare { border-color: #456887; color: #78b7e7; }
 .mailbox-item-icon-wrap.epic { border-color: #71528a; color: #bd8bdf; }
 .mailbox-item-icon-wrap.legendary { border-color: #8a623d; color: #e4ad64; }
-.mailbox-item-icon-wrap.mythic { border-color: #a44867; color: #f08aaa; }
+.mailbox-item-icon-wrap.mythic { border-color: var(--rarity-mythic); color: var(--rarity-mythic); }
 .mailbox-item-icon.icon-asset { display: block; width: 22px; height: 22px; }
 .mailbox-entry-copy { display: grid; min-width: 0; gap: 3px; }
 .mailbox-entry-copy small { color: #9a8e83; font-size: 9px; letter-spacing: .08em; }

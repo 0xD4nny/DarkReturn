@@ -158,7 +158,7 @@
       "label": "Mystischer Aufwertungsstein",
       "icon": "✦",
       "asset": "Assets/Icons/000000/transparent/1x1/lorc/crystal-eye.svg",
-      "description": "Wird für einen mystischen Aufwertungsversuch an einer mystischen Waffe verbraucht. Verkauf mystischer Waffen: 10 Stück je Waffe."
+      "description": "Wird für einen mystischen Aufwertungsversuch an mystischer Ausrüstung verbraucht. Verkauf mystischer Ausrüstung: 10 Stück je Gegenstand."
     },
     "towerReset": {
       "label": "Turm-Zeitstein",
@@ -699,7 +699,7 @@
         {
           "pieces": 2,
           "effects": {
-            "soulFind": 25
+            "soulFind": 50
           }
         },
         {
@@ -1044,7 +1044,31 @@
       1000,
       2000
     ],
-    "saleStones": 10
+    "saleStones": 10,
+    "equipmentSlots": [
+      "bow",
+      "sword",
+      "staff",
+      "bell",
+      "shield",
+      "helmet",
+      "chest",
+      "gloves",
+      "boots",
+      "amulet",
+      "ring",
+      "earring",
+      "glyph"
+    ],
+    "nonWeaponBaseStatMultiplier": 1.25,
+    "treeBonusUnlockLevel": 10,
+    "treeBonusRanks": 1,
+    "ascension": {
+      "requiredSlotLevel": 20,
+      "rarityStoneCost": 10,
+      "mythicStoneCost": 10,
+      "successChance": 0.1
+    }
   },
   "weaponProgression": {
     "weaponSlots": [

@@ -1,24 +1,13 @@
 // Page templates grouped separately from the render lifecycle.
 function pageNavigationIcon(view) {
-  const icons = {
-    equipment: '<svg viewBox="0 0 24 24"><path d="m12 3 8 3v5c0 5-3.4 8.3-8 10-4.6-1.7-8-5-8-10V6l8-3Z"/><path d="M8 9h8m-4-3v10"/></svg>',
-    profile: '<svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>',
-    map: '<svg viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15m6-12v15"/></svg>',
-    tower: assetIconMarkup('Assets/Icons/000000/transparent/1x1/lorc/stone-tower.svg', '♜', 'page-header-glyph'),
-    boss: assetIconMarkup('Assets/Icons/000000/transparent/1x1/lorc/crowned-skull.svg', '☠', 'page-header-glyph'),
-    contracts: '<svg viewBox="0 0 24 24"><path d="M7 4.5h10M7 8.5h10M7 12.5h7M5 3h14a1 1 0 0 1 1 1v16H4V4a1 1 0 0 1 1-1Zm3 16v2m9-2v2"/></svg>',
-    inventory: '<svg viewBox="0 0 24 24"><path d="M4 8h16l1 12H3L4 8Zm4 0V6a4 4 0 0 1 8 0v2"/></svg>',
-    skilltree: '<svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="m11 7-4 9m6-9 4 9M8.2 18h7.6"/></svg>',
-    companions: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c.5-3.5 2.8-5.5 7-5.5s6.5 2 7 5.5m-1.5-5c3.8-.7 6.5 1 7 4.5"/></svg>',
-    shop: '<svg viewBox="0 0 24 24"><path d="M4 8h16l1 13H3L4 8Zm4 0V6a4 4 0 0 1 8 0v2"/></svg>',
-    blacksmith: '<svg viewBox="0 0 24 24"><path d="M14 4 20 10l-3 3-6-6M4 20l8-8m-5-5 4-4 3 3-4 4M3 21l4-4"/></svg>',
-    sockets: '<svg viewBox="0 0 24 24"><path d="m12 2 8 5v10l-8 5-8-5V7l8-5Z"/><path d="M12 7v10M7 12h10"/></svg>',
-    enchant: '<svg viewBox="0 0 24 24"><path d="m12 2 1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2Z"/><path d="m19 16 .9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16Z"/></svg>',
-    altar: '<svg viewBox="0 0 24 24"><path d="M12 2v20m-7-3h14M7 19a5 5 0 0 1 10 0M5 9l7-7 7 7-7 4z"/></svg>',
-    documentation: '<svg viewBox="0 0 24 24"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H20v18H7.5A2.5 2.5 0 0 0 5 22V4.5Zm0 0V22m4-15h7m-7 4h7m-7 4h5"/></svg>',
-    settings: '<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.62.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.61l-1.92-3.32a.5.5 0 0 0-.59-.21l-2.39.96a7.1 7.1 0 0 0-1.62-.93l-.36-2.54a.5.5 0 0 0-.49-.41h-3.84a.5.5 0 0 0-.49.41L9.22 5.37a7.1 7.1 0 0 0-1.62.93l-2.39-.96a.5.5 0 0 0-.59.21L2.7 8.87a.5.5 0 0 0 .12.61l2.03 1.58a7.4 7.4 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.61l1.92 3.32a.5.5 0 0 0 .59.21l2.39-.96a7.1 7.1 0 0 0 1.62.93l.36 2.54a.5.5 0 0 0 .49.41h3.84a.5.5 0 0 0 .49-.41l.36-2.54a7.1 7.1 0 0 0 1.62-.93l2.39.96a.5.5 0 0 0 .59-.21l1.92-3.32a.5.5 0 0 0-.12-.61l-2.03-1.58z"/><circle cx="12" cy="12" r="3.2"/></svg>',
-  };
-  return icons[view] || icons.map;
+  const navigation = document.querySelector(`.main-nav .nav-item[data-view="${CSS.escape(view)}"]`)
+    || document.querySelector('.main-nav .nav-item[data-view="map"]');
+  const source = navigation?.querySelector('.nav-item-icon, svg');
+  if (!source) return '';
+  const icon = source.cloneNode(true);
+  icon.classList.add('page-header-glyph');
+  icon.setAttribute('aria-hidden', 'true');
+  return icon.outerHTML;
 }
 
 function applyPageNavigationIcon(root = viewContainer) {
@@ -27,6 +16,7 @@ function applyPageNavigationIcon(root = viewContainer) {
   if (heading.querySelector('.page-header-icon')) return;
   const icon = document.createElement('div');
   icon.className = 'smith-mark page-header-icon';
+  icon.dataset.pageView = currentView;
   icon.setAttribute('aria-hidden', 'true');
   icon.innerHTML = pageNavigationIcon(currentView);
   const trailing = Array.from(heading.children).slice(1);

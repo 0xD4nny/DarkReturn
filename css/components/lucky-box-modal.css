@@ -88,7 +88,7 @@
   font-size: 34px;
 }
 
-.lucky-jackpot-reward-icon.mythic { color: #d18aff; }
+.lucky-jackpot-reward-icon.mythic { color: var(--rarity-mythic); }
 .lucky-jackpot-reward-icon.legendary { color: #e8bc7b; }
 .lucky-jackpot-reward-icon.epic { color: #bd83e8; }
 

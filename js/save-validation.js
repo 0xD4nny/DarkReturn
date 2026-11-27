@@ -8,15 +8,16 @@ function validateImportedSave(backup) {
   const text = (value, field, maximum = 200) => { if (typeof value !== 'string' || value.length > maximum) fail(field); };
   const list = (value, field) => { if (!Array.isArray(value)) fail(field); };
   let entries = 0;
-  const inspect = (value, depth = 0) => {
+  const largeDamageFields = new Set(['bestDamage', 'damageDealt', 'highestHit']);
+  const inspect = (value, depth = 0, field = '') => {
     if (++entries > 100000 || depth > 24) fail('Dateiumfang');
-    if (typeof value === 'number' && (!Number.isFinite(value) || Math.abs(value) > Number.MAX_SAFE_INTEGER)) fail('Zahlenwert');
+    if (typeof value === 'number' && (!Number.isFinite(value) || (!largeDamageFields.has(field) && Math.abs(value) > Number.MAX_SAFE_INTEGER))) fail('Zahlenwert');
     if (typeof value === 'string' && value.length > 8192) fail('Textlänge');
     if (!value || typeof value !== 'object') return;
     if (Array.isArray(value) && value.length > 10000) fail('Listenlänge');
     Object.entries(value).forEach(([key, entry]) => {
       if (['__proto__', 'prototype', 'constructor'].includes(key)) fail('Objektschlüssel');
-      inspect(entry, depth + 1);
+      inspect(entry, depth + 1, key);
     });
   };
   inspect(backup);
@@ -148,7 +149,7 @@ function validateImportedSave(backup) {
     text(item.name, 'Gegenstandsname');
     text(item.rarity, 'Seltenheit');
     if (!RARITIES.some((rarity) => rarity.color === item.rarityColor)) fail('Seltenheitsfarbe');
-    if (item.rarityColor === 'mythic' && !isMythicWeapon(item) && item.slot !== 'mythicUpgradeStone') fail('Mystische Waffenart');
+    if (item.rarityColor === 'mythic' && !isMythicEquipment(item) && !['mythicUpgradeStone', 'pet'].includes(item.slot)) fail('Mystische Ausrüstungsart');
     if (item.icon !== undefined) text(item.icon, 'Gegenstandssymbol');
     if (item.set !== undefined && !Object.hasOwn(ARMOR_SETS, item.set) && !Object.hasOwn(JEWELRY_SETS, item.set)) fail('Set');
     ['weaponDamage', 'baseWeaponDamage', 'armorDefense', 'baseArmorDefense', 'affixVersion', 'tier'].forEach((key) => {
@@ -170,7 +171,7 @@ function validateImportedSave(backup) {
       if (item.weaponExperience !== undefined) numeric(item.weaponExperience, 'Waffen-EP', 0, true, weaponExperienceThreshold(WEAPON_PROGRESSION.maxLevel));
     }
     if (item.mythicUpgradeLevel !== undefined) {
-      if (!isMythicWeapon(item)) fail('Mystische Aufwertung');
+      if (!isMythicEquipment(item)) fail('Mystische Aufwertung');
       numeric(item.mythicUpgradeLevel, 'Mystische Aufwertung', 0, true, MYTHIC_UPGRADES.maxUpgradeLevel);
     }
     item.affixes.forEach((affix) => {
@@ -305,9 +306,9 @@ function validateImportedSave(backup) {
   Object.values(save.skillTree || {}).forEach((tree) => { record(tree, 'Talentbaum'); record(tree.nodes, 'Talentpunkte'); Object.values(tree.nodes).forEach((value) => numeric(value, 'Talentpunkt', 0, true)); });
   if (save.statistics) Object.entries(save.statistics).forEach(([key, value]) => {
     if (key === 'luckyBoxesOpened') { record(value, key); Object.values(value).forEach((count) => numeric(count, key, 0, true)); }
-    else numeric(value, key);
+    else numeric(value, key, 0, false, largeDamageFields.has(key) ? Number.MAX_VALUE : Number.MAX_SAFE_INTEGER);
   });
-  if (save.bossChallenge) Object.entries(save.bossChallenge).forEach(([key, value]) => numeric(value, key, key === 'highestRank' ? -1 : 0, true));
+  if (save.bossChallenge) Object.entries(save.bossChallenge).forEach(([key, value]) => numeric(value, key, key === 'highestRank' ? -1 : 0, key !== 'bestDamage', key === 'bestDamage' ? Number.MAX_VALUE : Number.MAX_SAFE_INTEGER));
   if (save.deepOfDark) {
     // Legacy Deep 4 saves are accepted here and normalized to the new maximum.
     numeric(save.deepOfDark.tier, 'Deep-Stufe', 0, true, Math.max(4, BALANCE.deepOfDark.maxTier));

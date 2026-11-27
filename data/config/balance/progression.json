@@ -1,7 +1,7 @@
 {
   "balance": {
     "startingSouls": 10000,
-    "startingInventoryCapacity": 25,
+    "startingInventoryCapacity": 200,
     "deepOfDark": {
       "maxTier": 4,
       "enemyHealthAtFinalArea": 1000000000000,
@@ -23,15 +23,16 @@
       ],
       "enemyHealthAtTierEnd": [
         null,
-        100000,
-        1000000,
-        1000000000,
+        1200000,
+        80000000,
+        5000000000,
         1000000000000
       ],
       "enemyHealthAtTierStart": {
         "4": 10000000000
       },
-      "enemyDamageScalingTier": 3
+      "enemyDamageScalingTier": 3,
+      "enemyDamageEarlyCurvePower": 0.65
     },
     "groupLevel": {
       "costBase": 250,
@@ -43,14 +44,13 @@
     },
     "skillTree": {
       "pointsEveryLevels": 1,
+      "maxPoints": 500,
       "respecCost": 1000000,
-      "schemaVersion": 3
+      "nodeRespecCost": 100000,
+      "schemaVersion": 4
     },
     "inventory": {
-      "maxCapacity": 200,
-      "expansionCostBase": 400,
-      "expansionCostPerSlot": 25,
-      "expansionCostQuadratic": 2
+      "maxCapacity": 200
     },
     "questBook": {
       "individualRewardPerStage": 150
@@ -1210,8 +1210,9 @@
     "offlineProgress": {
       "efficiency": 0.5,
       "maximumHours": 12,
+      "adminSimulationHours": 12,
       "sampleLimit": 20,
-      "minimumSamples": 5,
+      "minimumSamples": 3,
       "checkpointSeconds": 15
     }
   }

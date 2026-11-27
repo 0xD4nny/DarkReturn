@@ -185,7 +185,7 @@ function setView(view, anchorId = null, { preserveForgeSelection = false } = {})
     const item = findInventoryOrEquippedItem(state, itemId) || partyPets(state).find(pet => pet.id === itemId);
     if (item) {
       if (['blacksmith', 'sockets', 'enchant'].includes(currentView)) { currentView = 'inventory'; renderView(); }
-      openMobileItemWorkshop(item.id, view === 'blacksmith' ? selectedForgeMode === 'mythic' ? 'mythic' : 'upgrade' : view === 'sockets' ? 'sockets' : 'affix');
+      openMobileItemWorkshop(item.id, view === 'blacksmith' ? selectedForgeMode === 'mythic' ? 'mythic' : 'upgrade' : view === 'sockets' ? 'sockets' : selectedEnchantMode === 'ascension' ? 'ascension' : selectedEnchantMode === 'rarity' ? 'rarity' : 'affix');
     }
     else setView('inventory');
     return;

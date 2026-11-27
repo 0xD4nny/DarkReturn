@@ -247,10 +247,6 @@
     opacity: .48;
     filter: grayscale(1);
 }
-.battle-hero.is-invulnerable {
-    border-color: #c9a6e8;
-    box-shadow: 0 0 18px #a86be866, inset 0 0 18px #a86be822;
-}
 .battle-hero-icon {
     display: block;
     color: #d4ad7b;

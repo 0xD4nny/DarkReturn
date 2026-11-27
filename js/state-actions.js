@@ -1,7 +1,7 @@
 function applyEnchantAffixAttempt(save, body) {
   const target = requireWorkshopItem(save, body.itemId, { allowPet: true });
   const isPet = target?.slot === 'pet';
-  const mythic = isMythicWeapon(target);
+  const mythic = isMythicEquipment(target);
   if (!target || (!isPet && !AFFIX_POOLS[target.slot])) throw new Error('Wähle ein Ausrüstungsteil oder dein Begleittier.');
   const affixIndex = Number(body.affixIndex);
   if (!Number.isInteger(affixIndex) || affixIndex < 0 || affixIndex >= (target.affixes || []).length) throw new Error('Wähle ein vorhandenes Affix.');
@@ -104,7 +104,7 @@ function resolveBattleRewards(save, body) {
   const rewardState = { ...save, activeCompanion: rewardOwners.find((owner) => owner !== save.mainClass) || save.activeCompanion };
   const equipped = rewardOwners.flatMap((owner) => Object.values(equipmentForClass(owner, save)));
   const soulFind = rewardOwners.reduce((sum, owner) => sum + (getStats(owner, rewardState)['Seelenfund'] || 0), 0);
-  const skillSoulBonus = partySkillTreeEffectValue('soul-drop-percent', rewardState);
+  const skillSoulBonus = partySkillTreeEffectValue('soul-drop-percent', rewardState) + passiveEffectTotal('soul-drop-percent', rewardState.mainClass, rewardState);
   reward = applyCombatSoulBonus(Math.round((reward + eliteBonus) * (1 + soulFind / 100) * (1 + skillSoulBonus / 100)), save) + discoveryBonus;
   addQuestTrackedSouls(save, reward);
   let equipmentDrop = null;
@@ -145,9 +145,9 @@ function resolveBattleRewards(save, body) {
   if (body.mode === 'area') {
     const baseChance = elite ? (BALANCE.loot.eliteEquipmentDropChance ?? 0.1) : (BALANCE.loot.areaEquipmentDropChance ?? 0.05);
     const dropState = { ...save, deepOfDark: { ...save.deepOfDark, tier: Number(body.deepTier) || 0 } };
-    const mythicChance = mythicWeaponDropChance(body.area, body.deepTier);
+    const mythicChance = mythicEquipmentDropChance(body.area, body.deepTier);
     if (mythicChance > 0 && Math.random() < applyLootDropBonus(mythicChance, save)) {
-      equipmentDrop = makeMythicWeaponDrop(dropState);
+      equipmentDrop = makeMythicEquipmentDrop(dropState);
     } else if (Math.random() < applyLootDropBonus(baseChance, save)) {
       equipmentDrop = makeAreaEquipmentDrop(body.area, dropState);
     }
@@ -206,12 +206,12 @@ function spendQuestTrackedSouls(save, amount) {
   save.questBook.counters.soulsSpent += value;
 }
 function itemSaleValue(item) {
-  if (isMythicWeapon(item)) return 0;
+  if (isMythicEquipment(item)) return 0;
   const unitValue = Math.round(equipmentShopPrice(item) * 0.1);
   return unitValue * Math.max(1, Math.floor(Number(item.quantity) || 1));
 }
 function grantMythicSaleStones(save, item) {
-  if (!isMythicWeapon(item)) return 0;
+  if (!isMythicEquipment(item)) return 0;
   const amount = MYTHIC_ITEMS.saleStones;
   addItemsToInventory(save, [{ ...makeMythicUpgradeStone(), quantity: amount }]);
   return amount;
@@ -233,7 +233,7 @@ function applyWorkshopAttempt(save, body) {
     const target = requireWorkshopItem(save, body.itemId);
     if (!target) throw new Error('Gegenstand nicht gefunden.');
     const mythic = body.mythic === true;
-    if (mythic && !isMythicWeapon(target)) throw new Error('Mystische Aufwertung ist nur für mystische Waffen verfügbar.');
+    if (mythic && !isMythicEquipment(target)) throw new Error('Mystische Aufwertung ist nur für mystische Ausrüstung verfügbar.');
     const levelKey = mythic ? 'mythicUpgradeLevel' : 'upgradeLevel';
     const stoneSlot = mythic ? 'mythicUpgradeStone' : 'upgradeStone';
     const maxLevel = mythic ? MYTHIC_UPGRADES.maxUpgradeLevel : BALANCE.items.maxUpgradeLevel;
@@ -331,7 +331,7 @@ async function localAction(body) {
     const owner = action === 'equip-main' || (action === 'unequip' && (!body.owner || body.owner === 'main')) ? 'main' : body.class;
     if (locked && locked.owner === owner && locked.slot === body.slot) throw new Error('Stoppe zuerst den Werkstattauftrag für diesen Ausrüstungsplatz.');
   }
-  if (save.workshopJob && ['upgrade', 'socket-slot', 'fuse-glyphs', 'enchant-rarity', 'upgrade-gems'].includes(action)) throw new Error('Beende zuerst den laufenden Werkstattauftrag.');
+  if (save.workshopJob && ['upgrade', 'socket-slot', 'fuse-glyphs', 'enchant-rarity', 'enchant-mythic', 'upgrade-gems'].includes(action)) throw new Error('Beende zuerst den laufenden Werkstattauftrag.');
   if (action === 'enchant-affix') await settleWorkshopThrough(save, Date.now());
   if (action === 'workshop-start') {
     await settleWorkshopThrough(save, Date.now());
@@ -346,8 +346,8 @@ async function localAction(body) {
     response = { state: save };
   } else if (action.startsWith('offline-')) {
     response = await offlineFarmAction(save, body);
-  } else if (action === 'admin-simulate-offline-hour') {
-    response = await offlineFarmAction(save, { action: 'offline-simulate-hour' });
+  } else if (action === 'admin-simulate-offline-time') {
+    response = await offlineFarmAction(save, { action: 'offline-simulate-time' });
   } else if (action === 'visit-shop') {
     response = { state: save, message: 'Marktangebote gespeichert.' };
   } else if (action === 'claim-hunting-event') {
@@ -452,7 +452,7 @@ async function localAction(body) {
     const previousHighestRank = save.bossChallenge.highestRank ?? -1;
     if (rankIndex >= 0) save.bossChallenge.highestRank = Math.max(previousHighestRank, rankIndex);
     save.bossChallenge.bestDamage = Math.max(save.bossChallenge.bestDamage || 0, damage);
-    const reward = applyCombatSoulBonus(Math.round(rankSoulReward * (1 + partySkillTreeEffectValue('soul-drop-percent', save) / 100)), save);
+    const reward = applyCombatSoulBonus(Math.round(rankSoulReward * (1 + (partySkillTreeEffectValue('soul-drop-percent', save) + passiveEffectTotal('soul-drop-percent', save.mainClass, save)) / 100)), save);
     save.bossChallenge.lastClaimedAt = startedAt;
     save.bossChallenge.lastEndedAt = startedAt;
     addQuestTrackedSouls(save, reward);
@@ -709,6 +709,24 @@ async function localAction(body) {
     response = { kind: 'glyph-fusion', item, consumed: ingredients, state: save, outcomes: [{ success: true }], message: 'Drei Glyphen zu einer neuen Glyphe kombiniert.' };
   } else if (action === 'upgrade') {
     response = applyWorkshopAttempt(save, body);
+  } else if (action === 'enchant-mythic') {
+    const target = requireWorkshopItem(save, body.itemId);
+    const quote = mythicAscensionQuote(save, target);
+    if (!quote.eligible) throw new Error('Wähle ein angelegtes legendäres Ausrüstungsteil oder eine legendäre Glyphe.');
+    if (!quote.levelReady) throw new Error(`Der Ausrüstungsplatz muss auf +${quote.requiredSlotLevel} sein.`);
+    if (!quote.possible) throw new Error(`Du benötigst ${quote.rarityStoneCost} Seltenheitssteine und ${quote.mythicStoneCost} mystische Aufwertungssteine.`);
+    for (const [slot, amount] of [['rarityStone', quote.rarityStoneCost], ['mythicUpgradeStone', quote.mythicStoneCost]]) {
+      stackUnitIds(save, slot).slice(0, amount).forEach(id => consumeInventoryItem(save, id, slot));
+    }
+    const success = Math.random() < quote.successChance;
+    const previousRarity = target.rarity;
+    if (success) {
+      ascendEquipmentToMythic(target);
+      save.statistics.raritiesUpgraded += 1;
+      save.questBook.counters.raritiesUpgraded += 1;
+    }
+    response = { kind: 'enchant-rarity', mythicAscension: true, success, item: target, previousRarity, outcomes: [{ success }], state: save,
+      message: success ? 'Der Gegenstand ist jetzt mystisch.' : 'Mystische Aufwertung fehlgeschlagen. Beide Materialien wurden verbraucht.' };
   } else if (action === 'enchant-rarity') {
     const target = requireWorkshopItem(save, body.itemId);
     if (!target || !AFFIX_POOLS[target.slot]) throw new Error('Wähle ein Ausrüstungsteil.');
@@ -798,9 +816,9 @@ async function localAction(body) {
       const target = requireWorkshopItem(save, body.itemId, { allowPet: true });
       const index = Number(body.affixIndex);
       if (!Number.isInteger(index) || !target.affixes?.[index]) throw new Error('Wähle ein vorhandenes Affix.');
-      if (target.slot !== 'pet' && !isMythicWeapon(target) && Number.isInteger(target.enchantAffixIndex) && target.enchantAffixIndex !== index) throw new Error('Dieser Affixplatz ist nicht umprägbar.');
+      if (target.slot !== 'pet' && !isMythicEquipment(target) && Number.isInteger(target.enchantAffixIndex) && target.enchantAffixIndex !== index) throw new Error('Dieser Affixplatz ist nicht umprägbar.');
       if (!enchantAffixPool(target).includes(goal.stat) || !Number.isFinite(goal.minimum) || goal.minimum < 0) throw new Error('Ungültiges Affixziel.');
-      const maximum = affixRangeFor(target, goal.stat, { greater: isMythicWeapon(target) })[1];
+      const maximum = affixRangeFor(target, goal.stat, { greater: isMythicEquipment(target) })[1];
       if (goal.minimum > maximum) throw new Error(`Der Mindestwert darf höchstens ${formatRuleNumber(maximum)} betragen.`);
       const matched = () => target.affixes[index].stat === goal.stat && target.affixes[index].value >= goal.minimum;
       const initial = enchantAffixQuote(save, target, index);
@@ -846,6 +864,7 @@ async function localAction(body) {
     const target = requireWorkshopItem(save, body.itemId);
     const gem = requireInventoryItem(save, body.gemId).item;
     if (!target) throw new Error('Ausrüstungsteil nicht gefunden.');
+    if (!socketCapacityForSlot(target.slot, target)) throw new Error('Nur Waffen, Schilde und Rüstung können gesockelt werden.');
     const socketIndex = Number(body.socketIndex);
     if (!Number.isInteger(socketIndex) || socketIndex < 0 || socketIndex >= (target.socketSlots || 0)) throw new Error('Dieser Sockelplatz wurde noch nicht geöffnet.');
     if (target.sockets?.[socketIndex]) throw new Error('Dieser Sockel ist bereits belegt.');
@@ -918,14 +937,9 @@ async function localAction(body) {
     const className = body.class;
     const skillType = body.skillType;
     if (!CLASSES[className] || !['passive', 'active'].includes(skillType) || ![0, 1, 2].includes(Number(body.skillIndex))) throw new Error('Invalid companion skill selection.');
-    if (skillType === 'passive') {
-      const passiveSlot = Number(body.passiveSlot ?? 0);
-      if (![0, 1].includes(passiveSlot) || passiveSlot >= passiveSkillSlotCount(className, save)) throw new Error('Dieser passive Fähigkeitsslot ist nicht freigeschaltet.');
-      const member = save.companions[className];
-      const otherIndex = passiveSlot === 0 ? member.secondPassiveSkillIndex : member.passiveSkillIndex;
-      if (Number(body.skillIndex) === otherIndex) throw new Error('Die beiden passiven Fähigkeiten müssen unterschiedlich sein.');
-      member[passiveSlot === 0 ? 'passiveSkillIndex' : 'secondPassiveSkillIndex'] = Number(body.skillIndex);
-    } else save.companions[className].activeSkillIndex = Number(body.skillIndex);
+    if (skillType !== 'active') throw new Error('Passive werden direkt im Skilltree gelernt.');
+    if (![save.mainClass, save.activeCompanion].includes(className)) throw new Error('Dieser Charakter ist nicht in deiner Gruppe.');
+    save.companions[className].activeSkillIndex = Number(body.skillIndex);
     response = { state: save, message: 'Companion skill selection updated.' };
   } else if (action === 'select-companion') {
     const className = body.class;
@@ -963,14 +977,14 @@ async function localAction(body) {
     const requestedRarity = ['weaponGem', 'armorGem'].includes(slot) && selection ? selection : body.rarity;
     const rarity = itemFactories[slot]
       ? { name: 'Material', color: 'common' }
-      : RARITIES.find((entry) => isGlyph ? entry.color === 'legendary' : entry.name === requestedRarity || entry.color === requestedRarity);
+      : RARITIES.find((entry) => entry.name === requestedRarity || entry.color === requestedRarity);
     const requestedAffixes = Array.isArray(body.affixes) ? body.affixes.map(String).filter(Boolean) : [];
     const requestedSocketCount = body.maxSockets === true ? socketCapacityForSlot(slot) : 0;
     const requestedSocketGem = String(body.socketGem || '');
     if ((!SLOT_DATA[slot] && slot !== 'powerup') || (!AFFIX_POOLS[slot] && !isGlyph && !itemFactories[slot] && !['weaponGem', 'armorGem'].includes(slot))) throw new Error('Dieser Gegenstandstyp ist nicht verfügbar.');
     if (isGlyph && !glyphDefinition) throw new Error('Wähle eine gültige Glyphe.');
     if (!rarity) throw new Error('Wähle eine gültige Seltenheit.');
-    if (rarity.color === 'mythic' && !MYTHIC_ITEMS.weaponSlots.includes(slot)) throw new Error('Mystisch ist nur für Klassenwaffen verfügbar.');
+    if (rarity.color === 'mythic' && !MYTHIC_ITEMS.equipmentSlots.includes(slot)) throw new Error('Diese Gegenstandsart kann nicht mystisch sein.');
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 9999) throw new Error('Die Menge muss zwischen 1 und 9.999 liegen.');
     if (!Number.isInteger(requestedUpgrade) || requestedUpgrade < 0 || requestedUpgrade > maxUpgrade) throw new Error(`Die Aufwertungsstufe muss zwischen 0 und +${maxUpgrade} liegen.`);
     const isGear = Boolean(AFFIX_POOLS[slot]) || isGlyph;
@@ -988,7 +1002,7 @@ async function localAction(body) {
         ? itemFactories[slot]()
         : slot === 'weaponGem' || slot === 'armorGem'
           ? makeGem(slot, save, rarity.name, profile || null)
-          : isGlyph ? makeGlyph(glyphDefinition) : makeItem(slot, rarity.name);
+          : isGlyph ? (rarity.color === 'mythic' ? ascendEquipmentToMythic(makeGlyph(glyphDefinition)) : makeGlyph(glyphDefinition)) : makeItem(slot, rarity.name);
       if (!itemFactories[slot]) {
         item.rarity = rarity.name;
         item.rarityColor = rarity.color;
@@ -999,7 +1013,7 @@ async function localAction(body) {
         item.weaponExperience = weaponExperienceThreshold(level);
         normalizeWeaponProgress(item);
       }
-      if (isMythicWeapon(item)) {
+      if (isMythicEquipment(item)) {
         const level = Number(body.mythicUpgradeLevel ?? 0);
         if (!Number.isInteger(level) || level < 0 || level > MYTHIC_UPGRADES.maxUpgradeLevel) throw new Error(`Mystische Stufe muss zwischen 0 und ${MYTHIC_UPGRADES.maxUpgradeLevel} liegen.`);
         item.mythicUpgradeLevel = level;
@@ -1032,14 +1046,14 @@ async function localAction(body) {
       } else if (body.maxAffixRolls === true && !isGlyph) {
         item.affixes = (item.affixes || []).map((affix) => {
           const [, max] = AFFIX_RANGES?.[affix.stat] || [1, 1];
-          return { ...affix, ...(isMythicWeapon(item) ? { greater: false } : {}), baseValue: max, value: max };
+          return { ...affix, ...(isMythicEquipment(item) ? { greater: false } : {}), baseValue: max, value: max };
         });
       }
       if (isGear && body.greaterAffixes === true) {
         item.affixes = (item.affixes || []).map((affix) => {
           if (affix.greater) return affix;
           if (affix.fixed && !isGlyph) return affix;
-          const baseValue = affix.fixed || isMythicWeapon(item) ? (affix.baseValue ?? affix.value) * BALANCE.loot.greaterAffixMaxMultiplier : greaterAffixBaseValue(affix.stat);
+          const baseValue = affix.fixed || isMythicEquipment(item) ? (affix.baseValue ?? affix.value) * BALANCE.loot.greaterAffixMaxMultiplier : greaterAffixBaseValue(affix.stat);
           return { ...affix, greater: true, baseValue, value: baseValue };
         });
       }
@@ -1066,7 +1080,7 @@ async function localAction(body) {
           value: affixValueAtUpgrade({ ...affix, baseValue: affix.baseValue ?? Math.round((Number(affix.value) || 0) / oldAffixMultiplier) }, requestedUpgrade),
         }));
       }
-      if (isMythicWeapon(item)) normalizeAffixUpgrades(item);
+      if (isMythicEquipment(item)) normalizeAffixUpgrades(item);
       items.push(item);
     }
     addItemsToInventory(save, items);
@@ -1162,11 +1176,6 @@ async function localAction(body) {
       normalizeWeaponProgress(item);
     });
     response = { count: weapons.length, level: WEAPON_PROGRESSION.maxLevel, state: save };
-  } else if (action === 'admin-max-inventory') {
-    const maxCapacity = BALANCE.inventory.maxCapacity;
-    if (save.inventoryCapacity >= maxCapacity) return { state: save, unchanged: true };
-    save.inventoryCapacity = Math.max(maxCapacity, Number(save.inventoryCapacity) || BALANCE.startingInventoryCapacity);
-    response = { capacity: save.inventoryCapacity, state: save };
   } else if (action === 'skill-tree-allocate') {
     const className = String(body.class || '');
     const node = SKILL_TREE_NODES.find((entry) => entry.id === body.nodeId);
@@ -1177,6 +1186,8 @@ async function localAction(body) {
     const currentPoints = Math.max(0, Number(classTree.nodes[node.id]) || 0);
     if (currentPoints >= node.maxPoints) throw new Error('Dieser Knoten ist bereits voll ausgebaut.');
     if (node.class && node.class !== className) throw new Error('Dieser legendäre Knoten gehört zu einer anderen Klasse.');
+    const blockedChoice = classSkillChoiceBlockedReason(node, classTree.nodes, className);
+    if (blockedChoice) throw new Error(blockedChoice);
     if (!skillTreeNodeUnlocked(node, classTree.nodes, className)) throw new Error(`Du benötigst zuerst Rang ${skillTreeRequiredParentPoints(node)} im Vorgängerknoten.`);
     const legendary = node.rarity === 'legendary';
     const legendaryNodes = SKILL_TREE_NODES.filter((entry) => entry.rarity === 'legendary');
@@ -1186,7 +1197,17 @@ async function localAction(body) {
     if (!Number.isSafeInteger(amount) || amount < 1 || amount > available) throw new Error('Du hast nicht genug freie Skillpunkte.');
     if (currentPoints + amount > node.maxPoints) throw new Error('So viele Ränge passen nicht mehr in diesen Knoten.');
     classTree.nodes[node.id] = currentPoints + amount;
+
     response = { className, nodeId: node.id, points: currentPoints + amount, investedPoints: amount, state: save, message: `${node.name} verbessert.` };
+  } else if (action === 'skill-tree-node-respec') {
+    const className = String(body.class || '');
+    if (![save.mainClass, save.activeCompanion].includes(className)) throw new Error('Wähle deinen Main oder aktiven Gefährten aus.');
+    const quote = skillTreeNodeRespecQuote(className, String(body.nodeId || ''), save);
+    if (!quote.nodes.length) throw new Error('Wähle einen eigenen Knoten mit investierten Punkten aus.');
+    if (save.souls < quote.cost) throw new Error(`Du benötigst ${number(quote.cost)} Seelen, um diesen Knoten zurückzusetzen.`);
+    spendQuestTrackedSouls(save, quote.cost);
+    quote.nodes.forEach(node => delete save.skillTree[className].nodes[node.id]);
+    response = { className, nodeId: body.nodeId, nodeNames: quote.nodes.map(node => node.name), refundedPoints: quote.refundedPoints, cost: quote.cost, state: save, message: `${quote.refundedPoints} Skillpunkte wurden zurückgegeben.` };
   } else if (action === 'skill-tree-respec') {
     const className = String(body.class || '');
     if (![save.mainClass, save.activeCompanion].includes(className)) throw new Error('Wähle deinen Main oder aktiven Gefährten aus.');
@@ -1237,16 +1258,6 @@ async function localAction(body) {
     save.characterLevels[className] = currentLevel + levelsBought;
     save.level = characterLevel(save.mainClass, save);
     response = { cost, className, levelsBought, level: currentLevel + levelsBought, state: save, message: CLASSES[className].label + ' ist um ' + levelsBought + ' Stufe' + (levelsBought === 1 ? '' : 'n') + ' aufgestiegen.' };
-  } else if (action === 'expand-inventory') {
-    if (save.inventoryCapacity >= BALANCE.inventory.maxCapacity) throw new Error('Dein Inventar hat bereits die maximale Größe.');
-    const quantity = Number(body.quantity ?? 1);
-    if (!Number.isSafeInteger(quantity) || quantity < 1) throw new Error('Gib eine positive ganze Anzahl an Inventarplätzen ein.');
-    const quote = inventoryExpansionQuote(save, quantity);
-    if (quantity !== quote.amount) throw new Error(`Du kannst aktuell höchstens ${quote.max} Inventarplätze kaufen.`);
-    const cost = quote.cost;
-    spendQuestTrackedSouls(save, cost);
-    save.inventoryCapacity += quantity;
-    response = { cost, slotsBought: quantity, state: save, message: 'Inventar erweitert.' };
   } else throw new Error('Unbekannte Aktion.');
   captureEquipmentSlotProgress(save);
   captureWorkshopBonuses(save);

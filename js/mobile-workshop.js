@@ -3,7 +3,7 @@ function openMobileItemWorkshop(itemId, mode = 'upgrade') {
   const item = findInventoryOrEquippedItem(state, itemId) || partyPets(state).find(pet => pet.id === itemId);
   if (!item) return;
   const equipped = workshopEquipmentItems(state).some(entry => entry.id === item.id);
-  const mythic = isMythicWeapon(item);
+  const mythic = isMythicEquipment(item);
   const capacity = equipped ? socketCapacityForSlot(item.slot, item) : 0;
   const canUpgrade = equipped && (AFFIX_POOLS[item.slot] || item.slot === 'glyph');
   const enchantable = equipped && ['weapons', 'armor', 'jewelry'].some(category => INVENTORY_CATEGORIES[category].slots.includes(item.slot));
@@ -12,6 +12,7 @@ function openMobileItemWorkshop(itemId, mode = 'upgrade') {
   if (canUpgrade && mythic) modes.push(['mythic', 'Mystisch aufwerten']);
   if (capacity) modes.push(['sockets', 'Sockel & Edelsteine']);
   if (enchantable && !mythic) modes.push(['rarity', 'Seltenheit aufwerten']);
+  if (equipped && item.rarityColor === 'legendary' && MYTHIC_ITEMS.equipmentSlots.includes(item.slot)) modes.push(['ascension', 'Zu Mystisch aufwerten']);
   if ((enchantable || item.slot === 'pet') && item.affixes?.length) modes.push(['affix', 'Affix umprägen']);
   if (item.slot === 'weaponGem') modes.push(['gem', 'Edelstein aufwerten / einsetzen']);
   if (item.slot === 'glyph' && state.inventory.some(entry => entry.id === item.id)) modes.push(['fusion', 'Glyphen kombinieren']);
@@ -32,6 +33,7 @@ function openMobileItemWorkshop(itemId, mode = 'upgrade') {
     const target = Math.min(maximum, level + 10);
     const options = Array.from({ length: maximum - level }, (_, index) => level + index + 1).map(value => `<option value="${value}" ${value === target ? 'selected' : ''}>+${value}${value === maximum ? ' · Maximum' : ''}</option>`).join('');
     const chances = mythicUpgrade ? MYTHIC_UPGRADES.successChanceByLevel : BALANCE.items.upgradeSuccessChanceByLevel;
+    if (mythicUpgrade) content += `<p class="rarity-mythic">${isMythicWeapon(item) ? `+${formatRuleNumber(mythicDamagePercent(item))} % multiplikativer Schaden` : level >= MYTHIC_ITEMS.treeBonusUnlockLevel ? `+${MYTHIC_ITEMS.treeBonusRanks} Rang auf alle investierten Tree-Knoten` : `Noch kein mystischer Bonus; +${MYTHIC_ITEMS.treeBonusRanks} Rang ab mystisch +${MYTHIC_ITEMS.treeBonusUnlockLevel}.`}</p>`;
     content += `<p>Aktuell +${level} · ${number(materials)} ${mythicUpgrade ? 'mystische ' : ''}Aufwertungssteine</p>`;
     if (level < maximum) content += `<p>Nächster Versuch: ${formatRuleNumber(workshopSuccessChance(chances[level] || 0))} % Erfolg</p><button class="ui-control ui-button" type="button" data-item-workshop-start="upgrade" data-item-workshop-single ${!materials || activeWorkshopJob ? 'disabled' : ''}>Einmal versuchen</button>`;
     if (options) content += `<label class="mobile-workshop-target">Zielstufe<select class="ui-control ui-select" data-item-workshop-target>${options}</select></label><p class="mobile-detail-note">Sofort bis zur Zielstufe oder bis das Material aufgebraucht ist. Fehlversuche verbrauchen ebenfalls Steine.</p><button class="primary-button ui-control ui-button" type="button" data-item-workshop-start="upgrade" ${!materials || activeWorkshopJob || forgeAnimationInProgress ? 'disabled' : ''}>Bis zur Zielstufe aufwerten</button>`;
@@ -52,6 +54,9 @@ function openMobileItemWorkshop(itemId, mode = 'upgrade') {
       return gem ? `<div><strong>Sockel ${index + 1}</strong><span>${escapeHtml(gem.name)} · ${escapeHtml(gem.rarity)}</span><button type="button" class="ui-control ui-button" data-item-workshop-remove="${index}" ${busy ? 'disabled' : ''}>Entnehmen</button></div>`
         : `<div><strong>Sockel ${index + 1}</strong>${gems.length ? `<select class="ui-control ui-select" data-workshop-gem-picker="${index}" aria-label="Edelstein für Sockel ${index + 1}">${gems.map(entry => `<option value="${escapeHtml(entry.id)}">${escapeHtml(entry.name)} · ${escapeHtml(entry.rarity)}</option>`).join('')}</select><button type="button" class="ui-control ui-button" data-item-workshop-insert="${index}" ${busy ? 'disabled' : ''}>Einsetzen</button>` : '<span>Keine Edelsteine im Inventar.</span>'}</div>`;
     }).join('')}</div>`;
+  } else if (mode === 'ascension') {
+    const quote = mythicAscensionQuote(state, item);
+    content += `<p>Legendär → <span class="rarity-mythic">Mystisch</span> · ${formatRuleNumber(quote.successChance * 100)} % Erfolg</p><p>Benötigt einen Ausrüstungsplatz auf +${quote.requiredSlotLevel}. Aktuell: +${item.upgradeLevel || 0}.</p><p>Pro Versuch: ${quote.rarityStoneCost} Seltenheitssteine und ${quote.mythicStoneCost} mystische Aufwertungssteine.</p><p>Vorrat: ${number(quote.rarityStones)} Seltenheitssteine · ${number(quote.mythicStones)} mystische Aufwertungssteine.</p><p class="mobile-detail-note">Beide Materialien werden auch bei einem Fehlschlag verbraucht. Der Gegenstand bleibt bei Fehlschlag erhalten; bei Erfolg beginnt die mystische Aufwertung auf +0.</p><button class="primary-button ui-control ui-button" type="button" data-item-workshop-ascend ${quote.possible ? '' : 'disabled'}>Mystische Aufwertung versuchen</button>`;
   } else if (mode === 'rarity') {
     const index = RARITY_ENCHANT_ORDER.indexOf(item.rarityColor);
     const next = RARITIES.find(entry => entry.color === RARITY_ENCHANT_ORDER[index + 1]);
@@ -143,6 +148,12 @@ document.addEventListener('click', event => {
     const chosen = [...mobileSheet.querySelectorAll('[data-mobile-fusion-glyph]:checked')].map(input => input.value);
     if (chosen.length !== 2) { toastMessageFor('Glyphen wählen', 'Wähle genau zwei weitere Glyphen.'); return; }
     void performMobileWorkshopAction(itemId, 'fusion', { action: 'fuse-glyphs', itemIds: [itemId, ...chosen] });
+    return;
+  }
+  const ascend = event.target.closest('[data-item-workshop-ascend]');
+  if (ascend) {
+    stop();
+    if (!ascend.disabled) void performMobileWorkshopAction(itemId, 'ascension', { action: 'enchant-mythic', itemId });
     return;
   }
   const enchant = event.target.closest('[data-item-workshop-enchant]');

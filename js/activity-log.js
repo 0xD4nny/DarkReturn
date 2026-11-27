@@ -68,12 +68,13 @@ function activityFor(payload, result) {
     'use-boss-reset': () => ({ title: 'Bossversuch erhalten', detail: 'Boss-Zeitstein verbraucht\nEin weiterer Bossversuch verf\u00fcgbar.' }),
     'use-tower-reset': () => ({ title: 'Turmversuch erhalten', detail: 'Turm-Zeitstein verbraucht\nEin weiterer Turmlauf verf\u00fcgbar.' }),
     'upgrade-gems': () => ({ title: 'Edelsteine aufgewertet', detail: `${number(result.consumed)} × ${result.profile} (${result.previousRarity}) → ${number(result.quantity)} × ${result.profile} (${result.item.rarity})` }),
+    'enchant-mythic': () => ({ title: result.success ? 'Ausrüstung zu Mystisch aufgewertet' : 'Mystische Aufwertung fehlgeschlagen', detail: `${itemName} · ${MYTHIC_ITEMS.ascension.rarityStoneCost} Seltenheitssteine und ${MYTHIC_ITEMS.ascension.mythicStoneCost} mystische Aufwertungssteine verbraucht` }),
     'enchant-rarity': () => result.greaterUpgrade
       ? { title: 'Greater Affix erzeugt', detail: `${itemName} · ${result.affix.stat} · einmalige Aufwertung mit einem Seltenheitsstein` }
       : { title: 'Seltenheit erhöht', detail: `${itemName} · ${result.previousRarity} → ${result.item?.rarity}` },
     'enchant-affix': () => ({ title: 'Affix umgeprägt', detail: `Kosten: ${number(result.cost || 1)} Umpr\u00e4gungssteine\n${itemName} · ${result.previousStat} → ${result.affix?.stat}` }),
+    'skill-tree-node-respec': () => ({ title: 'Talentknoten zurückgesetzt', detail: `${CLASSES[result.className]?.label || 'Charakter'} · ${result.nodeNames.join(', ')} · ${result.refundedPoints} Punkte zurück · ${number(result.cost)} Seelen` }),
     'skill-tree-respec': () => ({ title: 'Talentbaum zurückgesetzt', detail: `${CLASSES[result.className]?.label || 'Charakter'} · ${number(result.cost)} Seelen` }),
-    'expand-inventory': () => ({ title: 'Inventar erweitert', detail: `+${result.slotsBought || 1} Plätze · ${number(result.cost)} Seelen · ${result.state.inventoryCapacity} Plätze verfügbar` }),
     'boss-complete': () => {
       const boxCounts = new Map();
       (result.luckyBoxRewards || []).forEach(({ item }) => boxCounts.set(item.name, (boxCounts.get(item.name) || 0) + Math.max(1, Number(item.quantity) || 1)));
@@ -122,7 +123,7 @@ function activityFor(payload, result) {
     const mailed = (result.storedRewardItems || []).filter((entry) => entry.destination === 'mailbox').length;
     return { title: 'Auftragsbelohnung abgeholt', detail: `+${number(result.reward)} Seelen · ${mailed ? `${mailed} Gegenstand${mailed === 1 ? '' : 'e'} im Briefkasten` : `${result.readyCount} gebündelte Belohnung${result.readyCount === 1 ? '' : 'en'}`}` };
   }
-  const action = payload.action === 'admin-simulate-offline-hour' ? 'offline-settle' : payload.action;
+  const action = payload.action === 'admin-simulate-offline-time' ? 'offline-settle' : payload.action;
   return actions[action]?.() || null;
 }
 function appendActivity(title, detail) {
