@@ -173,5 +173,46 @@
       "multiplier": 1.65,
       "name": "Mondschatten"
     }
+  },
+  "questItems": {
+    "dropChance": 0.05,
+    "definitions": [
+      {
+        "id": "ashen-fang",
+        "areaId": "dornwacht",
+        "name": "Aschenzahn",
+        "asset": "Assets/Icons/000000/transparent/1x1/lorc/tooth.svg"
+      },
+      {
+        "id": "ember-core",
+        "areaId": "aschental",
+        "name": "Glutkern",
+        "asset": "Assets/Icons/000000/transparent/1x1/lorc/burning-embers.svg"
+      },
+      {
+        "id": "bog-root",
+        "areaId": "salzmoor",
+        "name": "Moorwurzel",
+        "asset": "Assets/Icons/000000/transparent/1x1/lorc/root-tip.svg"
+      },
+      {
+        "id": "rift-eye",
+        "areaId": "schwarze-kluft",
+        "name": "Kluftauge",
+        "asset": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg"
+      },
+      {
+        "id": "shard-feather",
+        "areaId": "glasforst",
+        "name": "Splitterfeder",
+        "asset": "Assets/Icons/000000/transparent/1x1/lorc/feather.svg"
+      },
+      {
+        "id": "moon-shard",
+        "areaId": "mondbruch",
+        "name": "Mondscherbe",
+        "asset": "Assets/Icons/000000/transparent/1x1/lorc/moon.svg"
+      }
+    ]
   }
 }

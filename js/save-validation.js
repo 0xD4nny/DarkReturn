@@ -149,7 +149,7 @@ function validateImportedSave(backup) {
     text(item.name, 'Gegenstandsname');
     text(item.rarity, 'Seltenheit');
     if (!RARITIES.some((rarity) => rarity.color === item.rarityColor)) fail('Seltenheitsfarbe');
-    if (item.rarityColor === 'mythic' && !isMythicEquipment(item) && !['mythicUpgradeStone', 'pet'].includes(item.slot)) fail('Mystische Ausrüstungsart');
+    if (item.rarityColor === 'mythic' && !isMythicEquipment(item) && !['mythicUpgradeStone', 'pet', 'questItem'].includes(item.slot)) fail('Mystische Ausrüstungsart');
     if (item.icon !== undefined) text(item.icon, 'Gegenstandssymbol');
     if (item.set !== undefined && !Object.hasOwn(ARMOR_SETS, item.set) && !Object.hasOwn(JEWELRY_SETS, item.set)) fail('Set');
     ['weaponDamage', 'baseWeaponDamage', 'armorDefense', 'baseArmorDefense', 'affixVersion', 'tier'].forEach((key) => {
@@ -191,6 +191,11 @@ function validateImportedSave(backup) {
     if (item.passives !== undefined) { list(item.passives, 'Passive Texte'); item.passives.forEach((value) => text(value, 'Passiver Text')); }
     if (item.powerupStat !== undefined && !POWERUP_STATS.includes(item.powerupStat)) fail('Power-up');
     if (item.slot === 'powerup' && !POWERUP_STATS.includes(item.powerupStat)) fail('Power-up-Typ');
+    if (item.slot === 'questItem') {
+      if (!questItemDefinition(item)) fail('Questgegenstand');
+      if (item.affixes.length || item.upgradeLevel || item.set || item.sockets?.length || item.socketSlots
+        || item.mythicUpgradeLevel !== undefined || item.enchantAffixIndex !== undefined) fail('Questgegenstand-Eigenschaften');
+    }
   };
   const validatePet = (pet, owner) => {
     record(pet, 'Begleittier');
@@ -311,7 +316,7 @@ function validateImportedSave(backup) {
   if (save.bossChallenge) Object.entries(save.bossChallenge).forEach(([key, value]) => numeric(value, key, key === 'highestRank' ? -1 : 0, key !== 'bestDamage', key === 'bestDamage' ? Number.MAX_VALUE : Number.MAX_SAFE_INTEGER));
   if (save.deepOfDark) {
     // Legacy Deep 4 saves are accepted here and normalized to the new maximum.
-    numeric(save.deepOfDark.tier, 'Deep-Stufe', 0, true, Math.max(4, BALANCE.deepOfDark.maxTier));
+    numeric(save.deepOfDark.tier, 'Schwierigkeitsstufe', 0, true, Math.max(4, BALANCE.deepOfDark.maxTier));
     areas(save.deepOfDark.clearedAreas, 'Besiegte Gebiete');
   }
   if (save.contracts) Object.entries(save.contracts).forEach(([key, value]) => {

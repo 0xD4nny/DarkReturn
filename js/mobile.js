@@ -232,7 +232,7 @@ function mobileCurrentItem() {
 }
 function mobileItemIconMarkup(item) {
   const visual = itemVisualStyle(item);
-  const classes = visual.special ? `inventory-item ${itemVisualClasses(item)}` : visual.rarity;
+  const classes = visual.special || item.slot === 'questItem' ? `inventory-item ${itemVisualClasses(item)}` : visual.rarity;
   return `<div class="mobile-item-icon ${classes}">${visual.special ? equipmentEmbersMarkup(item) : ''}${itemIconMarkup(item, 'item-icon')}</div>`;
 }
 function openMobileItem(item, source, { preview = false, description = '', shopOffer = false } = {}) {

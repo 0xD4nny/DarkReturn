@@ -16,7 +16,11 @@ const BOX_RULES = GAME_CONFIG.boxRules;
 const BOX_GROUPS = Object.keys(BOX_RULES).filter(group => SLOT_DATA[group]);
 const GEM_PROFILES = GAME_CONFIG.gemProfiles;
 const AREAS = GAME_CONFIG.areas;
+const QUEST_ITEM_RULES = GAME_CONFIG.questItems;
 const RARITIES = GAME_CONFIG.rarities;
+function difficultyName(tier = 0) {
+  return RARITIES[Math.max(0, Math.min(RARITIES.length - 1, Math.floor(Number(tier) || 0)))].name;
+}
 const MYTHIC_ITEMS = GAME_CONFIG.mythicItems;
 const MYTHIC_UPGRADES = GAME_CONFIG.balance.items.mythicUpgrades;
 const WEAPON_PROGRESSION = GAME_CONFIG.weaponProgression;

@@ -3,9 +3,9 @@
     "startingSouls": 10000,
     "startingInventoryCapacity": 200,
     "deepOfDark": {
-      "maxTier": 4,
+      "maxTier": 5,
       "enemyHealthAtFinalArea": 1000000000000,
-      "enemyDamageAtFinalArea": 1000000,
+      "enemyDamageAtFinalArea": 5961460,
       "rarityWeightsByTier": [
         null,
         {
@@ -19,20 +19,11 @@
         },
         {
           "legendary": 100
+        },
+        {
+          "legendary": 100
         }
-      ],
-      "enemyHealthAtTierEnd": [
-        null,
-        1200000,
-        80000000,
-        5000000000,
-        1000000000000
-      ],
-      "enemyHealthAtTierStart": {
-        "4": 10000000000
-      },
-      "enemyDamageScalingTier": 3,
-      "enemyDamageEarlyCurvePower": 0.65
+      ]
     },
     "groupLevel": {
       "costBase": 250,
@@ -114,9 +105,9 @@
               "greaterAffixes": 0
             },
             {
-              "type": "souls",
-              "min": 1500,
-              "max": 1500
+              "type": "material",
+              "slot": "towerReset",
+              "quantity": 1
             },
             {
               "type": "material",
@@ -203,14 +194,14 @@
               "quantity": 1
             },
             {
-              "type": "souls",
-              "min": 2000,
-              "max": 2000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
-              "type": "souls",
-              "min": 3000,
-              "max": 3000
+              "type": "material",
+              "slot": "towerReset",
+              "quantity": 1
             },
             {
               "type": "luckyBox",
@@ -268,9 +259,9 @@
           ],
           "rewards": [
             {
-              "type": "souls",
-              "min": 3000,
-              "max": 3000
+              "type": "material",
+              "slot": "towerReset",
+              "quantity": 1
             },
             {
               "type": "souls",
@@ -358,8 +349,8 @@
             },
             {
               "type": "material",
-              "slot": "affixStone",
-              "quantity": 3
+              "slot": "towerReset",
+              "quantity": 1
             },
             {
               "type": "material",
@@ -372,9 +363,9 @@
               "quantity": 5
             },
             {
-              "type": "souls",
-              "min": 10000,
-              "max": 10000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
               "type": "luckyBox",
@@ -418,8 +409,8 @@
             {
               "type": "deepTier",
               "target": 1,
-              "title": "Deep of Dark 1 freischalten",
-              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte Deep of Dark {target} frei.",
+              "title": "Ungewöhnlich freischalten",
+              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte die nächste Schwierigkeitsstufe frei.",
               "id": "fixed-5-5"
             },
             {
@@ -449,8 +440,8 @@
             },
             {
               "type": "material",
-              "slot": "socketStone",
-              "quantity": 10
+              "slot": "towerReset",
+              "quantity": 1
             },
             {
               "type": "material",
@@ -464,9 +455,9 @@
               "greaterAffixes": 0
             },
             {
-              "type": "souls",
-              "min": 30000,
-              "max": 30000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             }
           ]
         },
@@ -484,7 +475,7 @@
               "type": "monsters",
               "target": 250,
               "title": "250 Gegner besiegen",
-              "description": "Besiege {target} Gegner auf Deep of Dark 1.",
+              "description": "Besiege {target} Gegner auf Ungewöhnlich.",
               "minimumDeepTier": 1,
               "id": "fixed-6-2"
             },
@@ -533,9 +524,9 @@
               "quantity": 1
             },
             {
-              "type": "souls",
-              "min": 25000,
-              "max": 25000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
               "type": "classWeapon",
@@ -567,15 +558,15 @@
             {
               "type": "deepTier",
               "target": 2,
-              "title": "Deep of Dark 2 freischalten",
-              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte Deep of Dark {target} frei.",
+              "title": "Selten freischalten",
+              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte die nächste Schwierigkeitsstufe frei.",
               "id": "fixed-7-2"
             },
             {
               "type": "monsters",
               "target": 400,
               "title": "400 Gegner besiegen",
-              "description": "Besiege {target} Gegner auf Deep of Dark 2.",
+              "description": "Besiege {target} Gegner auf Selten.",
               "minimumDeepTier": 2,
               "id": "fixed-7-3"
             },
@@ -629,9 +620,9 @@
               "quantity": 20
             },
             {
-              "type": "souls",
-              "min": 125000,
-              "max": 125000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
               "type": "luckyBundle",
@@ -652,15 +643,15 @@
             {
               "type": "deepTier",
               "target": 3,
-              "title": "Deep of Dark 3 freischalten",
-              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte Deep of Dark {target} frei.",
+              "title": "Episch freischalten",
+              "description": "Gewinne alle Gebiete der vorherigen Stufe und schalte die nächste Schwierigkeitsstufe frei.",
               "id": "fixed-8-2"
             },
             {
               "type": "greaterDrops",
               "target": 1,
               "title": "Den ersten Greater-Fund bergen",
-              "description": "Finde einen Ausrüstungsgegenstand mit mindestens einem Greater Affix in einem Gebiet auf Deep of Dark 3. Shop- und Auftragsgegenstände zählen nicht.",
+              "description": "Finde einen Ausrüstungsgegenstand mit mindestens einem Greater Affix in einem Gebiet auf Episch. Shop- und Auftragsgegenstände zählen nicht.",
               "id": "fixed-8-3"
             },
             {
@@ -714,9 +705,9 @@
               "quantity": 40
             },
             {
-              "type": "souls",
-              "min": 300000,
-              "max": 300000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
               "type": "luckyBundle",
@@ -752,7 +743,7 @@
               "type": "monsters",
               "target": 1000,
               "title": "1000 Gegner besiegen",
-              "description": "Besiege {target} Gegner auf Deep of Dark 3.",
+              "description": "Besiege {target} Gegner auf Episch.",
               "minimumDeepTier": 3,
               "id": "fixed-9-4"
             },
@@ -793,9 +784,9 @@
               "quantity": 1
             },
             {
-              "type": "souls",
-              "min": 1500000,
-              "max": 1500000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
               "type": "luckyBundle",
@@ -838,7 +829,7 @@
               "type": "greaterDrops",
               "target": 5,
               "title": "Fünf Greater-Gegenstände finden",
-              "description": "Finde {target} Ausrüstungsgegenstände mit mindestens einem Greater Affix in Gebieten auf Deep of Dark 3 seit Gruppenbeginn.",
+              "description": "Finde {target} Ausrüstungsgegenstände mit mindestens einem Greater Affix in Gebieten auf Episch seit Gruppenbeginn.",
               "id": "fixed-10-5"
             },
             {
@@ -852,8 +843,8 @@
           "rewards": [
             {
               "type": "material",
-              "slot": "upgradeStone",
-              "quantity": 100
+              "slot": "towerReset",
+              "quantity": 1
             },
             {
               "type": "material",
@@ -867,13 +858,13 @@
             },
             {
               "type": "material",
-              "slot": "rarityStone",
-              "quantity": 5
+              "slot": "upgradeStone",
+              "quantity": 50
             },
             {
-              "type": "souls",
-              "min": 3000000,
-              "max": 3000000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
               "type": "luckyBundle",
@@ -917,7 +908,7 @@
               "type": "monsters",
               "target": 2000,
               "title": "2000 Gegner besiegen",
-              "description": "Besiege {target} Gegner auf Deep of Dark 3.",
+              "description": "Besiege {target} Gegner auf Episch.",
               "minimumDeepTier": 3,
               "id": "fixed-11-5"
             },
@@ -950,9 +941,9 @@
               "quantity": 2
             },
             {
-              "type": "souls",
-              "min": 6000000,
-              "max": 6000000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
               "type": "luckyBundle",
@@ -996,7 +987,7 @@
               "type": "monsters",
               "target": 3000,
               "title": "3000 Gegner besiegen",
-              "description": "Besiege {target} Gegner auf Deep of Dark 3.",
+              "description": "Besiege {target} Gegner auf Episch.",
               "minimumDeepTier": 3,
               "id": "fixed-12-5"
             },
@@ -1036,13 +1027,13 @@
             },
             {
               "type": "material",
-              "slot": "rarityStone",
-              "quantity": 10
+              "slot": "upgradeStone",
+              "quantity": 100
             },
             {
-              "type": "souls",
-              "min": 12000000,
-              "max": 12000000
+              "type": "material",
+              "slot": "bossReset",
+              "quantity": 1
             },
             {
               "type": "luckyBundle",
@@ -1054,8 +1045,8 @@
       "repeatTasks": [
         {
           "id": "repeat-monsters",
-          "title": "Besiege weitere Gegner auf Deep of Dark 3.",
-          "description": "Besiege {target} Gegner auf Deep of Dark 3.",
+          "title": "Besiege weitere Gegner auf Episch.",
+          "description": "Besiege {target} Gegner auf Episch.",
           "type": "monsters",
           "targets": [
             3000,
@@ -1066,8 +1057,8 @@
         },
         {
           "id": "repeat-champions",
-          "title": "Besiege weitere Champions auf Deep of Dark 3.",
-          "description": "Besiege {target} Champions auf Deep of Dark 3.",
+          "title": "Besiege weitere Champions auf Episch.",
+          "description": "Besiege {target} Champions auf Episch.",
           "type": "champions",
           "targets": [
             100,
@@ -1149,11 +1140,6 @@
           "quantity": 25
         },
         {
-          "type": "material",
-          "slot": "rarityStone",
-          "quantity": 5
-        },
-        {
           "type": "luckyBundle",
           "quantity": 4
         },
@@ -1167,7 +1153,7 @@
           "max": 2000000
         }
       ],
-      "contentVersion": 5
+      "contentVersion": 7
     },
     "contracts": {
       "rewardTarget": 5,
@@ -1186,17 +1172,7 @@
       "firstAreaMinimum": 100,
       "firstAreaMaximum": 150,
       "finalAreaMaximum": 20000,
-      "minimumRollRatio": 0.85,
-      "curveAnchors": [
-        {
-          "deepTier": 3,
-          "maximum": 10000
-        },
-        {
-          "deepTier": 4,
-          "maximum": 20000
-        }
-      ]
+      "minimumRollRatio": 0.85
     },
     "huntingEvent": {
       "targetKills": 300,

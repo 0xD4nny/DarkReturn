@@ -90,6 +90,14 @@
     if (!Array.isArray(boxRules?.consolationPool) || !boxRules.consolationPool.length || !(Number(boxRules.glyphBox?.chancePerGlyph) > 0) || boxRules.glyphBox.chancePerGlyph * glyphDefinitions.length > 100) {
       throw new Error('Die Luckybox-Regeln sind unvollständig konfiguriert.');
     }
+    const materialBox = boxRules?.materialBox;
+    const materialSlots = ['upgradeStone', 'socketStone', 'affixStone', 'rarityStone'];
+    if (!Array.isArray(materialBox?.rewards) || !materialBox.rewards.length
+      || materialBox.rewards.some(reward => !materialSlots.includes(reward.slot) || !Number.isFinite(reward.chance) || reward.chance <= 0 || !Number.isSafeInteger(reward.quantity) || reward.quantity < 1)
+      || Math.abs(materialBox.rewards.reduce((sum, reward) => sum + reward.chance, 0) - 100) > 0.000001
+      || !config.slots.materialBox || !Number.isSafeInteger(config.shopCosts.materialBox) || config.shopCosts.materialBox < 1) {
+      throw new Error('Die Material-Luckybox ist unvollständig konfiguriert.');
+    }
     const gemAttributes = ['Stärke', 'Geschicklichkeit', 'Ausdauer', 'Intelligenz', 'Glaube'];
     if (!Array.isArray(config.gemProfiles) || config.gemProfiles.length !== gemAttributes.length || gemAttributes.some(attribute => config.gemProfiles.filter(profile => profile.attribute === attribute).length !== 1) || config.gemProfiles.some(profile => profile.slot !== 'weaponGem' || typeof profile.profile !== 'string' || !gemAttributes.includes(profile.attribute))) throw new Error('Der Edelsteinpool ist unvollständig konfiguriert.');
     const gemWeights = config.balance.items.gemRarityWeights;
@@ -119,8 +127,23 @@
     }
     const towerLootChoices = config.balance.loot?.towerLootChoices;
     if (!Number.isFinite(config.balance.loot?.towerLootChancePerBoss) || config.balance.loot.towerLootChancePerBoss < 0) throw new Error('Der Turmboss-Beutebonus ist ungültig.');
-    const earlyDamagePower = config.balance.deepOfDark?.enemyDamageEarlyCurvePower ?? 1;
-    if (!Number.isFinite(earlyDamagePower) || earlyDamagePower <= 0 || earlyDamagePower > 1) throw new Error('Die frühe Deep-of-Dark-Schadenskurve muss zwischen 0 und 1 liegen.');
+    const questItems = config.questItems;
+    if (!Number.isFinite(questItems?.dropChance) || questItems.dropChance < 0 || questItems.dropChance > 1
+      || !Array.isArray(questItems.definitions) || questItems.definitions.length !== config.areas.length
+      || new Set(questItems.definitions.map(item => item.id)).size !== questItems.definitions.length
+      || config.areas.some(area => questItems.definitions.filter(item => item.areaId === area.id).length !== 1)
+      || questItems.definitions.some(item => !item.id || !item.name || !item.asset)
+      || !config.slots.questItem || !config.inventoryCategories.questItems?.slots.includes('questItem')) {
+      throw new Error('Die Gebiets-Questgegenstände sind unvollständig konfiguriert.');
+    }
+    const difficulty = config.balance.deepOfDark;
+    if (difficulty?.maxTier !== config.rarities.length - 1
+      || difficulty.rarityWeightsByTier?.length !== config.rarities.length
+      || !Number.isFinite(difficulty.enemyHealthAtFinalArea) || difficulty.enemyHealthAtFinalArea <= 0
+      || !Number.isFinite(difficulty.enemyDamageAtFinalArea) || difficulty.enemyDamageAtFinalArea <= 0) {
+      throw new Error('Die sechs Schwierigkeitsstufen sind unvollständig konfiguriert.');
+    }
+    if (!Number.isSafeInteger(config.balance.loot.firstClearMaximumTierMultiplier) || config.balance.loot.firstClearMaximumTierMultiplier < 1) throw new Error('Der Erstabschlussfaktor muss positiv sein.');
     const towerScaling = config.balance.combat?.towerScaling;
     if (!Number.isSafeInteger(towerScaling?.referenceRound) || towerScaling.referenceRound <= 1
       || ['start', 'target'].some(anchor => !config.areas.some(area => area.id === towerScaling[`${anchor}Area`])

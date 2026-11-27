@@ -106,6 +106,10 @@ function renderView({ background = false } = {}) {
     }
   }
   const playerIdentity = document.querySelector('#player-identity');
+  document.querySelectorAll('[data-player-boss-rank]').forEach(host => {
+    const markup = state.mainClass ? playerBossRankBadge(state) : '';
+    if (host.innerHTML !== markup) host.innerHTML = markup;
+  });
   if (playerIdentity) playerIdentity.hidden = !state.mainClass;
   if (!background && state.mainClass && playerIdentity) {
     const classIcon = playerIdentity.querySelector('.player-class-icon');

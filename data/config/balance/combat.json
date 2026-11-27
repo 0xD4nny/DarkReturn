@@ -2,6 +2,7 @@
   "balance": {
     "loot": {
       "firstClearSoulsPerArea": 1000,
+      "firstClearMaximumTierMultiplier": 4,
       "firstClearFarmBoxes": 10,
       "eliteEveryEncounters": 5,
       "eliteHealthMultiplier": 1.8,
@@ -231,7 +232,7 @@
         "startArea": "dornwacht",
         "startDeepTier": 0,
         "targetArea": "mondbruch",
-        "targetDeepTier": 4
+        "targetDeepTier": 5
       },
       "towerSkillAttackInterval": 3,
       "towerSkillMultiplier": 1.5,

@@ -1,6 +1,6 @@
 {
   "scope": "Current game sources: index.html, script.js, style.css, js/, css/, data/config/. Includes explicit SVG references and the abilityPresentation map plus fallback. Archived assets and inline SVG backups are not runtime assets.",
-  "iconCount": 74,
+  "iconCount": 79,
   "configuredAbilitiesResolved": 24,
   "icons": [
     {
@@ -92,7 +92,9 @@
       "source": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg",
       "copy": "000000/transparent/1x1/delapouite/chest.svg",
       "usedBy": [
-        "data/config/equipment.json:149"
+        "data/config/equipment.json:149",
+        "data/config/market.json:materialBox",
+        "data/config/equipment.json:materialBox"
       ],
       "sha256": "b57cb31393783165782a146005ce80c62cc6c3facdfb478c91bf633927f7962a",
       "originalPackSource": "icons/000000/transparent/1x1/delapouite/chest.svg"
@@ -247,7 +249,8 @@
       "source": "Assets/Icons/000000/transparent/1x1/lorc/beast-eye.svg",
       "copy": "000000/transparent/1x1/lorc/beast-eye.svg",
       "usedBy": [
-        "js/views-progression.js:12 (abilityPresentation)"
+        "js/views-progression.js:12 (abilityPresentation)",
+        "data/config/world.json:questItems"
       ],
       "sha256": "7c53f2b509a42aec84a5fdd8d53ade2b9f5d8b1217d49b00ecc08ea43f43cbac",
       "originalPackSource": "icons/000000/transparent/1x1/lorc/beast-eye.svg"
@@ -295,6 +298,15 @@
       ],
       "sha256": "4da0be0f53477ffb489abe26abcac44fe49e223e25bca820d4fd800d24d9eeaf",
       "originalPackSource": "icons/000000/transparent/1x1/lorc/broadsword.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/burning-embers.svg",
+      "copy": "000000/transparent/1x1/lorc/burning-embers.svg",
+      "usedBy": [
+        "data/config/world.json:questItems"
+      ],
+      "sha256": "6ec30d585162b540791233672d755fcce4ccba458a6e273e33a18ffb3324c938",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/burning-embers.svg"
     },
     {
       "source": "Assets/Icons/000000/transparent/1x1/lorc/cat.svg",
@@ -429,6 +441,15 @@
       ],
       "sha256": "5f2525394f14e6c46f3781e11c1796bbd4cf329496b52e663e77b071bcc573c3",
       "originalPackSource": "icons/000000/transparent/1x1/lorc/eye-shield.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/feather.svg",
+      "copy": "000000/transparent/1x1/lorc/feather.svg",
+      "usedBy": [
+        "data/config/world.json:questItems"
+      ],
+      "sha256": "4991c6d3d61c29bf55f44c7e62255a91b5c8d1ba642e9406ec614e5c03de7fe3",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/feather.svg"
     },
     {
       "source": "Assets/Icons/000000/transparent/1x1/lorc/fireball.svg",
@@ -573,6 +594,15 @@
       "originalPackSource": "icons/000000/transparent/1x1/lorc/mineral-heart.svg"
     },
     {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/moon.svg",
+      "copy": "000000/transparent/1x1/lorc/moon.svg",
+      "usedBy": [
+        "data/config/world.json:questItems"
+      ],
+      "sha256": "a6d36b93130c29deafdca40a031991289d4dae0f36c4bbc0b8d6fd8e32b8c00c",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/moon.svg"
+    },
+    {
       "source": "Assets/Icons/000000/transparent/1x1/lorc/muscle-up.svg",
       "copy": "000000/transparent/1x1/lorc/muscle-up.svg",
       "usedBy": [
@@ -620,6 +650,15 @@
       ],
       "sha256": "ea84d71ac02be5f93d48f230de8ac82702a311e90aab49ce65908d697b75c449",
       "originalPackSource": "icons/000000/transparent/1x1/lorc/ringing-bell.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/root-tip.svg",
+      "copy": "000000/transparent/1x1/lorc/root-tip.svg",
+      "usedBy": [
+        "data/config/world.json:questItems"
+      ],
+      "sha256": "ee89e4c19c77f8c5e2f29beaa3a86bf0ee0a831c6d7def5534d707680ef8f01a",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/root-tip.svg"
     },
     {
       "source": "Assets/Icons/000000/transparent/1x1/lorc/rune-stone.svg",
@@ -715,6 +754,15 @@
       ],
       "sha256": "47cc540e502089d64005dac9f1f3e41986fac9dcc04a5c2d05c81dcfcfbb4849",
       "originalPackSource": "icons/000000/transparent/1x1/lorc/target-arrows.svg"
+    },
+    {
+      "source": "Assets/Icons/000000/transparent/1x1/lorc/tooth.svg",
+      "copy": "000000/transparent/1x1/lorc/tooth.svg",
+      "usedBy": [
+        "data/config/world.json:questItems"
+      ],
+      "sha256": "2b9d551593dbebfa1eb9a62deaf521fdb6158dbca59930343f48641710031652",
+      "originalPackSource": "icons/000000/transparent/1x1/lorc/tooth.svg"
     },
     {
       "source": "Assets/Icons/000000/transparent/1x1/lorc/wizard-staff.svg",

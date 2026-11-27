@@ -28,7 +28,7 @@ function activityFor(payload, result) {
       const report = result.offlineReport;
       if (!report || (!report.wins && !report.defeats)) return null;
       return { title: 'AFK-Fortschritt gutgeschrieben', detail: [
-        report.mode === 'tower' ? `Turm: Runde ${report.startRound} bis ${report.lastRound}${report.runEnded ? ' \u00b7 durch Niederlage beendet' : ''}` : `${AREAS.find(area => area.id === report.area)?.name} \u00b7 ${report.deepTier ? 'Deep of Dark ' + report.deepTier : 'Grundstufe'}`,
+        report.mode === 'tower' ? `Turm: Runde ${report.startRound} bis ${report.lastRound}${report.runEnded ? ' \u00b7 durch Niederlage beendet' : ''}` : `${AREAS.find(area => area.id === report.area)?.name} \u00b7 ${difficultyName(report.deepTier)}`,
         `${offlineTimeLabel(report.duration)} mit ${report.efficiency * 100} % Effizienz`,
         `${number(report.wins)} Siege / ${number(report.defeats)} Niederlagen`,
         `+${number(report.souls)} Seelen`,
@@ -37,7 +37,7 @@ function activityFor(payload, result) {
         ...Object.entries(report.missed).map(([name, quantity]) => `Nicht aufgenommen: ${number(quantity)} \u00d7 ${name}`),
       ].join('\n') };
     },
-    'claim-hunting-event': () => ({ title: 'Jagdauftrag abgeschlossen', detail: `${AREAS.find(area => area.id === result.areaId)?.name} · ${result.tier ? `Deep ${result.tier}` : 'Normal'} · ${result.rewards.map(item => `${item.quantity} × ${item.name}`).join(' · ')}` }),
+    'claim-hunting-event': () => ({ title: 'Jagdauftrag abgeschlossen', detail: `${AREAS.find(area => area.id === result.areaId)?.name} · ${difficultyName(result.tier)} · ${result.rewards.map(item => `${item.quantity} × ${item.name}`).join(' · ')}` }),
     'fuse-glyphs': () => ({ title: 'Glyphen kombiniert', detail: `${result.consumed.map(item => item.name).join(' + ')} → ${itemName} · ${(result.item.affixes || []).filter(affix => affix.greater).length} Greater Affixe` }),
     'activate-vip': () => ({ title: 'VIP aktiviert', detail: `VIP bis ${new Date(result.expiresAt).toLocaleString('de-DE')} · Doppelte Geschwindigkeit für Schmiede, Sockel und Verzauberung · +${VIP_RULES.dropRatePercent} % Droprate · +${VIP_RULES.soulBonusPercent} % Kampf-Seelen` }),
     'buy-equipment-offer': () => ({ title: 'Ausrüstung gekauft', detail: `${itemName} · ${result.item.rarity} · ${number(result.cost)} Seelen` }),
@@ -99,6 +99,12 @@ function activityFor(payload, result) {
     return { title: 'Gebiet erstmals abgeschlossen', detail: `+${number(result.discoveryBonus)} Seelen und ${number(result.firstClearBoxes.quantity)} Farm-Luckyboxen${result.firstClearBoxesDestination === 'mailbox' ? ' (Briefkasten)' : ''} · Insgesamt +${number(result.reward)} Seelen` };
   }
   const dropDestination = result.equipmentDropDestination || (result.equipmentDropMissed ? 'missed' : result.equipmentDropSold ? 'sold' : result.equipmentDropMailed ? 'mailbox' : null);
+  if (payload.action === 'battle' && result.questItemDrops?.length) {
+    const details = result.questItemDrops.map(item => `${number(item.quantity)} × ${item.name} (${item.rarity})`);
+    if (result.equipmentDrop) details.push(`${result.equipmentDrop.name} · ${dropDestination === 'sold' ? 'automatisch verkauft' : dropDestination === 'missed' ? 'kein Lagerplatz' : dropDestination === 'mailbox' ? 'Briefkasten' : 'Inventar'}`);
+    if (result.farmBoxDrop) details.push(`Farm-Luckybox · ${result.farmBoxDropDestination === 'missed' ? 'kein Lagerplatz' : result.farmBoxDropDestination === 'mailbox' ? 'Briefkasten' : 'Inventar'}`);
+    return { title: 'Questgegenstand gefunden', detail: details.join(' · ') };
+  }
   if (payload.action === 'battle' && result.farmBoxDrop) {
     const destination = result.farmBoxDropDestination;
     const details = [destination === 'missed' ? 'Farm-Luckybox nicht aufgenommen: kein freier Lagerplatz.'

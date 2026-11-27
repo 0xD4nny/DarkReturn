@@ -3,9 +3,9 @@ const SAVE_STORE = 'saves';
 const SAVE_KEY = 'current';
 const MAILBOX_CAPACITY = 10;
 const LEGACY_COMBAT_ACTIVITY = new Set(['Kampf gewonnen', 'Kampf verloren', 'Kampf abgebrochen']);
-const STACKABLE_ITEM_SLOTS = new Set(['upgradeStone', 'mythicUpgradeStone', 'socketStone', 'rarityStone', 'affixStone', 'weaponGem', 'armorGem', 'powerup', 'vipTicket', 'towerLootBoost', 'towerReset', 'bossReset', 'glyphBox', 'vipBox', 'farmBox']);
+const STACKABLE_ITEM_SLOTS = new Set(['questItem', 'upgradeStone', 'mythicUpgradeStone', 'socketStone', 'rarityStone', 'affixStone', 'weaponGem', 'armorGem', 'powerup', 'vipTicket', 'towerLootBoost', 'towerReset', 'bossReset', 'glyphBox', 'vipBox', 'farmBox', 'materialBox']);
 const RARITY_ENCHANT_ORDER = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
-const STACKABLE_SHOP_GROUPS = new Set(['glyphBox', 'vipBox']);
+const STACKABLE_SHOP_GROUPS = new Set(['glyphBox', 'vipBox', 'materialBox']);
 const viewContainer = document.querySelector('#view-container');
 const activityToggle = document.querySelector('#activity-toggle');
 const activityBadge = document.querySelector('#activity-badge');
@@ -196,7 +196,7 @@ function makeQuestBoardGroup(groupIndex, save = null) {
   while (!fixed && selected.length < QUEST_BOARD.batchSize && available.length) {
     selected.push(available.splice(randomInt(0, available.length - 1), 1)[0]);
   }
-  const rewards = fixed ? fixed.rewards : rollQuestRewards(QUEST_BOARD.batchSize);
+  const rewards = fixed ? fixed.rewards : rollQuestRewards(QUEST_BOARD.batchSize, selected);
   return {
     version: QUEST_BOARD.schemaVersion, contentVersion: QUEST_BOARD.contentVersion, groupIndex,
     tasks: selected.map((entry, index) => {
@@ -213,10 +213,18 @@ function makeQuestBoardGroup(groupIndex, save = null) {
     }),
   };
 }
-function rollQuestRewards(count) {
+function rollQuestRewards(count, tasks = []) {
   const available = [...QUEST_BOARD.rewardPool];
   const rewards = [];
   while (rewards.length < count && available.length) rewards.push(cloneState(available.splice(randomInt(0, available.length - 1), 1)[0]));
+  const needsTower = tasks.some(task => ['tower', 'towerRounds', 'towerBosses', 'upgradeStoneDrops', 'socketStoneDrops', 'affixStoneDrops', 'gemDrops'].includes(task.type));
+  const needsBoss = tasks.some(task => task.type === 'bossRank');
+  for (const [slot, needed] of [['bossReset', needsBoss], ['towerReset', needsTower]]) {
+    if (!needed || rewards.some(reward => reward.type === 'material' && reward.slot === slot)) continue;
+    let index = rewards.findIndex(reward => reward.type === 'souls');
+    if (index < 0) index = rewards.findIndex(reward => reward.type === 'material' && !['bossReset', 'towerReset'].includes(reward.slot));
+    if (index >= 0) rewards[index] = { type: 'material', slot, quantity: 1 };
+  }
   return rewards;
 }
 function questBoardProgress(save, quest) {
@@ -585,7 +593,7 @@ function defaultState() {
   return {
     playerName: null, mainClass: null, souls: 0, level: 1, experience: 0, vipExpiresAt: 0,
     huntingEvent: null,
-    statistics: { towerBossesKilled: 0, towerRoundsWon: 0, towerBestRunRounds: 0, playTimeMs: 0, deaths: 0, monstersKilled: 0, soulsEarned: 0, damageDealt: 0, highestHit: 0, luckyBoxesOpened: { glyphBox: 0, vipBox: 0, farmBox: 0 }, forgeAttempts: 0, socketAttempts: 0, raritiesUpgraded: 0, affixesRerolled: 0, itemsSold: 0, autoSoldItems: 0 },
+    statistics: { towerBossesKilled: 0, towerRoundsWon: 0, towerBestRunRounds: 0, playTimeMs: 0, deaths: 0, monstersKilled: 0, soulsEarned: 0, damageDealt: 0, highestHit: 0, luckyBoxesOpened: { glyphBox: 0, vipBox: 0, farmBox: 0, materialBox: 0 }, forgeAttempts: 0, socketAttempts: 0, raritiesUpgraded: 0, affixesRerolled: 0, itemsSold: 0, autoSoldItems: 0 },
     pets: {},
     characterLevels: Object.fromEntries(Object.keys(CLASSES).map((className) => [className, 1])),
     skillTree: Object.fromEntries(Object.keys(CLASSES).map((className) => [className, { version: BALANCE.skillTree.schemaVersion, nodes: {} }])),
@@ -695,28 +703,26 @@ function partyLevel(sourceState = state) {
 function highestPartyLevel(sourceState = state) {
   return Math.max(1, ...dropPartyClasses(sourceState).map(owner => characterLevel(owner, sourceState)));
 }
-// Each Deep tier continues from the preceding tier's endpoint to its own health target.
-function areaEnemyBaseHealth(areaId, deepTier = 0) {
+// Keep the first difficulty's geography; subsequent stages grow by equal percentage steps.
+function areaEnemyScaledStat(areaId, deepTier, stat, finalValue) {
   const areaIndex = AREAS.findIndex(area => area.id === areaId);
   if (areaIndex < 0) return 0;
-  const rules = BALANCE.deepOfDark;
-  const maximumTier = Math.max(1, Math.floor(Number(rules.maxTier) || 1));
+  const maximumTier = BALANCE.deepOfDark.maxTier;
   const tier = Math.max(0, Math.min(maximumTier, Math.floor(Number(deepTier) || 0)));
-  if (!tier) return ENEMIES[areaId].hp;
-  const endpoints = rules.enemyHealthAtTierEnd;
-  const normalEnd = ENEMIES[AREAS[AREAS.length - 1].id].hp;
-  const baseline = tier === 1 ? normalEnd : Number(endpoints[tier - 1]);
-  const target = Number(endpoints[tier]);
-  const start = Number(rules.enemyHealthAtTierStart?.[tier]);
-  if (start > 0) return Math.round(start * (target / start) ** (areaIndex / Math.max(1, AREAS.length - 1)));
-  return Math.round(baseline * (target / baseline) ** ((areaIndex + 1) / AREAS.length));
+  if (!tier) return ENEMIES[areaId][stat];
+  const baseline = ENEMIES[AREAS[AREAS.length - 1].id][stat];
+  const progress = ((tier - 1) * AREAS.length + areaIndex + 1) / (maximumTier * AREAS.length);
+  return Math.round(baseline * (finalValue / baseline) ** progress);
+}
+function areaEnemyBaseHealth(areaId, deepTier = 0) {
+  return areaEnemyScaledStat(areaId, deepTier, 'hp', BALANCE.deepOfDark.enemyHealthAtFinalArea);
 }
 function areaFirstClearSouls(areaId, deepTier = 0) {
   const areaNumber = AREAS.findIndex(area => area.id === areaId) + 1;
-  const tier = Math.max(1, Math.min(BALANCE.deepOfDark.maxTier, Math.floor(Number(deepTier) || 0)));
+  const tier = Math.max(1, Math.min(BALANCE.loot.firstClearMaximumTierMultiplier, Math.floor(Number(deepTier) || 0)));
   return areaNumber * tier * BALANCE.loot.firstClearSoulsPerArea;
 }
-// Non-overlapping base soul ranges across Normal and every Deep tier.
+// Non-overlapping base soul ranges across all six difficulties.
 function areaSoulRewardRange(areaId, deepTier = 0) {
   const areaIndex = AREAS.findIndex(area => area.id === areaId);
   if (areaIndex < 0) return [0, 0];
@@ -740,26 +746,9 @@ function areaSoulRewardRange(areaId, deepTier = 0) {
     : Math.max(upperAt(step - 1) + 1, Math.round(maximum * rules.minimumRollRatio));
   return [minimum, maximum];
 }
-// Absolute attack damage grows continuously through all Deep areas, independent of hero HP.
+// Absolute attack damage is independent of hero HP.
 function areaEnemyBaseDamage(areaId, deepTier = 0) {
-  const areaIndex = AREAS.findIndex(area => area.id === areaId);
-  if (areaIndex < 0) return 0;
-  const rules = BALANCE.deepOfDark;
-  const maximumTier = Math.max(1, Math.floor(Number(rules.maxTier) || 1));
-  const tier = Math.max(0, Math.min(maximumTier, Math.floor(Number(deepTier) || 0)));
-  if (!tier) return ENEMIES[areaId].damage;
-  const baseline = ENEMIES[AREAS[AREAS.length - 1].id].damage;
-  const target = Math.max(baseline, Number(rules.enemyDamageAtFinalArea) || baseline);
-  const step = (tier - 1) * AREAS.length + areaIndex + 1;
-  const scalingTier = rules.enemyDamageScalingTier || maximumTier;
-  let progress = step / (scalingTier * AREAS.length);
-  if (tier < maximumTier) {
-    // Redistribute early damage up to the unchanged first area of the final tier.
-    const finalTierStart = (maximumTier - 1) * AREAS.length + 1;
-    const power = rules.enemyDamageEarlyCurvePower ?? 1;
-    progress = finalTierStart / (scalingTier * AREAS.length) * (step / finalTierStart) ** power;
-  }
-  return Math.round(baseline * (target / baseline) ** progress);
+  return areaEnemyScaledStat(areaId, deepTier, 'damage', BALANCE.deepOfDark.enemyDamageAtFinalArea);
 }
 function towerEncounterStats(sourceState = state, round = 1) {
   const rules = BALANCE.combat;
@@ -927,6 +916,29 @@ function mythicEquipmentDropChance(areaId, deepTier) {
   const rules = BALANCE.loot.mythicEquipment;
   if ((Number(deepTier) || 0) < rules.minimumDeepTier) return 0;
   return rules.dropChanceByArea[AREAS.findIndex(area => area.id === areaId)] || 0;
+}
+function questItemDefinition(item) {
+  return QUEST_ITEM_RULES.definitions.find(definition => definition.id === item?.questItemId) || null;
+}
+function makeQuestItem(areaId, deepTier = 0, quantity = 1) {
+  const definition = QUEST_ITEM_RULES.definitions.find(entry => entry.areaId === areaId);
+  if (!definition) throw new Error('Unbekannter Questgegenstand.');
+  const rarity = RARITIES[Math.max(0, Math.min(RARITIES.length - 1, Math.floor(Number(deepTier) || 0)))];
+  return { id: createItemId(), slot: 'questItem', questItemId: definition.id, name: definition.name,
+    rarity: rarity.name, rarityColor: rarity.color, icon: SLOT_DATA.questItem.icon,
+    quantity: Math.max(1, Math.floor(Number(quantity) || 1)), upgradeLevel: 0, affixVersion: 6, affixes: [] };
+}
+function rollAreaQuestItemDrops(save, areaId, deepTier, killed) {
+  let quantity = 0;
+  const count = Math.max(0, Math.min(3, Math.floor(Number(killed) || 0)));
+  for (let index = 0; index < count; index++) {
+    if (Math.random() < QUEST_ITEM_RULES.dropChance) quantity++;
+  }
+  if (!quantity) return [];
+  const item = makeQuestItem(areaId, deepTier, quantity);
+  // Quest materials always go straight into storage, including when all gear slots are full.
+  addItemsToInventory(save, [item]);
+  return [item];
 }
 function makeMythicEquipmentDrop(save = state) {
   const slots = MYTHIC_ITEMS.equipmentSlots.filter(slot => partyCanEquipDrop({ slot }, save));
@@ -1289,10 +1301,25 @@ function makeFarmBoxReward() {
   }
   throw new Error('Die Farm-Luckybox-Chancen ergeben keine vollständige Verteilung.');
 }
+function makeMaterialBoxReward() {
+  let roll = Math.random() * 100;
+  const factories = {
+    upgradeStone: makeUpgradeStone,
+    socketStone: makeSocketStone,
+    affixStone: () => makeEnchantmentStone('affixStone'),
+    rarityStone: () => makeEnchantmentStone('rarityStone'),
+  };
+  for (const outcome of BOX_RULES.materialBox.rewards) {
+    if (roll >= outcome.chance) { roll -= outcome.chance; continue; }
+    return { item: { ...factories[outcome.slot](), quantity: outcome.quantity } };
+  }
+  throw new Error('Die Material-Luckybox hat keine vollständige Gewinnverteilung.');
+}
 function makeLuckyBoxReward(group, save = state) {
   const rules = BOX_RULES[group];
   if (!rules) throw new Error(`Luckybox ${group} ist nicht konfiguriert.`);
   if (group === 'farmBox') return makeFarmBoxReward();
+  if (group === 'materialBox') return makeMaterialBoxReward();
   if (group === 'vipBox') return Math.random() * 100 < rules.ticketChance
     ? { item: makeVipTicket(), jackpot: true } : makeConsolationReward();
   if (group === 'glyphBox') {
@@ -1440,7 +1467,8 @@ function cloneState(source) { return JSON.parse(JSON.stringify(source)); }
 function inventoryIndex(save, itemId) { return save.inventory.findIndex((item) => item.id === itemId); }
 function stackKey(item) {
   if (!item || !STACKABLE_ITEM_SLOTS.has(item.slot)) return null;
-  if (['upgradeStone', 'mythicUpgradeStone', 'socketStone', 'rarityStone', 'affixStone', 'towerReset', 'bossReset', 'glyphBox', 'vipBox', 'farmBox', 'vipTicket', 'towerLootBoost'].includes(item.slot)) return item.slot;
+  if (item.slot === 'questItem') return JSON.stringify(['questItem', item.questItemId, item.rarityColor]);
+  if (['upgradeStone', 'mythicUpgradeStone', 'socketStone', 'rarityStone', 'affixStone', 'towerReset', 'bossReset', 'glyphBox', 'vipBox', 'farmBox', 'materialBox', 'vipTicket', 'towerLootBoost'].includes(item.slot)) return item.slot;
   if (item.slot === 'powerup') return JSON.stringify(['powerup', item.powerupStat]);
   const affixes = (item.affixes || []).map(({ stat, value, baseValue, fixed }) => [stat, value, baseValue, Boolean(fixed)]);
   return JSON.stringify([item.slot, item.name, item.rarityColor, affixes]);
@@ -1774,8 +1802,13 @@ function enchantAffixQuote(save, target, index, override = null) {
   const other = target?.slot !== 'pet' && !allowsRepeatedAffixes(target?.slot)
     ? (target?.affixes || []).filter((_, position) => position !== index).map(affix => affix.stat) : [];
   const candidates = pool.filter(stat => stat !== current && !other.includes(stat) && !excluded.includes(stat));
-  return { group, pool, current, excluded, candidates, cost: Math.max(1, excluded.length ** 2),
-    available: inventoryQuantityForSlot(save, 'affixStone') };
+  const cost = Math.max(1, excluded.length ** 2);
+  const available = inventoryQuantityForSlot(save, 'affixStone');
+  const mythicStoneCost = isMythicEquipment(target) ? 1 : 0;
+  const mythicStones = inventoryQuantityForSlot(save, 'mythicUpgradeStone');
+  return { group, pool, current, excluded, candidates, cost, available, mythicStoneCost, mythicStones,
+    canAfford: available >= cost && mythicStones >= mythicStoneCost };
+
 }
 function consumeAffixStones(save, amount) {
   if (inventoryQuantityForSlot(save, 'affixStone') < amount) throw new Error('Nicht genug Umpr\u00e4gungssteine.');

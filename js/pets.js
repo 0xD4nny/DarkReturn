@@ -70,6 +70,7 @@ function petAttributeBonus(className, save = state) {
   return pet ? pet.level * PET_RULES.attributePerLevel : 0;
 }
 function itemIconMarkup(item, className) {
+  if (item?.slot === 'questItem') return assetIconMarkup(questItemDefinition(item)?.asset, item.icon, className);
   return item?.slot === 'pet'
     ? assetIconMarkup(petDefinition(item)?.asset, item.icon, className)
     : equipmentIconMarkup(item?.slot, item?.icon, className);

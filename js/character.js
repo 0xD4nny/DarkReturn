@@ -368,6 +368,7 @@ function equipmentIconMarkup(slot, fallback, className) {
 }
 const SPECIAL_ITEM_APPEARANCE = {
   glyphBox: { rarity: 'legendary', greater: true },
+  materialBox: { rarity: 'legendary', greater: true },
   vipBox: { rarity: 'legendary', greater: true },
   farmBox: { rarity: 'rare', greater: true },
   powerup: { rarity: 'rare', greater: true },
@@ -389,7 +390,7 @@ function itemVisualStyle(item) {
 }
 function itemVisualClasses(item) {
   const visual = itemVisualStyle(item);
-  return [visual.rarity, isSellableEquipment(item) || item?.slot === 'pet' ? 'equipment-item' : '', visual.special ? 'special-item' : '',
+  return [visual.rarity, item?.slot === 'questItem' ? 'quest-item' : '', isSellableEquipment(item) || item?.slot === 'pet' ? 'equipment-item' : '', visual.special ? 'special-item' : '',
     (item?.affixes || []).some(affix => affix.greater) ? 'has-greater-affix' : '',
     visual.greater ? 'has-greater-effect' : ''].filter(Boolean).join(' ');
 }
@@ -435,8 +436,8 @@ function itemCard(item, index, options = {}) {
   const sellable = !options.sell || isSellableEquipment(item);
   const classes = ['inventory-item', itemVisualClasses(item), item.set ? 'set-item' : '', options.selected ? 'selected' : '', options.sell && !sellable ? 'not-for-sale' : ''].filter(Boolean).join(' ');
   const forgeAttrs = options.glyphFusion ? `data-glyph-fusion-item="${item.id}" ${options.disabled ? 'disabled' : ''}` : options.forge ? `data-forge-item="${item.id}" ${options.disabled ? 'disabled' : ''}` : options.gemUpgrade ? `data-gem-upgrade-item="${item.id}"` : '';
-  const canDrag = !options.forge && !options.sell && !options.socketTarget && !options.enchantTarget && options.draggable !== false && !BOX_GROUPS.includes(item.slot);
-  const isMaterial = ['upgradeStone', 'mythicUpgradeStone', 'socketStone', 'rarityStone', 'affixStone', 'weaponGem', 'armorGem', 'powerup', 'vipTicket', 'towerLootBoost', 'towerReset', 'bossReset', 'glyphBox', 'vipBox', 'farmBox'].includes(item.slot);
+  const canDrag = !options.forge && !options.sell && !options.socketTarget && !options.enchantTarget && options.draggable !== false && !BOX_GROUPS.includes(item.slot) && item.slot !== 'questItem';
+  const isMaterial = ['upgradeStone', 'mythicUpgradeStone', 'socketStone', 'rarityStone', 'affixStone', 'weaponGem', 'armorGem', 'powerup', 'vipTicket', 'towerLootBoost', 'towerReset', 'bossReset', 'glyphBox', 'vipBox', 'farmBox', 'materialBox'].includes(item.slot);
   const upgradeLabel = isMaterial ? '' : (item.upgradeLevel || 0) > 0 ? `Aufwertung +${item.upgradeLevel}` : '';
   const itemIndex = options.shopOffer ? `data-shop-offer-preview="${item.id}"` : options.socketTarget || options.enchantTarget || options.forge ? '' : `data-item-index="${index}"`;
   const saleAction = options.sell && sellable ? `data-sell-item="${item.id}"` : '';
@@ -602,7 +603,7 @@ function renderInventory() {
     : '';
   const inventoryPanel = renderItemGrid(ownedItems, { gridKey: 'inventory', filters: true, gridClass: 'companion-items', emptyHtml: emptyHtml, gridId: 'inventory-category-panel', extraHtml: openAllBoxesButton });
   const ownerButtons = renderPartyOwnerButtons(selectedInventoryOwner, 'inventory');
-  return `<section class="inventory-view"><div class="view-heading"><div><p class="eyebrow"><span></span> DEIN UNTERSCHLUPF</p><h1>Inventar <em class="inventory-title-equipment">& Ausr&uuml;stung</em></h1><p class="welcome-sub">Verwalte die Beute deiner Gruppe.</p></div><div class="inventory-summary">${ownerButtons}</div></div><div class="inventory-layout inventory-owner-${ownerClass} ${companionMode ? 'is-companion-inventory' : ''}" data-inventory-owner="${ownerClass}" ${companionMode ? `data-inventory-companion="${companion}"` : ''}><section class="inventory-main character-panel-surface"><div class="inventory-toolbar"><div><span class="toolbar-title">GEGENST&Auml;NDE</span><span class="toolbar-subtitle"> &middot; ${state.inventory.length} gesammelt</span></div><span class="inventory-capacity">${inventoryOccupiedSlots(state)} <small>/ ${capacity} PL&Auml;TZE</small></span></div>${inventoryPanel}${visibleCategoryItems ? '<p class="inventory-hint">Doppelklick zum Ausr&uuml;sten &middot; Ziehen auf einen Slot &middot; Dar&uuml;berfahren f&uuml;r Affixe</p>' : ''}</section>${renderInventoryCharacterPanel(ownerClass)}</div></section>`;
+  return `<section class="inventory-view"><div class="view-heading"><div><p class="eyebrow"><span></span> DEIN UNTERSCHLUPF</p><h1>Inventar <em class="inventory-title-equipment">& Ausr&uuml;stung</em></h1><p class="welcome-sub">Verwalte die Beute deiner Gruppe.</p></div><div class="inventory-summary">${ownerButtons}</div></div><div class="inventory-layout inventory-owner-${ownerClass} ${companionMode ? 'is-companion-inventory' : ''}" data-inventory-owner="${ownerClass}" ${companionMode ? `data-inventory-companion="${companion}"` : ''}><section class="inventory-main character-panel-surface"><div class="inventory-toolbar"><div><span class="toolbar-title">GEGENST&Auml;NDE</span><span class="toolbar-subtitle"> &middot; ${state.inventory.length} gesammelt</span></div><span class="inventory-capacity">${inventoryOccupiedSlots(state)} <small>/ ${capacity} PL&Auml;TZE</small></span></div>${inventoryPanel}${visibleCategoryItems && inventoryCategory !== 'questItems' ? '<p class="inventory-hint">Doppelklick zum Ausr&uuml;sten &middot; Ziehen auf einen Slot &middot; Dar&uuml;berfahren f&uuml;r Affixe</p>' : ''}</section>${renderInventoryCharacterPanel(ownerClass)}</div></section>`;
 }
 
 function renderGemUpgradePanel(item) {
@@ -726,7 +727,7 @@ function renderEnchantments() {
   const stone = isRarityMode ? rarityStone : affixStone;
   const affixQuote = enchantAffixQuote(state, target, selectedEnchantAffixIndex);
   const attemptCost = isRarityMode ? 1 : affixQuote.cost;
-  const hasRequiredStone = Boolean(target && stone && inventoryQuantityForSlot(state, stone.slot) >= attemptCost && (!activeWorkshopJob || isAffixMode) && !forgeAnimationInProgress && (isRarityMode ? !rarityMaxed : affix && affixQuote.candidates.length));
+  const hasRequiredStone = Boolean(target && stone && inventoryQuantityForSlot(state, stone.slot) >= attemptCost && (!activeWorkshopJob || isAffixMode) && !forgeAnimationInProgress && (isRarityMode ? !rarityMaxed : affix && affixQuote.candidates.length && affixQuote.canAfford));
   const targetGrid = renderItemGrid(targets, {
     gridKey: 'enchantTargets', filters: !petMode, categories: petMode ? [] : ['weapons', 'armor', 'jewelry'], allowedSlots: petMode ? ['pet'] : enchantableSlots,
     gridClass: 'enchant-target-grid', cardOptions: (item) => ({ enchantTarget: true, selected: item.id === selectedEnchantTargetId }),
@@ -745,10 +746,15 @@ function renderEnchantments() {
   const stoneQuantity = stone ? inventoryQuantityForSlot(state, stone.slot) : 0;
   const preview = isRarityMode ? rarityUpgradePreview(target).map((entry) => `<p><strong>${escapeHtml(entry.label)}:</strong> ${formatRuleNumber(entry.current)} → ${formatRuleNumber(entry.minimum)}${entry.maximum !== entry.minimum ? `–${formatRuleNumber(entry.maximum)}` : ''}${entry.minimum < entry.current ? ' · Kann sinken' : ''}</p>`).join('') : '';
   const valuePreview = preview ? `<div class="enchant-value-preview">${preview}</div>` : '';
-  return `<div class="view-heading socket-page-heading"><div><p class="eyebrow"><span></span> DEIN UNTERSCHLUPF</p><h1>Die <em>Verzauberung</em></h1><p class="welcome-sub">Erh&ouml;he die Seltenheit deiner Ausr&uuml;stung und pr&auml;ge ihre Affixe um.</p></div><div class="socket-page-tools">${modeButtons}</div></div><div class="enchant-layout "><section class="forge-selection enchant-selection item-selection"><div class="section-heading"><div><h3>${petMode ? 'Begleittier' : 'Ausger&uuml;stetes Teil w&auml;hlen'}</h3></div><span class="selection-count">${targets.length} Teile</span></div>${targetGrid}</section><section class="forge-workbench enchant-workbench ${workshopMotionClass('enchant')}"><div class="enchant-workbench-heading"><h3>${modeLabel}</h3></div>${ritualArt}<div class="enchant-controls">${affixPicker}${valuePreview}${isAffixMode ? `<button class="secondary-button ui-control ui-button" type="button" data-enchant-auto ${target && affix && !forgeAnimationInProgress ? '' : 'disabled'}>AUTOMATISCH UMPRÄGEN</button>` : ''}<div class="forge-upgrade-status"><span>${statusText}</span><strong>${target ? `KOSTEN ${number(attemptCost)} &middot; VORRAT ${number(stoneQuantity)} ${isRarityMode ? 'SELTENHEITSSTEINE' : 'UMPR&Auml;GUNGSSTEINE'}` : 'BEREIT'}</strong></div><div class="enchant-attempt-actions"><button class="primary-button ui-control ui-button" type="button" data-enchant-exclusions ${target && affix && affixQuote.pool.length && !forgeAnimationInProgress ? '' : 'disabled'}>AFFIXE AUSSCHLIESSEN</button><button class="primary-button ui-control ui-button forge-button" type="button" data-enchant-attempt ${hasRequiredStone ? '' : 'disabled'}>${actionLabel} <span>&#x2726;</span></button></div></div></section></div>`;
+  return `<div class="view-heading socket-page-heading"><div><p class="eyebrow"><span></span> DEIN UNTERSCHLUPF</p><h1>Die <em>Verzauberung</em></h1><p class="welcome-sub">Erh&ouml;he die Seltenheit deiner Ausr&uuml;stung und pr&auml;ge ihre Affixe um.</p></div><div class="socket-page-tools">${modeButtons}</div></div><div class="enchant-layout "><section class="forge-selection enchant-selection item-selection"><div class="section-heading"><div><h3>${petMode ? 'Begleittier' : 'Ausger&uuml;stetes Teil w&auml;hlen'}</h3></div><span class="selection-count">${targets.length} Teile</span></div>${targetGrid}</section><section class="forge-workbench enchant-workbench ${workshopMotionClass('enchant')}"><div class="enchant-workbench-heading"><h3>${modeLabel}</h3></div>${ritualArt}<div class="enchant-controls">${affixPicker}${valuePreview}${isAffixMode ? `<button class="secondary-button ui-control ui-button" type="button" data-enchant-auto ${target && affix && !forgeAnimationInProgress ? '' : 'disabled'}>AUTOMATISCH UMPRÄGEN</button>` : ''}<div class="forge-upgrade-status"><span>${statusText}</span><strong>${target ? `KOSTEN ${number(attemptCost)} &middot; VORRAT ${number(stoneQuantity)} ${isRarityMode ? 'SELTENHEITSSTEINE' : 'UMPR&Auml;GUNGSSTEINE'}` : 'BEREIT'}${isAffixMode && affixQuote.mythicStoneCost ? ` + 1 MYSTISCHER AUFWERTUNGSSTEIN &middot; VORRAT ${number(affixQuote.mythicStones)}` : ''}</strong></div><div class="enchant-attempt-actions"><button class="primary-button ui-control ui-button" type="button" data-enchant-exclusions ${target && affix && affixQuote.pool.length && !forgeAnimationInProgress ? '' : 'disabled'}>AFFIXE AUSSCHLIESSEN</button><button class="primary-button ui-control ui-button forge-button" type="button" data-enchant-attempt ${hasRequiredStone ? '' : 'disabled'}>${actionLabel} <span>&#x2726;</span></button></div></div></section></div>`;
 }
 
 
 function bossRankBadge(rank, label = rank?.name || 'Noch kein Rang') {
   return `<span class="boss-rank-badge" style="--boss-rank-color:${bossRankColor(rank)}">${assetIconMarkup('Assets/Icons/000000/transparent/1x1/delapouite/star-medal.svg', '★', 'boss-rank-medal')}<span>${escapeHtml(label)}</span></span>`;
+}
+function playerBossRankBadge(sourceState = state) {
+  const rank = BALANCE.bossChallenge.rankThresholds[sourceState?.bossChallenge?.highestRank ?? -1] || null;
+  const label = rank ? `Bossrang ${rank.tier}` : 'Noch kein Bossrang';
+  return `<span class="player-boss-badge${rank ? '' : ' is-unranked'}" style="--boss-rank-color:${bossRankColor(rank)}" role="img" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${assetIconMarkup('Assets/Icons/000000/transparent/1x1/delapouite/star-medal.svg', '★', 'boss-rank-medal')}</span>`;
 }

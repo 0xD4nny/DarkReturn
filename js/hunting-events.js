@@ -59,7 +59,7 @@ function renderHuntingEventWidget() {
   const area = AREAS.find(entry => entry.id === hunt.areaId);
   const ready = huntingEventRewardTier(hunt) >= 0;
   const factor = hunt.deepTier + 1;
-  const difficulty = hunt.deepTier ? `Deep ${hunt.deepTier}` : 'Normal';
+  const difficulty = difficultyName(hunt.deepTier);
   const reward = `${HUNTING_EVENT_RULES.rewards.glyphBox * factor} Glyphen-, ${HUNTING_EVENT_RULES.rewards.vipBox * factor} VIP- und ${HUNTING_EVENT_RULES.rewards.farmBox * factor} Farm-Luckyboxen`;
   const title = `Besiege ${HUNTING_EVENT_RULES.targetKills} Monster in ${area.name} auf ${difficulty}. Nur diese Kombination zählt. Belohnung: ${reward}. ${ready ? 'Klicken zum Abholen.' : ''}`;
   patchBackgroundMarkup(slot, `<button class="topbar-world-event hunting-event-panel ui-control ui-graphic ${ready ? 'is-ready' : ''}" type="button" data-claim-hunting-event="${escapeHtml(hunt.id)}" data-hunting-event-tooltip aria-label="${escapeHtml(title)}" aria-disabled="${!ready}"><i class="header-status-dot ${ready ? 'is-active' : 'is-pending'}" aria-hidden="true"></i><span class="topbar-world-event-copy"><strong>Jagd-Event</strong><small>${hunt.kills}/${HUNTING_EVENT_RULES.targetKills} MONSTER · <span data-hunting-event-countdown>${formatWorldEventTime(hunt.nextAvailableAt - Date.now())}</span></small></span></button>`);
@@ -67,12 +67,12 @@ function renderHuntingEventWidget() {
 
 function renderHuntingEventTooltip() {
   const hunt = state?.huntingEvent;
-  if (!hunt) return '<div data-hunting-event-details class="tooltip-rarity common">NOCH NICHT VERFÜGBAR</div><strong class="tooltip-name">Jagd-Event</strong><div class="tooltip-special"><p>Schließe zuerst alle sechs Gebiete auf Normal ab. Danach werden Gebiet und Schwierigkeitsstufe zufällig vorgegeben. Nur vollständig abgeschlossene Stufen kommen in die Auswahl.</p></div>';
+  if (!hunt) return '<div data-hunting-event-details class="tooltip-rarity common">NOCH NICHT VERFÜGBAR</div><strong class="tooltip-name">Jagd-Event</strong><div class="tooltip-special"><p>Schließe zuerst alle sechs Gebiete auf Gewöhnlich ab. Danach werden Gebiet und Schwierigkeitsstufe zufällig vorgegeben. Nur vollständig abgeschlossene Stufen kommen in die Auswahl.</p></div>';
   if (hunt.claimed) return `<div data-hunting-event-details class="tooltip-rarity common">WARTEZEIT</div><strong class="tooltip-name">Jagd-Event</strong><div class="tooltip-special"><p>Belohnung abgeholt. Das nächste Jagd-Event startet in ${formatWorldEventTime(hunt.nextAvailableAt - Date.now())}.</p><p>Alle ${HUNTING_EVENT_RULES.intervalSeconds / 60} Minuten beginnt ein neues Event. Der Rhythmus läuft auch bei geschlossenem Spiel weiter.</p></div>`;
   const area = AREAS.find(entry => entry.id === hunt.areaId);
   const ready = huntingEventRewardTier(hunt) >= 0;
   const factor = hunt.deepTier + 1;
-  const difficulty = hunt.deepTier ? `Deep of Dark ${hunt.deepTier}` : 'Normal';
+  const difficulty = difficultyName(hunt.deepTier);
   const rewards = Object.entries(HUNTING_EVENT_RULES.rewards).map(([group, quantity]) => `<span>${number(quantity * factor)} × ${escapeHtml(SLOT_DATA[group].label)}</span>`).join('');
   return `<div data-hunting-event-details class="tooltip-rarity ${ready ? 'legendary' : 'epic'}">${ready ? 'BELOHNUNG BEREIT' : 'IN ARBEIT'}</div><strong class="tooltip-name">Jagd-Event</strong><small class="tooltip-type">${escapeHtml(area.name)} · ${difficulty}</small><div class="tooltip-special"><p>Besiege ${HUNTING_EVENT_RULES.targetKills} Monster in diesem Gebiet auf dieser Stufe. Fortschritt: ${hunt.kills}/${HUNTING_EVENT_RULES.targetKills}.</p></div><div class="tooltip-special"><p>Wechsel in <span data-hunting-event-countdown>${formatWorldEventTime(hunt.nextAvailableAt - Date.now())}</span>. Beim Wechsel verfallen Fortschritt und nicht abgeholte Belohnungen.</p></div><div class="tooltip-affixes">${rewards}</div><div class="tooltip-special"><p>${ready ? 'Klicke vor Ablauf des Countdowns auf das Jagd-Event, um die Boxen abzuholen. Beim Wechsel verfällt die offene Belohnung.' : 'Kills in anderen Gebieten oder auf anderen Schwierigkeitsstufen zählen nicht. Nach Abschluss kannst du die Belohnung hier abholen.'}</p></div>`;
 }

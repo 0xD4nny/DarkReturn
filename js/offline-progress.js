@@ -251,8 +251,9 @@ function addOfflineLoot(report, item, destination) {
   if (!item) return;
   const key = destination === 'missed' ? 'missed' : destination === 'sold' ? 'sold' : 'items';
   const quantity = Math.max(1, Number(item.quantity) || 1);
-  const previous = Object.hasOwn(report[key], item.name) ? report[key][item.name] : 0;
-  Object.defineProperty(report[key], item.name, { value: previous + quantity, enumerable: true, configurable: true, writable: true });
+  const label = item.slot === 'questItem' ? `${item.name} (${item.rarity})` : item.name;
+  const previous = Object.hasOwn(report[key], label) ? report[key][label] : 0;
+  Object.defineProperty(report[key], label, { value: previous + quantity, enumerable: true, configurable: true, writable: true });
   if (destination === 'mailbox') report.mailed += quantity;
 }
 async function settleOfflineFarm(save, now = Date.now()) {
@@ -326,6 +327,7 @@ async function settleOfflineFarm(save, now = Date.now()) {
             statistics: { monstersKilled: towerKills, weaponKills: towerKills, weaponIds, huntingKills: farm.mode === 'area' ? 3 : 0 } });
           report.wins += 1;
           if (farm.mode === 'tower') { report.lastRound = farm.round; farm.round += 1; }
+          for (const item of result.questItemDrops || []) addOfflineLoot(report, item, 'inventory');
           for (const drop of result.towerMaterialDrops || []) addOfflineLoot(report, drop.item, drop.destination);
           for (const item of result.towerMaterialDropMissed || []) addOfflineLoot(report, item, 'missed');
           report.souls += result.reward + (result.equipmentDropSaleValue || 0);
@@ -399,7 +401,7 @@ function showOfflineFarmReport() {
   const loot = Object.entries(report.items).map(([name, quantity]) => `<li>${number(quantity)} × ${escapeHtml(name)}</li>`).join('');
   const count = items => Object.values(items).reduce((sum, quantity) => sum + quantity, 0);
   panel.innerHTML = `<header><p class="eyebrow">WILLKOMMEN ZURÜCK</p><h2 id="offline-report-title">Deine Gruppe war unterwegs</h2></header>
-    <p>${report.mode === 'tower' ? `Turm \u00b7 ${report.wins ? `Runde ${report.startRound} bis ${report.lastRound}` : `Runde ${report.startRound}`}` : `${escapeHtml(AREAS.find(area => area.id === report.area)?.name || report.area)} \u00b7 ${report.deepTier ? `Deep of Dark ${report.deepTier}` : 'Grundstufe'}`}</p>
+    <p>${report.mode === 'tower' ? `Turm \u00b7 ${report.wins ? `Runde ${report.startRound} bis ${report.lastRound}` : `Runde ${report.startRound}`}` : `${escapeHtml(AREAS.find(area => area.id === report.area)?.name || report.area)} \u00b7 ${difficultyName(report.deepTier)}`}</p>
     <p>${offlineTimeLabel(report.duration)} angerechnet · ${report.efficiency * 100} % Effizienz${report.elapsed > report.duration ? ` · auf ${OFFLINE_RULES.maximumHours} Stunden begrenzt` : ''}</p>
     ${report.runEnded ? '<p>Deine Gruppe wurde besiegt. Der Turmlauf ist beendet; es wurde kein weiterer Versuch und kein Zeitstein verwendet.</p>' : ''}
     ${report.note ? `<p>${escapeHtml(report.note)}</p>` : `<div class="offline-farm-totals"><span><strong>${number(report.wins)}</strong> Siege</span><span><strong>${number(report.defeats)}</strong> Niederlagen</span><span><strong>+${number(report.souls)}</strong> Seelen</span>${report.weaponExperience.filter(entry => entry.amount > 0).map(entry => `<span><strong>+${number(entry.amount)}</strong> Waffen-EP (${escapeHtml(CLASSES[entry.owner].label)})</span>`).join('')}</div>

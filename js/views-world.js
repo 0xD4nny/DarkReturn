@@ -50,8 +50,8 @@ function renderMap() {
   const soulRange = areaSoulRewardRange(selectedArea.id, deepTier);
   const clearedCount = AREAS.filter((area) => (state.deepOfDark?.clearedAreas || []).includes(area.id)).length;
   const canAscend = !historicalTier && unlockedTier < (BALANCE.deepOfDark?.maxTier || 3) && clearedCount === AREAS.length;
-  const tierOptions = Array.from({ length: unlockedTier + 1 }, (_, tier) => `<option value="${tier}" ${tier === deepTier ? 'selected' : ''}>${tier === 0 ? 'Grundstufe' : `Deep of Dark ${tier}`}</option>`).join('');
-  const deepTierControl = `<label class="deep-tier-control"><span>DEEP OF DARK</span><select class="ui-control ui-select" id="deep-tier-select">${tierOptions}</select></label>${canAscend ? `<button class="primary-button ui-control ui-button deep-ascend-button" type="button" data-ascend-deep>DEEP OF DARK ${unlockedTier + 1} FREISCHALTEN</button>` : ''}`;
+  const tierOptions = Array.from({ length: unlockedTier + 1 }, (_, tier) => `<option value="${tier}" ${tier === deepTier ? 'selected' : ''}>${difficultyName(tier)}</option>`).join('');
+  const deepTierControl = `<label class="deep-tier-control"><span>SCHWIERIGKEIT</span><select class="ui-control ui-select" id="deep-tier-select">${tierOptions}</select></label>${canAscend ? `<button class="primary-button ui-control ui-button deep-ascend-button" type="button" data-ascend-deep>${difficultyName(unlockedTier + 1).toUpperCase()} FREISCHALTEN</button>` : ''}`;
   selectedAreaId = selectedArea.id;
   const zoneButtons = AREAS.map((area, index) => {
     const locked = !historicalTier && !areaUnlocked(state, index);
@@ -64,7 +64,7 @@ function renderMap() {
   return `<div class="view-heading atlas-heading"><div><p class="eyebrow"><span></span> DIE GRENZLANDE</p><h1>Jenseits der <em>Wacht</em></h1><p class="welcome-sub">Wähle dein nächstes Ziel und bereite den Aufbruch in die Dunkelheit vor.</p></div></div>
     <section class="atlas-shell" aria-label="Karte der Grenzlande">
       <div class="atlas-map-frame">
-        <div class="atlas-map-topline"><span><i></i> DIE GRENZLANDE</span><span>${deepTier ? `DEEP OF DARK ${deepTier}` : 'GRUNDSTUFE'}</span></div>
+        <div class="atlas-map-topline"><span><i></i> DIE GRENZLANDE</span><span>${difficultyName(deepTier).toUpperCase()}</span></div>
         <div class="atlas-map">
           <img class="atlas-landscape" src="Assets/Art/world/grenzlande-atlas-v2.png" width="1536" height="1024" alt="" aria-hidden="true" draggable="false" fetchpriority="high">
           <div class="atlas-compass" aria-hidden="true"><span>N</span><b>✦</b><i></i><small>W</small></div>

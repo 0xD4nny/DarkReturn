@@ -148,7 +148,8 @@ function openAutoEnchant() {
     minimumInput.max = max;
     minimumInput.value = min;
     const unit = AFFIX_PERCENT_STATS.has(statInput.value) ? ' %' : '';
-    dialog.querySelector('[data-auto-enchant-range]').textContent = `Möglicher neuer Wert: ${formatRuleNumber(min)}–${formatRuleNumber(max)}${unit}.`;
+    const quote = enchantAffixQuote(state, target, index);
+    dialog.querySelector('[data-auto-enchant-range]').textContent = `Möglicher neuer Wert: ${formatRuleNumber(min)}–${formatRuleNumber(max)}${unit}.${quote.mythicStoneCost ? ` Je Versuch zus\u00e4tzlich 1 mystischer Aufwertungsstein (Vorrat: ${number(quote.mythicStones)}).` : ''}`;
   };
   statInput.addEventListener('change', updateRange);
   minimumInput.addEventListener('input', () => {
@@ -174,6 +175,7 @@ function openAutoEnchant() {
     let attempts = 0;
     let cost = 0;
     let reason = '';
+    let mythicCost = 0;
     start.disabled = true;
     statInput.disabled = true;
     minimumInput.disabled = true;
@@ -184,13 +186,14 @@ function openAutoEnchant() {
         const result = await performAction({ action: 'enchant-affix', itemId, affixIndex: index, autoGoal: goal, silent: true }, null, null, { background: true });
         if (!result) {
           reason = 'Gestoppt. Bitte prüfe die Fehlermeldung.';
-          status.textContent = `${number(attempts)} Versuche · ${number(cost)} Steine verbraucht · ${reason}`;
+          status.textContent = `${number(attempts)} Versuche · ${number(cost)} Umprägungssteine${mythicCost ? ` + ${number(mythicCost)} mystische Aufwertungssteine` : ''} verbraucht · ${reason}`;
           break;
         }
         attempts += result.attempts;
         cost += result.cost;
+        mythicCost += result.mythicStoneCost || 0;
         reason = result.stopReason || '';
-        status.textContent = `${number(attempts)} Versuche · ${number(cost)} Steine verbraucht · ${result.affix.stat}: ${formatRuleNumber(result.affix.value)}${AFFIX_PERCENT_STATS.has(result.affix.stat) ? ' %' : ''}${reason ? ` · ${reason}` : ''}`;
+        status.textContent = `${number(attempts)} Versuche · ${number(cost)} Umprägungssteine${mythicCost ? ` + ${number(mythicCost)} mystische Aufwertungssteine` : ''} verbraucht · ${result.affix.stat}: ${formatRuleNumber(result.affix.value)}${AFFIX_PERCENT_STATS.has(result.affix.stat) ? ' %' : ''}${reason ? ` · ${reason}` : ''}`;
         if (reason) break;
         await new Promise(resolve => setTimeout(resolve, 0));
       }
@@ -228,7 +231,7 @@ function openEnchantExclusions() {
     <div class="enchant-attempt-actions"><button class="primary-button ui-control ui-button" type="button" data-exclusions-cancel>ABBRECHEN</button><button class="primary-button ui-control ui-button" type="button" data-exclusions-apply>\u00dcBERNEHMEN</button></div>`;
   const refresh = () => {
     const quote = enchantAffixQuote(state, target, index, [...selected]);
-    dialog.querySelector('.enchant-exclusion-price').textContent = `${quote.excluded.length} Ausschl\u00fcsse \u00b7 Kosten: ${number(quote.cost)} Umpr\u00e4gungssteine \u00b7 Vorrat: ${number(quote.available)} \u00b7 ${quote.candidates.length} m\u00f6gliche Typen${quote.available < quote.cost ? ' \u00b7 Nicht genug Steine' : ''}`;
+    dialog.querySelector('.enchant-exclusion-price').textContent = `${quote.excluded.length} Ausschl\u00fcsse \u00b7 Kosten: ${number(quote.cost)} Umpr\u00e4gungssteine \u00b7 Vorrat: ${number(quote.available)} \u00b7 ${quote.candidates.length} m\u00f6gliche Typen${quote.mythicStoneCost ? ` \u00b7 Zus\u00e4tzlich 1 mystischer Aufwertungsstein (Vorrat: ${number(quote.mythicStones)})` : ''}${!quote.canAfford ? ' \u00b7 Nicht genug Steine' : ''}`;
     for (const checkbox of dialog.querySelectorAll('input')) {
       checkbox.disabled = checkbox.value === initial.current || (!checkbox.checked && quote.candidates.length <= 1 && quote.candidates.includes(checkbox.value));
     }

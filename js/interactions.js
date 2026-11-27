@@ -233,7 +233,7 @@ document.addEventListener('click', (event) => {
     return;
   }
   if (event.target.closest('[data-ascend-deep]')) {
-    performAction({ action: 'deep-of-dark-ascend' }, 'Deep of Dark erreicht', (result) => `Die Gebiete beginnen erneut auf Deep of Dark-Stufe ${result.tier}.`)
+    performAction({ action: 'deep-of-dark-ascend' }, 'Schwierigkeit freigeschaltet', (result) => `Die Gebiete beginnen erneut auf ${difficultyName(result.tier)}.`)
       .then((result) => { if (result) { selectedDeepTier = result.tier; selectedAreaId = AREAS[0].id; currentView = 'map'; renderView(); } });
     return;
   }
@@ -826,6 +826,11 @@ function setTooltipMarkup(markup) {
   });
 }
 function renderItemTooltipContent(item, { card = null, gear = null, questPreview = null, milestoneDescription = '', milestoneRollNote = '', ownerClass = null } = {}) {
+  if (item.slot === 'questItem') {
+    const definition = questItemDefinition(item);
+    const area = AREAS.find(entry => entry.id === definition?.areaId);
+    return `<div class="tooltip-rarity quest-item ${item.rarityColor}">${escapeHtml(item.rarity)} · ×${number(item.quantity || 1)}</div><strong class="tooltip-name">${escapeHtml(item.name)}</strong><small class="tooltip-type">Questgegenstand</small><div class="tooltip-special"><span>HERKUNFT</span><p>${escapeHtml(ENEMIES[definition?.areaId]?.name || '')} · ${escapeHtml(area?.name || '')} · ${escapeHtml(item.rarity)}</p><p>${formatRuleNumber(QUEST_ITEM_RULES.dropChance * 100)} % Chance pro besiegtem Monster dieser Schwierigkeit.</p><p>Für künftige Quests. Belegt keinen Inventarplatz und ist unverkäuflich.</p></div>`;
+  }
   const visual = itemVisualStyle(item);
   const materialDescription = ['upgradeStone', 'mythicUpgradeStone', 'socketStone', 'rarityStone', 'affixStone'].includes(item.slot)
     ? SLOT_DATA[item.slot]?.description : '';
@@ -871,10 +876,11 @@ function renderItemTooltipContent(item, { card = null, gear = null, questPreview
   ].map(line => `<p>${escapeHtml(line)}</p>`).join('')}</div>` : '';
   const powerupInfo = item.slot === 'powerup' ? `<div class="tooltip-special"><span>15 MINUTEN</span><p>Gew&auml;hrt +10 % ${escapeHtml(item.powerupStat)}. Doppelklick im Inventar aktiviert das Power-up. Weitere Exemplare verl&auml;ngern die Laufzeit um je 15 Minuten; der Bonuswert bleibt gleich.</p>${item.powerupStat === 'Upgradechance' ? '<p>Erhöht die Erfolgschance für normale und mystische Aufwertung sowie Sockelöffnen relativ: 1 % wird zu 1,1 %. Addiert sich mit Upgradechance aus Welt-Events und VIP; maximal 100 % Erfolgschance.</p>' : ''}${item.powerupStat === 'Droprate' ? '<p>Erhöht die Chancen auf Gebietsausrüstung, gewählte Turmbeute und Farm-Luckybox-Drops relativ: 50 % werden zu 55 %. Addiert sich mit Dropraten-Events. Boxinhalte und Affixwürfe bleiben unverändert.</p>' : ''}</div>` : '';
   const bossResetInfo = ['bossReset', 'towerReset'].includes(item.slot) ? `<div class="tooltip-special"><span>EIN ZUSÄTZLICHER VERSUCH</span><p>Doppelklick im Inventar gewährt genau einen Versuch ${item.slot === 'bossReset' ? 'in der Bossprüfung' : 'im Turm'}.</p><p>Nur verwendbar, wenn kein Versuch mehr vorhanden ist und kein entsprechender Lauf aktiv ist. Ein ungenutzter Steinversuch bleibt beim Tageswechsel erhalten.</p></div>` : '';
+  const materialBoxInfo = item.slot === 'materialBox' ? `<div class="tooltip-special"><span>MATERIALIEN</span>${BOX_RULES.materialBox.rewards.map(outcome => `<p>${formatRuleNumber(outcome.chance)} %: ${number(outcome.quantity)} × ${escapeHtml(SLOT_DATA[outcome.slot].label)}</p>`).join('')}<p>Garantiert ein Materialpaket, keine Niete.</p></div>` : '';
   const farmBoxInfo = item.slot === 'farmBox' ? `<div class="tooltip-special"><span>FARMBEUTE</span><p>${formatRuleNumber(BOX_RULES.farmBox.dropChance * 100)} % Basis-Dropchance pro gewonnenem Gebiets- oder Turmkampf; Dropratenboni erhöhen sie relativ. Enthält genau einen Gewinn: Seelen, Materialien, ein Powerup, einen Boss-Zeitstein, Turm-Zeitstein oder eine Glyphen-/VIP-Luckybox. Alle Chancen stehen im Kodex unter Schwarzmarkt und Luckyboxen.</p></div>` : '';
   const luckyBoxInfo = BOX_GROUPS.includes(item.slot) ? (questPreview ? '<div class="tooltip-special"><span>VERSIEGELT</span><p>Nach dem Abholen im Inventar öffnen.</p></div>' : `<div class="tooltip-special"><span>VERSIEGELT</span><p>Einfach anklicken, um die Box zu öffnen. Der Inhalt wird im Aktivitätslog festgehalten.</p></div>`) : '';
   const socketInfo = item.sockets?.length ? `<div class="tooltip-special"><span>SOCKEL · ${item.sockets.filter(Boolean).length}/${item.sockets.length}</span><p>Sockel aktiv</p></div>` : '';
-  return `${itemRank ? `<div class="tooltip-rarity ${visual.rarity}">${itemRank}</div>` : ''}<strong class="tooltip-name">${escapeHtml(item.name)}</strong><small class="tooltip-type">${escapeHtml(SLOT_DATA[item.slot]?.label || item.slot)}${item.set ? ` · Set ${escapeHtml(item.set)}` : ''}</small>${weaponDamage}${weaponLevelInfo}${armorDefense}${mythicEffect}${affixes ? `<div class="tooltip-affixes">${affixes}</div>` : ''}${materialInfo}${vipInfo}${powerupInfo}${bossResetInfo}${luckyBoxInfo}${farmBoxInfo}${socketInfo}${setBonus}${milestoneDescription}${milestoneRollNote}${item.passives ? `<div class="tooltip-special"><span>PASSIVE EFFEKTE</span>${item.passives.map((passive) => `<p>${escapeHtml(passive)}</p>`).join('')}</div>` : ''}${card?.hasAttribute('data-sell-item') ? `<div class="tooltip-sale-value">VERKAUFSWERT <strong>✧ ${isMythicEquipment(item) ? MYTHIC_ITEMS.saleStones + ' MYSTISCHE AUFWERTUNGSSTEINE' : number(sellValue(item)) + ' SEELEN'}</strong></div>` : ''}${card?.classList.contains('not-for-sale') ? '<div class="tooltip-sale-unavailable">Materialien, Verbrauchsgegenstände und Luckyboxen sind unverkäuflich.</div>' : ''}`;
+  return `${itemRank ? `<div class="tooltip-rarity ${visual.rarity}">${itemRank}</div>` : ''}<strong class="tooltip-name">${escapeHtml(item.name)}</strong><small class="tooltip-type">${escapeHtml(SLOT_DATA[item.slot]?.label || item.slot)}${item.set ? ` · Set ${escapeHtml(item.set)}` : ''}</small>${weaponDamage}${weaponLevelInfo}${armorDefense}${mythicEffect}${affixes ? `<div class="tooltip-affixes">${affixes}</div>` : ''}${materialInfo}${vipInfo}${powerupInfo}${bossResetInfo}${luckyBoxInfo}${materialBoxInfo}${farmBoxInfo}${socketInfo}${setBonus}${milestoneDescription}${milestoneRollNote}${item.passives ? `<div class="tooltip-special"><span>PASSIVE EFFEKTE</span>${item.passives.map((passive) => `<p>${escapeHtml(passive)}</p>`).join('')}</div>` : ''}${card?.hasAttribute('data-sell-item') ? `<div class="tooltip-sale-value">VERKAUFSWERT <strong>✧ ${isMythicEquipment(item) ? MYTHIC_ITEMS.saleStones + ' MYSTISCHE AUFWERTUNGSSTEINE' : number(sellValue(item)) + ' SEELEN'}</strong></div>` : ''}${card?.classList.contains('not-for-sale') ? '<div class="tooltip-sale-unavailable">Materialien, Verbrauchsgegenstände und Luckyboxen sind unverkäuflich.</div>' : ''}`;
 }
 
 let comparisonTooltipCloseTimer = null;
@@ -1073,6 +1079,7 @@ function renderPlayerStatisticsGroups() {
       ['Glyphen-Luckyboxen', number(boxes.glyphBox)],
       ['VIP-Luckyboxen', number(boxes.vipBox)],
       ['Farm-Luckyboxen', number(boxes.farmBox || 0)],
+      ['Material-Luckyboxen', number(boxes.materialBox || 0)],
     ]],
     ['Handwerk & Handel', [
       ['Upgradeversuche beim Schmied', number(stats.forgeAttempts)],

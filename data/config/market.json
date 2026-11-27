@@ -13,7 +13,8 @@
   },
   "shopCosts": {
     "glyphBox": 100000,
-    "vipBox": 100000
+    "vipBox": 100000,
+    "materialBox": 100000
   },
   "shopOffers": [
     {
@@ -31,6 +32,14 @@
       "subtitle": "0,5% Chance auf ein VIP-Ticket für 7 Tage; sonst Nietenpool.",
       "icon": "▣",
       "asset": "Assets/Icons/000000/transparent/1x1/dark-return/chest-crown.svg"
+    },
+    {
+      "group": "materialBox",
+      "category": "MATERIAL-LUCKYBOX",
+      "title": "Material-Luckybox",
+      "subtitle": "Garantiert Aufwertungsmaterial; 5 % Chance auf einen Seltenheitsstein.",
+      "icon": "▣",
+      "asset": "Assets/Icons/000000/transparent/1x1/delapouite/chest.svg"
     }
   ],
   "boxRules": {
@@ -65,7 +74,7 @@
         {
           "type": "souls",
           "label": "Seelen",
-          "chance": 30,
+          "chance": 30.9,
           "minimum": 250,
           "maximum": 1000
         },
@@ -100,7 +109,7 @@
           "type": "material",
           "slot": "rarityStone",
           "label": "Seltenheitsstein",
-          "chance": 1,
+          "chance": 0.1,
           "quantity": 1
         },
         {
@@ -130,6 +139,30 @@
           "chance": 1,
           "quantity": 1,
           "label": "Turm-Zeitstein"
+        }
+      ]
+    },
+    "materialBox": {
+      "rewards": [
+        {
+          "slot": "upgradeStone",
+          "quantity": 5,
+          "chance": 50
+        },
+        {
+          "slot": "socketStone",
+          "quantity": 3,
+          "chance": 25
+        },
+        {
+          "slot": "affixStone",
+          "quantity": 3,
+          "chance": 20
+        },
+        {
+          "slot": "rarityStone",
+          "quantity": 1,
+          "chance": 5
         }
       ]
     }

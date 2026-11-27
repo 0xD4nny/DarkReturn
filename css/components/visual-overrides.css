@@ -495,3 +495,14 @@ a:focus-visible,
     background: #2d2822;
     color: #e0c8a5;
 }
+
+/* Quest materials follow their difficulty color without equipment affix effects. */
+.quest-item.common { --quest-item-color: #b8b5bc; }
+.quest-item.uncommon { --quest-item-color: #78c28d; }
+.quest-item.rare { --quest-item-color: #78b7e7; }
+.quest-item.epic { --quest-item-color: #c68be4; }
+.quest-item.legendary { --quest-item-color: #e8b060; }
+.quest-item.mythic { --quest-item-color: var(--rarity-mythic); }
+.inventory-item.quest-item { border-color: var(--quest-item-color); color: var(--quest-item-color); }
+.inventory-item.quest-item .item-icon,
+.tooltip-rarity.quest-item { color: var(--quest-item-color); }

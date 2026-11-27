@@ -103,7 +103,7 @@ function renderSkillTree() { return renderOwnClassSkillTree(); }
 
 function compactQuestCopy(quest) {
   const target = number(quest.target);
-  const deep = quest.minimumDeepTier ? `Deep of Dark ${quest.minimumDeepTier}` : 'Grenzgebiete';
+  const deep = quest.minimumDeepTier ? difficultyName(quest.minimumDeepTier) : 'Grenzgebiete';
   const rank = BALANCE.bossChallenge.rankThresholds[quest.target - 1]?.name || target;
   const entries = {
     monsters: [`${target} Gegner besiegen`, deep],
@@ -133,7 +133,7 @@ function compactQuestCopy(quest) {
     towerRounds: [`${target} Turmrunden gewinnen`, 'Zusammengezählt ab Gruppenbeginn'],
     towerBosses: [`${target} Turmbosse besiegen`, 'Turm des Namenlosen'],
     bossRank: [`${rank} erreichen`, 'Bossprüfung'],
-    deepTier: [`Deep of Dark ${target} erreichen`, 'Die nächste Schwierigkeitsstufe freischalten'],
+    deepTier: [`${difficultyName(quest.target)} erreichen`, 'Die nächste Schwierigkeitsstufe freischalten'],
     affixesRerolled: ['Affix umprägen', `${target} Umprägung${quest.target === 1 ? '' : 'en'} beim Verzauberer`],
     armorUpgrade: [`Rüstung auf +${target} bringen`, quest.scope === 'both' ? 'Alle vier Rüstungsteile beider Helden' : 'Alle vier Rüstungsteile eines Helden'],
     weaponsUpgrade: [`Waffen auf +${target} bringen`, 'Klassenwaffen beider Helden'],

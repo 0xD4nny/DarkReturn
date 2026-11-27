@@ -11,6 +11,7 @@ function applyEnchantAffixAttempt(save, body) {
   const quote = enchantAffixQuote(save, target, affixIndex);
   if (!quote.candidates.length) throw new Error('Mindestens ein neuer Affixtyp muss m\u00f6glich bleiben.');
   if (quote.available < quote.cost) throw new Error(`Du ben\u00f6tigst ${quote.cost} Umpr\u00e4gungssteine.`);
+  if (quote.mythicStones < quote.mythicStoneCost) throw new Error('Du benötigst einen mystischen Aufwertungsstein pro Umprägungsversuch.');
   const currentStat = target.affixes[affixIndex].stat;
   const usedStats = target.affixes.filter((_, index) => index !== affixIndex).map((affix) => affix.stat);
   const replacement = isPet ? rollPetAffix(currentStat, target.level, quote.excluded) : rollAffix(target.slot, [...quote.excluded, ...(allowsRepeatedAffixes(target.slot) ? [currentStat] : [...usedStats, currentStat])]);
@@ -21,13 +22,14 @@ function applyEnchantAffixAttempt(save, body) {
   }
   if (!isPet) replacement.value = affixValueAtUpgrade(replacement, target.upgradeLevel);
   consumeAffixStones(save, quote.cost);
+  if (quote.mythicStoneCost) consumeInventoryItem(save, save.inventory.find(item => item.slot === 'mythicUpgradeStone').id, 'mythicUpgradeStone');
   target.affixes[affixIndex] = replacement;
   if (!isPet && !mythic) target.enchantAffixIndex = affixIndex;
   if (mythic) delete target.enchantAffixIndex;
   save.statistics.affixesRerolled += 1;
   save.questBook.counters.affixesRerolled += 1;
   save.questBook.counters[isPet ? 'petAffixesRerolled' : 'equipmentAffixesRerolled'] += 1;
-  return { kind: 'enchant-affix', cost: quote.cost, excluded: quote.excluded, item: target, previousStat: currentStat, affix: replacement, state: save, outcomes: [{ success: true }], message: 'Affix umgeprägt.' };
+  return { kind: 'enchant-affix', cost: quote.cost, mythicStoneCost: quote.mythicStoneCost, excluded: quote.excluded, item: target, previousStat: currentStat, affix: replacement, state: save, outcomes: [{ success: true }], message: 'Affix umgeprägt.' };
 }
 
 // Shared reward path for live victories and offline area farming.
@@ -114,6 +116,8 @@ function resolveBattleRewards(save, body) {
   let equipmentDropSaleValue = 0;
   let equipmentDropSaleStones = 0;
   let equipmentDropDestination = null;
+  const questItemDrops = body.mode === 'area'
+    ? rollAreaQuestItemDrops(save, body.area, body.deepTier, combatStats.monstersKilled ?? 3) : [];
   const towerMaterialDrops = [];
   const towerMaterialDropMissed = [];
   if (body.mode === 'tower') {
@@ -182,7 +186,7 @@ function resolveBattleRewards(save, body) {
     farmBoxDropDestination = canStoreRewardItem(save, farmBoxDrop)
       ? storeRewardItem(save, farmBoxDrop, 'Farmbeute') : 'missed';
   }
-  return { reward, round: towerRound, firstClear, discoveryBonus, firstClearBoxes, firstClearBoxesDestination, eliteBonus, equipmentDrop, equipmentDropMailed, equipmentDropMissed, equipmentDropDestination, equipmentDropSold, equipmentDropSaleValue, equipmentDropSaleStones, towerMaterialDrops, towerMaterialDropMissed, farmBoxDrop, farmBoxDropDestination, state: save, message: 'Kampf gewonnen.' };
+  return { reward, round: towerRound, firstClear, discoveryBonus, firstClearBoxes, firstClearBoxesDestination, eliteBonus, equipmentDrop, equipmentDropMailed, equipmentDropMissed, equipmentDropDestination, equipmentDropSold, equipmentDropSaleValue, equipmentDropSaleStones, towerMaterialDrops, towerMaterialDropMissed, questItemDrops, farmBoxDrop, farmBoxDropDestination, state: save, message: 'Kampf gewonnen.' };
 }
 
 // Transactional game actions, separated from state and persistence helpers.
@@ -398,13 +402,13 @@ async function localAction(body) {
   } else if (action === 'deep-of-dark-ascend') {
     const rules = BALANCE.deepOfDark || {};
     const maximumTier = rules.maxTier || 3;
-    if (save.deepOfDark.tier >= maximumTier) throw new Error(`Deep of Dark ist vorerst auf Stufe ${maximumTier} begrenzt.`);
+    if (save.deepOfDark.tier >= maximumTier) throw new Error(`${difficultyName(maximumTier)} ist bereits freigeschaltet.`);
     const clearedAreas = AREAS.filter((area) => save.deepOfDark.clearedAreas.includes(area.id)).length;
     if (clearedAreas < AREAS.length) throw new Error('Siege zuerst in allen sechs Gebieten, bevor du weiter in die Tiefe steigst.');
     save.deepOfDark.tier += 1;
     save.deepOfDark.clearedAreas = [];
     save.visitedAreas = [];
-    response = { tier: save.deepOfDark.tier, state: save, message: `Deep of Dark ${save.deepOfDark.tier} beginnt.` };
+    response = { tier: save.deepOfDark.tier, state: save, message: `${difficultyName(save.deepOfDark.tier)} beginnt.` };
   } else if (action === 'boss-start') {
     if (battle) throw new Error('Es l\u00e4uft bereits ein Kampf.');
     const rules = BALANCE.bossChallenge;
@@ -829,16 +833,16 @@ async function localAction(body) {
       let cost = 0;
       while (attempts < 50 && !matched()) {
         const quote = enchantAffixQuote(save, target, index);
-        if (!quote.candidates.length || quote.available < quote.cost) break;
+        if (!quote.candidates.length || !quote.canAfford) break;
         const stone = save.inventory.find(item => item.slot === 'affixStone');
         const result = applyEnchantAffixAttempt(save, { ...body, stoneId: stone.id });
         attempts++;
         cost += result.cost;
       }
       const next = enchantAffixQuote(save, target, index);
-      const stopReason = matched() ? 'Ziel erreicht.' : next.available < next.cost ? 'Nicht genug Umprägungssteine für den nächsten Versuch.' : !next.candidates.length ? 'Keine möglichen Affixtypen.' : null;
+      const stopReason = matched() ? 'Ziel erreicht.' : next.mythicStones < next.mythicStoneCost ? 'Nicht genug mystische Aufwertungssteine für den nächsten Versuch.' : next.available < next.cost ? 'Nicht genug Umprägungssteine für den nächsten Versuch.' : !next.candidates.length ? 'Keine möglichen Affixtypen.' : null;
       response = { kind: 'enchant-affix', state: save, item: target, affix: target.affixes[index], previousStat: initial.current,
-        outcomes: attempts ? [{ success: true }] : [], attempts, cost, matched: matched(), stopReason };
+        outcomes: attempts ? [{ success: true }] : [], attempts, cost, mythicStoneCost: attempts * initial.mythicStoneCost, matched: matched(), stopReason };
     }
   } else if (action === 'upgrade-gems') {
     const quote = gemUpgradeQuote(save, body.itemId);

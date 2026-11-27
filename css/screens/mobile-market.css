@@ -4,17 +4,18 @@
     .shop-catalog-layout.shop-equipment-offers { grid-template-columns: minmax(0, 1fr); gap: 16px; }
     .shop-equipment-offers > :is(.shop-boxes-panel, .shop-gear-panel) {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         grid-template-rows: auto;
-        gap: 12px;
+        gap: 8px;
+        align-items: start;
     }
     .shop-equipment-offers .shop-catalog-heading { grid-column: 1 / -1; }
     .shop-equipment-offers .shop-product-card {
         width: 100%;
-        max-width: 152px;
+        max-width: none;
         aspect-ratio: 1;
         min-height: 0;
-        justify-self: center;
+        justify-self: stretch;
         padding: 0;
         border: 0;
         border-radius: var(--mobile-radius-item);
@@ -23,44 +24,40 @@
     .shop-equipment-offers .shop-product-card > :is(.shop-card-icon, .shop-card-copy) { display: none; }
     .shop-box-tile.inventory-item {
         display: grid;
-        grid-template-rows: minmax(0, 1fr) auto auto;
+        box-sizing: border-box;
         place-items: center;
-        gap: 6px;
+        gap: 0;
         width: 100%;
         height: 100%;
         min-width: 0;
-        padding: 12px 6px 8px;
+        padding: 0;
         border: 1px solid var(--equipment-color);
         border-radius: inherit;
         color: #d9bd8f;
         cursor: pointer;
     }
     .shop-box-tile:hover { background: #ffffff06; }
-    .shop-box-tile-icon { display: grid; place-items: center; }
-    .shop-box-tile-glyph { display: block; width: 46px; height: 46px; }
-    .shop-box-tile-name { max-width: 100%; color: #ddd1c0; font: 500 12px/1.2 var(--sans); text-align: center; }
-    .shop-box-tile > :is(.shop-box-tile-name, .shop-mobile-price) { position: relative; z-index: 1; }
+    .shop-box-tile > .shop-box-tile-icon { display: grid; place-items: center; width: 58%; height: 58%; margin: 0; padding: 0; }
+    .shop-box-tile-glyph { display: block; width: 100%; height: 100%; }
+    .shop-box-tile-name { display: none; }
     .shop-equipment-offers .shop-equipment-card {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: minmax(0, 1fr) 26px;
-        gap: 0;
+        display: block;
         background: transparent;
     }
     .shop-equipment-offers .shop-equipment-card > .inventory-item {
         display: grid;
+        box-sizing: border-box;
         place-items: center;
         width: 100%;
         height: 100%;
         min-width: 0;
         min-height: 0;
         margin: 0;
-        padding: 12px;
+        padding: 0;
     }
-    .shop-equipment-card > .inventory-item > .item-icon { width: 52px; height: 52px; }
+    .shop-equipment-card > .inventory-item > .item-icon { width: 58%; height: 58%; margin: 0; padding: 0; }
     .shop-equipment-card > .inventory-item > :is(.item-name, .item-type) { display: none; }
-    .shop-equipment-offers .shop-mobile-price { display: block; color: #d9bd8f; font: 500 12px/26px var(--sans); text-align: center; white-space: nowrap; }
-    .shop-box-tile .shop-mobile-price { line-height: 1.2; }
+    .shop-equipment-offers .shop-mobile-price { display: none; }
     .mobile-shop-quantity { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .mobile-shop-quantity label { display: flex; align-items: center; gap: 10px; color: #aaa39b; font: 400 13px var(--sans); }
     .mobile-shop-quantity input { width: 76px; min-height: 44px; text-align: center; }

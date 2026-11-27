@@ -1,6 +1,6 @@
 # Icon credits
 
-The 74 active icons are selected from Game-icons.net. Original contributor folders are preserved under `000000/transparent/1x1/`. The full license and contributor list is in [license.txt](license.txt). Runtime references, provenance and checksums are recorded in [manifest.json](manifest.json).
+The 79 active icons are selected from Game-icons.net. Original contributor folders are preserved under `000000/transparent/1x1/`. The full license and contributor list is in [license.txt](license.txt). Runtime references, provenance and checksums are recorded in [manifest.json](manifest.json).
 
 | Icon | Creator | License |
 | --- | --- | --- |
@@ -78,6 +78,11 @@ The 74 active icons are selected from Game-icons.net. Original contributor folde
 | [lorc/target-arrows.svg](000000/transparent/1x1/lorc/target-arrows.svg) | Lorc | CC BY 3.0 |
 | [lorc/wizard-staff.svg](000000/transparent/1x1/lorc/wizard-staff.svg) | Lorc | CC BY 3.0 |
 | [sbed/shield.svg](000000/transparent/1x1/sbed/shield.svg) | Sbed | CC BY 3.0 |
+| [lorc/tooth.svg](000000/transparent/1x1/lorc/tooth.svg) | Lorc | CC BY 3.0 |
+| [lorc/burning-embers.svg](000000/transparent/1x1/lorc/burning-embers.svg) | Lorc | CC BY 3.0 |
+| [lorc/root-tip.svg](000000/transparent/1x1/lorc/root-tip.svg) | Lorc | CC BY 3.0 |
+| [lorc/feather.svg](000000/transparent/1x1/lorc/feather.svg) | Lorc | CC BY 3.0 |
+| [lorc/moon.svg](000000/transparent/1x1/lorc/moon.svg) | Lorc | CC BY 3.0 |
 
 ## Modified icons
 
